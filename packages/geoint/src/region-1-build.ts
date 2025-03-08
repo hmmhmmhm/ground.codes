@@ -47,15 +47,37 @@ export default async () => {
     )
   );
 
+  // Filter out items with null codes before combining
+  const filteredIso3166Alpha2 = contents.iso3166Alpha2.filter((item: { code: string | null }) => item.code !== null);
+  const filteredIata = contents.iata.filter((item: { code: string | null }) => item.code !== null);
+  const filteredIcao = contents.icao.filter((item: { code: string | null }) => item.code !== null);
+  
+  // Log the number of items removed due to null codes
+  console.log(
+    chalk.yellow(
+      `Removed ${chalk.bold(contents.iso3166Alpha2.length - filteredIso3166Alpha2.length)} ISO 3166-1 Alpha-2 regions with null codes.`
+    )
+  );
+  console.log(
+    chalk.yellow(
+      `Removed ${chalk.bold(contents.iata.length - filteredIata.length)} IATA regions with null codes.`
+    )
+  );
+  console.log(
+    chalk.yellow(
+      `Removed ${chalk.bold(contents.icao.length - filteredIcao.length)} ICAO regions with null codes.`
+    )
+  );
+
   const regions = [
-    ...contents.iso3166Alpha2,
-    ...contents.iata,
-    ...contents.icao,
+    ...filteredIso3166Alpha2,
+    ...filteredIata,
+    ...filteredIcao,
   ];
 
   console.log(
     chalk.green(
-      `= Total Collected ${chalk.bold(chalk.underline(regions.length))} regions.`
+      `= Total Collected ${chalk.bold(chalk.underline(regions.length))} regions after filtering null codes.`
     )
   );
 
