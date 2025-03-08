@@ -1,84 +1,75 @@
-# Turborepo starter
+# ground.codes
 
-This Turborepo starter is maintained by the Turborepo core team.
+<p align="center">
+  <img src="https://i.imgur.com/eQ9JpzY.png" width="128" alt="Ground Codes Logo">
+</p>
 
-## Using this example
+## What is Ground Codes?
 
-Run the following command:
+Ground Codes is a coordinate-based addressing system that allows you to pinpoint any location in the world using just a region name and two words (e.g., "Yongsan-Happiness-Smile"). It leverages geographic coordinate systems (GCS) to provide a user-friendly alternative to traditional latitude and longitude coordinates.
 
-```sh
-npx create-turbo@latest
-```
+## Key Features
 
-## What's inside?
+- **Simple and Memorable**: Just three words to identify any location precisely
+- **Global Coverage**: Works anywhere in the world with a unique address
+- **Open Source**: MIT licensed and fully transparent implementation
+- **Multilingual Support**: Currently available in Korean and English, with plans to expand to 60 languages
+- **Variable Precision**: Offers three levels of precision (3m, 30cm, and 3cm) to suit different use cases
 
-This Turborepo includes the following packages/apps:
+## Comparison with Similar Services
 
-### Apps and Packages
+| Service          | Format                  | License            | Precision                                                               | Global Usage                                                                     | Multilingual Support                        |
+| ---------------- | ----------------------- | ------------------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------- |
+| Ground Codes     | Yongsan-Happiness-Smile | MIT License (Free) | 1. 3 meters (standard)<br>2. 30 centimeters (#)<br>3. 3 centimeters (+) | Yes                                                                              | Korean, English (expanding to 60 languages) |
+| Google Plus Code | HX2F+J8                 | No License (Free)  | 3.5 meters                                                              | Limited (requires 4 additional characters for global use, e.g., **8Q94HX2F+J8**) | English only                                |
+| What 3 Words     | ///teacher.awaken.days  | Proprietary (Paid) | 3 meters                                                                | Yes                                                                              | 60 languages                                |
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## Advantages Over Existing Services
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Compared to Google Plus Codes:
 
-### Utilities
+- Ground Codes assigns globally unique addresses, while Plus Codes can be duplicated across different countries
+- The region name prefix provides immediate geographic context
 
-This Turborepo has some additional tools already setup for you:
+### Compared to What 3 Words:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+- Open source and free under MIT license, unlike What 3 Words' proprietary commercial model
+- The region name prefix gives immediate geographic context, while What 3 Words requires an app to determine approximate location
 
-### Build
+## Variable Precision Format
 
-To build all apps and packages, run the following command:
+Ground Codes offers different precision levels through simple syntax changes:
 
-```
-cd my-turborepo
-pnpm build
-```
+- **Yongsan-Happiness-Smile** (3m precision) - Ideal for AI drone delivery destinations
+- **Yongsan#Happiness#Smile** (30cm precision) - Suitable for autonomous vehicle navigation
+- **Yongsan+Consideration+Happiness+Smile** (3cm precision) - Perfect for AI humanoid robot applications
 
-### Develop
+## Integration and Access
 
-To develop all apps and packages, run the following command:
+Ground Codes is available through both web URLs and API access:
 
-```
-cd my-turborepo
-pnpm dev
-```
+- **Web URL**: `ground.codes/Yongsan-Happiness-Smile` → Shows the location on a map
+- **API**: `api.ground.codes/Yongsan-Happiness-Smile` → Returns latitude/longitude coordinates in JSON format
 
-### Remote Caching
+API usage is limited to 600 requests per minute per IP. For higher volume needs, paid API options or open-source modules are available.
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+## Technical Details
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+- English word set: 6,000 words (AI-generated dataset)
+- Korean word set: 5,630 words (AI-generated dataset)
+- Region names: 210,000 unique global locations with populations of 500+ (GeoNames data, commercially usable)
+- Special solutions:
+  - **Region 1**: Optimized for airports/logistics with country codes and airport codes (e.g., NYC-491AD, SSN-TA14C)
+  - **Region 0**: Security solution (military/commercial) with custom central points and FPE encryption
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+## How Ground Codes Works
 
-```
-cd my-turborepo
-npx turbo login
-```
+Ground Codes uses a custom GIS algorithm called "Grok Spiral" that determines coordinates by moving in a clockwise spiral from a central point. This implementation leverages the "Gauss Circle Problem" formula to achieve O(sqrt N) efficiency in coordinate generation. The spiral pattern maintains a circular shape regardless of distance from the center point, resulting in excellent coordinate indexing efficiency.
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Packages
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+- [`@repo/geoint`](./packages/geoint/README.md): a package for processing and providing curated geographical information about global regions with populations of 500 or more people
 
-```
-npx turbo link
-```
+## License
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+MIT License
