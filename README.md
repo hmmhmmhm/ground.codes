@@ -8,6 +8,9 @@
 
 Ground Codes is a coordinate-based addressing system that allows you to pinpoint any location in the world using just a region name and two words (e.g., "Yongsan-Happiness-Smile"). It leverages geographic coordinate systems (GCS) to provide a user-friendly alternative to traditional latitude and longitude coordinates.
 
+> [!WARNING]
+> ground.codes is an ongoing project and has not yet reached completion.
+
 ## Key Features
 
 - **Simple and Memorable**: Just three words to identify any location precisely
