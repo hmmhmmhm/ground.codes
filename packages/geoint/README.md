@@ -1,8 +1,30 @@
-# Geoint Package
+# GEOINT Package
 
 ## Overview
 
 The Geoint package is a data processing toolkit designed for the ground.codes project. It processes and provides curated geographical information about global regions with populations of 500 or more people. The package includes scripts for data extraction, processing, and multilingual translation of region names.
+
+## Region System
+
+The GEOINT package for ground.codes implements a hierarchical Region system with two levels:
+
+### Region Level 1 (Short Code)
+
+Region Level 1 uses airport codes and country codes, consisting of 2-4 character short codes:
+
+- **2-character codes**: ISO 3166-1 alpha-2 country codes (243 codes)
+- **3-character codes**: IATA Airport Codes (7,783 codes)
+- **4-character codes**: ICAO Airport Codes (21,483 codes)
+
+Total Region Level 1 codes: 29,509
+
+### Region Level 2 (GeoNames)
+
+Region Level 2 uses city names from the GeoNames World Cities database:
+
+- Total GeoNames entries: 215,659
+- Unique cities in English: 173,528
+- Unique cities in Korean: 167,814
 
 ## Features
 
@@ -45,7 +67,7 @@ The package processes and outputs data in the following structure:
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 ```
 
 ### Running Scripts
@@ -54,7 +76,7 @@ The package includes a script selector that allows you to run various data proce
 
 ```bash
 # Run the script selector
-npm run dev
+pnpm run dev
 ```
 
 ### Available Scripts
@@ -110,7 +132,7 @@ OPENAI_API_KEY=your_api_key_here
 To build the package:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ## License
