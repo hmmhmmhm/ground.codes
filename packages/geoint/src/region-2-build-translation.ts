@@ -5,17 +5,13 @@ import { RegionData } from "./types.js";
 import chalk from "chalk";
 
 export default async () => {
-  const language = await input({
-    message: "Please enter a language name. (e.g. Korean)",
-  });
-
-  const languageCode = (
+  const language = (
     await input({
-      message: "Please enter a language code. (e.g. kr)",
+      message: "Please enter a language name. (e.g. korean)",
     })
   ).toLowerCase();
 
-  if (language === "English" || languageCode === "en") {
+  if (language === "english") {
     console.log(
       chalk.yellow(
         "English is the base language, so you don't need to build translations."
@@ -26,6 +22,13 @@ export default async () => {
 
   const filePaths = {
     originalJson: path.join(process.cwd(), "region-dist", "region-2.json"),
+    preTranslationDataSets: path.join(
+      process.cwd(),
+      "region-dataset",
+      "region-level-2",
+      "pre-translation",
+      language
+    ),
     preTranslationTxt: path.join(
       process.cwd(),
       "region-dataset",
@@ -35,7 +38,7 @@ export default async () => {
     postTranslationJson: path.join(
       process.cwd(),
       "region-dist",
-      `region-2-${languageCode}.json`
+      `region-2-${language}.json`
     ),
   };
 
@@ -65,6 +68,93 @@ export default async () => {
       lat: parseFloat(match[2]),
       long: parseFloat(match[3]),
     };
+  }
+
+  await combineTranslations();
+  await generateRegionJson();
+
+  // Function to extract region name from a line
+  function extractRegionName(line: string) {
+    // Extract the region name (everything before the coordinates)
+    const match = line.match(/(.*?)\s*\(/);
+    if (!match || match.length < 2 || !match[1]) return null;
+    return match[1].trim();
+  }
+
+  // Main function to combine all batch files and count region name occurrences
+  async function combineTranslations() {
+    console.log(chalk.green(`Starting to combine ${language} translations...`));
+
+    // Get all batch files
+    const files = fs
+      .readdirSync(filePaths.preTranslationDataSets)
+      .filter((file) => file.startsWith("batch-") && file.endsWith(".txt"))
+      .sort((a, b) => {
+        // Sort numerically by batch number
+        const numA = parseInt(a.replace("batch-", "").replace(".txt", ""));
+        const numB = parseInt(b.replace("batch-", "").replace(".txt", ""));
+        return numA - numB;
+      });
+
+    console.log(chalk.green(`Found ${files.length} batch files to combine.`));
+
+    // Store all translations
+    let allTranslations: string[] = [];
+
+    // Map to count region name occurrences
+    const regionNameCounts: Map<string, number> = new Map();
+
+    // Process each file
+    for (const file of files) {
+      const filePath = path.join(filePaths.preTranslationDataSets, file);
+      const content = fs.readFileSync(filePath, "utf8");
+      const lines = content.split("\n").filter((line) => line.trim() !== "");
+
+      // Add to all translations
+      allTranslations = allTranslations.concat(lines);
+
+      // Count region names
+      for (const line of lines) {
+        const regionName = extractRegionName(line);
+        if (regionName) {
+          regionNameCounts.set(
+            regionName,
+            (regionNameCounts.get(regionName) || 0) + 1
+          );
+        }
+      }
+    }
+
+    // Write all translations to a single file
+    fs.writeFileSync(filePaths.preTranslationTxt, allTranslations.join("\n"));
+    console.log(
+      chalk.green(
+        `Combined all translations into ${chalk.bold(
+          chalk.underline(`all-${language}-translations.txt`)
+        )}`
+      )
+    );
+
+    // Find duplicate region names (appearing more than once)
+    const duplicateRegions = Array.from(regionNameCounts.entries())
+      .filter(([_, count]) => count > 1)
+      .sort((a, b) => b[1] - a[1]); // Sort by count in descending order
+
+    console.log(
+      chalk.green(
+        `Found ${chalk.bold(
+          chalk.underline(duplicateRegions.length)
+        )} region names that appear multiple times.`
+      )
+    );
+
+    console.log(
+      chalk.green(
+        `Total translations combined: ${chalk.bold(
+          chalk.underline(allTranslations.length)
+        )}`
+      )
+    );
   }
 
   // Main function to combine original JSON with translations
@@ -103,7 +193,7 @@ export default async () => {
       chalk.green(
         `Loaded ${chalk.bold(
           chalk.underline(translationLines.length)
-        )} Korean translations`
+        )} ${language} translations`
       )
     );
 
@@ -194,12 +284,12 @@ export default async () => {
     );
 
     // Convert map back to array
-    const filteredKoreanData = Array.from(nameMap.values());
+    const filteredLanguageDataSet = Array.from(nameMap.values());
 
     console.log(
       chalk.green(
         `Final dataset contains ${chalk.bold(
-          chalk.underline(filteredKoreanData.length)
+          chalk.underline(filteredLanguageDataSet.length)
         )} regions (reduced from ${originalData.length})`
       )
     );
@@ -207,7 +297,7 @@ export default async () => {
     // Write the JSON file
     fs.writeFileSync(
       filePaths.postTranslationJson,
-      JSON.stringify(filteredKoreanData, null, 2)
+      JSON.stringify(filteredLanguageDataSet, null, 2)
     );
     console.log(
       chalk.green(
@@ -217,7 +307,4 @@ export default async () => {
       )
     );
   }
-
-  // Run the function
-  generateRegionJson().catch(console.error);
 };
