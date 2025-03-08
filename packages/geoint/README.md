@@ -113,6 +113,17 @@ pnpm run dev
 The primary data source is the GeoNames cities500.txt file, which can be downloaded from:
 https://download.geonames.org/export/dump/cities500.zip
 
+Additional data sources used in this package include:
+
+- **ISO 3166-1 Alpha-2 Code JSON**
+  (MIT License) https://gist.github.com/ssskip/5a94bfcd2835bf1dea52
+
+- **ISO 3166-1 Alpha-2 Centroids JSON**
+  (MIT License) https://github.com/gavinr/world-countries-centroids/blob/master/dist/countries.csv
+
+- **IATA & ICAO Airport Code JSON**
+  (MIT License) https://github.com/mwgg/Airports
+
 ## Translation Process
 
 The translation process consists of three steps:
