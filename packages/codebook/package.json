@@ -1,0 +1,24 @@
+{
+  "name": "@repo/codebook",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc && node dist/select-script.js",
+    "build": "tsc"
+  },
+  "files": [
+    "coebook-dist"
+  ],
+  "devDependencies": {
+    "@ai-sdk/openai": "^1.2.1",
+    "@inquirer/prompts": "^7.3.2",
+    "@inquirer/search": "^3.0.9",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.13.9",
+    "ai": "^4.1.54",
+    "chalk": "^5.4.1",
+    "dotenv": "^16.4.7",
+    "glob": "^11.0.1",
+    "tasuku": "^2.0.1",
+    "typescript": "latest"
+  }
+}
