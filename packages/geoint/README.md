@@ -1,6 +1,8 @@
 # GEOINT Package
 
-## Overview
+<p align="center">
+  <img src="https://i.imgur.com/eQ9JpzY.png" width="128" alt="Ground Codes Logo">
+</p>
 
 The Geoint package is a data processing toolkit designed for the ground.codes project. It processes and provides curated geographical information about global regions with populations of 500 or more people. The package includes scripts for data extraction, processing, and multilingual translation of region names.
 
