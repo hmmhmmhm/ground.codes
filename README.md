@@ -72,6 +72,7 @@ Ground Codes uses a custom GIS algorithm called "Grok Spiral" that determines co
 ### Packages
 
 - [`@repo/geoint`](./packages/geoint/README.md): a package for processing and providing curated geographical information about global regions with populations of 500 or more people
+- [`@repo/codebook`](./packages/codebook/README.md): a package for managing the word codebooks used in the coordinate encoding system
 
 ## License
 
