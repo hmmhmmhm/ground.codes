@@ -1,5 +1,6 @@
 import { search } from "@inquirer/prompts";
 import chalk from "chalk";
+import "dotenv/config";
 
 type Choice<Value> = {
   value: Value;
@@ -11,6 +12,12 @@ type Choice<Value> = {
 };
 
 const scriptList: Choice<string>[] = [
+  {
+    value: "exit",
+    name: "Exit (Close Script)",
+    description: "Description: Exit the script.",
+    runScript: () => process.exit(0),
+  },
   {
     value: "region-1-build",
     name: "Region 1 Build",
@@ -32,6 +39,14 @@ const scriptList: Choice<string>[] = [
       "Decription: Create pre-translation files for Region 2. This script will generate a set of files in the pre-translation folder, which will be used to translate the region names. You can run this script if the information in existing Region 2 has changed.",
     runScript: async () =>
       (await import("./region-2-create-pre-translation.js")).default(),
+  },
+  {
+    value: "region-2-create-translation",
+    name: "Region 2 Create Translation",
+    description:
+      "Description: This command uses generative AI to translate region names from English into the target language.",
+    runScript: async () =>
+      (await import("./region-2-create-translation.js")).default(),
   },
   {
     value: "region-2-build-translation",

@@ -1,14 +1,11 @@
 import fs from "fs";
 import path from "path";
+import task from "tasuku";
+import chalk from "chalk";
 
 export default async () => {
   const filePaths = {
-    cities500: path.join(
-      process.cwd(),
-      "region-dataset",
-      "region-level-2",
-      "cities500.json"
-    ),
+    region2: path.join(process.cwd(), "region-dist", "region-2.json"),
     region2PreTranslationFoler: path.join(
       process.cwd(),
       "region-dataset",
@@ -17,25 +14,29 @@ export default async () => {
       "baseset"
     ),
   };
-  const cities500 = JSON.parse(
-    fs.readFileSync(filePaths.cities500, "utf8")
-  ) as {
+  const region2 = JSON.parse(fs.readFileSync(filePaths.region2, "utf8")) as {
     name: string;
     code: string;
     lat: number;
     long: number;
   }[];
 
-  console.log(`Collected cities500 count: ${cities500.length}`);
+  console.log(
+    chalk.green(
+      `Collected region2 count: ${chalk.bold(chalk.underline(region2.length))}`
+    )
+  );
 
   fs.mkdirSync(filePaths.region2PreTranslationFoler, { recursive: true });
 
   console.log(
-    "Splitting regions into batches of 100 and saving as JSON files..."
+    chalk.green(
+      "Splitting regions into batches of 100 and saving as JSON files..."
+    )
   );
 
   // Format each region as "Label (Lat, Long)\n"
-  const formattedRegions = cities500.map(
+  const formattedRegions = region2.map(
     (city) => `${city.name} (${city.lat}, ${city.long})`
   );
 
@@ -52,16 +53,28 @@ export default async () => {
   }
 
   // Save each batch as a separate JSON file
-  batches.forEach((batch, index) => {
-    const batchFilePath = path.join(
-      filePaths.region2PreTranslationFoler,
-      `batch-${index + 1}.txt`
-    );
-    fs.writeFileSync(batchFilePath, batch.join("\n"));
-    console.log(
-      `Saved batch ${index + 1} with ${Math.ceil(cities500.length / batchSize)} regions`
-    );
-  });
+  const processTask = await task(
+    "Saving batches as JSON files...",
+    async ({ setTitle }) => {
+      batches.forEach((batch, index) => {
+        const batchFilePath = path.join(
+          filePaths.region2PreTranslationFoler,
+          `batch-${index + 1}.txt`
+        );
+        fs.writeFileSync(batchFilePath, batch.join("\n"));
+        setTitle(
+          `Saved batch ${index + 1} with ${Math.ceil(
+            region2.length / batchSize
+          )} regions`
+        );
+      });
+    }
+  );
+  processTask.clear();
 
-  console.log(`Total batches created: ${batches.length}`);
+  console.log(
+    chalk.green(
+      `Total batches created: ${chalk.bold(chalk.underline(batches.length))}`
+    )
+  );
 };
