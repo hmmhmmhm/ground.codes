@@ -26,17 +26,21 @@ export const findClosestRegion = async (
   try {
     if (regionLevel === 1) {
       // Import region-1 data using the new module system
-      regions = (await import("../region-dist/region-1.json"))
+      // @ts-ignore
+      regions = (await import("@repo/geoint/region-dist/region-1.json"))
         .default as Region[];
     } else if (regionLevel == 2) {
       if (!language || language === "English") {
         // Import region-2 data using the new module system
-        regions = (await import("../region-dist/region-2.json"))
+        // @ts-ignore
+        regions = (await import("@repo/geoint/region-dist/region-2.json"))
           .default as Region[];
       } else if (language === "Korean") {
         // Import region-2-korean data using the new module system
-        regions = (await import("../region-dist/region-2-korean.json"))
-          .default as Region[];
+        // @ts-ignore
+        regions = (
+          await import("@repo/geoint/region-dist/region-2-korean.json")
+        ).default as Region[];
       } else {
         throw new Error(`Invalid language: ${language}`);
       }

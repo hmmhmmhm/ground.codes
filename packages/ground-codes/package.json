@@ -1,6 +1,6 @@
 {
   "name": "ground-codes",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Ground codes",
   "type": "module",
   "main": "./dist/index.js",
@@ -8,13 +8,11 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "tsup --config tsup.config.ts --watch",
-    "build": "node ./scripts/copy-assets.js && tsup --config tsup.config.ts",
+    "build": "tsup --config tsup.config.ts",
     "publish": "turbo run build lint test && changeset version && changeset publish"
   },
   "files": [
-    "dist",
-    "codebook-dist",
-    "region-dist"
+    "dist"
   ],
   "tasks": {
     "build": {
@@ -29,6 +27,8 @@
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
     "@repo/typescript-config": "workspace:*",
+    "@repo/codebook": "workspace:*",
+    "@repo/geoint": "workspace:*",
     "tsup": "^8.4.0"
   },
   "dependencies": {}

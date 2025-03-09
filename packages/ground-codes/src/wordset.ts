@@ -17,10 +17,12 @@ export const encodeByWordSet = async ({
   let wordSet: string[] | null = null;
   const baseSet = toBaseN(n, WordSetBaseCount[language]);
   if (language === "English") {
-    wordSet = (await import("../codebook-dist/english.json"))
+    // @ts-ignore
+    wordSet = (await import("@repo/codebook/codebook-dist/english.json"))
       .default as string[];
   } else if (language === "Korean") {
-    wordSet = (await import("../codebook-dist/korean.json"))
+    // @ts-ignore
+    wordSet = (await import("@repo/codebook/codebook-dist/korean.json"))
       .default as string[];
   } else {
     throw new Error(`Invalid language: ${language}`);
