@@ -93,3 +93,14 @@ export const decode = ({
     },
   });
 };
+
+export {
+  getCoordinates,
+  getNFromCoordinates,
+  findClosestRegion,
+  encodeByWordSet,
+  calculateCoordinateDiff,
+  reconstructCoordinateDiff,
+};
+
+export type { SupportedLanguage };
