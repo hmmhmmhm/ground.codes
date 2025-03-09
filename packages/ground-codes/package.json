@@ -1,6 +1,6 @@
 {
   "name": "ground-codes",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Ground codes",
   "type": "module",
   "main": "./dist/index.js",
@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "tsup --config tsup.config.ts --watch",
     "build": "tsup --config tsup.config.ts",
-    "publish": "turbo run build lint test && changeset version && changeset publish"
+    "prepublishOnly": "turbo run build lint test",
+    "publish": "changeset version && changeset publish"
   },
   "files": [
     "dist"
