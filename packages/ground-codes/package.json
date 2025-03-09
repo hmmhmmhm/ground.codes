@@ -7,12 +7,14 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
-    "build": "tsup src/index.ts --format cjs,esm --dts",
-    "publish-packages": "turbo run build lint test && changeset version && changeset publish"
+    "dev": "tsup --config tsup.config.ts --watch",
+    "build": "node ./scripts/copy-assets.js && tsup --config tsup.config.ts",
+    "publish": "turbo run build lint test && changeset version && changeset publish"
   },
   "files": [
-    "dist"
+    "dist",
+    "codebook-dist",
+    "region-dist"
   ],
   "tasks": {
     "build": {
@@ -28,5 +30,6 @@
     "@changesets/cli": "^2.28.1",
     "@repo/typescript-config": "workspace:*",
     "tsup": "^8.4.0"
-  }
+  },
+  "dependencies": {}
 }
