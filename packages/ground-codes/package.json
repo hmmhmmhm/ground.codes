@@ -1,0 +1,32 @@
+{
+  "name": "ground-codes",
+  "version": "0.0.1",
+  "description": "Ground codes",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "publish-packages": "turbo run build lint test && changeset version && changeset publish"
+  },
+  "files": [
+    "dist"
+  ],
+  "tasks": {
+    "build": {
+      "outputs": [
+        "dist/**"
+      ],
+      "dependsOn": [
+        "^build"
+      ]
+    }
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.28.1",
+    "@repo/typescript-config": "workspace:*",
+    "tsup": "^8.4.0"
+  }
+}
