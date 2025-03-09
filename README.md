@@ -13,6 +13,7 @@ Ground Codes is a coordinate-based addressing system that allows you to pinpoint
 
 ### Packages & Apps
 
+- [`@repo/ground-codes`](./packages/ground-codes/README.md): the core implementation package that provides the fundamental encoding and decoding functionality for the Ground Codes coordinate-based addressing system
 - [`@repo/geoint`](./packages/geoint/README.md): a package for processing and providing curated geographical information about global regions with populations of 500 or more people
 - [`@repo/codebook`](./packages/codebook/README.md): a package for managing the word codebooks used in the coordinate encoding system
 - [`apps/grok-spiral`](./apps/grok-spiral/README.md): an interactive visualization app demonstrating the Grok Spiral coordinate generation system that powers Ground Codes' geospatial indexing
