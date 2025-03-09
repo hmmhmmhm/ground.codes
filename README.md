@@ -11,6 +11,12 @@ Ground Codes is a coordinate-based addressing system that allows you to pinpoint
 > [!WARNING]
 > ground.codes is an ongoing project and has not yet reached completion.
 
+### Packages & Apps
+
+- [`@repo/geoint`](./packages/geoint/README.md): a package for processing and providing curated geographical information about global regions with populations of 500 or more people
+- [`@repo/codebook`](./packages/codebook/README.md): a package for managing the word codebooks used in the coordinate encoding system
+- [`apps/grok-spiral`](./apps/grok-spiral/README.md): an interactive visualization app demonstrating the Grok Spiral coordinate generation system that powers Ground Codes' geospatial indexing
+
 ## Key Features
 
 - **Simple and Memorable**: Just three words to identify any location precisely
@@ -68,11 +74,6 @@ API usage is limited to 600 requests per minute per IP. For higher volume needs,
 ## How Ground Codes Works
 
 Ground Codes uses a custom GIS algorithm called "Grok Spiral" that determines coordinates by moving in a clockwise spiral from a central point. This implementation leverages the "Gauss Circle Problem" formula to achieve O(sqrt N) efficiency in coordinate generation. The spiral pattern maintains a circular shape regardless of distance from the center point, resulting in excellent coordinate indexing efficiency.
-
-### Packages
-
-- [`@repo/geoint`](./packages/geoint/README.md): a package for processing and providing curated geographical information about global regions with populations of 500 or more people
-- [`@repo/codebook`](./packages/codebook/README.md): a package for managing the word codebooks used in the coordinate encoding system
 
 ## License
 

@@ -8,6 +8,29 @@
 
 Grok Spiral is a coordinate generation system designed for efficient geospatial indexing in the Ground Codes platform. It provides a deterministic, scalable approach to generating and managing coordinates in two-dimensional space, with applications in mapping, location-based services, and spatial data management.
 
+## Getting Started
+
+To integrate Grok Spiral into your project, first install the ground-codes package:
+
+```bash
+npm install ground-codes
+```
+
+Then you can use the exported functions to work with coordinates:
+
+```javascript
+// Import the necessary functions from ground-codes
+import { getCoordinates, getNFromCoordinates } from "ground-codes";
+
+// Convert a sequential index to spiral coordinates
+const coordinates = getCoordinates(42);
+console.log(coordinates); // { x: 5, y: 3 } (example output)
+
+// Convert spiral coordinates back to a sequential index
+const index = getNFromCoordinates(5, 3);
+console.log(index); // 42 (example output)
+```
+
 ## How Grok Spiral Works
 
 Grok Spiral employs a custom GIS (Geographic Information System) algorithm that determines coordinates by moving in a clockwise spiral pattern from a central point. This implementation leverages the mathematical principles of the "Gauss Circle Problem" formula to achieve O(sqrt N) efficiency in coordinate generation - a significant improvement over traditional coordinate systems.
@@ -42,29 +65,6 @@ The core algorithm uses a mathematical transformation to convert sequential indi
 - **Geospatial Databases**: Optimized storage and retrieval of geographic data
 - **Mapping Applications**: Fast rendering of map tiles and features
 - **Spatial Analysis**: Improved performance for spatial calculations and analytics
-
-## Getting Started
-
-To integrate Grok Spiral into your project, first install the ground-codes package:
-
-```bash
-npm install ground-codes
-```
-
-Then you can use the exported functions to work with coordinates:
-
-```javascript
-// Import the necessary functions from ground-codes
-import { getCoordinates, getNFromCoordinates } from "ground-codes";
-
-// Convert a sequential index to spiral coordinates
-const coordinates = getCoordinates(42);
-console.log(coordinates); // { x: 5, y: 3 } (example output)
-
-// Convert spiral coordinates back to a sequential index
-const index = getNFromCoordinates(5, 3);
-console.log(index); // 42 (example output)
-```
 
 ## Contributing
 
