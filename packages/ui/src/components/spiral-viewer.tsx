@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import GridCanvas from "./grid-canvas";
-import { ScrollArea } from "./ui/scroll-area";
+import GridCanvas from "@repo/ui/components/grid-canvas";
+import { ScrollArea } from "@repo/ui/components/ui/scroll-area";
 
 const getLayerColor = (layer: number) => {
   // 흰색 기반 (불투명도로 구분)
