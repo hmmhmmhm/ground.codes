@@ -2,6 +2,8 @@
 
 <p align="center">
   <img src="https://i.imgur.com/eQ9JpzY.png" width="128" alt="Ground Codes Logo">
+  <br />
+  Demo: <a href="https://grok-spiral.ground.codes">grok-spiral.ground.codes</a>
 </p>
 
 ## Overview
