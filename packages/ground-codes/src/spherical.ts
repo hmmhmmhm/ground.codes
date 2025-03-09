@@ -1,7 +1,7 @@
 /**
  * Approximately 111 km corresponds to 1 degree, thus 1 meter corresponds to approximately 1/111000 degrees.
  */
-const DEG_PER_METER = 111000;
+export const DEG_PER_METER = 111000;
 
 /**
  * Converts a target coordinate to an diff based on a reference center coordinate.

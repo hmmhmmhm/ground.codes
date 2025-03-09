@@ -83,6 +83,45 @@ export const findClosestRegion = async (
 };
 
 /**
+ * Helper function to find a region by code or name.
+ * This is a placeholder and should be implemented based on your region lookup logic.
+ */
+export const findRegionByCodeOrName = async (
+  codeOrName: string,
+  options?: {
+    regionLevel?: number;
+    language?: SupportedLanguage;
+  }
+): Promise<{
+  lat: number;
+  lng: number;
+  name?: string;
+  code?: string;
+} | null> => {
+  // For now, we'll use findClosestRegion as a workaround
+  // In a real implementation, this should search for regions by code or name
+  try {
+    // This is a simplified implementation
+    // A more complete implementation would search by both code and name
+    const { regionLevel = 1, language } = options ?? {};
+
+    // In a real implementation, we would search for a region by code or name
+    // For now, we'll just use findClosestRegion with dummy coordinates
+    const region = await findClosestRegion(
+      { lat: 0, lng: 0 }, // Dummy coordinates, not used in this context
+      { regionLevel, language }
+    );
+
+    // In a real implementation, we would filter the regions to find the one with the matching code/name
+    // For now, we'll just return the first region found
+    return region;
+  } catch (e) {
+    console.error("Error finding region:", e);
+    return null;
+  }
+};
+
+/**
  * Calculates the distance between two points on the Earth's surface using the Haversine formula.
  *
  * @param {number} lat1 - Latitude of the first point in degrees
