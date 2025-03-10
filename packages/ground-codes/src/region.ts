@@ -84,7 +84,7 @@ export const findClosestRegion = async (
 
 /**
  * Helper function to find a region by code or name.
- * This is a placeholder and should be implemented based on your region lookup logic.
+ * Searches through the region data to find a region that matches the provided code or name.
  */
 export const findRegionByCodeOrName = async (
   codeOrName: string,
@@ -98,25 +98,75 @@ export const findRegionByCodeOrName = async (
   name?: string;
   code?: string;
 } | null> => {
-  // For now, we'll use findClosestRegion as a workaround
-  // In a real implementation, this should search for regions by code or name
-  try {
-    // This is a simplified implementation
-    // A more complete implementation would search by both code and name
-    const { regionLevel = 1, language } = options ?? {};
+  if (!codeOrName || codeOrName.trim() === "") {
+    return null;
+  }
 
-    // In a real implementation, we would search for a region by code or name
-    // For now, we'll just use findClosestRegion with dummy coordinates
-    const region = await findClosestRegion(
-      { lat: 0, lng: 0 }, // Dummy coordinates, not used in this context
-      { regionLevel, language }
+  try {
+    const { regionLevel = 2, language } = options ?? {};
+
+    // Load the appropriate region data based on regionLevel and language
+    let regions: Region[] = [];
+
+    if (regionLevel === 1) {
+      // Import region-1 data
+      regions = // @ts-ignore
+        (await import("@repo/geoint/region-dist/region-1.json"))
+          .default as Region[];
+    } else if (regionLevel === 2) {
+      if (!language || language === "English") {
+        // Import region-2 data
+        regions = // @ts-ignore
+          (await import("@repo/geoint/region-dist/region-2.json"))
+            .default as Region[];
+      } else if (language === "Korean") {
+        // Import region-2-korean data
+        regions = // @ts-ignore
+          (await import("@repo/geoint/region-dist/region-2-korean.json"))
+            .default as Region[];
+      } else {
+        throw new Error(`Invalid language: ${language}`);
+      }
+    } else {
+      throw new Error(`Invalid region level: ${regionLevel}`);
+    }
+
+    // Normalize the search term for case-insensitive comparison
+    const normalizedSearch = codeOrName.toLowerCase().trim();
+
+    // Find the region that matches the code or name
+    const matchedRegion = regions.find(
+      (region) =>
+        region.code.toLowerCase() === normalizedSearch ||
+        region.name.toLowerCase() === normalizedSearch
     );
 
-    // In a real implementation, we would filter the regions to find the one with the matching code/name
-    // For now, we'll just return the first region found
-    return region;
+    if (matchedRegion) {
+      return {
+        name: matchedRegion.name,
+        code: matchedRegion.code,
+        lat: matchedRegion.lat,
+        lng: matchedRegion.long,
+      };
+    }
+
+    // If no exact match is found, try to find a region whose name contains the search term
+    const partialMatch = regions.find((region) =>
+      region.name.toLowerCase().includes(normalizedSearch)
+    );
+
+    if (partialMatch) {
+      return {
+        name: partialMatch.name,
+        code: partialMatch.code,
+        lat: partialMatch.lat,
+        lng: partialMatch.long,
+      };
+    }
+
+    return null;
   } catch (e) {
-    console.error("Error finding region:", e);
+    console.error("Error finding region by code or name:", e);
     return null;
   }
 };

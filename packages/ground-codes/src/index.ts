@@ -27,7 +27,7 @@ export const encode = async (
     language?: SupportedLanguage;
   }
 ) => {
-  let { center, precisionMeters, regionLevel, language } = options ?? {};
+  let { center, precisionMeters, regionLevel = 2, language } = options ?? {};
 
   let code: string | null = null;
   let encoded = "";
@@ -86,12 +86,28 @@ export const decode = async (
     language?: SupportedLanguage;
   }
 ) => {
-  let { center, regionLevel, language } = options ?? {};
+  let { center, regionLevel = 2, language } = options ?? {};
 
   // Split the encoded string to get region code/name and the actual encoded value
   const parts = encoded.split("-");
   let actualEncoded = encoded;
   let code: string | undefined = undefined;
+
+  // * Detect language by actualEncoded with unicode
+  if (!language) {
+    // Check if the text contains Korean characters (Hangul)
+    // Hangul syllables range: U+AC00-U+D7A3
+    // Hangul Jamo range: U+1100-U+11FF
+    const koreanPattern = /[\u1100-\u11FF\uAC00-\uD7A3]/;
+
+    // Test if the text contains Korean characters
+    if (koreanPattern.test(actualEncoded)) {
+      language = "Korean";
+    } else {
+      // Default to English if no Korean characters are detected
+      language = "English";
+    }
+  }
 
   // If there's a region code/name in the encoded string
   if (parts.length > 1) {
@@ -100,13 +116,6 @@ export const decode = async (
 
     // If center is not provided, find the region by code/name
     if (!center && code) {
-      // This would require implementing a function to find a region by code/name
-      // For now, we'll throw an error if center is not provided and there's a region code
-      if (!regionLevel) {
-        // Try to determine if it's a region code (level 1) or name (level 2+)
-        regionLevel = code.length <= 4 ? 1 : 2; // Simple heuristic, adjust as needed
-      }
-
       // Find region by code or name based on regionLevel
       // This is a placeholder and should be implemented based on your region lookup logic
       const region = await findRegionByCodeOrName(code, {
