@@ -56,6 +56,14 @@ const scriptList: Choice<string>[] = [
     runScript: async () =>
       (await import("./region-2-build-translation.js")).default(),
   },
+  {
+    value: "region-to-embedded-db",
+    name: "Region to Embedded DB",
+    description:
+      "Description: This command imports region data into the embedded database.",
+    runScript: async () =>
+      (await import("./region-to-embedded-db.js")).default(),
+  },
 ];
 
 (async () => {

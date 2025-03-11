@@ -78,7 +78,7 @@ The package includes a script selector that allows you to run various data proce
 
 ```bash
 # Run the script selector
-pnpm run dev
+pnpm run dataset-build
 ```
 
 ### Available Scripts
@@ -142,7 +142,7 @@ OPENAI_API_KEY=your_api_key_here
 
 ## Development
 
-To build the package:
+To build the dataset:
 
 ```bash
 pnpm run build
