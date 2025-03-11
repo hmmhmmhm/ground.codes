@@ -175,14 +175,13 @@ importers:
       level:
         specifier: ^9.0.0
         version: 9.0.0
-    optionalDependencies:
-      '@esbuild/linux-x64':
-        specifier: 0.24.0
-        version: 0.24.0
     devDependencies:
       '@ai-sdk/openai':
         specifier: ^1.2.1
         version: 1.2.1(zod@3.24.2)
+      '@changesets/cli':
+        specifier: ^2.28.1
+        version: 2.28.1
       '@inquirer/prompts':
         specifier: ^7.3.2
         version: 7.3.2(@types/node@22.13.9)
@@ -213,6 +212,9 @@ importers:
       tasuku:
         specifier: ^2.0.1
         version: 2.0.1
+      tsup:
+        specifier: ^8.4.0
+        version: 8.4.0(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.2)
       tsx:
         specifier: ^4.19.3
         version: 4.19.3
@@ -225,12 +227,12 @@ importers:
       '@changesets/cli':
         specifier: ^2.28.1
         version: 2.28.1
+      '@ground-codes/geoint':
+        specifier: workspace:*
+        version: link:../geoint
       '@repo/codebook':
         specifier: workspace:*
         version: link:../codebook
-      '@repo/geoint':
-        specifier: workspace:*
-        version: link:../geoint
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -717,12 +719,6 @@ packages:
   '@esbuild/linux-x64@0.17.19':
     resolution: {integrity: sha512-68ngA9lg2H6zkZcyp22tsVt38mlhWde8l3eJLWkyLrp4HwMUr3c1s/M2t7+kHIhvMjglIBrFpncX1SzMckomGw==}
     engines: {node: '>=12'}
-    cpu: [x64]
-    os: [linux]
-
-  '@esbuild/linux-x64@0.24.0':
-    resolution: {integrity: sha512-vbutsFqQ+foy3wSSbmjBXXIJ6PL3scghJoM8zCL142cGaZKAdCZHyf+Bpu/MmX9zT9Q0zFBVKb36Ma5Fzfa8xA==}
-    engines: {node: '>=18'}
     cpu: [x64]
     os: [linux]
 
@@ -5360,9 +5356,6 @@ snapshots:
     optional: true
 
   '@esbuild/linux-x64@0.17.19':
-    optional: true
-
-  '@esbuild/linux-x64@0.24.0':
     optional: true
 
   '@esbuild/linux-x64@0.25.0':
