@@ -1,15 +1,35 @@
+import { around } from "@ground-codes/geoint";
 import Elysia, { t } from "elysia";
 import { encode, SupportedLanguage } from "ground-codes";
 
 export const v1Encode = new Elysia().post(
   "/encode",
-  async ({ body: { lat, lng, regionLevel, language, precisionMeters } }) => {
+  async ({
+    body: { lat, lng, regionLevel, language = "English", precisionMeters },
+  }) => {
+    const center = await around({
+      lat,
+      lng,
+      regionName: `region-${regionLevel}${
+        language.toLowerCase() === "english" ? "" : `-${language.toLowerCase()}`
+      }`,
+      maxResults: 1,
+    });
+
+    if (!center || center.length === 0) {
+      throw new Error("Failed to find region");
+    }
+
     return await encode(
       { lat, lng },
       {
         regionLevel,
         language: language as SupportedLanguage,
         precisionMeters,
+        center: {
+          lat: center[0].lat,
+          lng: center[0].long,
+        },
       }
     );
   },
