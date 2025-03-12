@@ -5,7 +5,7 @@ import { encode, SupportedLanguage } from "ground-codes";
 export const v1Encode = new Elysia().post(
   "/encode",
   async ({
-    body: { lat, lng, regionLevel, language = "English", precisionMeters },
+    body: { lat, lng, regionLevel = 2, language = "English", precisionMeters },
   }) => {
     const center = await around({
       lat,
@@ -20,7 +20,7 @@ export const v1Encode = new Elysia().post(
       throw new Error("Failed to find region");
     }
 
-    return await encode(
+    const encoded = await encode(
       { lat, lng },
       {
         regionLevel,
@@ -32,6 +32,8 @@ export const v1Encode = new Elysia().post(
         },
       }
     );
+
+    return `${regionLevel === 1 ? center[0].code : center[0].name}-${encoded}`;
   },
   {
     detail: {

@@ -1,10 +1,26 @@
+import { info } from "@ground-codes/geoint";
 import Elysia, { t } from "elysia";
 import { decode, SupportedLanguage } from "ground-codes";
 
 export const v1Decode = new Elysia().post(
   "/decode",
-  async ({ body: { code, regionLevel, language } }) => {
-    return await decode(code, {
+  async ({ body: { code, regionLevel = 2, language = "English" } }) => {
+    const codes = code.split("-");
+    const name = codes[0];
+    const encoded = codes.slice(1).join("-");
+
+    const center = await info({
+      name,
+      regionName: `region-${regionLevel}${
+        language.toLowerCase() === "english" ? "" : `-${language.toLowerCase()}`
+      }`,
+    });
+
+    return await decode(encoded, {
+      center: {
+        lat: center.lat,
+        lng: center.long,
+      },
       regionLevel,
       language: language as SupportedLanguage,
     });
