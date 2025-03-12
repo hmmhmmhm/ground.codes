@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { googleMapDarkTheme } from "@/lib/map/google-map-theme";
 import { useGridSystem } from "@/lib/map/grid-system";
+import { encode } from "@/lib/code/ground-codes";
 
 const containerStyle = {
   width: "100%",
@@ -39,6 +40,10 @@ function GoogleMapComponent() {
     lat: number;
     lng: number;
   } | null>(null);
+  const [encodedCoordinatesEN, setEncodedCoordinatesEN] = useState<string>("");
+  const [encodedCoordinatesKR, setEncodedCoordinatesKR] = useState<string>("");
+  const [isEncodingEN, setIsEncodingEN] = useState(false);
+  const [isEncodingKR, setIsEncodingKR] = useState(false);
 
   const {
     drawGrid,
@@ -119,6 +124,47 @@ function GoogleMapComponent() {
   useEffect(() => {
     getUserLocation();
   }, []);
+
+  useEffect(() => {
+    if (selectedArea) {
+      const encodeCoordinatesEN = async () => {
+        try {
+          setIsEncodingEN(true);
+          const encoded = await encode({
+            lat: selectedArea.lat,
+            lng: selectedArea.lng,
+            language: "English",
+          });
+          setEncodedCoordinatesEN(encoded);
+        } catch (error) {
+          console.error("Error encoding coordinates (English):", error);
+          setEncodedCoordinatesEN("인코딩 오류");
+        } finally {
+          setIsEncodingEN(false);
+        }
+      };
+
+      const encodeCoordinatesKR = async () => {
+        try {
+          setIsEncodingKR(true);
+          const encoded = await encode({
+            lat: selectedArea.lat,
+            lng: selectedArea.lng,
+            language: "Korean",
+          });
+          setEncodedCoordinatesKR(encoded);
+        } catch (error) {
+          console.error("Error encoding coordinates (Korean):", error);
+          setEncodedCoordinatesKR("인코딩 오류");
+        } finally {
+          setIsEncodingKR(false);
+        }
+      };
+
+      encodeCoordinatesEN();
+      encodeCoordinatesKR();
+    }
+  }, [selectedArea]);
 
   const onLoad = React.useCallback(
     (mapInstance: google.maps.Map) => {
@@ -254,8 +300,10 @@ function GoogleMapComponent() {
       {selectedArea && (
         <div className="absolute bottom-[260px] right-[10px] bg-white p-2 rounded shadow-md z-10 text-sm">
           <p className="m-0">
-            선택된 영역: {selectedArea.lat.toFixed(6)},{" "}
-            {selectedArea.lng.toFixed(6)}
+            EN: <b>{isEncodingEN ? "로딩 중..." : encodedCoordinatesEN}</b>
+          </p>
+          <p className="m-0 mt-1">
+            KR: <b>{isEncodingKR ? "로딩 중..." : encodedCoordinatesKR}</b>
           </p>
         </div>
       )}

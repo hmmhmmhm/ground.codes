@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, Dispatch, SetStateAction } from "react";
+import { useCallback, useRef, Dispatch, SetStateAction } from "react";
 
 /**
  * Meters per degree of latitude (approximately 111,000m)
