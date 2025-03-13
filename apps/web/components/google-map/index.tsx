@@ -4,6 +4,7 @@ import { useMapContainer } from "./hooks/use-map-container";
 import MapMarkers from "./map-markers";
 import MapControls from "./map-controls";
 import CoordinatesDisplay from "./coordinates-display";
+import MapSearch from "./map-search";
 
 const mapContainerStyle = {
   width: "100%",
@@ -14,6 +15,7 @@ function GoogleMapComponent() {
   const {
     isLoaded,
     center,
+    map,
     onLoad,
     onUnmount,
     onMapClick,
@@ -26,6 +28,7 @@ function GoogleMapComponent() {
     encodedCoordinatesKR,
     isEncodingEN,
     isEncodingKR,
+    handlePlaceSelect,
   } = useMapContainer();
 
   return isLoaded ? (
@@ -38,6 +41,8 @@ function GoogleMapComponent() {
         <MapMarkers {...{ userLocation, selectedArea }} />
       </GoogleMap>
 
+      <MapSearch map={map} onPlaceSelect={handlePlaceSelect} />
+      
       <MapControls {...{ showGrid, toggleGrid, getUserLocation }} />
 
       {selectedArea && (

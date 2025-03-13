@@ -24,6 +24,7 @@ export const useMapContainer = () => {
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
     language: getUserLanguage(),
+    libraries: ["places"],
   });
 
   // Map state
@@ -39,6 +40,16 @@ export const useMapContainer = () => {
 
   // Selected area state
   const [selectedArea, setSelectedArea] = useState<Coordinates | null>(null);
+
+  // Search result state
+  const [searchedPlace, setSearchedPlace] =
+    useState<google.maps.places.PlaceResult | null>(null);
+  const [searchMarker, setSearchMarker] = useState<google.maps.Marker | null>(
+    null
+  );
+  const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(
+    null
+  );
 
   // Get user location using the hook
   const {
@@ -118,6 +129,59 @@ export const useMapContainer = () => {
     }
   }, [selectedArea, encodeSelectedAreaCoordinates]);
 
+  // Initialize InfoWindow
+  useEffect(() => {
+    if (isLoaded && !infoWindow) {
+      setInfoWindow(new google.maps.InfoWindow());
+    }
+  }, [isLoaded, infoWindow]);
+
+  // Handle place selection from search
+  const handlePlaceSelect = useCallback(
+    (place: google.maps.places.PlaceResult) => {
+      if (!map || !place.geometry?.location) return;
+
+      setSearchedPlace(place);
+
+      // Adjust map view based on place geometry
+      if (place.geometry.viewport) {
+        map.fitBounds(place.geometry.viewport);
+      } else {
+        map.setCenter(place.geometry.location);
+        map.setZoom(17);
+      }
+
+      // Create or update marker
+      if (!searchMarker) {
+        const marker = new google.maps.Marker({
+          map,
+          position: place.geometry.location,
+          animation: google.maps.Animation.DROP,
+        });
+        setSearchMarker(marker);
+      } else {
+        searchMarker.setPosition(place.geometry.location);
+      }
+
+      // Show info window
+      if (infoWindow && searchMarker) {
+        const content = `
+        <div>
+          <strong>${place.name || ""}</strong><br>
+          ${place.formatted_address || ""}
+        </div>
+      `;
+        infoWindow.setContent(content);
+        infoWindow.open(map, searchMarker);
+      }
+
+      // Update selected area
+      const location = place.geometry.location.toJSON();
+      setSelectedArea(location);
+    },
+    [map, searchMarker, infoWindow]
+  );
+
   // Map load handler
   const onLoad = useCallback(
     (mapInstance: google.maps.Map) => {
@@ -140,9 +204,20 @@ export const useMapContainer = () => {
       console.log("Map unmounting");
       clearAllGridLines();
       removeMapEventHandlers(mapInstance);
+
+      // Clean up search-related objects
+      if (searchMarker) {
+        searchMarker.setMap(null);
+        setSearchMarker(null);
+      }
+
+      if (infoWindow) {
+        infoWindow.close();
+      }
+
       setMap(null);
     },
-    [clearAllGridLines, removeMapEventHandlers]
+    [clearAllGridLines, removeMapEventHandlers, searchMarker, infoWindow]
   );
 
   // Map click handler
@@ -173,6 +248,10 @@ export const useMapContainer = () => {
 
     // Selected area state
     selectedArea,
+
+    // Search state
+    searchedPlace,
+    handlePlaceSelect,
 
     // Coordinates encoding state
     encodedCoordinatesEN,
