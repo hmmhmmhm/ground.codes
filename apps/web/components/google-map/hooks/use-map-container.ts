@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { useGridSystem } from "@/lib/map/grid-system";
+import { useGridSystem } from "@/lib/grid-system";
 import { useMapCoordinates } from "./use-map-coordinates";
 import { useGeolocation } from "./use-geolocation";
 import { googleMapDarkTheme } from "@/lib/map/google-map-theme";
