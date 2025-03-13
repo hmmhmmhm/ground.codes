@@ -17,7 +17,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
     selectedArea &&
     userLocation?.lat !== selectedArea.lat &&
     userLocation?.lng !== selectedArea.lng &&
-    zoom <= 16;
+    (zoom !== undefined && zoom <= 16);
 
   return (
     <>
