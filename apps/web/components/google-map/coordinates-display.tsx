@@ -14,13 +14,23 @@ const CoordinatesDisplay: React.FC<CoordinatesDisplayProps> = ({
   isEncodingKR,
 }) => {
   return (
-    <div className="absolute bottom-[260px] right-[10px] bg-white p-2 rounded shadow-md z-10 text-sm">
-      <p className="m-0">
-        EN: <b>{isEncodingEN ? "로딩 중..." : encodedCoordinatesEN}</b>
-      </p>
-      <p className="m-0 mt-1">
-        KR: <b>{isEncodingKR ? "로딩 중..." : encodedCoordinatesKR}</b>
-      </p>
+    <div className="absolute bottom-[10px] left-[10px] bg-white p-[10px] rounded-md shadow-md z-10 max-w-[300px] overflow-hidden">
+      <div className="mb-[5px]">
+        <span className="font-bold">English: </span>
+        {isEncodingEN ? (
+          <span className="text-gray-500">Encoding...</span>
+        ) : (
+          <span>{encodedCoordinatesEN}</span>
+        )}
+      </div>
+      <div>
+        <span className="font-bold">한국어: </span>
+        {isEncodingKR ? (
+          <span className="text-gray-500">인코딩 중...</span>
+        ) : (
+          <span>{encodedCoordinatesKR}</span>
+        )}
+      </div>
     </div>
   );
 };
