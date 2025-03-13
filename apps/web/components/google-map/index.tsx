@@ -29,10 +29,14 @@ function GoogleMapComponent() {
     isEncodingEN,
     isEncodingKR,
     handlePlaceSelect,
+    mapType,
+    toggleMapType,
+    isFullscreen,
+    toggleFullscreen,
   } = useMapContainer();
 
   return isLoaded ? (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full map-container">
       <GoogleMap
         {...{ center, onLoad, onUnmount, mapContainerStyle }}
         zoom={18}
@@ -43,7 +47,15 @@ function GoogleMapComponent() {
 
       <MapSearch map={map} onPlaceSelect={handlePlaceSelect} />
       
-      <MapControls {...{ showGrid, toggleGrid, getUserLocation }} />
+      <MapControls {...{ 
+        showGrid, 
+        toggleGrid, 
+        getUserLocation, 
+        mapType, 
+        toggleMapType, 
+        isFullscreen, 
+        toggleFullscreen 
+      }} />
 
       {selectedArea && (
         <CoordinatesDisplay

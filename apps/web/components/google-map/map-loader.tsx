@@ -26,10 +26,14 @@ const MapLoader: React.FC = () => {
     encodedCoordinatesKR,
     isEncodingEN,
     isEncodingKR,
+    mapType,
+    toggleMapType,
+    isFullscreen,
+    toggleFullscreen,
   } = useMapContainer();
 
   return isLoaded ? (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    <div className="relative w-full h-full map-container">
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -45,6 +49,10 @@ const MapLoader: React.FC = () => {
         showGrid={showGrid}
         toggleGrid={toggleGrid}
         getUserLocation={getUserLocation}
+        mapType={mapType}
+        toggleMapType={toggleMapType}
+        isFullscreen={isFullscreen}
+        toggleFullscreen={toggleFullscreen}
       />
 
       {selectedArea && (

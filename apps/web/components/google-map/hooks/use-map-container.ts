@@ -30,6 +30,8 @@ export const useMapContainer = () => {
   // Map state
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [center, setCenter] = useState(defaultCenter);
+  const [mapType, setMapType] = useState<string>("roadmap");
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // User location state
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
@@ -186,7 +188,12 @@ export const useMapContainer = () => {
   const onLoad = useCallback(
     (mapInstance: google.maps.Map) => {
       console.log("Map loaded");
-      mapInstance.setOptions({ styles: googleMapDarkTheme });
+      mapInstance.setOptions({ 
+        styles: googleMapDarkTheme,
+        mapTypeId: mapType as google.maps.MapTypeId,
+        mapTypeControl: false,
+        fullscreenControl: false
+      });
 
       if (userLocationLoaded && userLocation) {
         mapInstance.panTo(userLocation);
@@ -195,7 +202,7 @@ export const useMapContainer = () => {
 
       setMap(mapInstance);
     },
-    [userLocation, userLocationLoaded]
+    [userLocation, userLocationLoaded, mapType]
   );
 
   // Map unmount handler
@@ -229,6 +236,74 @@ export const useMapContainer = () => {
     [handleGridCellClick]
   );
 
+  // Toggle map type between roadmap and satellite
+  const toggleMapType = useCallback(() => {
+    if (!isLoaded) return;
+    
+    const newMapType = mapType === "roadmap" ? "hybrid" : "roadmap";
+    setMapType(newMapType);
+    
+    if (map) {
+      map.setMapTypeId(newMapType as google.maps.MapTypeId);
+    }
+  }, [map, mapType, isLoaded]);
+
+  // Toggle fullscreen mode
+  const toggleFullscreen = useCallback(() => {
+    const mapElement = document.querySelector('.map-container');
+    if (!mapElement) {
+      console.error('Map container element not found');
+      return;
+    }
+
+    if (!isFullscreen) {
+      try {
+        if (mapElement.requestFullscreen) {
+          mapElement.requestFullscreen();
+        } else if ((mapElement as any).webkitRequestFullscreen) {
+          (mapElement as any).webkitRequestFullscreen();
+        } else if ((mapElement as any).msRequestFullscreen) {
+          (mapElement as any).msRequestFullscreen();
+        }
+      } catch (error) {
+        console.error('Failed to enter fullscreen mode:', error);
+      }
+    } else {
+      try {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          (document as any).webkitExitFullscreen();
+        } else if ((document as any).msExitFullscreen) {
+          (document as any).msExitFullscreen();
+        }
+      } catch (error) {
+        console.error('Failed to exit fullscreen mode:', error);
+      }
+    }
+    
+    setIsFullscreen(!isFullscreen);
+  }, [isFullscreen]);
+
+  // Listen for fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
+
   return {
     // Loading state
     isLoaded,
@@ -236,6 +311,10 @@ export const useMapContainer = () => {
     // Map state
     map,
     center,
+    mapType,
+    toggleMapType,
+    isFullscreen,
+    toggleFullscreen,
 
     // User location state
     userLocation,
