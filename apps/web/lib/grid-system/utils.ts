@@ -1,4 +1,4 @@
-import { DEG_PER_METER, GRID_SIZE_METERS } from './constants';
+import { DEG_PER_METER, GRID_SIZE_METERS } from "./constants";
 
 /**
  * Calculate grid cell size based on latitude (in degrees)

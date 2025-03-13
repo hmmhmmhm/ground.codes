@@ -1,9 +1,13 @@
-import { useCallback, Dispatch, SetStateAction } from 'react';
-import { calculateGridCellSize } from './utils';
-import { useGridDrawing } from './use-grid-drawing';
-import { useGridVisibility } from './use-grid-visibility';
-import { Coordinates, GridSystemHookResult } from './types';
-import { useMapEventHandlers, useGridCellClickHandler, removeMapEventHandlers } from './use-map-handlers';
+import { useCallback, Dispatch, SetStateAction } from "react";
+import { calculateGridCellSize } from "./utils";
+import { useGridDrawing } from "./use-grid-drawing";
+import { useGridVisibility } from "./use-grid-visibility";
+import { Coordinates, GridSystemHookResult } from "./types";
+import {
+  useMapEventHandlers,
+  useGridCellClickHandler,
+  removeMapEventHandlers,
+} from "./use-map-handlers";
 
 /**
  * Grid system hook
@@ -19,14 +23,11 @@ export function useGridSystem(
     selectedRectangleRef,
     mapInstanceRef,
     clearAllGridLines,
-    drawSelectedAreaRectangle
+    drawSelectedAreaRectangle,
   } = useGridDrawing();
 
-  const {
-    currentZoomRef,
-    gridVisibleRef,
-    isGridVisibleAtZoom
-  } = useGridVisibility();
+  const { currentZoomRef, gridVisibleRef, isGridVisibleAtZoom } =
+    useGridVisibility();
 
   // Draw grid lines
   const drawGrid = useCallback(
@@ -99,7 +100,7 @@ export function useGridSystem(
         console.log("Grid dimensions:", { latLines, lngLines });
 
         // Limit the number of grid cells (to prevent performance issues)
-        const maxLines = 100;
+        const maxLines = 150;
         if (latLines > maxLines || lngLines > maxLines) {
           console.log("Too many grid lines, not drawing");
           gridVisibleRef.current = false;

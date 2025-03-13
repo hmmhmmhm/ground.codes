@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
-import { Coordinates } from './types';
-import { getGridCellCenter } from './utils';
+import { useCallback } from "react";
+import { Coordinates } from "./types";
+import { getGridCellCenter } from "./utils";
 
 /**
  * Hook for map event handlers

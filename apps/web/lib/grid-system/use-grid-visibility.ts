@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef } from "react";
 
 /**
  * Hook for grid visibility functionality
@@ -17,6 +17,6 @@ export function useGridVisibility() {
   return {
     currentZoomRef,
     gridVisibleRef,
-    isGridVisibleAtZoom
+    isGridVisibleAtZoom,
   };
 }

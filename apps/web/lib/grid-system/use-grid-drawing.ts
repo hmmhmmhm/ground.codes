@@ -1,6 +1,6 @@
-import { useCallback, useRef } from 'react';
-import { calculateGridCellSize } from './utils';
-import { Coordinates } from './types';
+import { useCallback, useRef } from "react";
+import { calculateGridCellSize } from "./utils";
+import { Coordinates } from "./types";
 
 /**
  * Hook for grid drawing functionality
@@ -34,10 +34,7 @@ export function useGridDrawing() {
 
   // Draw selected area rectangle
   const drawSelectedAreaRectangle = useCallback(
-    (
-      mapInstance: google.maps.Map,
-      selectedArea: Coordinates
-    ) => {
+    (mapInstance: google.maps.Map, selectedArea: Coordinates) => {
       console.log("Drawing selected area rectangle for:", selectedArea);
 
       // Clear previous rectangle if exists
@@ -104,6 +101,6 @@ export function useGridDrawing() {
     selectedRectangleRef,
     mapInstanceRef,
     clearAllGridLines,
-    drawSelectedAreaRectangle
+    drawSelectedAreaRectangle,
   };
 }
