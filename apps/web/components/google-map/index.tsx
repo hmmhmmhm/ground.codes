@@ -15,6 +15,7 @@ function GoogleMapComponent() {
   const {
     isLoaded,
     center,
+    zoom,
     map,
     onLoad,
     onUnmount,
@@ -39,23 +40,25 @@ function GoogleMapComponent() {
     <div className="relative w-full h-full map-container">
       <GoogleMap
         {...{ center, onLoad, onUnmount, mapContainerStyle }}
-        zoom={18}
+        zoom={zoom}
         onClick={onMapClick}
       >
-        <MapMarkers {...{ userLocation, selectedArea }} />
+        <MapMarkers {...{ userLocation, selectedArea }} zoom={zoom} />
       </GoogleMap>
 
       <MapSearch map={map} onPlaceSelect={handlePlaceSelect} />
-      
-      <MapControls {...{ 
-        showGrid, 
-        toggleGrid, 
-        getUserLocation, 
-        mapType, 
-        toggleMapType, 
-        isFullscreen, 
-        toggleFullscreen 
-      }} />
+
+      <MapControls
+        {...{
+          showGrid,
+          toggleGrid,
+          getUserLocation,
+          mapType,
+          toggleMapType,
+          isFullscreen,
+          toggleFullscreen,
+        }}
+      />
 
       {selectedArea && (
         <CoordinatesDisplay

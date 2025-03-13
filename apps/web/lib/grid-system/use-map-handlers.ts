@@ -91,16 +91,6 @@ export function useGridCellClickHandler(
       const zoom = mapInstance.getZoom();
       console.log("Click at zoom level:", zoom);
 
-      if (!showGrid) {
-        console.log("Grid is not enabled, ignoring click");
-        return;
-      }
-
-      if (!isGridVisibleAtZoom(zoom)) {
-        console.log("Grid not visible at current zoom, ignoring click");
-        return;
-      }
-
       const clickedLat = e.latLng.lat();
       const clickedLng = e.latLng.lng();
       console.log("Click coordinates:", { lat: clickedLat, lng: clickedLng });

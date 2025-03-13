@@ -4,12 +4,21 @@ import { Marker } from "@react-google-maps/api";
 interface MapMarkersProps {
   userLocation: { lat: number; lng: number } | null;
   selectedArea: { lat: number; lng: number } | null;
+  zoom?: number;
 }
 
 const MapMarkers: React.FC<MapMarkersProps> = ({
   userLocation,
   selectedArea,
+  zoom,
 }) => {
+  // Determine if selected area marker should be shown based on grid visibility
+  const shouldShowSelectedAreaMarker =
+    selectedArea &&
+    userLocation?.lat !== selectedArea.lat &&
+    userLocation?.lng !== selectedArea.lng &&
+    zoom <= 16;
+
   return (
     <>
       {userLocation && (
@@ -27,22 +36,20 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
         />
       )}
 
-      {selectedArea &&
-        userLocation?.lat !== selectedArea.lat &&
-        userLocation?.lng !== selectedArea.lng && (
-          <Marker
-            position={selectedArea}
-            icon={{
-              path: google.maps.SymbolPath.CIRCLE,
-              fillColor: "#FF5722",
-              fillOpacity: 0.7,
-              strokeColor: "#FFFFFF",
-              strokeWeight: 1,
-              scale: 5,
-            }}
-            title="Selected Area"
-          />
-        )}
+      {shouldShowSelectedAreaMarker && (
+        <Marker
+          position={selectedArea}
+          icon={{
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: "#FF5722",
+            fillOpacity: 0.7,
+            strokeColor: "#FFFFFF",
+            strokeWeight: 1,
+            scale: 5,
+          }}
+          title="Selected Area"
+        />
+      )}
     </>
   );
 };

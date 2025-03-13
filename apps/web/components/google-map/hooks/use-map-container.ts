@@ -32,6 +32,7 @@ export const useMapContainer = () => {
   const [center, setCenter] = useState(defaultCenter);
   const [mapType, setMapType] = useState<string>("roadmap");
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [zoom, setZoom] = useState(18);
 
   // User location state
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
@@ -197,12 +198,17 @@ export const useMapContainer = () => {
 
       if (userLocationLoaded && userLocation) {
         mapInstance.panTo(userLocation);
-        mapInstance.setZoom(18);
+        mapInstance.setZoom(zoom);
       }
 
       setMap(mapInstance);
+      
+      // Add zoom_changed event listener
+      mapInstance.addListener("zoom_changed", () => {
+        setZoom(mapInstance.getZoom() || zoom);
+      });
     },
-    [userLocation, userLocationLoaded, mapType]
+    [userLocation, userLocationLoaded, mapType, zoom]
   );
 
   // Map unmount handler
@@ -311,6 +317,7 @@ export const useMapContainer = () => {
     // Map state
     map,
     center,
+    zoom,
     mapType,
     toggleMapType,
     isFullscreen,
