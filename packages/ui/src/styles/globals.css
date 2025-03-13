@@ -3,6 +3,7 @@
 @source "../../../../packages/ui/src/**/*.{js,ts,jsx,tsx}";
 
 @plugin "tailwindcss-animate";
+@plugin "tailwindcss-safe-area";
 
 @custom-variant dark (&:is(.dark *));
 

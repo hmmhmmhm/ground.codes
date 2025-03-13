@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Mono } from "next/font/google";
 import "@repo/ui/globals.css";
 
@@ -10,6 +10,16 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: "Ground Codes",
   description: "Ground code come to exact earth (+mars) address",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

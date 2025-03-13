@@ -29,7 +29,7 @@ function GoogleMapComponent() {
   } = useMapContainer();
 
   return isLoaded ? (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full p-safe">
       <GoogleMap
         {...{ center, onLoad, onUnmount, mapContainerStyle }}
         zoom={18}
