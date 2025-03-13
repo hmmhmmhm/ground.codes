@@ -1,72 +1,22 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
-import { useGridSystem } from '@/lib/map/grid-system';
-import { useMapCoordinates } from '../hooks/use-map-coordinates';
-import { useGeolocation } from '../hooks/use-geolocation';
-import { googleMapDarkTheme } from '@/lib/map/google-map-theme';
+import { useState, useCallback, useEffect } from "react";
+import { useGridSystem } from "@/lib/map/grid-system";
+import { useMapCoordinates } from "../hooks/use-map-coordinates";
+import { useGeolocation } from "../hooks/use-geolocation";
+import { googleMapDarkTheme } from "@/lib/map/google-map-theme";
+import { Coordinates, MapContextType, defaultCenter } from "./types";
 
-interface Coordinates {
-  lat: number;
-  lng: number;
-}
-
-interface MapContextType {
-  // Map state
-  map: google.maps.Map | null;
-  setMap: (map: google.maps.Map | null) => void;
-  center: Coordinates;
-  setCenter: (center: Coordinates) => void;
-  
-  // User location state
-  userLocation: Coordinates | null;
-  userLocationLoaded: boolean;
-  getUserLocation: () => void;
-  
-  // Grid state
-  showGrid: boolean;
-  toggleGrid: () => void;
-  
-  // Selected area state
-  selectedArea: Coordinates | null;
-  setSelectedArea: React.Dispatch<React.SetStateAction<Coordinates | null>>;
-  
-  // Coordinates encoding state
-  encodedCoordinatesEN: string;
-  encodedCoordinatesKR: string;
-  isEncodingEN: boolean;
-  isEncodingKR: boolean;
-  
-  // Grid system functions
-  drawGrid: (mapInstance: google.maps.Map) => void;
-  clearAllGridLines: () => void;
-  setupMapEventHandlers: (mapInstance: google.maps.Map) => void;
-  removeMapEventHandlers: (mapInstance: google.maps.Map) => void;
-  handleGridCellClick: (e: google.maps.MapMouseEvent) => void;
-  
-  // Map event handlers
-  onLoad: (mapInstance: google.maps.Map) => void;
-  onUnmount: (mapInstance: google.maps.Map) => void;
-  onMapClick: (e: google.maps.MapMouseEvent) => void;
-}
-
-const defaultCenter = {
-  lat: 37.5665,
-  lng: 126.978,
-};
-
-export const MapContext = createContext<MapContextType | null>(null);
-
-export const MapProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const useMapContextState = (): MapContextType => {
   // Map state
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [center, setCenter] = useState(defaultCenter);
-  
+
   // User location state
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
-  
+
   // Grid state
   const [showGrid, setShowGrid] = useState(true);
-  
+
   // Selected area state
   const [selectedArea, setSelectedArea] = useState<Coordinates | null>(null);
 
@@ -184,7 +134,7 @@ export const MapProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     [handleGridCellClick]
   );
 
-  const contextValue: MapContextType = {
+  return {
     map,
     setMap,
     center,
@@ -209,18 +159,4 @@ export const MapProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     onUnmount,
     onMapClick,
   };
-
-  return (
-    <MapContext.Provider value={contextValue}>
-      {children}
-    </MapContext.Provider>
-  );
-};
-
-export const useMapContext = () => {
-  const context = useContext(MapContext);
-  if (!context) {
-    throw new Error('useMapContext must be used within a MapProvider');
-  }
-  return context;
 };
