@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Space_Mono } from "next/font/google";
+import { getLocale } from "next-intl/server";
 import "@repo/ui/globals.css";
 import "./globals.css";
 
@@ -23,13 +24,14 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
-    <html suppressHydrationWarning>
+    <html lang={locale}>
       <body className={`${spaceMono.className} antialiased`}>{children}</body>
     </html>
   );

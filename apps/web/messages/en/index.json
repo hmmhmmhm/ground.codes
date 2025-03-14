@@ -1,0 +1,26 @@
+{
+  "map": {
+    "controls": {
+      "toggleGrid": "Toggle grid display",
+      "myLocation": "Go to my location",
+      "roadmap": "Switch to satellite map",
+      "satellite": "Switch to normal map",
+      "roadmapLabel": "Satellite Map",
+      "satelliteLabel": "Normal Map",
+      "language": "Language",
+      "fullscreen": "Toggle fullscreen"
+    },
+    "loading": "Loading...",
+    "coordinates": {
+      "title": "Selected Area Coordinates",
+      "copy": "Copy"
+    },
+    "search": {
+      "placeholder": "Search for a location"
+    }
+  },
+  "common": {
+    "languageName": "English",
+    "languageCode": "en"
+  }
+}

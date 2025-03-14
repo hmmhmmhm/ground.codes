@@ -1,4 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
+import { usePathname } from 'next/navigation';
+import { locales, Locale } from '@/i18n';
+import { useI18n } from "@/lib/i18n/i18n-context";
 
 interface MapControlsProps {
   showGrid: boolean;
@@ -19,15 +22,23 @@ const MapControls: React.FC<MapControlsProps> = ({
   isFullscreen,
   toggleFullscreen,
 }) => {
+  const { t, locale, setLocale } = useI18n();
+  const [showLanguageOptions, setShowLanguageOptions] = useState(false);
+
+  const handleLanguageChange = (newLocale: Locale) => {
+    setLocale(newLocale);
+    setShowLanguageOptions(false);
+  };
+
   return (
     <>
-      {/* Map Type Control (Top Right) */}
-      <div className="absolute top-[10px] right-[10px] flex flex-col gap-2 z-10">
+      {/* Map Type Control and Language Selector (Top Right) */}
+      <div className="absolute top-[10px] right-[10px] flex flex-row gap-2 z-10">
         <button
           onClick={toggleMapType}
           className="bg-white border-none rounded-md px-3 py-2 shadow-md cursor-pointer flex items-center gap-2 text-sm"
-          title={mapType === "roadmap" ? "위성지도로 전환" : "일반지도로 전환"}
-          aria-label={mapType === "roadmap" ? "위성지도로 전환" : "일반지도로 전환"}
+          title={mapType === "roadmap" ? t('map.controls.roadmap') : t('map.controls.satellite')}
+          aria-label={mapType === "roadmap" ? t('map.controls.roadmap') : t('map.controls.satellite')}
         >
           {mapType === "roadmap" ? (
             <>
@@ -46,7 +57,7 @@ const MapControls: React.FC<MapControlsProps> = ({
                 <line x1="8" y1="2" x2="8" y2="18"></line>
                 <line x1="16" y1="6" x2="16" y2="22"></line>
               </svg>
-              <span className="text-[#1A73E8]">위성지도</span>
+              <span className="text-[#1A73E8]">{t('map.controls.roadmapLabel')}</span>
             </>
           ) : (
             <>
@@ -67,18 +78,69 @@ const MapControls: React.FC<MapControlsProps> = ({
                 <line x1="9" y1="3" x2="9" y2="21"></line>
                 <line x1="15" y1="3" x2="15" y2="21"></line>
               </svg>
-              <span className="text-[#1A73E8]">일반지도</span>
+              <span className="text-[#1A73E8]">{t('map.controls.satelliteLabel')}</span>
             </>
           )}
         </button>
+        
+        {/* Language Selector Button */}
+        <div className="relative">
+          <button
+            onClick={() => setShowLanguageOptions(!showLanguageOptions)}
+            className="bg-white border-none rounded-md px-3 py-2 shadow-md cursor-pointer flex items-center gap-2 text-sm"
+            title={t('map.controls.language')}
+            aria-label={t('map.controls.language')}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#1A73E8"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span className="text-[#1A73E8]">{locale === 'en' ? 'EN' : 'KO'}</span>
+          </button>
+
+          {/* Language Options Dropdown */}
+          {showLanguageOptions && (
+            <div className="absolute top-[45px] right-0 bg-white border-none rounded-md shadow-md cursor-pointer">
+              <div className="flex flex-col">
+                {locales.map((localeOption) => (
+                  <button
+                    key={localeOption}
+                    onClick={() => handleLanguageChange(localeOption)}
+                    className={`px-3 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 ${
+                      locale === localeOption ? 'bg-gray-100 font-bold' : ''
+                    }`}
+                  >
+                    <span className="text-[#1A73E8]">
+                      {localeOption === 'en' ? 'English' : '한국어'}
+                    </span>
+                    {locale === localeOption && (
+                      <span className="text-green-500">✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Grid and Location Controls (Bottom Right) */}
       <button
         onClick={toggleGrid}
         className="absolute bottom-[200px] right-[10px] bg-white border-none rounded-full w-[40px] h-[40px] shadow-md cursor-pointer flex justify-center items-center z-10"
-        title="Toggle grid display"
-        aria-label="Toggle grid display"
+        title={t('map.controls.toggleGrid')}
+        aria-label={t('map.controls.toggleGrid')}
         style={{ backgroundColor: showGrid ? "#4285F4" : "#FFFFFF" }}
       >
         <svg
@@ -103,8 +165,8 @@ const MapControls: React.FC<MapControlsProps> = ({
       <button
         onClick={getUserLocation}
         className="absolute bottom-[150px] right-[10px] bg-white border-none rounded-full w-[40px] h-[40px] shadow-md cursor-pointer flex justify-center items-center z-10"
-        title="내 위치로 이동"
-        aria-label="내 위치로 이동"
+        title={t('map.controls.myLocation')}
+        aria-label={t('map.controls.myLocation')}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

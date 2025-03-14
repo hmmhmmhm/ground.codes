@@ -1,0 +1,26 @@
+{
+  "map": {
+    "controls": {
+      "toggleGrid": "그리드 표시 전환",
+      "myLocation": "내 위치로 이동",
+      "roadmap": "위성지도로 전환",
+      "satellite": "일반지도로 전환",
+      "roadmapLabel": "위성지도",
+      "satelliteLabel": "일반지도",
+      "language": "언어",
+      "fullscreen": "전체화면 전환"
+    },
+    "loading": "로딩 중...",
+    "coordinates": {
+      "title": "선택된 영역 좌표",
+      "copy": "복사"
+    },
+    "search": {
+      "placeholder": "위치 검색"
+    }
+  },
+  "common": {
+    "languageName": "한국어",
+    "languageCode": "ko"
+  }
+}

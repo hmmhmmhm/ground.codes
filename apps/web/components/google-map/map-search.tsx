@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { useI18n } from "@/lib/i18n/i18n-context";
 
 interface MapSearchProps {
   map: google.maps.Map | null;
@@ -6,6 +7,7 @@ interface MapSearchProps {
 }
 
 const MapSearch: React.FC<MapSearchProps> = ({ map, onPlaceSelect }) => {
+  const { t } = useI18n();
   const searchInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
@@ -57,7 +59,7 @@ const MapSearch: React.FC<MapSearchProps> = ({ map, onPlaceSelect }) => {
         <input
           ref={searchInputRef}
           type="text"
-          placeholder="장소 검색..."
+          placeholder={t('map.search.placeholder')}
           className="w-full p-2 pl-10 bg-white text-black placeholder-gray-600 border-none focus:outline-none"
         />
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

@@ -5,6 +5,7 @@ import MapMarkers from "./map-markers";
 import MapControls from "./map-controls";
 import CoordinatesDisplay from "./coordinates-display";
 import MapSearch from "./map-search";
+import { useI18n } from "@/lib/i18n/i18n-context";
 
 const mapContainerStyle = {
   width: "100%",
@@ -12,6 +13,7 @@ const mapContainerStyle = {
 };
 
 function GoogleMapComponent() {
+  const { t } = useI18n();
   const {
     isLoaded,
     center,
@@ -72,7 +74,7 @@ function GoogleMapComponent() {
       )}
     </div>
   ) : (
-    <div>Loading...</div>
+    <div>{t('map.loading')}</div>
   );
 }
 
