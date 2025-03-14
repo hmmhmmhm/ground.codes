@@ -32,6 +32,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
             scale: 8,
           }}
           title="My Position"
+          clickable={false}
         />
       )}
 
@@ -47,6 +48,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
             scale: 5,
           }}
           title="Selected Area"
+          clickable={false}
         />
       )}
     </>

@@ -125,6 +125,7 @@ export function useGridSystem(
             strokeOpacity: 0.4,
             strokeWeight: 1.5,
             map: mapInstance,
+            clickable: false,
           });
           newLines.push(line);
         }
@@ -141,6 +142,7 @@ export function useGridSystem(
             strokeOpacity: 0.4,
             strokeWeight: 1.5,
             map: mapInstance,
+            clickable: false,
           });
           newLines.push(line);
         }
