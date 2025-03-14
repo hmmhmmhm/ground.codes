@@ -27,19 +27,6 @@ export function useMapEventHandlers(
         }
       });
 
-      // Hide grid lines when drag starts
-      mapInstance.addListener("dragstart", () => {
-        console.log("Map drag started, hiding grid");
-        // This will be handled by the gridLinesRef in the useGridDrawing hook
-      });
-
-      // Hide grid lines when zoom changes
-      mapInstance.addListener("zoom_changed", () => {
-        const zoom = mapInstance.getZoom();
-        console.log("Zoom changed to:", zoom);
-        // This will be handled by the gridLinesRef in the useGridDrawing hook
-      });
-
       // Add click event listener to map
       mapInstance.addListener("click", (e: google.maps.MapMouseEvent) => {
         console.log("Map click detected, forwarding to handleGridCellClick");

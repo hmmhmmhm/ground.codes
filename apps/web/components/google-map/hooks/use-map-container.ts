@@ -189,11 +189,11 @@ export const useMapContainer = () => {
   const onLoad = useCallback(
     (mapInstance: google.maps.Map) => {
       console.log("Map loaded");
-      mapInstance.setOptions({ 
+      mapInstance.setOptions({
         styles: googleMapDarkTheme,
         mapTypeId: mapType as google.maps.MapTypeId,
         mapTypeControl: false,
-        fullscreenControl: false
+        fullscreenControl: false,
       });
 
       if (userLocationLoaded && userLocation) {
@@ -202,11 +202,6 @@ export const useMapContainer = () => {
       }
 
       setMap(mapInstance);
-      
-      // Add zoom_changed event listener
-      mapInstance.addListener("zoom_changed", () => {
-        setZoom(mapInstance.getZoom() || zoom);
-      });
     },
     [userLocation, userLocationLoaded, mapType, zoom]
   );
@@ -245,10 +240,10 @@ export const useMapContainer = () => {
   // Toggle map type between roadmap and satellite
   const toggleMapType = useCallback(() => {
     if (!isLoaded) return;
-    
+
     const newMapType = mapType === "roadmap" ? "hybrid" : "roadmap";
     setMapType(newMapType);
-    
+
     if (map) {
       map.setMapTypeId(newMapType as google.maps.MapTypeId);
     }
@@ -256,9 +251,9 @@ export const useMapContainer = () => {
 
   // Toggle fullscreen mode
   const toggleFullscreen = useCallback(() => {
-    const mapElement = document.querySelector('.map-container');
+    const mapElement = document.querySelector(".map-container");
     if (!mapElement) {
-      console.error('Map container element not found');
+      console.error("Map container element not found");
       return;
     }
 
@@ -272,7 +267,7 @@ export const useMapContainer = () => {
           (mapElement as any).msRequestFullscreen();
         }
       } catch (error) {
-        console.error('Failed to enter fullscreen mode:', error);
+        console.error("Failed to enter fullscreen mode:", error);
       }
     } else {
       try {
@@ -284,10 +279,10 @@ export const useMapContainer = () => {
           (document as any).msExitFullscreen();
         }
       } catch (error) {
-        console.error('Failed to exit fullscreen mode:', error);
+        console.error("Failed to exit fullscreen mode:", error);
       }
     }
-    
+
     setIsFullscreen(!isFullscreen);
   }, [isFullscreen]);
 
@@ -297,16 +292,25 @@ export const useMapContainer = () => {
       setIsFullscreen(!!document.fullscreenElement);
     };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
 
     return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullscreenChange
+      );
+      document.removeEventListener(
+        "mozfullscreenchange",
+        handleFullscreenChange
+      );
+      document.removeEventListener(
+        "MSFullscreenChange",
+        handleFullscreenChange
+      );
     };
   }, []);
 
