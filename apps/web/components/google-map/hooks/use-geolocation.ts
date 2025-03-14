@@ -16,6 +16,7 @@ interface UseGeolocationReturn {
   userLocation: Location | null;
   userLocationLoaded: boolean;
   getUserLocation: () => void;
+  isLoading: boolean;
 }
 
 export const useGeolocation = (
@@ -33,9 +34,11 @@ export const useGeolocation = (
 
   const [userLocation, setUserLocation] = useState<Location | null>(null);
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
+      setIsLoading(true);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const newUserLocation = {
@@ -51,10 +54,12 @@ export const useGeolocation = (
             map.panTo(newUserLocation);
             map.setZoom(18);
           }
+          setIsLoading(false);
         },
         (error) => {
           console.error("Error getting user location:", error);
           setUserLocationLoaded(true);
+          setIsLoading(false);
         },
         {
           enableHighAccuracy,
@@ -65,6 +70,7 @@ export const useGeolocation = (
     } else {
       console.error("Geolocation is not supported by this browser.");
       setUserLocationLoaded(true);
+      setIsLoading(false);
     }
   }, [
     map,
@@ -85,5 +91,6 @@ export const useGeolocation = (
     userLocation,
     userLocationLoaded,
     getUserLocation,
+    isLoading,
   };
 };

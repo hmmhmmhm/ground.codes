@@ -11,6 +11,7 @@ interface MapControlsProps {
   toggleMapType: () => void;
   isFullscreen: boolean;
   toggleFullscreen: () => void;
+  isLoadingLocation?: boolean;
 }
 
 const MapControls: React.FC<MapControlsProps> = ({
@@ -21,6 +22,7 @@ const MapControls: React.FC<MapControlsProps> = ({
   toggleMapType,
   isFullscreen,
   toggleFullscreen,
+  isLoadingLocation = false,
 }) => {
   const { t, locale, setLocale } = useI18n();
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
@@ -167,25 +169,39 @@ const MapControls: React.FC<MapControlsProps> = ({
         className="absolute bottom-[150px] right-[10px] bg-white border-none rounded-full w-[40px] h-[40px] shadow-md cursor-pointer flex justify-center items-center z-10"
         title={t('map.controls.myLocation')}
         aria-label={t('map.controls.myLocation')}
+        disabled={isLoadingLocation}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#1A73E8"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="12" cy="12" r="4"></circle>
-          <path d="M12 2v2"></path>
-          <path d="M12 20v2"></path>
-          <path d="M2 12h2"></path>
-          <path d="M20 12h2"></path>
-          <path d="M20 12h2"></path>
-        </svg>
+        {isLoadingLocation ? (
+          <svg 
+            className="animate-spin" 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="#1A73E8" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          >
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#1A73E8"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+            <circle cx="12" cy="9" r="3"></circle>
+          </svg>
+        )}
       </button>
     </>
   );

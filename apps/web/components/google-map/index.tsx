@@ -27,6 +27,7 @@ function GoogleMapComponent() {
     showGrid,
     toggleGrid,
     getUserLocation,
+    isLoadingLocation,
     encodedCoordinatesEN,
     encodedCoordinatesKR,
     isEncodingEN,
@@ -59,6 +60,7 @@ function GoogleMapComponent() {
           toggleMapType,
           isFullscreen,
           toggleFullscreen,
+          isLoadingLocation,
         }}
       />
 

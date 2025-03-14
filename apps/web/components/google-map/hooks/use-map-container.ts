@@ -59,6 +59,7 @@ export const useMapContainer = () => {
     userLocation: geoLocation,
     userLocationLoaded: geoLocationLoaded,
     getUserLocation,
+    isLoading: isLoadingLocation,
   } = useGeolocation(map, setCenter, setSelectedArea, {
     autoGetLocation: true,
   });
@@ -331,6 +332,7 @@ export const useMapContainer = () => {
     userLocation,
     userLocationLoaded,
     getUserLocation,
+    isLoadingLocation,
 
     // Grid state
     showGrid,
