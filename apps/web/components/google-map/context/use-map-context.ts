@@ -96,22 +96,6 @@ export const useMapContextState = (): MapContextType => {
     }
   }, [selectedArea, encodeSelectedAreaCoordinates]);
 
-  // Map load handler
-  const onLoad = useCallback(
-    (mapInstance: google.maps.Map) => {
-      console.log("Map loaded");
-      mapInstance.setOptions({ styles: googleMapDarkTheme });
-
-      if (userLocationLoaded && userLocation) {
-        mapInstance.panTo(userLocation);
-        mapInstance.setZoom(18);
-      }
-
-      setMap(mapInstance);
-    },
-    [userLocation, userLocationLoaded]
-  );
-
   // Map unmount handler
   const onUnmount = useCallback(
     (mapInstance: google.maps.Map) => {
@@ -152,7 +136,6 @@ export const useMapContextState = (): MapContextType => {
     setupMapEventHandlers,
     removeMapEventHandlers,
     handleGridCellClick,
-    onLoad,
     onUnmount,
     onMapClick,
   };

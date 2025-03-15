@@ -38,7 +38,6 @@ export interface MapContextType {
   handleGridCellClick: (e: google.maps.MapMouseEvent) => void;
 
   // Map event handlers
-  onLoad: (mapInstance: google.maps.Map) => void;
   onUnmount: (mapInstance: google.maps.Map) => void;
   onMapClick: (e: google.maps.MapMouseEvent) => void;
 }

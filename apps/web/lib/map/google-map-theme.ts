@@ -8,14 +8,6 @@ export const googleMapDarkTheme = [
     ],
   },
   {
-    elementType: "labels.icon",
-    stylers: [
-      {
-        visibility: "off",
-      },
-    ],
-  },
-  {
     elementType: "labels.text.fill",
     stylers: [
       {
@@ -46,14 +38,6 @@ export const googleMapDarkTheme = [
     stylers: [
       {
         color: "#9e9e9e",
-      },
-    ],
-  },
-  {
-    featureType: "administrative.land_parcel",
-    stylers: [
-      {
-        visibility: "off",
       },
     ],
   },

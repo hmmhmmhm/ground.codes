@@ -18,13 +18,13 @@ const defaultCenter = {
 };
 
 // Define libraries array as a constant to prevent recreation on each render
-const libraries: ("places")[] = ["places"];
+const libraries: "places"[] = ["places"];
 
 // 위치 모드 상태를 정의하는 열거형
 enum LocationMode {
-  OFF = 0,        // 꺼짐
-  LOCATE = 1,     // 내 위치 보기
-  TRACKING = 2,   // 위치 추적
+  OFF = 0, // 꺼짐
+  LOCATE = 1, // 내 위치 보기
+  TRACKING = 2, // 위치 추적
 }
 
 export const useMapContainer = () => {
@@ -50,11 +50,13 @@ export const useMapContainer = () => {
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
   const prevLocationRef = useRef<Coordinates | null>(null);
-  
+
   // Location tracking state
-  const [locationMode, setLocationMode] = useState<LocationMode>(LocationMode.OFF);
+  const [locationMode, setLocationMode] = useState<LocationMode>(
+    LocationMode.OFF
+  );
   const isTrackingLocation = locationMode === LocationMode.TRACKING;
-  
+
   // GPS 위치 추적 ID를 저장하기 위한 ref
   const watchPositionIdRef = useRef<number | null>(null);
 
@@ -82,10 +84,16 @@ export const useMapContainer = () => {
     isLoading: isLoadingLocation,
     setIsLoading,
     requestOrientationPermission,
-  } = useGeolocation(map, setCenter, setSelectedArea, {
-    autoGetLocation: true, // 자동으로 위치를 가져오도록 변경
-    initialFetch: true, // 최초 위치 정보 가져오기 모드로 설정
-  }, locationMode === LocationMode.TRACKING);
+  } = useGeolocation(
+    map,
+    setCenter,
+    setSelectedArea,
+    {
+      autoGetLocation: true, // 자동으로 위치를 가져오도록 변경
+      initialFetch: true, // 최초 위치 정보 가져오기 모드로 설정
+    },
+    locationMode === LocationMode.TRACKING
+  );
 
   // 페이지 최초 접속 시 위치 정보를 가져왔는지 확인하는 ref
   const initialLocationFetchedRef = useRef<boolean>(false);
@@ -184,7 +192,7 @@ export const useMapContainer = () => {
   useEffect(() => {
     if (map) {
       console.log("Setting up zoom change listener");
-      
+
       // Initial zoom sync
       const initialZoom = map.getZoom();
       if (initialZoom) {
@@ -192,15 +200,15 @@ export const useMapContainer = () => {
         userZoomRef.current = initialZoom;
         setZoom(initialZoom);
       }
-      
-      const zoomChangeListener = map.addListener('zoom_changed', () => {
+
+      const zoomChangeListener = map.addListener("zoom_changed", () => {
         const currentZoom = map.getZoom() || 18;
         console.log("Zoom changed in map:", currentZoom);
         userZoomRef.current = currentZoom;
         setZoom(currentZoom);
         console.log("Updated zoom state to:", currentZoom);
       });
-      
+
       return () => {
         console.log("Removing zoom change listener");
         google.maps.event.removeListener(zoomChangeListener);
@@ -230,7 +238,7 @@ export const useMapContainer = () => {
         return LocationMode.OFF;
       }
     });
-    
+
     // Request device orientation permission for iOS devices
     requestOrientationPermission().catch((error) => {
       console.error("Error requesting device orientation permission:", error);
@@ -241,7 +249,12 @@ export const useMapContainer = () => {
     if (!userLocation || !userLocationLoaded) {
       getGeoLocation();
     }
-  }, [getGeoLocation, requestOrientationPermission, userLocation, userLocationLoaded]);
+  }, [
+    getGeoLocation,
+    requestOrientationPermission,
+    userLocation,
+    userLocationLoaded,
+  ]);
 
   // Check if only the heading has changed
   const isOnlyHeadingChanged = useCallback(
@@ -272,11 +285,11 @@ export const useMapContainer = () => {
           // 사용자가 설정한 zoom 값을 유지
           const currentZoom = map.getZoom() || userZoomRef.current;
           map.setZoom(currentZoom);
-          
+
           // 지도 중앙 이동
           setCenter(geoLocation);
         }
-        
+
         // 추적 모드에서는 heading 정보 포함
         setUserLocation(geoLocation);
       } else if (locationMode === LocationMode.LOCATE) {
@@ -285,19 +298,19 @@ export const useMapContainer = () => {
           // 사용자가 설정한 zoom 값을 유지
           const currentZoom = map.getZoom() || userZoomRef.current;
           map.setZoom(currentZoom);
-          
+
           // 지도 중앙 이동
           setCenter(geoLocation);
-          
+
           // 내 위치 보기 모드에서는 위치를 한 번 확인한 후 자동으로 OFF 모드로 변경
           setLocationMode(LocationMode.OFF);
         }
-        
+
         // 추적 모드가 아닐 때는 heading 정보 제외
         const locationWithoutHeading = {
           lat: geoLocation.lat,
           lng: geoLocation.lng,
-          accuracy: geoLocation.accuracy
+          accuracy: geoLocation.accuracy,
         };
         setUserLocation(locationWithoutHeading);
       } else {
@@ -305,11 +318,11 @@ export const useMapContainer = () => {
         const locationWithoutHeading = {
           lat: geoLocation.lat,
           lng: geoLocation.lng,
-          accuracy: geoLocation.accuracy
+          accuracy: geoLocation.accuracy,
         };
         setUserLocation(locationWithoutHeading);
       }
-      
+
       // 이전 위치 저장 (heading 포함)
       prevLocationRef.current = geoLocation;
     }
@@ -369,15 +382,15 @@ export const useMapContainer = () => {
       } else {
         drawGrid(map);
       }
-      
+
       // 지도 드래그 이벤트 리스너 추가
-      map.addListener('dragstart', handleMapInteraction);
+      map.addListener("dragstart", handleMapInteraction);
     }
-    
+
     return () => {
       if (map) {
         // 지도 드래그 이벤트 리스너 제거
-        google.maps.event.clearListeners(map, 'dragstart');
+        google.maps.event.clearListeners(map, "dragstart");
       }
     };
   }, [
@@ -504,19 +517,25 @@ export const useMapContainer = () => {
 
       setMap(null);
     },
-    [clearAllGridLines, removeMapEventHandlers, searchMarker, infoWindow, stopWatchingPosition]
+    [
+      clearAllGridLines,
+      removeMapEventHandlers,
+      searchMarker,
+      infoWindow,
+      stopWatchingPosition,
+    ]
   );
 
   // Map click handler
   const onMapClick = useCallback(
     (e: google.maps.MapMouseEvent) => {
       console.log("Map click in component:", e.latLng?.toString());
-      
+
       // 지도 클릭 시 위치 추적 모드 해제
       if (locationMode === LocationMode.TRACKING) {
         setLocationMode(LocationMode.OFF);
       }
-      
+
       handleGridCellClick(e);
     },
     [handleGridCellClick, locationMode]
