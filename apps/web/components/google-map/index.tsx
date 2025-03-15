@@ -4,6 +4,7 @@ import { useMapContainer } from "./hooks/use-map-container";
 import MapMarkers from "./map-markers";
 import MapControls from "./map-controls";
 import MapSearch from "./map-search";
+import PlaceDetails from "./place-details";
 import { useI18n } from "@/lib/i18n/i18n-context";
 
 function GoogleMapComponent() {
@@ -32,6 +33,11 @@ function GoogleMapComponent() {
     isFullscreen,
     toggleFullscreen,
     locationMode,
+    // Place Details state
+    placeDetailsVisible,
+    selectedPlaceId,
+    selectedLocation,
+    closePlaceDetails,
   } = useMapContainer();
 
   // 언어 변경 중에는 맵 컴포넌트를 렌더링하지 않음
@@ -61,7 +67,7 @@ function GoogleMapComponent() {
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
-          clickableIcons: false, // Disable clickable POIs like parks
+          clickableIcons: true, // Enable clickable POIs
         }}
       >
         <MapMarkers
@@ -88,6 +94,15 @@ function GoogleMapComponent() {
           isTrackingLocation,
           locationMode,
         }}
+      />
+
+      {/* Place Details UI */}
+      <PlaceDetails
+        map={map}
+        visible={placeDetailsVisible}
+        placeId={selectedPlaceId}
+        location={selectedLocation}
+        onClose={closePlaceDetails}
       />
     </div>
   ) : (

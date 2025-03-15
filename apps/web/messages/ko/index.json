@@ -29,6 +29,19 @@
   },
   "common": {
     "languageName": "한국어",
-    "languageCode": "ko"
+    "languageCode": "ko",
+    "close": "닫기",
+    "address": "주소",
+    "phone": "전화번호",
+    "hours": "영업시간",
+    "openNow": "영업 중",
+    "closedNow": "영업 종료",
+    "website": "웹사이트",
+    "photos": "사진",
+    "reviews": "리뷰",
+    "viewOnGoogleMaps": "구글 지도에서 보기",
+    "error": {
+      "placeDetails": "장소 정보를 불러오는데 실패했습니다. 나중에 다시 시도해주세요."
+    }
   }
 }

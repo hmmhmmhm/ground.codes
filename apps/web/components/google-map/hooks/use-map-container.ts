@@ -57,6 +57,11 @@ export const useMapContainer = () => {
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
   const prevLocationRef = useRef<Coordinates | null>(null);
 
+  // Place Details UI state
+  const [placeDetailsVisible, setPlaceDetailsVisible] = useState(false);
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<google.maps.LatLng | null>(null);
+
   // Location tracking state
   const [locationMode, setLocationMode] = useState<LocationMode>(
     LocationMode.OFF
@@ -343,13 +348,6 @@ export const useMapContainer = () => {
     map,
   ]);
 
-  // 지도 클릭 시 위치 추적 모드 해제
-  const handleMapInteraction = useCallback(() => {
-    if (locationMode === LocationMode.TRACKING) {
-      setLocationMode(LocationMode.OFF);
-    }
-  }, [locationMode]);
-
   // Get encoded coordinates using the hook
   const { encodedCoordinates, isEncoding, encodeSelectedAreaCoordinates } =
     useMapCoordinates(selectedArea);
@@ -363,19 +361,141 @@ export const useMapContainer = () => {
     handleGridCellClick,
   } = useGridSystem(showGrid, selectedArea, setSelectedArea);
 
-  // Toggle grid visibility
-  const toggleGrid = useCallback(() => {
-    const newShowGrid = !showGrid;
-    setShowGrid(newShowGrid);
+  // Map click handler
+  const onMapClick = useCallback(
+    (e: google.maps.MapMouseEvent) => {
+      console.log("Map click in component:", e.latLng?.toString());
+
+      // 지도 클릭 시 위치 추적 모드 해제
+      if (locationMode === LocationMode.TRACKING) {
+        setLocationMode(LocationMode.OFF);
+      }
+
+      // Check if a POI was clicked
+      if ((e as any).placeId) {
+        // Prevent the default POI info window from showing up
+        (e as google.maps.IconMouseEvent).stop();
+        
+        // A POI was clicked
+        setSelectedPlaceId((e as any).placeId);
+        setSelectedLocation(e.latLng || null);
+        setPlaceDetailsVisible(true);
+        // Prevent grid cell click handling when POI is clicked
+        return;
+      }
+
+      // Close place details if open
+      if (placeDetailsVisible) {
+        setPlaceDetailsVisible(false);
+        setSelectedPlaceId(null);
+        setSelectedLocation(null);
+      }
+
+      handleGridCellClick(e);
+    },
+    [handleGridCellClick, locationMode, placeDetailsVisible]
+  );
+
+  // Close place details
+  const closePlaceDetails = useCallback(() => {
+    setPlaceDetailsVisible(false);
+    setSelectedPlaceId(null);
+    setSelectedLocation(null);
+  }, []);
+
+  // Map zoom change handler
+  const onZoomChanged = useCallback(() => {
+    if (map) {
+      const currentZoom = map.getZoom() || 18;
+      console.log("onZoomChanged triggered, new zoom:", currentZoom);
+      userZoomRef.current = currentZoom;
+      setZoom(currentZoom);
+    }
+  }, [map]);
+
+  // Toggle map type between roadmap and satellite
+  const toggleMapType = useCallback(() => {
+    if (!isLoaded) return;
+
+    const newMapType = mapType === "roadmap" ? "hybrid" : "roadmap";
+    setMapType(newMapType);
 
     if (map) {
-      if (newShowGrid) {
-        drawGrid(map);
-      } else {
-        clearAllGridLines();
+      map.setMapTypeId(newMapType as google.maps.MapTypeId);
+    }
+  }, [map, mapType, isLoaded]);
+
+  // Toggle fullscreen mode
+  const toggleFullscreen = useCallback(() => {
+    const mapElement = document.querySelector(".map-container");
+    if (!mapElement) {
+      console.error("Map container element not found");
+      return;
+    }
+
+    if (!isFullscreen) {
+      try {
+        if (mapElement.requestFullscreen) {
+          mapElement.requestFullscreen();
+        } else if ((mapElement as any).webkitRequestFullscreen) {
+          (mapElement as any).webkitRequestFullscreen();
+        } else if ((mapElement as any).msRequestFullscreen) {
+          (mapElement as any).msRequestFullscreen();
+        }
+      } catch (error) {
+        console.error("Failed to enter fullscreen mode:", error);
+      }
+    } else {
+      try {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          (document as any).webkitExitFullscreen();
+        } else if ((document as any).msExitFullscreen) {
+          (document as any).msExitFullscreen();
+        }
+      } catch (error) {
+        console.error("Failed to exit fullscreen mode:", error);
       }
     }
-  }, [map, showGrid, drawGrid, clearAllGridLines]);
+
+    setIsFullscreen(!isFullscreen);
+  }, [isFullscreen]);
+
+  // Listen for fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener(
+        "webkitfullscreenchange",
+        handleFullscreenChange
+      );
+      document.removeEventListener(
+        "mozfullscreenchange",
+        handleFullscreenChange
+      );
+      document.removeEventListener(
+        "MSFullscreenChange",
+        handleFullscreenChange
+      );
+    };
+  }, []);
+
+  // 지도 클릭 시 위치 추적 모드 해제
+  const handleMapInteraction = useCallback(() => {
+    if (locationMode === LocationMode.TRACKING) {
+      setLocationMode(LocationMode.OFF);
+    }
+  }, [locationMode]);
 
   // Update grid when map or showGrid changes
   useEffect(() => {
@@ -532,108 +652,6 @@ export const useMapContainer = () => {
     ]
   );
 
-  // Map click handler
-  const onMapClick = useCallback(
-    (e: google.maps.MapMouseEvent) => {
-      console.log("Map click in component:", e.latLng?.toString());
-
-      // 지도 클릭 시 위치 추적 모드 해제
-      if (locationMode === LocationMode.TRACKING) {
-        setLocationMode(LocationMode.OFF);
-      }
-
-      handleGridCellClick(e);
-    },
-    [handleGridCellClick, locationMode]
-  );
-
-  // Map zoom change handler
-  const onZoomChanged = useCallback(() => {
-    if (map) {
-      const currentZoom = map.getZoom() || 18;
-      console.log("onZoomChanged triggered, new zoom:", currentZoom);
-      userZoomRef.current = currentZoom;
-      setZoom(currentZoom);
-    }
-  }, [map]);
-
-  // Toggle map type between roadmap and satellite
-  const toggleMapType = useCallback(() => {
-    if (!isLoaded) return;
-
-    const newMapType = mapType === "roadmap" ? "hybrid" : "roadmap";
-    setMapType(newMapType);
-
-    if (map) {
-      map.setMapTypeId(newMapType as google.maps.MapTypeId);
-    }
-  }, [map, mapType, isLoaded]);
-
-  // Toggle fullscreen mode
-  const toggleFullscreen = useCallback(() => {
-    const mapElement = document.querySelector(".map-container");
-    if (!mapElement) {
-      console.error("Map container element not found");
-      return;
-    }
-
-    if (!isFullscreen) {
-      try {
-        if (mapElement.requestFullscreen) {
-          mapElement.requestFullscreen();
-        } else if ((mapElement as any).webkitRequestFullscreen) {
-          (mapElement as any).webkitRequestFullscreen();
-        } else if ((mapElement as any).msRequestFullscreen) {
-          (mapElement as any).msRequestFullscreen();
-        }
-      } catch (error) {
-        console.error("Failed to enter fullscreen mode:", error);
-      }
-    } else {
-      try {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if ((document as any).webkitExitFullscreen) {
-          (document as any).webkitExitFullscreen();
-        } else if ((document as any).msExitFullscreen) {
-          (document as any).msExitFullscreen();
-        }
-      } catch (error) {
-        console.error("Failed to exit fullscreen mode:", error);
-      }
-    }
-
-    setIsFullscreen(!isFullscreen);
-  }, [isFullscreen]);
-
-  // Listen for fullscreen change events
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
-    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-      document.removeEventListener(
-        "webkitfullscreenchange",
-        handleFullscreenChange
-      );
-      document.removeEventListener(
-        "mozfullscreenchange",
-        handleFullscreenChange
-      );
-      document.removeEventListener(
-        "MSFullscreenChange",
-        handleFullscreenChange
-      );
-    };
-  }, []);
-
   return {
     // Loading state
     isLoaded,
@@ -657,7 +675,18 @@ export const useMapContainer = () => {
 
     // Grid state
     showGrid,
-    toggleGrid,
+    toggleGrid: () => {
+      const newShowGrid = !showGrid;
+      setShowGrid(newShowGrid);
+
+      if (map) {
+        if (newShowGrid) {
+          drawGrid(map);
+        } else {
+          clearAllGridLines();
+        }
+      }
+    },
 
     // Selected area state
     selectedArea,
@@ -665,6 +694,12 @@ export const useMapContainer = () => {
     // Search state
     searchedPlace,
     handlePlaceSelect,
+
+    // Place Details state
+    placeDetailsVisible,
+    selectedPlaceId,
+    selectedLocation,
+    closePlaceDetails,
 
     // Coordinates encoding state
     encodedCoordinates,

@@ -29,6 +29,19 @@
   },
   "common": {
     "languageName": "English",
-    "languageCode": "en"
+    "languageCode": "en",
+    "close": "Close",
+    "address": "Address",
+    "phone": "Phone",
+    "hours": "Opening Hours",
+    "openNow": "Open Now",
+    "closedNow": "Closed Now",
+    "website": "Website",
+    "photos": "Photos",
+    "reviews": "reviews",
+    "viewOnGoogleMaps": "View on Google Maps",
+    "error": {
+      "placeDetails": "Failed to load place details. Please try again later."
+    }
   }
 }

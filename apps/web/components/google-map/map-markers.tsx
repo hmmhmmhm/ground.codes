@@ -85,7 +85,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
                   strokeOpacity: 0.8,
                   strokeWeight: 2,
                   fillColor: "#4285F4",
-                  fillOpacity: 0.05,
+                  fillOpacity: 0.01,
                   clickable: false,
                 }}
               />
