@@ -3,12 +3,15 @@
     "controls": {
       "toggleGrid": "Toggle grid display",
       "myLocation": "Go to my location",
+      "stopTracking": "Stop tracking my location",
       "roadmap": "Switch to satellite map",
       "satellite": "Switch to normal map",
       "roadmapLabel": "Satellite Map",
       "satelliteLabel": "Normal Map",
       "language": "Language",
-      "fullscreen": "Toggle fullscreen"
+      "fullscreen": "Toggle fullscreen",
+      "enterFullscreen": "Enter fullscreen",
+      "exitFullscreen": "Exit fullscreen"
     },
     "loading": "Loading...",
     "coordinates": {

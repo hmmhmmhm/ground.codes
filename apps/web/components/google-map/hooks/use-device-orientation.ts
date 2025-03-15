@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 interface DeviceOrientationState {
   heading: number | null;
@@ -11,11 +11,19 @@ interface UseDeviceOrientationReturn extends DeviceOrientationState {
 }
 
 export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
-  const [orientationState, setOrientationState] = useState<DeviceOrientationState>({
-    heading: null,
-    isSupported: false,
-    permissionState: "unavailable",
-  });
+  const [orientationState, setOrientationState] =
+    useState<DeviceOrientationState>({
+      heading: null,
+      isSupported: false,
+      permissionState: "unavailable",
+    });
+
+  // Use a ref to store the latest heading value without triggering re-renders
+  const headingRef = useRef<number | null>(null);
+  // Debounce timer ref
+  const debounceTimerRef = useRef<number | null>(null);
+  // Minimum angle change required to update state (in degrees)
+  const MIN_ANGLE_CHANGE = 5;
 
   // Check if device is iOS
   const isIOS = useCallback(() => {
@@ -25,37 +33,62 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
     );
   }, []);
 
-  // Handle device orientation event
+  // Handle device orientation event with debouncing and threshold
   const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
+    let newHeading: number | null = null;
+
     // For devices that support deviceorientationabsolute
     if ("compassHeading" in event) {
-      setOrientationState((prev) => ({
-        ...prev,
-        heading: (event as any).compassHeading,
-      }));
-    } 
+      newHeading = (event as any).compassHeading;
+    }
     // For devices that support deviceorientation with webkitCompassHeading
     else if ("webkitCompassHeading" in event) {
-      setOrientationState((prev) => ({
-        ...prev,
-        heading: (event as any).webkitCompassHeading,
-      }));
-    } 
+      newHeading = (event as any).webkitCompassHeading;
+    }
     // For devices that only provide alpha value (relative to initial position)
     else if (event.alpha !== null) {
-      // Convert alpha to heading (alpha is measured clockwise from north in degrees)
+      newHeading = event.alpha;
+    }
+
+    // If no valid heading or no change, return early
+    if (newHeading === null) return;
+
+    // Check if the heading has changed significantly
+    const currentHeading = headingRef.current;
+    if (currentHeading !== null) {
+      const angleDiff = Math.abs(newHeading - currentHeading);
+      const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff;
+
+      // Only update if the change is significant
+      if (normalizedDiff < MIN_ANGLE_CHANGE) return;
+    }
+
+    // Update the ref immediately
+    headingRef.current = newHeading;
+
+    // Debounce the state update
+    if (debounceTimerRef.current !== null) {
+      window.clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = window.setTimeout(() => {
       setOrientationState((prev) => ({
         ...prev,
-        heading: event.alpha,
+        heading: newHeading,
       }));
-    }
+      debounceTimerRef.current = null;
+    }, 100); // 100ms debounce time
   }, []);
 
   // Request permission for device orientation
   const requestPermission = useCallback(async (): Promise<boolean> => {
     if (!isIOS()) {
       // For non-iOS devices, no permission needed
-      window.addEventListener("deviceorientationabsolute", handleOrientation, true);
+      window.addEventListener(
+        "deviceorientationabsolute",
+        handleOrientation,
+        true
+      );
       if (!window.DeviceOrientationEvent) {
         window.addEventListener("deviceorientation", handleOrientation, true);
       }
@@ -72,9 +105,11 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
       typeof (DeviceOrientationEvent as any).requestPermission === "function"
     ) {
       try {
-        const permission = await (DeviceOrientationEvent as any).requestPermission();
+        const permission = await (
+          DeviceOrientationEvent as any
+        ).requestPermission();
         const granted = permission === "granted";
-        
+
         if (granted) {
           window.addEventListener("deviceorientation", handleOrientation, true);
           setOrientationState((prev) => ({
@@ -88,7 +123,7 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
             permissionState: "denied",
           }));
         }
-        
+
         return granted;
       } catch (error) {
         console.error("Error requesting device orientation permission:", error);
@@ -110,33 +145,59 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
     }
   }, [handleOrientation, isIOS]);
 
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current !== null) {
+        window.clearTimeout(debounceTimerRef.current);
+      }
+      window.removeEventListener(
+        "deviceorientationabsolute",
+        handleOrientation,
+        true
+      );
+      window.removeEventListener("deviceorientation", handleOrientation, true);
+    };
+  }, [handleOrientation]);
+
   // Check support on mount
   useEffect(() => {
     const checkSupport = () => {
       const supported = window.DeviceOrientationEvent !== undefined;
-      const permissionAPI = typeof (DeviceOrientationEvent as any).requestPermission === "function";
-      
+      const permissionAPI =
+        typeof (DeviceOrientationEvent as any).requestPermission === "function";
+
       setOrientationState((prev) => ({
         ...prev,
         isSupported: supported,
-        permissionState: supported 
-          ? (permissionAPI ? "prompt" : "granted") 
+        permissionState: supported
+          ? permissionAPI
+            ? "prompt"
+            : "granted"
           : "unavailable",
       }));
-      
+
       // If supported and doesn't need permission, add listener
       if (supported && !permissionAPI && !isIOS()) {
-        window.addEventListener("deviceorientationabsolute", handleOrientation, true);
+        window.addEventListener(
+          "deviceorientationabsolute",
+          handleOrientation,
+          true
+        );
         if (!window.DeviceOrientationEvent) {
           window.addEventListener("deviceorientation", handleOrientation, true);
         }
       }
     };
-    
+
     checkSupport();
-    
+
     return () => {
-      window.removeEventListener("deviceorientationabsolute", handleOrientation, true);
+      window.removeEventListener(
+        "deviceorientationabsolute",
+        handleOrientation,
+        true
+      );
       window.removeEventListener("deviceorientation", handleOrientation, true);
     };
   }, [handleOrientation, isIOS]);

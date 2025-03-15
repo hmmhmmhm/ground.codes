@@ -22,6 +22,7 @@ function GoogleMapComponent() {
     toggleGrid,
     getUserLocation,
     isLoadingLocation,
+    isTrackingLocation,
     encodedCoordinates,
     isEncoding,
     handlePlaceSelect,
@@ -29,6 +30,7 @@ function GoogleMapComponent() {
     toggleMapType,
     isFullscreen,
     toggleFullscreen,
+    locationMode,
   } = useMapContainer();
 
   return isLoaded ? (
@@ -75,6 +77,8 @@ function GoogleMapComponent() {
           isFullscreen,
           toggleFullscreen,
           isLoadingLocation,
+          isTrackingLocation,
+          locationMode,
         }}
       />
     </div>

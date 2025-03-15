@@ -3,6 +3,13 @@ import { usePathname } from 'next/navigation';
 import { locales, Locale } from '@/i18n';
 import { useI18n } from "@/lib/i18n/i18n-context";
 
+// 위치 모드 상태를 정의하는 열거형 (use-map-container.ts와 동일하게 유지)
+enum LocationMode {
+  OFF = 0,        // 꺼짐
+  LOCATE = 1,     // 내 위치 보기
+  TRACKING = 2,   // 위치 추적
+}
+
 interface MapControlsProps {
   showGrid: boolean;
   toggleGrid: () => void;
@@ -12,6 +19,8 @@ interface MapControlsProps {
   isFullscreen: boolean;
   toggleFullscreen: () => void;
   isLoadingLocation?: boolean;
+  isTrackingLocation?: boolean;
+  locationMode?: number;
 }
 
 const MapControls: React.FC<MapControlsProps> = ({
@@ -23,6 +32,8 @@ const MapControls: React.FC<MapControlsProps> = ({
   isFullscreen,
   toggleFullscreen,
   isLoadingLocation = false,
+  isTrackingLocation = false,
+  locationMode = 0,
 }) => {
   const { t, locale, setLocale } = useI18n();
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
@@ -30,6 +41,28 @@ const MapControls: React.FC<MapControlsProps> = ({
   const handleLanguageChange = (newLocale: Locale) => {
     setLocale(newLocale);
     setShowLanguageOptions(false);
+  };
+
+  // 위치 모드에 따른 버튼 배경색 결정
+  const getLocationButtonStyle = () => {
+    if (locationMode === LocationMode.TRACKING) {
+      return { backgroundColor: "rgba(66, 133, 244, 0.7)" };
+    } else if (locationMode === LocationMode.LOCATE) {
+      return { backgroundColor: "rgba(52, 168, 83, 0.7)" };
+    } else {
+      return { backgroundColor: "rgba(0, 0, 0, 0.3)" };
+    }
+  };
+
+  // 위치 모드에 따른 툴팁 텍스트 결정
+  const getLocationButtonTitle = () => {
+    if (locationMode === LocationMode.TRACKING) {
+      return t('map.controls.stopTracking');
+    } else if (locationMode === LocationMode.LOCATE) {
+      return t('map.controls.myLocation');
+    } else {
+      return t('map.controls.myLocation');
+    }
   };
 
   return (
@@ -167,9 +200,10 @@ const MapControls: React.FC<MapControlsProps> = ({
       <button
         onClick={getUserLocation}
         className="absolute bottom-[150px] right-[10px] bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center z-10"
-        title={t('map.controls.myLocation')}
-        aria-label={t('map.controls.myLocation')}
+        title={getLocationButtonTitle()}
+        aria-label={getLocationButtonTitle()}
         disabled={isLoadingLocation}
+        style={getLocationButtonStyle()}
       >
         {isLoadingLocation ? (
           <svg 
@@ -185,6 +219,35 @@ const MapControls: React.FC<MapControlsProps> = ({
             strokeLinejoin="round"
           >
             <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+          </svg>
+        ) : locationMode === LocationMode.TRACKING ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+          </svg>
+        ) : locationMode === LocationMode.LOCATE ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+            <circle cx="12" cy="9" r="3"></circle>
           </svg>
         ) : (
           <svg

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useDeviceOrientation } from "./use-device-orientation";
 
 interface Location {
@@ -40,12 +40,17 @@ export const useGeolocation = (
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
+  // Use a ref to track if this is just a heading update
+  const isHeadingUpdateRef = useRef(false);
+  
   // Use the device orientation hook
   const { heading, requestPermission } = useDeviceOrientation();
 
   // Update user location when heading changes from device orientation
   useEffect(() => {
     if (userLocation && heading !== null) {
+      // Only update heading without triggering map re-centering
+      isHeadingUpdateRef.current = true;
       setUserLocation(prev => prev ? { ...prev, heading } : null);
     }
   }, [heading, userLocation]);
@@ -55,6 +60,9 @@ export const useGeolocation = (
       setIsLoading(true);
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          // This is a full position update, not just heading
+          isHeadingUpdateRef.current = false;
+          
           const newUserLocation = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
@@ -62,10 +70,13 @@ export const useGeolocation = (
             heading: position.coords.heading || heading,
           };
           setUserLocation(newUserLocation);
+          
+          // Only update center and selected area for full position updates
           if (setCenter) setCenter(newUserLocation);
           setUserLocationLoaded(true);
           if (setSelectedArea) setSelectedArea(newUserLocation);
 
+          // Only pan the map for full position updates (not heading updates)
           if (map) {
             map.panTo(newUserLocation);
             map.setZoom(18);

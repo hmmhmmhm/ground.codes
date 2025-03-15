@@ -3,12 +3,15 @@
     "controls": {
       "toggleGrid": "그리드 표시 전환",
       "myLocation": "내 위치로 이동",
+      "stopTracking": "내 위치 추적 중지",
       "roadmap": "위성지도로 전환",
       "satellite": "일반지도로 전환",
       "roadmapLabel": "위성지도",
       "satelliteLabel": "일반지도",
       "language": "언어",
-      "fullscreen": "전체화면 전환"
+      "fullscreen": "전체화면 전환",
+      "enterFullscreen": "전체화면으로 보기",
+      "exitFullscreen": "전체화면 종료"
     },
     "loading": "로딩 중...",
     "coordinates": {

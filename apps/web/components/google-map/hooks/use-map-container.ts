@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useGridSystem } from "@/lib/grid-system";
 import { useMapCoordinates } from "./use-map-coordinates";
 import { useGeolocation } from "./use-geolocation";
@@ -9,12 +9,20 @@ import { useLanguage } from "./use-language";
 interface Coordinates {
   lat: number;
   lng: number;
+  heading?: number | null;
 }
 
 const defaultCenter = {
   lat: 37.5665,
   lng: 126.978,
 };
+
+// 위치 모드 상태를 정의하는 열거형
+enum LocationMode {
+  OFF = 0,        // 꺼짐
+  LOCATE = 1,     // 내 위치 보기
+  TRACKING = 2,   // 위치 추적
+}
 
 export const useMapContainer = () => {
   const { getUserLanguage } = useLanguage();
@@ -37,6 +45,11 @@ export const useMapContainer = () => {
   // User location state
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
+  const prevLocationRef = useRef<Coordinates | null>(null);
+  
+  // Location tracking state
+  const [locationMode, setLocationMode] = useState<LocationMode>(LocationMode.OFF);
+  const isTrackingLocation = locationMode === LocationMode.TRACKING;
 
   // Grid state
   const [showGrid, setShowGrid] = useState(true);
@@ -66,30 +79,95 @@ export const useMapContainer = () => {
   });
 
   // Enhanced getUserLocation function that also requests device orientation permission
+  // and handles location tracking mode
   const getUserLocation = useCallback(() => {
+    // 위치 모드를 순환시킴: 꺼짐 -> 내 위치 보기 -> 위치 추적 -> 꺼짐
+    setLocationMode((prevMode) => {
+      // 현재 꺼짐 상태면 내 위치 보기로 변경
+      if (prevMode === LocationMode.OFF) {
+        return LocationMode.LOCATE;
+      }
+      // 현재 내 위치 보기 상태면 위치 추적으로 변경
+      else if (prevMode === LocationMode.LOCATE) {
+        return LocationMode.TRACKING;
+      }
+      // 현재 위치 추적 상태면 꺼짐으로 변경
+      else {
+        return LocationMode.OFF;
+      }
+    });
+    
     // Request device orientation permission for iOS devices
     requestOrientationPermission().catch((error) => {
       console.error("Error requesting device orientation permission:", error);
     });
-    
+
     // Get geolocation
     getGeoLocation();
   }, [getGeoLocation, requestOrientationPermission]);
 
+  // Check if only the heading has changed
+  const isOnlyHeadingChanged = useCallback(
+    (prev: Coordinates | null, next: Coordinates | null) => {
+      if (!prev || !next) return false;
+
+      return (
+        prev.lat === next.lat &&
+        prev.lng === next.lng &&
+        prev.heading !== next.heading
+      );
+    },
+    []
+  );
+
   // Update user location state when geolocation changes
   useEffect(() => {
     if (geoLocation) {
+      const onlyHeadingChanged = isOnlyHeadingChanged(
+        prevLocationRef.current,
+        geoLocation
+      );
+
+      // 위치 모드에 따라 지도 중앙 이동 처리
+      if (locationMode === LocationMode.TRACKING) {
+        // 추적 모드: 헤딩만 변경된 경우가 아니면 항상 지도 중앙 이동
+        if (!onlyHeadingChanged && setCenter) {
+          setCenter(geoLocation);
+        }
+      } else if (locationMode === LocationMode.LOCATE) {
+        // 내 위치 보기 모드: 최초 위치 확인 시에만 지도 중앙 이동
+        if (!prevLocationRef.current && setCenter) {
+          setCenter(geoLocation);
+          
+          // 내 위치 보기 모드에서는 위치를 한 번 확인한 후 자동으로 OFF 모드로 변경
+          setLocationMode(LocationMode.OFF);
+        }
+      }
+
+      // 위치 정보 업데이트 및 이전 위치 저장
       setUserLocation(geoLocation);
+      prevLocationRef.current = geoLocation;
     }
     setUserLocationLoaded(geoLocationLoaded);
-  }, [geoLocation, geoLocationLoaded]);
+  }, [
+    geoLocation,
+    geoLocationLoaded,
+    isOnlyHeadingChanged,
+    setCenter,
+    setSelectedArea,
+    locationMode,
+  ]);
+
+  // 지도 클릭 시 위치 추적 모드 해제
+  const handleMapInteraction = useCallback(() => {
+    if (locationMode === LocationMode.TRACKING) {
+      setLocationMode(LocationMode.OFF);
+    }
+  }, [locationMode]);
 
   // Get encoded coordinates using the hook
-  const {
-    encodedCoordinates,
-    isEncoding,
-    encodeSelectedAreaCoordinates,
-  } = useMapCoordinates(selectedArea);
+  const { encodedCoordinates, isEncoding, encodeSelectedAreaCoordinates } =
+    useMapCoordinates(selectedArea);
 
   // Get grid system functions using the hook
   const {
@@ -125,7 +203,17 @@ export const useMapContainer = () => {
       } else {
         drawGrid(map);
       }
+      
+      // 지도 드래그 이벤트 리스너 추가
+      map.addListener('dragstart', handleMapInteraction);
     }
+    
+    return () => {
+      if (map) {
+        // 지도 드래그 이벤트 리스너 제거
+        google.maps.event.clearListeners(map, 'dragstart');
+      }
+    };
   }, [
     showGrid,
     map,
@@ -134,6 +222,7 @@ export const useMapContainer = () => {
     clearAllGridLines,
     drawGrid,
     selectedArea,
+    handleMapInteraction,
   ]);
 
   // Encode coordinates when selected area changes
@@ -154,6 +243,11 @@ export const useMapContainer = () => {
   const handlePlaceSelect = useCallback(
     (place: google.maps.places.PlaceResult) => {
       if (!map || !place.geometry?.location) return;
+
+      // 검색 시 위치 추적 모드 해제
+      if (locationMode === LocationMode.TRACKING) {
+        setLocationMode(LocationMode.OFF);
+      }
 
       setSearchedPlace(place);
 
@@ -193,7 +287,7 @@ export const useMapContainer = () => {
       const location = place.geometry.location.toJSON();
       setSelectedArea(location);
     },
-    [map, searchMarker, infoWindow]
+    [map, searchMarker, infoWindow, locationMode]
   );
 
   // Map load handler
@@ -243,9 +337,15 @@ export const useMapContainer = () => {
   const onMapClick = useCallback(
     (e: google.maps.MapMouseEvent) => {
       console.log("Map click in component:", e.latLng?.toString());
+      
+      // 지도 클릭 시 위치 추적 모드 해제
+      if (locationMode === LocationMode.TRACKING) {
+        setLocationMode(LocationMode.OFF);
+      }
+      
       handleGridCellClick(e);
     },
-    [handleGridCellClick]
+    [handleGridCellClick, locationMode]
   );
 
   // Toggle map type between roadmap and satellite
@@ -343,6 +443,8 @@ export const useMapContainer = () => {
     userLocationLoaded,
     getUserLocation,
     isLoadingLocation,
+    isTrackingLocation,
+    locationMode,
 
     // Grid state
     showGrid,
