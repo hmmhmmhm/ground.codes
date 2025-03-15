@@ -51,21 +51,21 @@ const isValidLocale = (value: string | undefined): value is Locale => {
 const getSafeBrowserLanguage = (): string => {
   try {
     // 전역 객체 확인
-    if (typeof window === 'undefined') return '';
-    if (!window.navigator) return '';
-    
+    if (typeof window === "undefined") return "";
+    if (!window.navigator) return "";
+
     // navigator.language 속성 확인
     const navLang = window.navigator.language;
-    if (typeof navLang !== 'string' || !navLang) return '';
-    
+    if (typeof navLang !== "string" || !navLang) return "";
+
     // 언어 코드 추출
-    const langParts = navLang.split('-');
-    if (!langParts || langParts.length === 0) return '';
-    
-    return langParts[0].toLowerCase();
+    const langParts = navLang.split("-");
+    if (!langParts || langParts.length === 0) return "";
+
+    return langParts[0]?.toLowerCase() ?? "";
   } catch (e) {
-    console.error('Error getting browser language:', e);
-    return '';
+    console.error("Error getting browser language:", e);
+    return "";
   }
 };
 
@@ -73,40 +73,40 @@ const getSafeBrowserLanguage = (): string => {
 const getBrowserLanguage = (): Locale => {
   try {
     // 서버 사이드 렌더링 확인
-    if (typeof window === 'undefined') return defaultLocale;
-    
+    if (typeof window === "undefined") return defaultLocale;
+
     // 쿠키에서 로케일 확인
     const cookieLocaleMatch = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('NEXT_LOCALE='));
-    
-    const cookieLocale = cookieLocaleMatch 
-      ? cookieLocaleMatch.split('=')[1] 
+      .split("; ")
+      .find((row) => row.startsWith("NEXT_LOCALE="));
+
+    const cookieLocale = cookieLocaleMatch
+      ? cookieLocaleMatch.split("=")[1]
       : undefined;
-    
+
     // 쿠키에 유효한 로케일이 있으면 사용
     if (cookieLocale && isValidLocale(cookieLocale as Locale)) {
       return cookieLocale as Locale;
     }
-    
+
     // 브라우저 언어 확인
     const langCode = getSafeBrowserLanguage();
-    
+
     // 한국어인 경우 특별히 처리 (명시적으로 한국어 지원)
-    if (langCode === 'ko') {
-      return 'ko' as Locale;
+    if (langCode === "ko") {
+      return "ko" as Locale;
     }
-    
+
     // 다른 지원 언어 확인
     if (langCode && isValidLocale(langCode)) {
       return langCode as Locale;
     }
-    
+
     // 기본값으로 영어 사용
-    return 'en' as Locale;
+    return "en" as Locale;
   } catch (error) {
-    console.error('Error in getBrowserLanguage:', error);
-    return 'en' as Locale;
+    console.error("Error in getBrowserLanguage:", error);
+    return "en" as Locale;
   }
 };
 
@@ -195,7 +195,7 @@ export const I18nProvider: React.FC<{
         // URL에서 로케일 확인
         const pathParts = window.location.pathname.split("/").filter(Boolean);
         const pathLocale = pathParts.length > 0 ? pathParts[0] : undefined;
-        
+
         // 브라우저 언어 확인
         const browserLocale = getBrowserLanguage();
 
