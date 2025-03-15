@@ -4,6 +4,7 @@ interface Location {
   lat: number;
   lng: number;
   accuracy?: number;
+  heading?: number | null;
 }
 
 interface UseGeolocationOptions {
@@ -46,6 +47,7 @@ export const useGeolocation = (
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             accuracy: position.coords.accuracy,
+            heading: position.coords.heading,
           };
           setUserLocation(newUserLocation);
           if (setCenter) setCenter(newUserLocation);

@@ -8,7 +8,12 @@ import {
 import { useI18n } from "@/lib/i18n/i18n-context";
 
 interface MapMarkersProps {
-  userLocation: { lat: number; lng: number; accuracy?: number } | null;
+  userLocation: {
+    lat: number;
+    lng: number;
+    accuracy?: number;
+    heading?: number | null;
+  } | null;
   selectedArea: { lat: number; lng: number } | null;
   zoom?: number;
   encodedCoordinates: string;
@@ -45,6 +50,10 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
   const shouldShowAccuracyCircle =
     userLocation?.accuracy && userLocation.accuracy > 10;
 
+  // Check if heading information is available
+  const hasHeading =
+    userLocation?.heading !== undefined && userLocation?.heading !== null;
+
   return (
     <>
       {userLocation && (
@@ -52,12 +61,15 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
           <Marker
             position={userLocation}
             icon={{
-              path: google.maps.SymbolPath.CIRCLE,
+              path: hasHeading
+                ? google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+                : google.maps.SymbolPath.CIRCLE,
               fillColor: "#4285F4",
               fillOpacity: 1,
               strokeColor: "#FFFFFF",
               strokeWeight: 2,
               scale: shouldShowAccuracyCircle ? 4 : 8,
+              rotation: hasHeading ? userLocation.heading : 0,
             }}
             title="My Position"
             clickable={false}
