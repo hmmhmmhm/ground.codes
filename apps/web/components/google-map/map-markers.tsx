@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Marker, InfoWindow } from "@react-google-maps/api";
+import {
+  Marker,
+  InfoWindow,
+  Circle,
+  OverlayView,
+} from "@react-google-maps/api";
 import { useI18n } from "@/lib/i18n/i18n-context";
 
 interface MapMarkersProps {
-  userLocation: { lat: number; lng: number } | null;
+  userLocation: { lat: number; lng: number; accuracy?: number } | null;
   selectedArea: { lat: number; lng: number } | null;
   zoom?: number;
   encodedCoordinates: string;
@@ -36,22 +41,61 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
     setShowInfoWindow(true);
   }, [encodedCoordinates]);
 
+  // Determine if we should show accuracy circle based on accuracy value
+  const shouldShowAccuracyCircle =
+    userLocation?.accuracy && userLocation.accuracy > 10;
+
   return (
     <>
       {userLocation && (
-        <Marker
-          position={userLocation}
-          icon={{
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: "#4285F4",
-            fillOpacity: 1,
-            strokeColor: "#FFFFFF",
-            strokeWeight: 2,
-            scale: 8,
-          }}
-          title="My Position"
-          clickable={false}
-        />
+        <>
+          <Marker
+            position={userLocation}
+            icon={{
+              path: google.maps.SymbolPath.CIRCLE,
+              fillColor: "#4285F4",
+              fillOpacity: 1,
+              strokeColor: "#FFFFFF",
+              strokeWeight: 2,
+              scale: shouldShowAccuracyCircle ? 4 : 8,
+            }}
+            title="My Position"
+            clickable={false}
+          />
+
+          {shouldShowAccuracyCircle && userLocation.accuracy && (
+            <>
+              <Circle
+                center={userLocation}
+                radius={userLocation.accuracy}
+                options={{
+                  strokeColor: "#4285F4",
+                  strokeOpacity: 0.8,
+                  strokeWeight: 2,
+                  fillColor: "#4285F4",
+                  fillOpacity: 0.2,
+                  clickable: false,
+                }}
+              />
+
+              {/* Accuracy information label */}
+              <OverlayView
+                position={userLocation}
+                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                getPixelPositionOffset={(width, height) => ({
+                  x: -(width / 2),
+                  y: -(height - 30),
+                })}
+              >
+                <div className="text-white px-2 py-1 rounded-md text-sm font-medium shadow-md whitespace-nowrap">
+                  {t("map.accuracy.label", {
+                    accuracy: Math.round(userLocation.accuracy),
+                  })}
+                </div>
+              </OverlayView>
+            </>
+          )}
+        </>
       )}
 
       {shouldShowSelectedAreaMarker && (

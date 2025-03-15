@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 interface Location {
   lat: number;
   lng: number;
+  accuracy?: number;
 }
 
 interface UseGeolocationOptions {
@@ -44,6 +45,7 @@ export const useGeolocation = (
           const newUserLocation = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
+            accuracy: position.coords.accuracy,
           };
           setUserLocation(newUserLocation);
           if (setCenter) setCenter(newUserLocation);

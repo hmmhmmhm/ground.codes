@@ -19,7 +19,10 @@
       "placeholder": "Search for a location"
     },
     "groundCode": "Ground Code",
-    "encoding": "Encoding"
+    "encoding": "Encoding",
+    "accuracy": {
+      "label": "Low GPS Accuracy: {accuracy}m"
+    }
   },
   "common": {
     "languageName": "English",

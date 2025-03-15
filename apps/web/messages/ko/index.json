@@ -19,7 +19,10 @@
       "placeholder": "위치 검색"
     },
     "groundCode": "그라운드 코드",
-    "encoding": "인코딩 중"
+    "encoding": "인코딩 중",
+    "accuracy": {
+      "label": "GPS 정확도 낮음: {accuracy}m"
+    }
   },
   "common": {
     "languageName": "한국어",
