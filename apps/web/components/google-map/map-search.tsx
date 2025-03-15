@@ -59,8 +59,8 @@ const MapSearch: React.FC<MapSearchProps> = ({ map, onPlaceSelect }) => {
         <input
           ref={searchInputRef}
           type="text"
-          placeholder={t('map.search.placeholder')}
-          className="w-full p-2 pl-10 bg-transparent text-white placeholder-gray-300 border-none focus:outline-none"
+          placeholder={t("map.search.placeholder")}
+          className="w-full p-2 pl-10 bg-transparent text-white placeholder-text-white border-none focus:outline-none"
         />
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <svg
