@@ -56,6 +56,7 @@ function GoogleMapComponent() {
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
+          clickableIcons: false, // Disable clickable POIs like parks
         }}
       >
         <MapMarkers

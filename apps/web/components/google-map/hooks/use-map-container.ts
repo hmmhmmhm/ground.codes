@@ -464,6 +464,7 @@ export const useMapContainer = () => {
         mapTypeId: mapType as google.maps.MapTypeId,
         mapTypeControl: false,
         fullscreenControl: false,
+        clickableIcons: false, // Disable clickable POIs like parks
       });
 
       if (userLocationLoaded && userLocation) {
