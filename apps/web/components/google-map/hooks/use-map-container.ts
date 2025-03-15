@@ -51,6 +51,9 @@ export const useMapContainer = () => {
   // Location tracking state
   const [locationMode, setLocationMode] = useState<LocationMode>(LocationMode.OFF);
   const isTrackingLocation = locationMode === LocationMode.TRACKING;
+  
+  // GPS 위치 추적 ID를 저장하기 위한 ref
+  const watchPositionIdRef = useRef<number | null>(null);
 
   // Grid state
   const [showGrid, setShowGrid] = useState(true);
@@ -76,8 +79,90 @@ export const useMapContainer = () => {
     isLoading: isLoadingLocation,
     requestOrientationPermission,
   } = useGeolocation(map, setCenter, setSelectedArea, {
-    autoGetLocation: true,
+    autoGetLocation: false, // 자동으로 위치를 가져오지 않도록 변경
   });
+
+  // 위치 추적 시작 함수
+  const startWatchingPosition = useCallback(() => {
+    // 이미 추적 중이면 중복 실행 방지
+    if (watchPositionIdRef.current !== null) {
+      return;
+    }
+
+    if (navigator.geolocation) {
+      // 위치 추적 시작
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const newLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            heading: position.coords.heading,
+          };
+
+          // 위치 모드에 따라 처리
+          if (locationMode === LocationMode.TRACKING) {
+            // 추적 모드: 지도 중앙 이동
+            if (map) {
+              // 사용자 zoom 유지
+              const currentZoom = map.getZoom() || userZoomRef.current;
+              map.setZoom(currentZoom);
+              map.panTo(newLocation);
+            }
+            // heading 정보 포함하여 위치 업데이트
+            setUserLocation(newLocation);
+          } else if (locationMode === LocationMode.LOCATE) {
+            // 내 위치 보기 모드: heading 정보 제외하고 위치만 업데이트
+            const locationWithoutHeading = {
+              lat: newLocation.lat,
+              lng: newLocation.lng,
+              accuracy: newLocation.accuracy,
+            };
+            setUserLocation(locationWithoutHeading);
+          }
+
+          setUserLocationLoaded(true);
+          prevLocationRef.current = newLocation;
+        },
+        (error) => {
+          console.error("Error watching position:", error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        }
+      );
+
+      watchPositionIdRef.current = watchId;
+    }
+  }, [map, locationMode]);
+
+  // 위치 추적 중지 함수
+  const stopWatchingPosition = useCallback(() => {
+    if (watchPositionIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchPositionIdRef.current);
+      watchPositionIdRef.current = null;
+    }
+  }, []);
+
+  // 위치 모드 변경 시 추적 상태 업데이트
+  useEffect(() => {
+    if (locationMode === LocationMode.OFF) {
+      // OFF 모드: 위치 추적 중지
+      stopWatchingPosition();
+    } else {
+      // LOCATE 또는 TRACKING 모드: 위치 추적 시작
+      startWatchingPosition();
+    }
+  }, [locationMode, startWatchingPosition, stopWatchingPosition]);
+
+  // 컴포넌트 언마운트 시 위치 추적 중지
+  useEffect(() => {
+    return () => {
+      stopWatchingPosition();
+    };
+  }, [stopWatchingPosition]);
 
   // 사용자가 zoom을 변경할 때 userZoomRef 업데이트
   useEffect(() => {
@@ -116,7 +201,7 @@ export const useMapContainer = () => {
       console.error("Error requesting device orientation permission:", error);
     });
 
-    // Get geolocation
+    // 최초 위치 확인을 위해 한 번 호출
     getGeoLocation();
   }, [getGeoLocation, requestOrientationPermission]);
 
@@ -375,9 +460,12 @@ export const useMapContainer = () => {
         infoWindow.close();
       }
 
+      // 위치 추적 중지
+      stopWatchingPosition();
+
       setMap(null);
     },
-    [clearAllGridLines, removeMapEventHandlers, searchMarker, infoWindow]
+    [clearAllGridLines, removeMapEventHandlers, searchMarker, infoWindow, stopWatchingPosition]
   );
 
   // Map click handler
