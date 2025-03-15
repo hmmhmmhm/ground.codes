@@ -9,6 +9,13 @@
     "check-types": "turbo run check-types",
     "prepare": "husky install"
   },
+  "lint-staged": {
+    "**/*.{ts,tsx,md}": [
+      "pnpm --filter web lint",
+      "pnpm --filter web check-types",
+      "pnpm --filter web format"
+    ]
+  },
   "devDependencies": {
     "husky": "9.1.7",
     "lint-staged": "15.5.0",
