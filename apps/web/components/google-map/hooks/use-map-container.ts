@@ -180,11 +180,26 @@ export const useMapContainer = () => {
   // 사용자가 zoom을 변경할 때 userZoomRef 업데이트
   useEffect(() => {
     if (map) {
+      console.log("Setting up zoom change listener");
+      
+      // Initial zoom sync
+      const initialZoom = map.getZoom();
+      if (initialZoom) {
+        console.log("Initial map zoom:", initialZoom);
+        userZoomRef.current = initialZoom;
+        setZoom(initialZoom);
+      }
+      
       const zoomChangeListener = map.addListener('zoom_changed', () => {
-        userZoomRef.current = map.getZoom() || 18;
+        const currentZoom = map.getZoom() || 18;
+        console.log("Zoom changed in map:", currentZoom);
+        userZoomRef.current = currentZoom;
+        setZoom(currentZoom);
+        console.log("Updated zoom state to:", currentZoom);
       });
       
       return () => {
+        console.log("Removing zoom change listener");
         google.maps.event.removeListener(zoomChangeListener);
       };
     }
@@ -503,6 +518,16 @@ export const useMapContainer = () => {
     [handleGridCellClick, locationMode]
   );
 
+  // Map zoom change handler
+  const onZoomChanged = useCallback(() => {
+    if (map) {
+      const currentZoom = map.getZoom() || 18;
+      console.log("onZoomChanged triggered, new zoom:", currentZoom);
+      userZoomRef.current = currentZoom;
+      setZoom(currentZoom);
+    }
+  }, [map]);
+
   // Toggle map type between roadmap and satellite
   const toggleMapType = useCallback(() => {
     if (!isLoaded) return;
@@ -620,5 +645,6 @@ export const useMapContainer = () => {
     onLoad,
     onUnmount,
     onMapClick,
+    onZoomChanged,
   };
 };

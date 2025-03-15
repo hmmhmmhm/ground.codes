@@ -90,21 +90,23 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
                 }}
               />
 
-              {/* Accuracy information label */}
-              <OverlayView
-                position={userLocation}
-                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                getPixelPositionOffset={(width, height) => ({
-                  x: -(width / 2),
-                  y: -(height - 30),
-                })}
-              >
-                <div className="text-white px-2 py-1 rounded-md text-sm font-medium shadow-md whitespace-nowrap">
-                  {t("map.accuracy.label", {
-                    accuracy: Math.round(userLocation.accuracy),
+              {/* Accuracy information label - only visible at zoom level 18+ */}
+              {typeof zoom === "number" && zoom >= 18 && (
+                <OverlayView
+                  position={userLocation}
+                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                  getPixelPositionOffset={(width, height) => ({
+                    x: -(width / 2),
+                    y: -(height - 30),
                   })}
-                </div>
-              </OverlayView>
+                >
+                  <div className="text-white px-2 py-1 rounded-md text-sm font-medium shadow-md whitespace-nowrap">
+                    {t("map.accuracy.label", {
+                      accuracy: Math.round(userLocation.accuracy),
+                    })}
+                  </div>
+                </OverlayView>
+              )}
             </>
           )}
         </>

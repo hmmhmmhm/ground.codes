@@ -16,6 +16,7 @@ function GoogleMapComponent() {
     onLoad,
     onUnmount,
     onMapClick,
+    onZoomChanged,
     userLocation,
     selectedArea,
     showGrid,
@@ -47,6 +48,7 @@ function GoogleMapComponent() {
         }}
         zoom={zoom}
         onClick={onMapClick}
+        onZoomChanged={onZoomChanged}
         options={{
           mapTypeId: mapType,
           disableDefaultUI: true, // Disables all default UI controls
