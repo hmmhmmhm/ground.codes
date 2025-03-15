@@ -54,9 +54,9 @@ function GoogleMapComponent() {
           fullscreenControl: false,
         }}
       >
-        <MapMarkers 
-          userLocation={userLocation} 
-          selectedArea={selectedArea} 
+        <MapMarkers
+          userLocation={userLocation}
+          selectedArea={selectedArea}
           zoom={zoom}
           encodedCoordinates={encodedCoordinates}
           isEncoding={isEncoding}

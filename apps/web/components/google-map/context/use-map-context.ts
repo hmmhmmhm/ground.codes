@@ -39,10 +39,8 @@ export const useMapContextState = (): MapContextType => {
 
   // Get encoded coordinates using the hook
   const {
-    encodedCoordinatesEN,
-    encodedCoordinatesKR,
-    isEncodingEN,
-    isEncodingKR,
+    encodedCoordinates,
+    isEncoding,
     encodeSelectedAreaCoordinates,
   } = useMapCoordinates(selectedArea);
 
@@ -146,10 +144,9 @@ export const useMapContextState = (): MapContextType => {
     toggleGrid,
     selectedArea,
     setSelectedArea,
-    encodedCoordinatesEN,
-    encodedCoordinatesKR,
-    isEncodingEN,
-    isEncodingKR,
+    encodedCoordinates,
+    isEncoding,
+    encodeSelectedAreaCoordinates,
     drawGrid,
     clearAllGridLines,
     setupMapEventHandlers,

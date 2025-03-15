@@ -26,10 +26,9 @@ export interface MapContextType {
   setSelectedArea: React.Dispatch<React.SetStateAction<Coordinates | null>>;
 
   // Coordinates encoding state
-  encodedCoordinatesEN: string;
-  encodedCoordinatesKR: string;
-  isEncodingEN: boolean;
-  isEncodingKR: boolean;
+  encodedCoordinates: string;
+  isEncoding: boolean;
+  encodeSelectedAreaCoordinates: () => Promise<void>;
 
   // Grid system functions
   drawGrid: (mapInstance: google.maps.Map) => void;
