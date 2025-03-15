@@ -77,6 +77,7 @@ export const useMapContainer = () => {
     userLocationLoaded: geoLocationLoaded,
     getUserLocation: getGeoLocation,
     isLoading: isLoadingLocation,
+    setIsLoading,
     requestOrientationPermission,
   } = useGeolocation(map, setCenter, setSelectedArea, {
     autoGetLocation: false, // 자동으로 위치를 가져오지 않도록 변경
@@ -188,10 +189,14 @@ export const useMapContainer = () => {
       }
       // 현재 내 위치 보기 상태면 위치 추적으로 변경
       else if (prevMode === LocationMode.LOCATE) {
+        // LOCATE -> TRACKING 모드로 변경 시 로딩 상태 초기화
+        setIsLoading(false);
         return LocationMode.TRACKING;
       }
       // 현재 위치 추적 상태면 꺼짐으로 변경
       else {
+        // OFF 모드로 변경할 때 로딩 상태 초기화
+        setIsLoading(false);
         return LocationMode.OFF;
       }
     });
@@ -201,9 +206,12 @@ export const useMapContainer = () => {
       console.error("Error requesting device orientation permission:", error);
     });
 
-    // 최초 위치 확인을 위해 한 번 호출
-    getGeoLocation();
-  }, [getGeoLocation, requestOrientationPermission]);
+    // 위치 모드에 따라 위치 정보 가져오기
+    // OFF -> LOCATE 모드로 변경될 때만 새로운 위치 정보 가져오기
+    if (!userLocation || !userLocationLoaded) {
+      getGeoLocation();
+    }
+  }, [getGeoLocation, requestOrientationPermission, userLocation, userLocationLoaded]);
 
   // Check if only the heading has changed
   const isOnlyHeadingChanged = useCallback(

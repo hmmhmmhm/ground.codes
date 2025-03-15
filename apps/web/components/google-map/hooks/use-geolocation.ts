@@ -20,6 +20,7 @@ interface UseGeolocationReturn {
   userLocationLoaded: boolean;
   getUserLocation: () => void;
   isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
   requestOrientationPermission: () => Promise<boolean>;
 }
 
@@ -120,6 +121,7 @@ export const useGeolocation = (
     userLocationLoaded,
     getUserLocation,
     isLoading,
+    setIsLoading,
     requestOrientationPermission: requestPermission,
   };
 };
