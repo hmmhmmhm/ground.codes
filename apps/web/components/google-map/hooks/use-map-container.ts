@@ -5,6 +5,7 @@ import { useGeolocation } from "./use-geolocation";
 import { googleMapDarkTheme } from "@/lib/map/google-map-theme";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useLanguage } from "./use-language";
+import { useI18n } from "@/lib/i18n/i18n-context";
 
 interface Coordinates {
   lat: number;
@@ -29,12 +30,17 @@ enum LocationMode {
 
 export const useMapContainer = () => {
   const { getUserLanguage } = useLanguage();
+  const { isChangingLanguage } = useI18n();
+  
+  // Get language from cookie for Google Maps API
+  // Always use 'en' as default to prevent re-renders with unsupported languages
+  const mapLanguage = isChangingLanguage ? 'en' : getUserLanguage();
 
   // Load Google Maps API
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    language: getUserLanguage(),
+    language: mapLanguage, // Use language from cookie or default to 'en'
     libraries, // Use the constant libraries array
   });
 

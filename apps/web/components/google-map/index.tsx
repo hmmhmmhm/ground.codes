@@ -7,7 +7,7 @@ import MapSearch from "./map-search";
 import { useI18n } from "@/lib/i18n/i18n-context";
 
 function GoogleMapComponent() {
-  const { t } = useI18n();
+  const { t, isChangingLanguage } = useI18n();
   const {
     isLoaded,
     center,
@@ -33,6 +33,11 @@ function GoogleMapComponent() {
     toggleFullscreen,
     locationMode,
   } = useMapContainer();
+
+  // 언어 변경 중에는 맵 컴포넌트를 렌더링하지 않음
+  if (isChangingLanguage) {
+    return <div className="relative w-full h-full bg-gray-200"></div>;
+  }
 
   return isLoaded ? (
     <div className="relative w-full h-full map-container">
