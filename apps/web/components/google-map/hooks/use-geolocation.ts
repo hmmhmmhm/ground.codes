@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { useDeviceOrientation } from "./use-device-orientation";
 
 interface Location {
   lat: number;
@@ -19,6 +20,7 @@ interface UseGeolocationReturn {
   userLocationLoaded: boolean;
   getUserLocation: () => void;
   isLoading: boolean;
+  requestOrientationPermission: () => Promise<boolean>;
 }
 
 export const useGeolocation = (
@@ -37,6 +39,16 @@ export const useGeolocation = (
   const [userLocation, setUserLocation] = useState<Location | null>(null);
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Use the device orientation hook
+  const { heading, requestPermission } = useDeviceOrientation();
+
+  // Update user location when heading changes from device orientation
+  useEffect(() => {
+    if (userLocation && heading !== null) {
+      setUserLocation(prev => prev ? { ...prev, heading } : null);
+    }
+  }, [heading, userLocation]);
 
   const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
@@ -47,7 +59,7 @@ export const useGeolocation = (
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             accuracy: position.coords.accuracy,
-            heading: position.coords.heading,
+            heading: position.coords.heading || heading,
           };
           setUserLocation(newUserLocation);
           if (setCenter) setCenter(newUserLocation);
@@ -83,6 +95,7 @@ export const useGeolocation = (
     enableHighAccuracy,
     timeout,
     maximumAge,
+    heading,
   ]);
 
   useEffect(() => {
@@ -96,5 +109,6 @@ export const useGeolocation = (
     userLocationLoaded,
     getUserLocation,
     isLoading,
+    requestOrientationPermission: requestPermission,
   };
 };

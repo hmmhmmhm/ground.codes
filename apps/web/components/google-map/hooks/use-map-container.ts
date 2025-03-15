@@ -58,11 +58,23 @@ export const useMapContainer = () => {
   const {
     userLocation: geoLocation,
     userLocationLoaded: geoLocationLoaded,
-    getUserLocation,
+    getUserLocation: getGeoLocation,
     isLoading: isLoadingLocation,
+    requestOrientationPermission,
   } = useGeolocation(map, setCenter, setSelectedArea, {
     autoGetLocation: true,
   });
+
+  // Enhanced getUserLocation function that also requests device orientation permission
+  const getUserLocation = useCallback(() => {
+    // Request device orientation permission for iOS devices
+    requestOrientationPermission().catch((error) => {
+      console.error("Error requesting device orientation permission:", error);
+    });
+    
+    // Get geolocation
+    getGeoLocation();
+  }, [getGeoLocation, requestOrientationPermission]);
 
   // Update user location state when geolocation changes
   useEffect(() => {

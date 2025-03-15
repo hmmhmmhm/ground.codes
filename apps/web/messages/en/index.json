@@ -21,7 +21,7 @@
     "groundCode": "Ground Code",
     "encoding": "Encoding",
     "accuracy": {
-      "label": "Low GPS Accuracy: {accuracy}m"
+      "label": "GPS Accuracy: {accuracy}m"
     }
   },
   "common": {
