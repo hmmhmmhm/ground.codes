@@ -41,6 +41,7 @@ export const useMapContainer = () => {
   const [mapType, setMapType] = useState<string>("roadmap");
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoom, setZoom] = useState(18);
+  const userZoomRef = useRef<number>(18); // 사용자가 설정한 zoom 값을 저장할 ref
 
   // User location state
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
@@ -77,6 +78,19 @@ export const useMapContainer = () => {
   } = useGeolocation(map, setCenter, setSelectedArea, {
     autoGetLocation: true,
   });
+
+  // 사용자가 zoom을 변경할 때 userZoomRef 업데이트
+  useEffect(() => {
+    if (map) {
+      const zoomChangeListener = map.addListener('zoom_changed', () => {
+        userZoomRef.current = map.getZoom() || 18;
+      });
+      
+      return () => {
+        google.maps.event.removeListener(zoomChangeListener);
+      };
+    }
+  }, [map]);
 
   // Enhanced getUserLocation function that also requests device orientation permission
   // and handles location tracking mode
@@ -131,21 +145,49 @@ export const useMapContainer = () => {
       // 위치 모드에 따라 지도 중앙 이동 처리
       if (locationMode === LocationMode.TRACKING) {
         // 추적 모드: 헤딩만 변경된 경우가 아니면 항상 지도 중앙 이동
-        if (!onlyHeadingChanged && setCenter) {
+        if (!onlyHeadingChanged && map && setCenter) {
+          // 사용자가 설정한 zoom 값을 유지
+          const currentZoom = map.getZoom() || userZoomRef.current;
+          map.setZoom(currentZoom);
+          
+          // 지도 중앙 이동
           setCenter(geoLocation);
         }
+        
+        // 추적 모드에서는 heading 정보 포함
+        setUserLocation(geoLocation);
       } else if (locationMode === LocationMode.LOCATE) {
         // 내 위치 보기 모드: 최초 위치 확인 시에만 지도 중앙 이동
-        if (!prevLocationRef.current && setCenter) {
+        if (!prevLocationRef.current && map && setCenter) {
+          // 사용자가 설정한 zoom 값을 유지
+          const currentZoom = map.getZoom() || userZoomRef.current;
+          map.setZoom(currentZoom);
+          
+          // 지도 중앙 이동
           setCenter(geoLocation);
           
           // 내 위치 보기 모드에서는 위치를 한 번 확인한 후 자동으로 OFF 모드로 변경
           setLocationMode(LocationMode.OFF);
         }
+        
+        // 추적 모드가 아닐 때는 heading 정보 제외
+        const locationWithoutHeading = {
+          lat: geoLocation.lat,
+          lng: geoLocation.lng,
+          accuracy: geoLocation.accuracy
+        };
+        setUserLocation(locationWithoutHeading);
+      } else {
+        // OFF 모드: heading 정보 제외
+        const locationWithoutHeading = {
+          lat: geoLocation.lat,
+          lng: geoLocation.lng,
+          accuracy: geoLocation.accuracy
+        };
+        setUserLocation(locationWithoutHeading);
       }
-
-      // 위치 정보 업데이트 및 이전 위치 저장
-      setUserLocation(geoLocation);
+      
+      // 이전 위치 저장 (heading 포함)
       prevLocationRef.current = geoLocation;
     }
     setUserLocationLoaded(geoLocationLoaded);
@@ -156,6 +198,7 @@ export const useMapContainer = () => {
     setCenter,
     setSelectedArea,
     locationMode,
+    map,
   ]);
 
   // 지도 클릭 시 위치 추적 모드 해제
@@ -256,7 +299,9 @@ export const useMapContainer = () => {
         map.fitBounds(place.geometry.viewport);
       } else {
         map.setCenter(place.geometry.location);
-        map.setZoom(17);
+        // 사용자가 설정한 zoom 값을 유지
+        const currentZoom = map.getZoom() || userZoomRef.current;
+        map.setZoom(currentZoom);
       }
 
       // Create or update marker
@@ -303,7 +348,9 @@ export const useMapContainer = () => {
 
       if (userLocationLoaded && userLocation) {
         mapInstance.panTo(userLocation);
+        // 초기 zoom 설정
         mapInstance.setZoom(zoom);
+        userZoomRef.current = zoom;
       }
 
       setMap(mapInstance);
