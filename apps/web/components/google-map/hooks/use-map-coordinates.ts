@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { encode } from "@/lib/code/ground-codes";
+import { useI18n } from "@/lib/i18n/i18n-context";
 
 interface Coordinates {
   lat: number;
@@ -7,56 +8,35 @@ interface Coordinates {
 }
 
 export const useMapCoordinates = (selectedArea: Coordinates | null) => {
-  const [encodedCoordinatesEN, setEncodedCoordinatesEN] = useState<string>("");
-  const [encodedCoordinatesKR, setEncodedCoordinatesKR] = useState<string>("");
-  const [isEncodingEN, setIsEncodingEN] = useState(false);
-  const [isEncodingKR, setIsEncodingKR] = useState(false);
+  const { locale } = useI18n();
+  const [encodedCoordinates, setEncodedCoordinates] = useState<string>("");
+  const [isEncoding, setIsEncoding] = useState(false);
 
   const encodeSelectedAreaCoordinates = useCallback(async () => {
     if (!selectedArea) return;
 
-    const encodeCoordinatesEN = async () => {
-      try {
-        setIsEncodingEN(true);
-        const encoded = await encode({
-          lat: selectedArea.lat,
-          lng: selectedArea.lng,
-          language: "English",
-        });
-        setEncodedCoordinatesEN(encoded);
-      } catch (error) {
-        console.error("Error encoding coordinates (English):", error);
-        setEncodedCoordinatesEN("인코딩 오류");
-      } finally {
-        setIsEncodingEN(false);
-      }
-    };
-
-    const encodeCoordinatesKR = async () => {
-      try {
-        setIsEncodingKR(true);
-        const encoded = await encode({
-          lat: selectedArea.lat,
-          lng: selectedArea.lng,
-          language: "Korean",
-        });
-        setEncodedCoordinatesKR(encoded);
-      } catch (error) {
-        console.error("Error encoding coordinates (Korean):", error);
-        setEncodedCoordinatesKR("인코딩 오류");
-      } finally {
-        setIsEncodingKR(false);
-      }
-    };
-
-    await Promise.all([encodeCoordinatesEN(), encodeCoordinatesKR()]);
-  }, [selectedArea]);
+    try {
+      setIsEncoding(true);
+      // Map locale to language for the API
+      const language = locale === 'ko' ? 'Korean' : 'English';
+      
+      const encoded = await encode({
+        lat: selectedArea.lat,
+        lng: selectedArea.lng,
+        language,
+      });
+      setEncodedCoordinates(encoded);
+    } catch (error) {
+      console.error(`Error encoding coordinates (${locale}):`, error);
+      setEncodedCoordinates("인코딩 오류");
+    } finally {
+      setIsEncoding(false);
+    }
+  }, [selectedArea, locale]);
 
   return {
-    encodedCoordinatesEN,
-    encodedCoordinatesKR,
-    isEncodingEN,
-    isEncodingKR,
+    encodedCoordinates,
+    isEncoding,
     encodeSelectedAreaCoordinates,
   };
 };

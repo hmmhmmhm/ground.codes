@@ -17,7 +17,9 @@
     },
     "search": {
       "placeholder": "위치 검색"
-    }
+    },
+    "groundCode": "그라운드 코드",
+    "encoding": "인코딩 중"
   },
   "common": {
     "languageName": "한국어",

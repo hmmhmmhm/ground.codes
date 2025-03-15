@@ -3,7 +3,6 @@ import { GoogleMap } from "@react-google-maps/api";
 import { useMapContainer } from "./hooks/use-map-container";
 import MapMarkers from "./map-markers";
 import MapControls from "./map-controls";
-import CoordinatesDisplay from "./coordinates-display";
 
 const containerStyle = {
   width: "100%",
@@ -22,10 +21,8 @@ const MapLoader: React.FC = () => {
     showGrid,
     toggleGrid,
     getUserLocation,
-    encodedCoordinatesEN,
-    encodedCoordinatesKR,
-    isEncodingEN,
-    isEncodingKR,
+    encodedCoordinates,
+    isEncoding,
     mapType,
     toggleMapType,
     isFullscreen,
@@ -42,7 +39,12 @@ const MapLoader: React.FC = () => {
         onUnmount={onUnmount}
         onClick={onMapClick}
       >
-        <MapMarkers userLocation={userLocation} selectedArea={selectedArea} />
+        <MapMarkers 
+          userLocation={userLocation} 
+          selectedArea={selectedArea} 
+          encodedCoordinates={encodedCoordinates}
+          isEncoding={isEncoding}
+        />
       </GoogleMap>
 
       <MapControls
@@ -54,15 +56,6 @@ const MapLoader: React.FC = () => {
         isFullscreen={isFullscreen}
         toggleFullscreen={toggleFullscreen}
       />
-
-      {selectedArea && (
-        <CoordinatesDisplay
-          encodedCoordinatesEN={encodedCoordinatesEN}
-          encodedCoordinatesKR={encodedCoordinatesKR}
-          isEncodingEN={isEncodingEN}
-          isEncodingKR={isEncodingKR}
-        />
-      )}
     </div>
   ) : (
     <div>Loading...</div>

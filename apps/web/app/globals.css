@@ -1,5 +1,14 @@
-/* Disclaimer: not needed to show 'powered by Google' if also a Google Map is shown */
+/* Remove Google from the Google Maps search bar */
 .pac-container:after {
   background-image: none !important;
   height: 0px;
+}
+
+/* Remove the default X button in the Google Infowindow */
+button.gm-ui-hover-effect,
+.gm-style-iw-chr {
+  display: none;
+}
+.gm-style-iw-d {
+  padding-top: 12px;
 }

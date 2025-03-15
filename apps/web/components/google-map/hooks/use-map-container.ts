@@ -74,10 +74,8 @@ export const useMapContainer = () => {
 
   // Get encoded coordinates using the hook
   const {
-    encodedCoordinatesEN,
-    encodedCoordinatesKR,
-    isEncodingEN,
-    isEncodingKR,
+    encodedCoordinates,
+    isEncoding,
     encodeSelectedAreaCoordinates,
   } = useMapCoordinates(selectedArea);
 
@@ -346,10 +344,8 @@ export const useMapContainer = () => {
     handlePlaceSelect,
 
     // Coordinates encoding state
-    encodedCoordinatesEN,
-    encodedCoordinatesKR,
-    isEncodingEN,
-    isEncodingKR,
+    encodedCoordinates,
+    isEncoding,
 
     // Map event handlers
     onLoad,

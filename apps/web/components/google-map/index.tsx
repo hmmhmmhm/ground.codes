@@ -3,7 +3,6 @@ import { GoogleMap } from "@react-google-maps/api";
 import { useMapContainer } from "./hooks/use-map-container";
 import MapMarkers from "./map-markers";
 import MapControls from "./map-controls";
-import CoordinatesDisplay from "./coordinates-display";
 import MapSearch from "./map-search";
 import { useI18n } from "@/lib/i18n/i18n-context";
 
@@ -23,10 +22,8 @@ function GoogleMapComponent() {
     toggleGrid,
     getUserLocation,
     isLoadingLocation,
-    encodedCoordinatesEN,
-    encodedCoordinatesKR,
-    isEncodingEN,
-    isEncodingKR,
+    encodedCoordinates,
+    isEncoding,
     handlePlaceSelect,
     mapType,
     toggleMapType,
@@ -57,7 +54,13 @@ function GoogleMapComponent() {
           fullscreenControl: false,
         }}
       >
-        <MapMarkers {...{ userLocation, selectedArea }} zoom={zoom} />
+        <MapMarkers 
+          userLocation={userLocation} 
+          selectedArea={selectedArea} 
+          zoom={zoom}
+          encodedCoordinates={encodedCoordinates}
+          isEncoding={isEncoding}
+        />
       </GoogleMap>
 
       <MapSearch map={map} onPlaceSelect={handlePlaceSelect} />
@@ -74,17 +77,6 @@ function GoogleMapComponent() {
           isLoadingLocation,
         }}
       />
-
-      {selectedArea && (
-        <CoordinatesDisplay
-          {...{
-            encodedCoordinatesEN,
-            encodedCoordinatesKR,
-            isEncodingEN,
-            isEncodingKR,
-          }}
-        />
-      )}
     </div>
   ) : (
     <div>{t("map.loading")}</div>
