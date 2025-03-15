@@ -83,19 +83,21 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
         >
           <div className="relative p-1 max-w-[200px]">
             <button
-              className="absolute top-0 right-0 w-5 h-5 flex items-center justify-center bg-transparent border-none cursor-pointer text-base font-bold text-gray-600 p-0 m-0 leading-none focus:outline-none focus-visible:outline-none"
+              className="absolute top-0 right-0 w-5 h-5 flex items-center justify-center bg-transparent border-none cursor-pointer text-base font-bold text-white p-0 m-0 leading-none focus:outline-none focus-visible:outline-none"
               onClick={() => setShowInfoWindow(false)}
               aria-label="Close"
             >
               ×
             </button>
-            <div className="font-thin mb-1 pr-5">{t("map.groundCode")}:</div>
+            <div className="font-medium mb-1 pr-5 text-white">
+              {t("map.groundCode")}:
+            </div>
             {isEncoding ? (
-              <div className="font-bold text-gray-500">
-                {t("map.encoding")}...
-              </div>
+              <div className="font-bold text-white">{t("map.encoding")}...</div>
             ) : (
-              <div className="font-bold break-words">{encodedCoordinates}</div>
+              <div className="font-bold break-words text-white">
+                {encodedCoordinates}
+              </div>
             )}
           </div>
         </InfoWindow>

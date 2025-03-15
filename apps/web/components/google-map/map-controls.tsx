@@ -38,7 +38,7 @@ const MapControls: React.FC<MapControlsProps> = ({
       <div className="absolute top-[10px] right-[10px] flex flex-row gap-2 z-10">
         <button
           onClick={toggleMapType}
-          className="bg-white border-none rounded-md px-3 py-2 shadow-md cursor-pointer flex items-center gap-2 text-sm"
+          className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm"
           title={mapType === "roadmap" ? t('map.controls.roadmap') : t('map.controls.satellite')}
           aria-label={mapType === "roadmap" ? t('map.controls.roadmap') : t('map.controls.satellite')}
         >
@@ -50,7 +50,7 @@ const MapControls: React.FC<MapControlsProps> = ({
                 height="16"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#1A73E8"
+                stroke="#FFFFFF"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -59,7 +59,7 @@ const MapControls: React.FC<MapControlsProps> = ({
                 <line x1="8" y1="2" x2="8" y2="18"></line>
                 <line x1="16" y1="6" x2="16" y2="22"></line>
               </svg>
-              <span className="text-[#1A73E8] hidden md:inline">{t('map.controls.roadmapLabel')}</span>
+              <span className="text-white hidden md:inline">{t('map.controls.roadmapLabel')}</span>
             </>
           ) : (
             <>
@@ -69,7 +69,7 @@ const MapControls: React.FC<MapControlsProps> = ({
                 height="16"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#1A73E8"
+                stroke="#FFFFFF"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -80,7 +80,7 @@ const MapControls: React.FC<MapControlsProps> = ({
                 <line x1="9" y1="3" x2="9" y2="21"></line>
                 <line x1="15" y1="3" x2="15" y2="21"></line>
               </svg>
-              <span className="text-[#1A73E8] hidden md:inline">{t('map.controls.satelliteLabel')}</span>
+              <span className="text-white hidden md:inline">{t('map.controls.satelliteLabel')}</span>
             </>
           )}
         </button>
@@ -89,7 +89,7 @@ const MapControls: React.FC<MapControlsProps> = ({
         <div className="relative">
           <button
             onClick={() => setShowLanguageOptions(!showLanguageOptions)}
-            className="bg-white border-none rounded-md px-3 py-2 shadow-md cursor-pointer flex items-center gap-2 text-sm"
+            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm"
             title={t('map.controls.language')}
             aria-label={t('map.controls.language')}
           >
@@ -99,7 +99,7 @@ const MapControls: React.FC<MapControlsProps> = ({
               height="16"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#1A73E8"
+              stroke="#FFFFFF"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -108,26 +108,26 @@ const MapControls: React.FC<MapControlsProps> = ({
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <span className="text-[#1A73E8] hidden md:inline">{locale === 'en' ? 'EN' : 'KO'}</span>
+            <span className="text-white hidden md:inline">{locale === 'en' ? 'EN' : 'KO'}</span>
           </button>
 
           {/* Language Options Dropdown */}
           {showLanguageOptions && (
-            <div className="absolute top-[45px] right-0 bg-white border-none rounded-md shadow-md cursor-pointer">
+            <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer">
               <div className="flex flex-col">
                 {locales.map((localeOption) => (
                   <button
                     key={localeOption}
                     onClick={() => handleLanguageChange(localeOption)}
-                    className={`px-3 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 ${
-                      locale === localeOption ? 'bg-gray-100 font-bold' : ''
+                    className={`px-3 py-2 text-sm hover:bg-white/10 flex items-center gap-2 ${
+                      locale === localeOption ? 'bg-white/10 font-bold' : ''
                     }`}
                   >
-                    <span className="text-[#1A73E8]">
+                    <span className="text-white">
                       {localeOption === 'en' ? 'English' : '한국어'}
                     </span>
                     {locale === localeOption && (
-                      <span className="text-green-500">✓</span>
+                      <span className="text-green-400">✓</span>
                     )}
                   </button>
                 ))}
@@ -140,10 +140,10 @@ const MapControls: React.FC<MapControlsProps> = ({
       {/* Grid and Location Controls (Bottom Right) */}
       <button
         onClick={toggleGrid}
-        className="absolute bottom-[200px] right-[10px] bg-white border-none rounded-full w-[40px] h-[40px] shadow-md cursor-pointer flex justify-center items-center z-10"
+        className="absolute bottom-[200px] right-[10px] bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center z-10"
         title={t('map.controls.toggleGrid')}
         aria-label={t('map.controls.toggleGrid')}
-        style={{ backgroundColor: showGrid ? "#4285F4" : "#FFFFFF" }}
+        style={{ backgroundColor: showGrid ? "rgba(66, 133, 244, 0.7)" : "rgba(0, 0, 0, 0.3)" }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +151,7 @@ const MapControls: React.FC<MapControlsProps> = ({
           height="24"
           viewBox="0 0 24 24"
           fill="none"
-          stroke={showGrid ? "#FFFFFF" : "#1A73E8"}
+          stroke="#FFFFFF"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -166,7 +166,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
       <button
         onClick={getUserLocation}
-        className="absolute bottom-[150px] right-[10px] bg-white border-none rounded-full w-[40px] h-[40px] shadow-md cursor-pointer flex justify-center items-center z-10"
+        className="absolute bottom-[150px] right-[10px] bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center z-10"
         title={t('map.controls.myLocation')}
         aria-label={t('map.controls.myLocation')}
         disabled={isLoadingLocation}
@@ -179,7 +179,7 @@ const MapControls: React.FC<MapControlsProps> = ({
             height="24" 
             viewBox="0 0 24 24" 
             fill="none" 
-            stroke="#1A73E8" 
+            stroke="#FFFFFF" 
             strokeWidth="2" 
             strokeLinecap="round" 
             strokeLinejoin="round"
@@ -193,7 +193,7 @@ const MapControls: React.FC<MapControlsProps> = ({
             height="24"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#1A73E8"
+            stroke="#FFFFFF"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -206,7 +206,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 
       <button
         onClick={toggleFullscreen}
-        className="absolute bottom-[100px] right-[10px] bg-white border-none rounded-full w-[40px] h-[40px] shadow-md cursor-pointer flex justify-center items-center z-10"
+        className="absolute bottom-[100px] right-[10px] bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center z-10"
         title={isFullscreen ? t('map.controls.exitFullscreen') : t('map.controls.enterFullscreen')}
         aria-label={isFullscreen ? t('map.controls.exitFullscreen') : t('map.controls.enterFullscreen')}
       >
@@ -217,7 +217,7 @@ const MapControls: React.FC<MapControlsProps> = ({
             height="24"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#1A73E8"
+            stroke="#FFFFFF"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -231,7 +231,7 @@ const MapControls: React.FC<MapControlsProps> = ({
             height="24"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#1A73E8"
+            stroke="#FFFFFF"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"

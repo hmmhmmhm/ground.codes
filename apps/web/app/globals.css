@@ -4,11 +4,29 @@
   height: 0px;
 }
 
-/* Remove the default X button in the Google Infowindow */
+/* Remove the default X button in the Google Map Infowindow */
 button.gm-ui-hover-effect,
 .gm-style-iw-chr {
   display: none;
 }
 .gm-style-iw-d {
   padding-top: 12px;
+}
+
+/* Glassmorphism for Google Map Infowindow */
+.gm-style .gm-style-iw-c,
+.gm-style .gm-style-iw-t::after {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4.5px);
+  -webkit-backdrop-filter: blur(4.5px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.gm-style .gm-style-iw-tc::after {
+  background: transparent;
+  border: none;
+}
+.gm-style .gm-style-iw-d::-webkit-scrollbar-track,
+.gm-style .gm-style-iw-d::-webkit-scrollbar-track-piece {
+  background-color: transparent;
 }
