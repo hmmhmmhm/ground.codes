@@ -7,11 +7,6 @@ import CoordinatesDisplay from "./coordinates-display";
 import MapSearch from "./map-search";
 import { useI18n } from "@/lib/i18n/i18n-context";
 
-const mapContainerStyle = {
-  width: "100%",
-  height: "100%",
-};
-
 function GoogleMapComponent() {
   const { t } = useI18n();
   const {
@@ -42,9 +37,25 @@ function GoogleMapComponent() {
   return isLoaded ? (
     <div className="relative w-full h-full map-container">
       <GoogleMap
-        {...{ center, onLoad, onUnmount, mapContainerStyle }}
+        {...{
+          center,
+          onLoad,
+          onUnmount,
+          mapContainerStyle: {
+            width: "100%",
+            height: "100%",
+          },
+        }}
         zoom={zoom}
         onClick={onMapClick}
+        options={{
+          mapTypeId: mapType,
+          disableDefaultUI: true, // Disables all default UI controls
+          zoomControl: false,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+        }}
       >
         <MapMarkers {...{ userLocation, selectedArea }} zoom={zoom} />
       </GoogleMap>
@@ -76,7 +87,7 @@ function GoogleMapComponent() {
       )}
     </div>
   ) : (
-    <div>{t('map.loading')}</div>
+    <div>{t("map.loading")}</div>
   );
 }
 

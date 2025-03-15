@@ -59,7 +59,7 @@ const MapControls: React.FC<MapControlsProps> = ({
                 <line x1="8" y1="2" x2="8" y2="18"></line>
                 <line x1="16" y1="6" x2="16" y2="22"></line>
               </svg>
-              <span className="text-[#1A73E8]">{t('map.controls.roadmapLabel')}</span>
+              <span className="text-[#1A73E8] hidden md:inline">{t('map.controls.roadmapLabel')}</span>
             </>
           ) : (
             <>
@@ -80,7 +80,7 @@ const MapControls: React.FC<MapControlsProps> = ({
                 <line x1="9" y1="3" x2="9" y2="21"></line>
                 <line x1="15" y1="3" x2="15" y2="21"></line>
               </svg>
-              <span className="text-[#1A73E8]">{t('map.controls.satelliteLabel')}</span>
+              <span className="text-[#1A73E8] hidden md:inline">{t('map.controls.satelliteLabel')}</span>
             </>
           )}
         </button>
@@ -108,7 +108,7 @@ const MapControls: React.FC<MapControlsProps> = ({
               <line x1="2" y1="12" x2="22" y2="12"></line>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
-            <span className="text-[#1A73E8]">{locale === 'en' ? 'EN' : 'KO'}</span>
+            <span className="text-[#1A73E8] hidden md:inline">{locale === 'en' ? 'EN' : 'KO'}</span>
           </button>
 
           {/* Language Options Dropdown */}
@@ -200,6 +200,43 @@ const MapControls: React.FC<MapControlsProps> = ({
           >
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
             <circle cx="12" cy="9" r="3"></circle>
+          </svg>
+        )}
+      </button>
+
+      <button
+        onClick={toggleFullscreen}
+        className="absolute bottom-[100px] right-[10px] bg-white border-none rounded-full w-[40px] h-[40px] shadow-md cursor-pointer flex justify-center items-center z-10"
+        title={isFullscreen ? t('map.controls.exitFullscreen') : t('map.controls.enterFullscreen')}
+        aria-label={isFullscreen ? t('map.controls.exitFullscreen') : t('map.controls.enterFullscreen')}
+      >
+        {isFullscreen ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#1A73E8"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#1A73E8"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
           </svg>
         )}
       </button>

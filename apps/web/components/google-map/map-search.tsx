@@ -54,13 +54,13 @@ const MapSearch: React.FC<MapSearchProps> = ({ map, onPlaceSelect }) => {
   }, [map, onPlaceSelect]);
 
   return (
-    <div className="absolute top-0 left-0 z-10 m-2 w-64">
-      <div className="rounded-md overflow-hidden relative">
+    <div className="absolute top-0 left-0 z-10 m-2 w-full md:w-64 px-2 md:px-0">
+      <div className="rounded-md overflow-hidden relative max-w-[calc(100%-120px)] md:max-w-full">
         <input
           ref={searchInputRef}
           type="text"
           placeholder={t('map.search.placeholder')}
-          className="w-full p-2 pl-10 bg-white text-black placeholder-gray-600 border-none focus:outline-none"
+          className="w-full p-2 pl-10 bg-white text-black placeholder-gray-600 border-none focus:outline-none shadow-md"
         />
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <svg
