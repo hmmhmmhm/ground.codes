@@ -17,6 +17,9 @@ const defaultCenter = {
   lng: 126.978,
 };
 
+// Define libraries array as a constant to prevent recreation on each render
+const libraries: ("places")[] = ["places"];
+
 // 위치 모드 상태를 정의하는 열거형
 enum LocationMode {
   OFF = 0,        // 꺼짐
@@ -32,7 +35,7 @@ export const useMapContainer = () => {
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
     language: getUserLanguage(),
-    libraries: ["places"],
+    libraries, // Use the constant libraries array
   });
 
   // Map state
