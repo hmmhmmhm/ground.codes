@@ -1,6 +1,11 @@
-import { redirect } from 'next/navigation';
-import { defaultLocale } from '@/i18n';
+"use client";
 
-export default function RootPage() {
-  redirect(`/${defaultLocale}`);
+import GoogleMap from "@/components/google-map";
+
+export default function Home() {
+  return (
+    <div className="absolute min-h-screen-safe bg-black w-full h-full">
+      <GoogleMap />
+    </div>
+  );
 }

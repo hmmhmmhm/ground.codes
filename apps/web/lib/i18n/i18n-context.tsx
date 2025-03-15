@@ -46,23 +46,11 @@ const isValidLocale = (value: string | undefined): value is Locale => {
 
 // URL 경로에서 로케일 부분 업데이트
 const updateUrlWithLocale = (newLocale: Locale) => {
+  // URL 변경 없이 로케일만 쿠키에 저장
   if (typeof window === 'undefined') return;
-
-  const url = new URL(window.location.href);
-  const pathParts = url.pathname.split('/').filter(Boolean);
   
-  // 첫 번째 부분이 로케일인지 확인
-  if (pathParts.length > 0 && isValidLocale(pathParts[0])) {
-    pathParts[0] = newLocale; // 기존 로케일 교체
-  } else {
-    pathParts.unshift(newLocale); // 로케일 추가
-  }
-  
-  // 새 경로 생성 (끝에 슬래시 추가)
-  const newPath = '/' + pathParts.join('/') + '/';
-  
-  // 히스토리 API를 사용하여 URL 업데이트
-  window.history.pushState({}, '', newPath);
+  // 쿠키에 로케일 저장
+  document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
 };
 
 // 프로바이더 컴포넌트

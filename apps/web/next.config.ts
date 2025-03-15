@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
-import withNextIntl from 'next-intl/plugin';
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@repo/ui"],
@@ -19,4 +21,4 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
 };
 
-export default withNextIntl('./i18n.ts')(nextConfig);
+export default withNextIntl(nextConfig);
