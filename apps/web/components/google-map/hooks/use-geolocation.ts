@@ -13,6 +13,7 @@ interface UseGeolocationOptions {
   timeout?: number;
   maximumAge?: number;
   autoGetLocation?: boolean;
+  initialFetch?: boolean; // 최초 위치 정보 가져오기 여부
 }
 
 interface UseGeolocationReturn {
@@ -35,6 +36,7 @@ export const useGeolocation = (
     timeout = 5000,
     maximumAge = 0,
     autoGetLocation = true,
+    initialFetch = false, // 기본값은 false
   } = options;
 
   const [userLocation, setUserLocation] = useState<Location | null>(null);
@@ -55,6 +57,62 @@ export const useGeolocation = (
       setUserLocation(prev => prev ? { ...prev, heading } : null);
     }
   }, [heading, userLocation]);
+
+  // 최초 위치 정보 가져오기 (위치 모드 변경 없이)
+  const getInitialLocation = useCallback(() => {
+    if (navigator.geolocation) {
+      setIsLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // This is a full position update, not just heading
+          isHeadingUpdateRef.current = false;
+          
+          const newUserLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            heading: position.coords.heading || heading,
+          };
+          setUserLocation(newUserLocation);
+          
+          // Only update center and selected area for full position updates
+          if (setCenter) setCenter(newUserLocation);
+          setUserLocationLoaded(true);
+          
+          // 최초 위치 확인 시에는 지도 중앙 이동만 하고 선택 영역은 업데이트하지 않음
+          // if (setSelectedArea) setSelectedArea(newUserLocation);
+
+          // Only pan the map for full position updates (not heading updates)
+          if (map) {
+            map.panTo(newUserLocation);
+            map.setZoom(18);
+          }
+          setIsLoading(false);
+        },
+        (error) => {
+          console.error("Error getting user location:", error);
+          setUserLocationLoaded(true);
+          setIsLoading(false);
+        },
+        {
+          enableHighAccuracy,
+          timeout,
+          maximumAge,
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+      setUserLocationLoaded(true);
+      setIsLoading(false);
+    }
+  }, [
+    map,
+    setCenter,
+    enableHighAccuracy,
+    timeout,
+    maximumAge,
+    heading,
+  ]);
 
   const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
@@ -112,9 +170,13 @@ export const useGeolocation = (
 
   useEffect(() => {
     if (autoGetLocation) {
-      getUserLocation();
+      if (initialFetch) {
+        getInitialLocation();
+      } else {
+        getUserLocation();
+      }
     }
-  }, [autoGetLocation, getUserLocation]);
+  }, [autoGetLocation, getUserLocation, getInitialLocation, initialFetch]);
 
   return {
     userLocation,

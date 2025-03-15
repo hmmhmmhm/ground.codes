@@ -80,8 +80,20 @@ export const useMapContainer = () => {
     setIsLoading,
     requestOrientationPermission,
   } = useGeolocation(map, setCenter, setSelectedArea, {
-    autoGetLocation: false, // 자동으로 위치를 가져오지 않도록 변경
+    autoGetLocation: true, // 자동으로 위치를 가져오도록 변경
+    initialFetch: true, // 최초 위치 정보 가져오기 모드로 설정
   });
+
+  // 페이지 최초 접속 시 위치 정보를 가져왔는지 확인하는 ref
+  const initialLocationFetchedRef = useRef<boolean>(false);
+
+  // 페이지 최초 접속 시 위치 정보 가져오기
+  useEffect(() => {
+    if (isLoaded && !initialLocationFetchedRef.current) {
+      getGeoLocation();
+      initialLocationFetchedRef.current = true;
+    }
+  }, [isLoaded, getGeoLocation]);
 
   // 위치 추적 시작 함수
   const startWatchingPosition = useCallback(() => {
