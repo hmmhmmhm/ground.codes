@@ -82,7 +82,7 @@ export const useMapContainer = () => {
   } = useGeolocation(map, setCenter, setSelectedArea, {
     autoGetLocation: true, // 자동으로 위치를 가져오도록 변경
     initialFetch: true, // 최초 위치 정보 가져오기 모드로 설정
-  });
+  }, locationMode === LocationMode.TRACKING);
 
   // 페이지 최초 접속 시 위치 정보를 가져왔는지 확인하는 ref
   const initialLocationFetchedRef = useRef<boolean>(false);

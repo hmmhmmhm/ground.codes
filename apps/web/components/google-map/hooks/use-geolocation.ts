@@ -29,7 +29,8 @@ export const useGeolocation = (
   map: google.maps.Map | null,
   setCenter?: (location: Location) => void,
   setSelectedArea?: (location: Location) => void,
-  options: UseGeolocationOptions = {}
+  options: UseGeolocationOptions = {},
+  isTrackingMode: boolean = false // Add isTrackingMode parameter with default false
 ): UseGeolocationReturn => {
   const {
     enableHighAccuracy = true,
@@ -75,8 +76,8 @@ export const useGeolocation = (
           };
           setUserLocation(newUserLocation);
           
-          // Only update center and selected area for full position updates
-          if (setCenter) setCenter(newUserLocation);
+          // Only update center if in tracking mode
+          if (setCenter && isTrackingMode) setCenter(newUserLocation);
           setUserLocationLoaded(true);
           
           // 최초 위치 확인 시에는 지도 중앙 이동만 하고 선택 영역은 업데이트하지 않음
@@ -112,6 +113,7 @@ export const useGeolocation = (
     timeout,
     maximumAge,
     heading,
+    isTrackingMode,
   ]);
 
   const getUserLocation = useCallback(() => {
@@ -130,8 +132,8 @@ export const useGeolocation = (
           };
           setUserLocation(newUserLocation);
           
-          // Only update center and selected area for full position updates
-          if (setCenter) setCenter(newUserLocation);
+          // Only update center if in tracking mode
+          if (setCenter && isTrackingMode) setCenter(newUserLocation);
           setUserLocationLoaded(true);
           if (setSelectedArea) setSelectedArea(newUserLocation);
 
@@ -166,6 +168,7 @@ export const useGeolocation = (
     timeout,
     maximumAge,
     heading,
+    isTrackingMode,
   ]);
 
   useEffect(() => {
