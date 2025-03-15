@@ -10,34 +10,6 @@ interface MapMarkersProps {
   isEncoding: boolean;
 }
 
-// Custom styles for the InfoWindow content
-const infoWindowContentStyle = {
-  padding: "4px",
-  maxWidth: "200px",
-  position: "relative" as const,
-};
-
-// Custom close button styles
-const closeButtonStyle = {
-  position: "absolute" as const,
-  top: "0px",
-  right: "0px",
-  width: "20px",
-  height: "20px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  background: "transparent",
-  border: "none",
-  cursor: "pointer",
-  fontSize: "16px",
-  fontWeight: "bold" as const,
-  color: "#666",
-  padding: "0",
-  margin: "0",
-  lineHeight: "1",
-};
-
 const MapMarkers: React.FC<MapMarkersProps> = ({
   userLocation,
   selectedArea,
@@ -45,7 +17,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
   encodedCoordinates,
   isEncoding,
 }) => {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const [showInfoWindow, setShowInfoWindow] = useState(true);
 
   // Determine if selected area marker should be shown based on grid visibility
@@ -109,23 +81,21 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
             minWidth: 150,
           }}
         >
-          <div style={infoWindowContentStyle}>
-            <button 
-              style={closeButtonStyle} 
+          <div className="relative p-1 max-w-[200px]">
+            <button
+              className="absolute top-0 right-0 w-5 h-5 flex items-center justify-center bg-transparent border-none cursor-pointer text-base font-bold text-gray-600 p-0 m-0 leading-none focus:outline-none focus-visible:outline-none"
               onClick={() => setShowInfoWindow(false)}
               aria-label="Close"
             >
               ×
             </button>
-            <div style={{ fontWeight: "bold", marginBottom: "4px", paddingRight: "20px" }}>
-              {t("map.groundCode")}:
-            </div>
+            <div className="font-thin mb-1 pr-5">{t("map.groundCode")}:</div>
             {isEncoding ? (
-              <div style={{ color: "#888" }}>{t("map.encoding")}...</div>
-            ) : (
-              <div style={{ wordBreak: "break-word" }}>
-                {encodedCoordinates}
+              <div className="font-bold text-gray-500">
+                {t("map.encoding")}...
               </div>
+            ) : (
+              <div className="font-bold break-words">{encodedCoordinates}</div>
             )}
           </div>
         </InfoWindow>
