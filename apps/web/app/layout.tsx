@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { I18nProvider } from "@/lib/i18n/i18n-context";
 import { Locale } from "@/i18n";
+import { DisableZoom } from "@/components/disable-zoom";
 import "@repo/ui/globals.css";
 
 const spaceMono = Space_Mono({
@@ -38,6 +39,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <body className={`${spaceMono.className} antialiased`}>
+        <DisableZoom />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <I18nProvider initialLocale={locale as Locale}>
             {children}
