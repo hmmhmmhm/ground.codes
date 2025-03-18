@@ -54,6 +54,20 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
   const hasHeading =
     userLocation?.heading !== undefined && userLocation?.heading !== null;
 
+  // 방향 마커 관련 상태 관리
+  const [lastHeading, setLastHeading] = useState<number | null>(null);
+
+  // 방향 정보가 변경될 때 마지막 유효한 방향 정보 저장
+  useEffect(() => {
+    if (userLocation?.heading !== undefined && userLocation?.heading !== null) {
+      setLastHeading(userLocation.heading);
+    }
+  }, [userLocation?.heading]);
+
+  // 실제 사용할 방향 정보 (현재 방향 또는 마지막 유효한 방향)
+  const effectiveHeading = hasHeading ? userLocation?.heading : lastHeading;
+  const showDirectionMarker = effectiveHeading !== null && effectiveHeading !== undefined;
+
   return (
     <>
       {userLocation && (
@@ -61,7 +75,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
           <Marker
             position={userLocation}
             icon={{
-              path: hasHeading
+              path: showDirectionMarker
                 ? google.maps.SymbolPath.FORWARD_CLOSED_ARROW
                 : google.maps.SymbolPath.CIRCLE,
               fillColor: "#4285F4",
@@ -69,7 +83,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
               strokeColor: "#FFFFFF",
               strokeWeight: 2,
               scale: shouldShowAccuracyCircle ? 4 : 8,
-              rotation: hasHeading ? userLocation.heading : 0,
+              rotation: showDirectionMarker ? effectiveHeading : 0,
             }}
             title="My Position"
             clickable={false}

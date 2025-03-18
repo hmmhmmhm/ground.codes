@@ -23,6 +23,7 @@ interface UseGeolocationReturn {
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   requestOrientationPermission: () => Promise<boolean>;
+  cancelGeolocationRequest: () => void;
 }
 
 export const useGeolocation = (
@@ -42,112 +43,171 @@ export const useGeolocation = (
 
   const [userLocation, setUserLocation] = useState<Location | null>(null);
   const [userLocationLoaded, setUserLocationLoaded] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  
+
+  // Loading state ref to avoid render cycles
+  const isLoadingRef = useRef(false);
+
+  // Expose loading state through a getter function
+  const getIsLoading = useCallback(() => isLoadingRef.current, []);
+
   // Use a ref to track if this is just a heading update
   const isHeadingUpdateRef = useRef(false);
-  
+
   // Use the device orientation hook
   const { heading, requestPermission } = useDeviceOrientation();
 
+  // Use a ref to track the previous heading to prevent unnecessary updates
+  const prevHeadingRef = useRef<number | null>(null);
+
   // Update user location when heading changes from device orientation
   useEffect(() => {
-    if (userLocation && heading !== null) {
-      // Only update heading without triggering map re-centering
+    // 방향 정보가 있고 추적 모드일 때만 방향 업데이트
+    if (userLocation && heading !== null && isTrackingMode) {
+      // 이전 방향과 현재 방향이 같으면 업데이트 건너뛰기
+      const prevHeading = prevHeadingRef.current;
+      if (prevHeading === heading) {
+        return;
+      }
+      
+      // 방향 변화가 충분히 큰 경우에만 업데이트 (작은 변화는 무시)
+      if (prevHeading !== null) {
+        const angleDiff = Math.abs(heading - prevHeading);
+        const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff;
+        if (normalizedDiff < 3) {
+          return;
+        }
+      }
+      
+      // 방향 업데이트 플래그 설정
       isHeadingUpdateRef.current = true;
-      setUserLocation(prev => prev ? { ...prev, heading } : null);
+      prevHeadingRef.current = heading;
+      
+      // 렌더링 사이클 분리를 위해 requestAnimationFrame 사용
+      requestAnimationFrame(() => {
+        setUserLocation((prev) => {
+          if (!prev) return null;
+          return { ...prev, heading };
+        });
+      });
     }
-  }, [heading, userLocation]);
+  }, [heading, userLocation, isTrackingMode]);
 
-  // 최초 위치 정보 가져오기 (위치 모드 변경 없이)
-  const getInitialLocation = useCallback(() => {
+  // Track current geolocation request ID
+  const geolocationRequestIdRef = useRef<number | null>(null);
+
+  // Cancel any ongoing geolocation request
+  const cancelGeolocationRequest = useCallback(() => {
+    if (geolocationRequestIdRef.current !== null) {
+      navigator.geolocation.clearWatch(geolocationRequestIdRef.current);
+      geolocationRequestIdRef.current = null;
+      isLoadingRef.current = false;
+    }
+  }, []);
+
+  // Start watching position
+  const startWatchingPosition = useCallback(() => {
     if (navigator.geolocation) {
-      setIsLoading(true);
-      navigator.geolocation.getCurrentPosition(
+      cancelGeolocationRequest();
+
+      // Update loading ref directly instead of state
+      isLoadingRef.current = true;
+      
+      // 이전 위치 정보 유지 (방향 정보 포함)
+      const prevLocation = userLocation;
+      
+      const watchId = navigator.geolocation.watchPosition(
         (position) => {
-          // This is a full position update, not just heading
-          isHeadingUpdateRef.current = false;
+          // Update loading ref directly
+          isLoadingRef.current = false;
           
-          const newUserLocation = {
+          // 새 위치 정보 생성 (이전 방향 정보 유지)
+          const newLocation = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             accuracy: position.coords.accuracy,
-            heading: position.coords.heading || heading,
+            // 새 방향 정보가 있으면 업데이트, 없으면 이전 방향 정보 유지
+            heading: position.coords.heading !== null && position.coords.heading !== undefined
+              ? position.coords.heading
+              : prevLocation?.heading || null,
           };
-          setUserLocation(newUserLocation);
           
-          // Only update center if in tracking mode
-          if (setCenter && isTrackingMode) setCenter(newUserLocation);
-          setUserLocationLoaded(true);
-          
-          // 최초 위치 확인 시에는 지도 중앙 이동만 하고 선택 영역은 업데이트하지 않음
-          // if (setSelectedArea) setSelectedArea(newUserLocation);
-
-          // Only pan the map for full position updates (not heading updates)
-          if (map) {
-            map.panTo(newUserLocation);
-            map.setZoom(18);
+          // 방향 정보 업데이트 플래그 설정
+          if (position.coords.heading !== null && position.coords.heading !== undefined) {
+            prevHeadingRef.current = position.coords.heading;
           }
-          setIsLoading(false);
+          
+          // 위치 정보 업데이트
+          setUserLocation(newLocation);
         },
         (error) => {
-          console.error("Error getting user location:", error);
-          setUserLocationLoaded(true);
-          setIsLoading(false);
+          // Update loading ref directly
+          isLoadingRef.current = false;
+          // setError(error.message);
         },
         {
-          enableHighAccuracy,
-          timeout,
-          maximumAge,
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 1000,
         }
       );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-      setUserLocationLoaded(true);
-      setIsLoading(false);
+
+      geolocationRequestIdRef.current = watchId;
     }
-  }, [
-    map,
-    setCenter,
-    enableHighAccuracy,
-    timeout,
-    maximumAge,
-    heading,
-    isTrackingMode,
-  ]);
+  }, [cancelGeolocationRequest, userLocation]);
 
   const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
-      setIsLoading(true);
+      // Cancel any existing request first
+      cancelGeolocationRequest();
+
+      isLoadingRef.current = true;
       navigator.geolocation.getCurrentPosition(
         (position) => {
           // This is a full position update, not just heading
           isHeadingUpdateRef.current = false;
-          
+
           const newUserLocation = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             accuracy: position.coords.accuracy,
             heading: position.coords.heading || heading,
           };
+          
+          // Batch state updates to prevent re-renders between updates
+          const shouldUpdateCenter = setCenter && 
+            (isTrackingMode || (!isTrackingMode && !userLocationLoaded));
+          
+          // Update user location
           setUserLocation(newUserLocation);
           
-          // Only update center if in tracking mode
-          if (setCenter && isTrackingMode) setCenter(newUserLocation);
+          // Update loading state first
           setUserLocationLoaded(true);
+          
+          // Only then update other states that depend on location
+          if (shouldUpdateCenter) {
+            setCenter(newUserLocation);
+          }
+          
           if (setSelectedArea) setSelectedArea(newUserLocation);
 
           // Only pan the map for full position updates (not heading updates)
-          if (map) {
-            map.panTo(newUserLocation);
-            map.setZoom(18);
+          // Only pan in tracking mode or on first location update in LOCATE mode
+          if (map && (isTrackingMode || !userLocationLoaded)) {
+            // Use a timeout to break the render cycle
+            setTimeout(() => {
+              if (map) {
+                map.panTo(newUserLocation);
+                map.setZoom(18);
+              }
+            }, 0);
           }
-          setIsLoading(false);
+          
+          isLoadingRef.current = false;
         },
-        (error) => {
-          console.error("Error getting user location:", error);
+        () => {
+          // ! No error console
           setUserLocationLoaded(true);
-          setIsLoading(false);
+          isLoadingRef.current = false;
         },
         {
           enableHighAccuracy,
@@ -158,7 +218,7 @@ export const useGeolocation = (
     } else {
       console.error("Geolocation is not supported by this browser.");
       setUserLocationLoaded(true);
-      setIsLoading(false);
+      isLoadingRef.current = false;
     }
   }, [
     map,
@@ -169,24 +229,48 @@ export const useGeolocation = (
     maximumAge,
     heading,
     isTrackingMode,
+    userLocationLoaded,
   ]);
+
+  // Monitor loading state changes
+  useEffect(() => {
+    // If loading state is set to false, ensure any pending requests are canceled
+    if (!getIsLoading() && geolocationRequestIdRef.current !== null) {
+      navigator.geolocation.clearWatch(geolocationRequestIdRef.current);
+      geolocationRequestIdRef.current = null;
+    }
+  }, [getIsLoading]);
 
   useEffect(() => {
     if (autoGetLocation) {
       if (initialFetch) {
-        getInitialLocation();
+        startWatchingPosition();
       } else {
         getUserLocation();
       }
     }
-  }, [autoGetLocation, getUserLocation, getInitialLocation, initialFetch]);
+
+    // Clean up any pending geolocation requests on unmount
+    return () => {
+      cancelGeolocationRequest();
+    };
+  }, [
+    autoGetLocation,
+    getUserLocation,
+    startWatchingPosition,
+    initialFetch,
+    cancelGeolocationRequest,
+  ]);
 
   return {
     userLocation,
     userLocationLoaded,
     getUserLocation,
-    isLoading,
-    setIsLoading,
+    isLoading: getIsLoading(),
+    setIsLoading: (loading: boolean) => {
+      isLoadingRef.current = loading;
+    },
     requestOrientationPermission: requestPermission,
+    cancelGeolocationRequest,
   };
 };

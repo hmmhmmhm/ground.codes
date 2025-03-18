@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { usePathname } from 'next/navigation';
 import { locales, Locale } from '@/i18n';
 import { useI18n } from "@/lib/i18n/i18n-context";
+import { LocationMode } from './types';
 
 // 위치 모드 상태를 정의하는 열거형 (use-map-container.ts와 동일하게 유지)
-enum LocationMode {
-  OFF = 0,        // 꺼짐
-  LOCATE = 1,     // 내 위치 보기
-  TRACKING = 2,   // 위치 추적
-}
+// enum LocationMode {
+//   OFF = 0,        // 꺼짐
+//   LOCATE = 1,     // 내 위치 보기
+//   TRACKING = 2,   // 위치 추적
+// }
 
 interface MapControlsProps {
   showGrid: boolean;
@@ -20,7 +21,7 @@ interface MapControlsProps {
   toggleFullscreen: () => void;
   isLoadingLocation?: boolean;
   isTrackingLocation?: boolean;
-  locationMode?: number;
+  locationMode?: LocationMode;
 }
 
 const MapControls: React.FC<MapControlsProps> = ({
@@ -202,7 +203,6 @@ const MapControls: React.FC<MapControlsProps> = ({
         className="absolute bottom-[150px] right-[10px] bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center z-10"
         title={getLocationButtonTitle()}
         aria-label={getLocationButtonTitle()}
-        disabled={isLoadingLocation}
         style={getLocationButtonStyle()}
       >
         {isLoadingLocation ? (

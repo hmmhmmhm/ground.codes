@@ -6,12 +6,8 @@ import { googleMapDarkTheme } from "@/lib/map/google-map-theme";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useLanguage } from "./use-language";
 import { useI18n } from "@/lib/i18n/i18n-context";
-
-interface Coordinates {
-  lat: number;
-  lng: number;
-  heading?: number | null;
-}
+import { useLocationTracking } from './use-location-tracking';
+import { Coordinates, LocationMode } from '../types';
 
 const defaultCenter = {
   lat: 37.5665,
@@ -21,20 +17,13 @@ const defaultCenter = {
 // Define libraries array as a constant to prevent recreation on each render
 const libraries: "places"[] = ["places"];
 
-// 위치 모드 상태를 정의하는 열거형
-enum LocationMode {
-  OFF = 0, // 꺼짐
-  LOCATE = 1, // 내 위치 보기
-  TRACKING = 2, // 위치 추적
-}
-
 export const useMapContainer = () => {
   const { getUserLanguage } = useLanguage();
   const { isChangingLanguage } = useI18n();
-  
+
   // Get language from cookie for Google Maps API
   // Always use 'en' as default to prevent re-renders with unsupported languages
-  const mapLanguage = isChangingLanguage ? 'en' : getUserLanguage();
+  const mapLanguage = isChangingLanguage ? "en" : getUserLanguage();
 
   // Load Google Maps API
   const { isLoaded } = useJsApiLoader({
@@ -53,23 +42,18 @@ export const useMapContainer = () => {
   const userZoomRef = useRef<number>(18); // 사용자가 설정한 zoom 값을 저장할 ref
 
   // User location state
-  const [userLocationLoaded, setUserLocationLoaded] = useState(false);
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
+  const [userLocationLoaded, setUserLocationLoaded] = useState(false);
   const prevLocationRef = useRef<Coordinates | null>(null);
 
   // Place Details UI state
   const [placeDetailsVisible, setPlaceDetailsVisible] = useState(false);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<google.maps.LatLng | null>(null);
+  const [selectedLocation, setSelectedLocation] =
+    useState<google.maps.LatLng | null>(null);
 
-  // Location tracking state
-  const [locationMode, setLocationMode] = useState<LocationMode>(
-    LocationMode.OFF
-  );
-  const isTrackingLocation = locationMode === LocationMode.TRACKING;
-
-  // GPS 위치 추적 ID를 저장하기 위한 ref
-  const watchPositionIdRef = useRef<number | null>(null);
+  // Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   // Grid state
   const [showGrid, setShowGrid] = useState(true);
@@ -87,13 +71,40 @@ export const useMapContainer = () => {
     null
   );
 
+  // 위치 추적 관련 기능 사용
+  const {
+    locationMode,
+    setLocationMode,
+    isLoadingLocation,
+    isTrackingLocation,
+    startLocationTracking,
+    stopLocationTracking,
+    toggleLocationMode,
+  } = useLocationTracking({
+    map,
+    isTrackingMode: true,
+    onLocationUpdate: useCallback((location) => {
+      if (location) {
+        setUserLocation(location);
+        setUserLocationLoaded(true);
+      }
+    }, []),
+  });
+
+  // 로딩 상태 동기화 - 의존성 배열 비우기
+  useEffect(() => {
+    // 함수 내부에서 최신 isLoadingLocation 값을 직접 참조
+    if (isLoadingLocation !== undefined) {
+      setIsLoading(isLoadingLocation);
+    }
+  // 빈 의존성 배열로 컴포넌트 마운트 시 한 번만 실행되도록 함
+  }, []);
+
   // Get user location using the hook
   const {
     userLocation: geoLocation,
-    userLocationLoaded: geoLocationLoaded,
     getUserLocation: getGeoLocation,
-    isLoading: isLoadingLocation,
-    setIsLoading,
+    cancelGeolocationRequest,
     requestOrientationPermission,
   } = useGeolocation(
     map,
@@ -102,251 +113,80 @@ export const useMapContainer = () => {
     {
       autoGetLocation: true, // 자동으로 위치를 가져오도록 변경
       initialFetch: true, // 최초 위치 정보 가져오기 모드로 설정
-    },
-    locationMode === LocationMode.TRACKING
-  );
-
-  // 페이지 최초 접속 시 위치 정보를 가져왔는지 확인하는 ref
-  const initialLocationFetchedRef = useRef<boolean>(false);
-
-  // 페이지 최초 접속 시 위치 정보 가져오기
-  useEffect(() => {
-    if (isLoaded && !initialLocationFetchedRef.current) {
-      getGeoLocation();
-      initialLocationFetchedRef.current = true;
     }
-  }, [isLoaded, getGeoLocation]);
+  );
 
   // 위치 추적 시작 함수
   const startWatchingPosition = useCallback(() => {
-    // 이미 추적 중이면 중복 실행 방지
-    if (watchPositionIdRef.current !== null) {
-      return;
-    }
-
-    if (navigator.geolocation) {
-      // 위치 추적 시작
-      const watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const newLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-            accuracy: position.coords.accuracy,
-            heading: position.coords.heading,
-          };
-
-          // 위치 모드에 따라 처리
-          if (locationMode === LocationMode.TRACKING) {
-            // 추적 모드: 지도 중앙 이동
-            if (map) {
-              // 사용자 zoom 유지
-              const currentZoom = map.getZoom() || userZoomRef.current;
-              map.setZoom(currentZoom);
-              map.panTo(newLocation);
-            }
-            // heading 정보 포함하여 위치 업데이트
-            setUserLocation(newLocation);
-          } else if (locationMode === LocationMode.LOCATE) {
-            // 내 위치 보기 모드: heading 정보 제외하고 위치만 업데이트
-            const locationWithoutHeading = {
-              lat: newLocation.lat,
-              lng: newLocation.lng,
-              accuracy: newLocation.accuracy,
-            };
-            setUserLocation(locationWithoutHeading);
-          }
-
-          setUserLocationLoaded(true);
-          prevLocationRef.current = newLocation;
-        },
-        (error) => {
-          console.error("Error watching position:", error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
-        }
-      );
-
-      watchPositionIdRef.current = watchId;
-    }
-  }, [map, locationMode]);
+    startLocationTracking();
+  }, [startLocationTracking]);
 
   // 위치 추적 중지 함수
   const stopWatchingPosition = useCallback(() => {
-    if (watchPositionIdRef.current !== null) {
-      navigator.geolocation.clearWatch(watchPositionIdRef.current);
-      watchPositionIdRef.current = null;
-    }
-  }, []);
+    stopLocationTracking();
+  }, [stopLocationTracking]);
 
   // 위치 모드 변경 시 추적 상태 업데이트
   useEffect(() => {
+    // 위치 모드에 따라 다른 동작 수행
     if (locationMode === LocationMode.OFF) {
       // OFF 모드: 위치 추적 중지
       stopWatchingPosition();
-    } else {
-      // LOCATE 또는 TRACKING 모드: 위치 추적 시작
+      
+      // 위치 요청 취소 및 로딩 상태 초기화
+      cancelGeolocationRequest();
+      
+      // 이전 위치 참조 초기화하여 다시 위치 모드 활성화 시 처음부터 시작하도록 함
+      prevLocationRef.current = null;
+    } else if (locationMode === LocationMode.LOCATE) {
+      // LOCATE 모드: 위치를 한 번만 확인
+      // 이미 위치 정보가 있는지 확인
+      if (!userLocationLoaded) {
+        // 위치 정보가 없는 경우에만 getCurrentPosition 실행
+        getGeoLocation();
+      }
+    } else if (locationMode === LocationMode.TRACKING) {
+      // TRACKING 모드: 위치 추적 시작
+      // 이미 위치 정보가 있는지 확인
+      if (!userLocationLoaded || !userLocation) {
+        // 위치 정보가 없으면 먼저 가져오기
+        getGeoLocation();
+      }
+      
+      // 위치 추적 시작 (watchPosition)
       startWatchingPosition();
     }
-  }, [locationMode, startWatchingPosition, stopWatchingPosition]);
-
-  // 컴포넌트 언마운트 시 위치 추적 중지
-  useEffect(() => {
-    return () => {
-      stopWatchingPosition();
-    };
-  }, [stopWatchingPosition]);
-
-  // 사용자가 zoom을 변경할 때 userZoomRef 업데이트
-  useEffect(() => {
-    if (map) {
-      console.log("Setting up zoom change listener");
-
-      // Initial zoom sync
-      const initialZoom = map.getZoom();
-      if (initialZoom) {
-        console.log("Initial map zoom:", initialZoom);
-        userZoomRef.current = initialZoom;
-        setZoom(initialZoom);
-      }
-
-      const zoomChangeListener = map.addListener("zoom_changed", () => {
-        const currentZoom = map.getZoom() || 18;
-        console.log("Zoom changed in map:", currentZoom);
-        userZoomRef.current = currentZoom;
-        setZoom(currentZoom);
-        console.log("Updated zoom state to:", currentZoom);
-      });
-
-      return () => {
-        console.log("Removing zoom change listener");
-        google.maps.event.removeListener(zoomChangeListener);
-      };
-    }
-  }, [map]);
-
-  // Enhanced getUserLocation function that also requests device orientation permission
-  // and handles location tracking mode
-  const getUserLocation = useCallback(() => {
-    // 위치 모드를 순환시킴: 꺼짐 -> 내 위치 보기 -> 위치 추적 -> 꺼짐
-    setLocationMode((prevMode) => {
-      // 현재 꺼짐 상태면 내 위치 보기로 변경
-      if (prevMode === LocationMode.OFF) {
-        return LocationMode.LOCATE;
-      }
-      // 현재 내 위치 보기 상태면 위치 추적으로 변경
-      else if (prevMode === LocationMode.LOCATE) {
-        // LOCATE -> TRACKING 모드로 변경 시 로딩 상태 초기화
-        setIsLoading(false);
-        return LocationMode.TRACKING;
-      }
-      // 현재 위치 추적 상태면 꺼짐으로 변경
-      else {
-        // OFF 모드로 변경할 때 로딩 상태 초기화
-        setIsLoading(false);
-        return LocationMode.OFF;
-      }
-    });
-
-    // Request device orientation permission for iOS devices
-    requestOrientationPermission().catch((error) => {
-      console.error("Error requesting device orientation permission:", error);
-    });
-
-    // 위치 모드에 따라 위치 정보 가져오기
-    // OFF -> LOCATE 모드로 변경될 때만 새로운 위치 정보 가져오기
-    if (!userLocation || !userLocationLoaded) {
-      getGeoLocation();
-    }
   }, [
-    getGeoLocation,
-    requestOrientationPermission,
-    userLocation,
-    userLocationLoaded,
-  ]);
-
-  // Check if only the heading has changed
-  const isOnlyHeadingChanged = useCallback(
-    (prev: Coordinates | null, next: Coordinates | null) => {
-      if (!prev || !next) return false;
-
-      return (
-        prev.lat === next.lat &&
-        prev.lng === next.lng &&
-        prev.heading !== next.heading
-      );
-    },
-    []
-  );
-
-  // Update user location state when geolocation changes
-  useEffect(() => {
-    if (geoLocation) {
-      const onlyHeadingChanged = isOnlyHeadingChanged(
-        prevLocationRef.current,
-        geoLocation
-      );
-
-      // 위치 모드에 따라 지도 중앙 이동 처리
-      if (locationMode === LocationMode.TRACKING) {
-        // 추적 모드: 헤딩만 변경된 경우가 아니면 항상 지도 중앙 이동
-        if (!onlyHeadingChanged && map && setCenter) {
-          // 사용자가 설정한 zoom 값을 유지
-          const currentZoom = map.getZoom() || userZoomRef.current;
-          map.setZoom(currentZoom);
-
-          // 지도 중앙 이동
-          setCenter(geoLocation);
-        }
-
-        // 추적 모드에서는 heading 정보 포함
-        setUserLocation(geoLocation);
-      } else if (locationMode === LocationMode.LOCATE) {
-        // 내 위치 보기 모드: 최초 위치 확인 시에만 지도 중앙 이동
-        if (!prevLocationRef.current && map && setCenter) {
-          // 사용자가 설정한 zoom 값을 유지
-          const currentZoom = map.getZoom() || userZoomRef.current;
-          map.setZoom(currentZoom);
-
-          // 지도 중앙 이동
-          setCenter(geoLocation);
-
-          // 내 위치 보기 모드에서는 위치를 한 번 확인한 후 자동으로 OFF 모드로 변경
-          setLocationMode(LocationMode.OFF);
-        }
-
-        // 추적 모드가 아닐 때는 heading 정보 제외
-        const locationWithoutHeading = {
-          lat: geoLocation.lat,
-          lng: geoLocation.lng,
-          accuracy: geoLocation.accuracy,
-        };
-        setUserLocation(locationWithoutHeading);
-      } else {
-        // OFF 모드: heading 정보 제외
-        const locationWithoutHeading = {
-          lat: geoLocation.lat,
-          lng: geoLocation.lng,
-          accuracy: geoLocation.accuracy,
-        };
-        setUserLocation(locationWithoutHeading);
-      }
-
-      // 이전 위치 저장 (heading 포함)
-      prevLocationRef.current = geoLocation;
-    }
-    setUserLocationLoaded(geoLocationLoaded);
-  }, [
-    geoLocation,
-    geoLocationLoaded,
-    isOnlyHeadingChanged,
-    setCenter,
-    setSelectedArea,
     locationMode,
-    map,
+    startWatchingPosition,
+    stopWatchingPosition,
+    cancelGeolocationRequest,
+    userLocationLoaded,
+    userLocation,
+    getGeoLocation,
   ]);
+
+  // Toggle map type between roadmap and satellite
+  const toggleMapType = useCallback(() => {
+    setMapType((prevType) => (prevType === "roadmap" ? "satellite" : "roadmap"));
+  }, []);
+
+  // Toggle fullscreen mode
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
+
+  // 사용자 위치 가져오기 함수
+  const getUserLocation = useCallback(() => {
+    // 위치 모드 토글 (OFF -> LOCATE -> TRACKING -> OFF)
+    if (locationMode === LocationMode.OFF) {
+      setLocationMode(LocationMode.LOCATE);
+    } else if (locationMode === LocationMode.LOCATE) {
+      setLocationMode(LocationMode.TRACKING);
+    } else {
+      setLocationMode(LocationMode.OFF);
+    }
+  }, [locationMode, setLocationMode]);
 
   // Get encoded coordinates using the hook
   const { encodedCoordinates, isEncoding, encodeSelectedAreaCoordinates } =
@@ -364,8 +204,6 @@ export const useMapContainer = () => {
   // Map click handler
   const onMapClick = useCallback(
     (e: google.maps.MapMouseEvent) => {
-      console.log("Map click in component:", e.latLng?.toString());
-
       // 지도 클릭 시 위치 추적 모드 해제
       if (locationMode === LocationMode.TRACKING) {
         setLocationMode(LocationMode.OFF);
@@ -373,9 +211,8 @@ export const useMapContainer = () => {
 
       // Check if a POI was clicked
       if ((e as any).placeId) {
-        // Prevent the default POI info window from showing up
         (e as google.maps.IconMouseEvent).stop();
-        
+
         // A POI was clicked
         setSelectedPlaceId((e as any).placeId);
         setSelectedLocation(e.latLng || null);
@@ -383,7 +220,6 @@ export const useMapContainer = () => {
         // Prevent grid cell click handling when POI is clicked
         return;
       }
-
       // Close place details if open
       if (placeDetailsVisible) {
         setPlaceDetailsVisible(false);
@@ -393,7 +229,7 @@ export const useMapContainer = () => {
 
       handleGridCellClick(e);
     },
-    [handleGridCellClick, locationMode, placeDetailsVisible]
+    [handleGridCellClick, locationMode, placeDetailsVisible, setLocationMode]
   );
 
   // Close place details
@@ -406,98 +242,22 @@ export const useMapContainer = () => {
   // Map zoom change handler
   const onZoomChanged = useCallback(() => {
     if (map) {
-      const currentZoom = map.getZoom() || 18;
-      console.log("onZoomChanged triggered, new zoom:", currentZoom);
-      userZoomRef.current = currentZoom;
-      setZoom(currentZoom);
+      const newZoom = map.getZoom();
+      if (newZoom) {
+        setZoom(newZoom);
+        userZoomRef.current = newZoom;
+      }
     }
   }, [map]);
-
-  // Toggle map type between roadmap and satellite
-  const toggleMapType = useCallback(() => {
-    if (!isLoaded) return;
-
-    const newMapType = mapType === "roadmap" ? "hybrid" : "roadmap";
-    setMapType(newMapType);
-
-    if (map) {
-      map.setMapTypeId(newMapType as google.maps.MapTypeId);
-    }
-  }, [map, mapType, isLoaded]);
-
-  // Toggle fullscreen mode
-  const toggleFullscreen = useCallback(() => {
-    const mapElement = document.querySelector(".map-container");
-    if (!mapElement) {
-      console.error("Map container element not found");
-      return;
-    }
-
-    if (!isFullscreen) {
-      try {
-        if (mapElement.requestFullscreen) {
-          mapElement.requestFullscreen();
-        } else if ((mapElement as any).webkitRequestFullscreen) {
-          (mapElement as any).webkitRequestFullscreen();
-        } else if ((mapElement as any).msRequestFullscreen) {
-          (mapElement as any).msRequestFullscreen();
-        }
-      } catch (error) {
-        console.error("Failed to enter fullscreen mode:", error);
-      }
-    } else {
-      try {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if ((document as any).webkitExitFullscreen) {
-          (document as any).webkitExitFullscreen();
-        } else if ((document as any).msExitFullscreen) {
-          (document as any).msExitFullscreen();
-        }
-      } catch (error) {
-        console.error("Failed to exit fullscreen mode:", error);
-      }
-    }
-
-    setIsFullscreen(!isFullscreen);
-  }, [isFullscreen]);
-
-  // Listen for fullscreen change events
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
-    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-      document.removeEventListener(
-        "webkitfullscreenchange",
-        handleFullscreenChange
-      );
-      document.removeEventListener(
-        "mozfullscreenchange",
-        handleFullscreenChange
-      );
-      document.removeEventListener(
-        "MSFullscreenChange",
-        handleFullscreenChange
-      );
-    };
-  }, []);
 
   // 지도 클릭 시 위치 추적 모드 해제
   const handleMapInteraction = useCallback(() => {
     if (locationMode === LocationMode.TRACKING) {
       setLocationMode(LocationMode.OFF);
     }
-  }, [locationMode]);
+  }, [locationMode, setLocationMode]);
 
-  // Update grid when map or showGrid changes
+  // Setup map event handlers when map is ready
   useEffect(() => {
     if (map) {
       removeMapEventHandlers(map);
@@ -511,14 +271,13 @@ export const useMapContainer = () => {
 
       // 지도 드래그 이벤트 리스너 추가
       map.addListener("dragstart", handleMapInteraction);
-    }
 
-    return () => {
-      if (map) {
-        // 지도 드래그 이벤트 리스너 제거
-        google.maps.event.clearListeners(map, "dragstart");
-      }
-    };
+      return () => {
+        if (map) {
+          google.maps.event.clearListeners(map, "dragstart");
+        }
+      };
+    }
   }, [
     showGrid,
     map,
@@ -547,7 +306,7 @@ export const useMapContainer = () => {
   // Handle place selection from search
   const handlePlaceSelect = useCallback(
     (place: google.maps.places.PlaceResult) => {
-      if (!map || !place.geometry?.location) return;
+      if (!place.geometry || !place.geometry.location || !map) return;
 
       // 검색 시 위치 추적 모드 해제
       if (locationMode === LocationMode.TRACKING) {
@@ -561,9 +320,7 @@ export const useMapContainer = () => {
         map.fitBounds(place.geometry.viewport);
       } else {
         map.setCenter(place.geometry.location);
-        // 사용자가 설정한 zoom 값을 유지
-        const currentZoom = map.getZoom() || userZoomRef.current;
-        map.setZoom(currentZoom);
+        map.setZoom(17);
       }
 
       // Create or update marker
@@ -594,37 +351,30 @@ export const useMapContainer = () => {
       const location = place.geometry.location.toJSON();
       setSelectedArea(location);
     },
-    [map, searchMarker, infoWindow, locationMode]
+    [map, searchMarker, infoWindow, locationMode, setLocationMode]
   );
 
   // Map load handler
   const onLoad = useCallback(
     (mapInstance: google.maps.Map) => {
-      console.log("Map loaded");
+      setMap(mapInstance);
+
+      // Apply dark theme if needed
       mapInstance.setOptions({
         styles: googleMapDarkTheme,
-        mapTypeId: mapType as google.maps.MapTypeId,
-        mapTypeControl: false,
-        fullscreenControl: false,
-        clickableIcons: false, // Disable clickable POIs like parks
       });
 
-      if (userLocationLoaded && userLocation) {
-        mapInstance.panTo(userLocation);
-        // 초기 zoom 설정
-        mapInstance.setZoom(zoom);
-        userZoomRef.current = zoom;
-      }
-
-      setMap(mapInstance);
+      // Set up grid and event handlers
+      drawGrid(mapInstance);
+      setupMapEventHandlers(mapInstance);
     },
-    [userLocation, userLocationLoaded, mapType, zoom]
+    [drawGrid, setupMapEventHandlers]
   );
 
-  // Map unmount handler
+  // Map unload handler
   const onUnmount = useCallback(
     (mapInstance: google.maps.Map) => {
-      console.log("Map unmounting");
+      // Clean up grid
       clearAllGridLines();
       removeMapEventHandlers(mapInstance);
 
@@ -639,7 +389,7 @@ export const useMapContainer = () => {
       }
 
       // 위치 추적 중지
-      stopWatchingPosition();
+      stopLocationTracking();
 
       setMap(null);
     },
@@ -648,15 +398,13 @@ export const useMapContainer = () => {
       removeMapEventHandlers,
       searchMarker,
       infoWindow,
-      stopWatchingPosition,
+      stopLocationTracking,
     ]
   );
 
   return {
-    // Loading state
-    isLoaded,
-
     // Map state
+    isLoaded,
     map,
     center,
     zoom,
@@ -669,8 +417,8 @@ export const useMapContainer = () => {
     userLocation,
     userLocationLoaded,
     getUserLocation,
-    isLoadingLocation,
-    isTrackingLocation,
+    isLoading,
+    isTrackingLocation: locationMode === LocationMode.TRACKING,
     locationMode,
 
     // Grid state

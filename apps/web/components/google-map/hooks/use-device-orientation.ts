@@ -4,6 +4,7 @@ interface DeviceOrientationState {
   heading: number | null;
   isSupported: boolean;
   permissionState: "prompt" | "granted" | "denied" | "unavailable";
+  isCalibrating: boolean;
 }
 
 interface UseDeviceOrientationReturn extends DeviceOrientationState {
@@ -16,14 +17,21 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
       heading: null,
       isSupported: false,
       permissionState: "unavailable",
+      isCalibrating: false,
     });
 
   // Use a ref to store the latest heading value without triggering re-renders
   const headingRef = useRef<number | null>(null);
   // Debounce timer ref
   const debounceTimerRef = useRef<number | null>(null);
+  // Orientation listener added ref
+  const orientationListenerAddedRef = useRef<boolean>(false);
+  // Last heading update time ref
+  const lastHeadingUpdateTimeRef = useRef<number>(0);
   // Minimum angle change required to update state (in degrees)
-  const MIN_ANGLE_CHANGE = 5;
+  const MIN_ANGLE_CHANGE = 2;
+  // Minimum update interval (in milliseconds)
+  const MIN_UPDATE_INTERVAL = 50;
 
   // Check if device is iOS
   const isIOS = useCallback(() => {
@@ -47,7 +55,8 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
     }
     // For devices that only provide alpha value (relative to initial position)
     else if (event.alpha !== null) {
-      newHeading = event.alpha;
+      // 모바일 기기에서 alpha 값은 0-360도 범위
+      newHeading = 360 - event.alpha; // 방향 조정 (북쪽이 0도가 되도록)
     }
 
     // If no valid heading or no change, return early
@@ -71,26 +80,52 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
       window.clearTimeout(debounceTimerRef.current);
     }
 
-    debounceTimerRef.current = window.setTimeout(() => {
-      setOrientationState((prev) => ({
-        ...prev,
-        heading: newHeading,
-      }));
-      debounceTimerRef.current = null;
-    }, 100); // 100ms debounce time
+    // Use requestAnimationFrame to batch updates with the browser's render cycle
+    const currentTime = Date.now();
+    if (currentTime - lastHeadingUpdateTimeRef.current < MIN_UPDATE_INTERVAL) {
+      debounceTimerRef.current = window.setTimeout(() => {
+        requestAnimationFrame(() => {
+          setOrientationState((prev) => {
+            // Double-check if the heading has actually changed from the current state
+            if (prev.heading === newHeading) return prev;
+            return {
+              ...prev,
+              heading: newHeading,
+            };
+          });
+          lastHeadingUpdateTimeRef.current = currentTime;
+        });
+        debounceTimerRef.current = null;
+      }, MIN_UPDATE_INTERVAL - (currentTime - lastHeadingUpdateTimeRef.current));
+    } else {
+      requestAnimationFrame(() => {
+        setOrientationState((prev) => {
+          // Double-check if the heading has actually changed from the current state
+          if (prev.heading === newHeading) return prev;
+          return {
+            ...prev,
+            heading: newHeading,
+          };
+        });
+        lastHeadingUpdateTimeRef.current = currentTime;
+      });
+    }
   }, []);
 
   // Request permission for device orientation
   const requestPermission = useCallback(async (): Promise<boolean> => {
     if (!isIOS()) {
       // For non-iOS devices, no permission needed
-      window.addEventListener(
-        "deviceorientationabsolute",
-        handleOrientation,
-        true
-      );
-      if (!window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", handleOrientation, true);
+      if (!orientationListenerAddedRef.current) {
+        window.addEventListener(
+          "deviceorientationabsolute",
+          handleOrientation,
+          true
+        );
+        if (!window.DeviceOrientationEvent) {
+          window.addEventListener("deviceorientation", handleOrientation, true);
+        }
+        orientationListenerAddedRef.current = true;
       }
       setOrientationState((prev) => ({
         ...prev,
@@ -111,7 +146,10 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
         const granted = permission === "granted";
 
         if (granted) {
-          window.addEventListener("deviceorientation", handleOrientation, true);
+          if (!orientationListenerAddedRef.current) {
+            window.addEventListener("deviceorientation", handleOrientation, true);
+            orientationListenerAddedRef.current = true;
+          }
           setOrientationState((prev) => ({
             ...prev,
             isSupported: true,
@@ -151,12 +189,15 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
       if (debounceTimerRef.current !== null) {
         window.clearTimeout(debounceTimerRef.current);
       }
-      window.removeEventListener(
-        "deviceorientationabsolute",
-        handleOrientation,
-        true
-      );
-      window.removeEventListener("deviceorientation", handleOrientation, true);
+      if (orientationListenerAddedRef.current) {
+        window.removeEventListener(
+          "deviceorientationabsolute",
+          handleOrientation,
+          true
+        );
+        window.removeEventListener("deviceorientation", handleOrientation, true);
+        orientationListenerAddedRef.current = false;
+      }
     };
   }, [handleOrientation]);
 
@@ -187,18 +228,22 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
         if (!window.DeviceOrientationEvent) {
           window.addEventListener("deviceorientation", handleOrientation, true);
         }
+        orientationListenerAddedRef.current = true;
       }
     };
 
     checkSupport();
 
     return () => {
-      window.removeEventListener(
-        "deviceorientationabsolute",
-        handleOrientation,
-        true
-      );
-      window.removeEventListener("deviceorientation", handleOrientation, true);
+      if (orientationListenerAddedRef.current) {
+        window.removeEventListener(
+          "deviceorientationabsolute",
+          handleOrientation,
+          true
+        );
+        window.removeEventListener("deviceorientation", handleOrientation, true);
+        orientationListenerAddedRef.current = false;
+      }
     };
   }, [handleOrientation, isIOS]);
 

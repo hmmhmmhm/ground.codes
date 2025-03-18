@@ -23,7 +23,7 @@ function GoogleMapComponent() {
     showGrid,
     toggleGrid,
     getUserLocation,
-    isLoadingLocation,
+    isLoading,
     isTrackingLocation,
     encodedCoordinates,
     isEncoding,
@@ -90,7 +90,7 @@ function GoogleMapComponent() {
           toggleMapType,
           isFullscreen,
           toggleFullscreen,
-          isLoadingLocation,
+          isLoadingLocation: isLoading,
           isTrackingLocation,
           locationMode,
         }}

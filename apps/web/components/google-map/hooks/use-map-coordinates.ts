@@ -12,13 +12,16 @@ export const useMapCoordinates = (selectedArea: Coordinates | null) => {
   const [encodedCoordinates, setEncodedCoordinates] = useState<string>("");
   const [isEncoding, setIsEncoding] = useState(false);
 
+  // locale을 클로저로 캡처하지 않고 함수 내부에서 참조하도록 수정
   const encodeSelectedAreaCoordinates = useCallback(async () => {
     if (!selectedArea) return;
 
     try {
       setIsEncoding(true);
+      // 함수 내부에서 직접 locale 참조
+      const currentLocale = locale;
       // Map locale to language for the API
-      const language = locale === 'ko' ? 'Korean' : 'English';
+      const language = currentLocale === 'ko' ? 'Korean' : 'English';
       
       const encoded = await encode({
         lat: selectedArea.lat,
@@ -32,7 +35,7 @@ export const useMapCoordinates = (selectedArea: Coordinates | null) => {
     } finally {
       setIsEncoding(false);
     }
-  }, [selectedArea, locale]);
+  }, [selectedArea]); // locale 의존성 제거
 
   return {
     encodedCoordinates,
