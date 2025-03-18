@@ -76,6 +76,7 @@ function GoogleMapComponent() {
           zoom={zoom}
           encodedCoordinates={encodedCoordinates}
           isEncoding={isEncoding}
+          isTrackingMode={locationMode === 'TRACKING'}
         />
       </GoogleMap>
 

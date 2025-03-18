@@ -31,7 +31,8 @@ export const useGeolocation = (
   setCenter?: (location: Location) => void,
   setSelectedArea?: (location: Location) => void,
   options: UseGeolocationOptions = {},
-  isTrackingMode: boolean = false // Add isTrackingMode parameter with default false
+  isTrackingMode: boolean = false, // Add isTrackingMode parameter with default false
+  onPositionUpdate?: (location: Location) => void
 ): UseGeolocationReturn => {
   const {
     enableHighAccuracy = true,
@@ -121,19 +122,11 @@ export const useGeolocation = (
           isLoadingRef.current = false;
           
           // 새 위치 정보 생성 (이전 방향 정보 유지)
-          const newLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-            accuracy: position.coords.accuracy,
-            // 새 방향 정보가 있으면 업데이트, 없으면 이전 방향 정보 유지
-            heading: position.coords.heading !== null && position.coords.heading !== undefined
-              ? position.coords.heading
-              : prevLocation?.heading || null,
-          };
+          const newLocation = updateUserLocation(position);
           
           // 방향 정보 업데이트 플래그 설정
           if (position.coords.heading !== null && position.coords.heading !== undefined) {
-            prevHeadingRef.current = position.coords.heading;
+            isHeadingUpdateRef.current = true;
           }
           
           // 위치 정보 업데이트
@@ -155,80 +148,81 @@ export const useGeolocation = (
     }
   }, [cancelGeolocationRequest, userLocation]);
 
+  // 위치 정보 업데이트 함수
+  const updateUserLocation = useCallback((position: GeolocationPosition) => {
+    // 새 위치 정보 생성
+    const newLocation = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+      accuracy: position.coords.accuracy,
+      // 방향 정보 처리 (새 방향 정보가 있으면 업데이트, 없으면 이전 방향 정보 유지)
+      heading: position.coords.heading !== null && position.coords.heading !== undefined
+        ? position.coords.heading
+        : userLocation?.heading || null,
+    };
+    
+    // 디버깅: 방향 정보 확인
+    console.log('Geolocation updating with heading:', position.coords.heading, 'Final heading:', newLocation.heading);
+    
+    // 위치 정보 업데이트
+    setUserLocation(newLocation);
+    return newLocation;
+  }, [userLocation]);
+
   const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
       // Cancel any existing request first
       cancelGeolocationRequest();
-
+      
+      // Set loading state (directly update ref)
       isLoadingRef.current = true;
+      
+      // Get current position
       navigator.geolocation.getCurrentPosition(
         (position) => {
           // This is a full position update, not just heading
           isHeadingUpdateRef.current = false;
 
-          const newUserLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-            accuracy: position.coords.accuracy,
-            heading: position.coords.heading || heading,
-          };
+          const newUserLocation = updateUserLocation(position);
           
           // Batch state updates to prevent re-renders between updates
           const shouldUpdateCenter = setCenter && 
             (isTrackingMode || (!isTrackingMode && !userLocationLoaded));
           
-          // Update user location
-          setUserLocation(newUserLocation);
-          
           // Update loading state first
           setUserLocationLoaded(true);
-          
-          // Only then update other states that depend on location
-          if (shouldUpdateCenter) {
-            setCenter(newUserLocation);
-          }
-          
-          if (setSelectedArea) setSelectedArea(newUserLocation);
-
-          // Only pan the map for full position updates (not heading updates)
-          // Only pan in tracking mode or on first location update in LOCATE mode
-          if (map && (isTrackingMode || !userLocationLoaded)) {
-            // Use a timeout to break the render cycle
-            setTimeout(() => {
-              if (map) {
-                map.panTo(newUserLocation);
-                map.setZoom(18);
-              }
-            }, 0);
-          }
-          
           isLoadingRef.current = false;
+          
+          // Update center if needed
+          if (shouldUpdateCenter && map) {
+            map.panTo({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            });
+          }
+          
+          // Call the callback with the new location
+          onPositionUpdate?.(newUserLocation);
         },
-        () => {
-          // ! No error console
-          setUserLocationLoaded(true);
+        (error) => {
+          console.error("Error getting user location:", error);
+          // setError(error);
           isLoadingRef.current = false;
         },
         {
-          enableHighAccuracy,
-          timeout,
-          maximumAge,
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
         }
       );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-      setUserLocationLoaded(true);
-      isLoadingRef.current = false;
     }
   }, [
-    map,
-    setCenter,
-    setSelectedArea,
-    enableHighAccuracy,
-    timeout,
-    maximumAge,
-    heading,
+    cancelGeolocationRequest,
     isTrackingMode,
+    map,
+    onPositionUpdate,
+    setCenter,
+    updateUserLocation,
     userLocationLoaded,
   ]);
 

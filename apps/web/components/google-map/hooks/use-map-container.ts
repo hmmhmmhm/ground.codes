@@ -85,7 +85,16 @@ export const useMapContainer = () => {
     isTrackingMode: true,
     onLocationUpdate: useCallback((location) => {
       if (location) {
-        setUserLocation(location);
+        console.log('Map container updating location with heading:', location.heading);
+        
+        // 명시적으로 heading 정보를 포함하여 상태 업데이트
+        setUserLocation({
+          lat: location.lat,
+          lng: location.lng,
+          accuracy: location.accuracy,
+          heading: location.heading
+        });
+        
         setUserLocationLoaded(true);
       }
     }, []),

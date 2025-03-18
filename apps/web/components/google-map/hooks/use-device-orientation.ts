@@ -41,6 +41,27 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
     );
   }, []);
 
+  // Update the orientation state when the heading changes
+  const updateHeading = useCallback((newHeading: number) => {
+    // Log the heading update
+    console.log('Device orientation updating heading:', newHeading);
+    
+    // Update the heading ref immediately
+    headingRef.current = newHeading;
+    
+    // Use requestAnimationFrame to batch updates with the browser's render cycle
+    requestAnimationFrame(() => {
+      setOrientationState((prev) => {
+        // Double-check if the heading has actually changed from the current state
+        if (prev.heading === newHeading) return prev;
+        return {
+          ...prev,
+          heading: newHeading,
+        };
+      });
+    });
+  }, []);
+
   // Handle device orientation event with debouncing and threshold
   const handleOrientation = useCallback((event: DeviceOrientationEvent) => {
     let newHeading: number | null = null;
@@ -72,8 +93,8 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
       if (normalizedDiff < MIN_ANGLE_CHANGE) return;
     }
 
-    // Update the ref immediately
-    headingRef.current = newHeading;
+    // Update the orientation state
+    updateHeading(newHeading);
 
     // Debounce the state update
     if (debounceTimerRef.current !== null) {
@@ -85,32 +106,16 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
     if (currentTime - lastHeadingUpdateTimeRef.current < MIN_UPDATE_INTERVAL) {
       debounceTimerRef.current = window.setTimeout(() => {
         requestAnimationFrame(() => {
-          setOrientationState((prev) => {
-            // Double-check if the heading has actually changed from the current state
-            if (prev.heading === newHeading) return prev;
-            return {
-              ...prev,
-              heading: newHeading,
-            };
-          });
           lastHeadingUpdateTimeRef.current = currentTime;
         });
         debounceTimerRef.current = null;
       }, MIN_UPDATE_INTERVAL - (currentTime - lastHeadingUpdateTimeRef.current));
     } else {
       requestAnimationFrame(() => {
-        setOrientationState((prev) => {
-          // Double-check if the heading has actually changed from the current state
-          if (prev.heading === newHeading) return prev;
-          return {
-            ...prev,
-            heading: newHeading,
-          };
-        });
         lastHeadingUpdateTimeRef.current = currentTime;
       });
     }
-  }, []);
+  }, [updateHeading]);
 
   // Request permission for device orientation
   const requestPermission = useCallback(async (): Promise<boolean> => {

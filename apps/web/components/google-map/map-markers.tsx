@@ -18,6 +18,7 @@ interface MapMarkersProps {
   zoom?: number;
   encodedCoordinates: string;
   isEncoding: boolean;
+  isTrackingMode?: boolean;
 }
 
 const MapMarkers: React.FC<MapMarkersProps> = ({
@@ -26,6 +27,7 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
   zoom,
   encodedCoordinates,
   isEncoding,
+  isTrackingMode = false,
 }) => {
   const { t } = useI18n();
   const [showInfoWindow, setShowInfoWindow] = useState(true);
@@ -59,14 +61,28 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
 
   // 방향 정보가 변경될 때 마지막 유효한 방향 정보 저장
   useEffect(() => {
+    console.log('Marker userLocation heading:', userLocation?.heading);
     if (userLocation?.heading !== undefined && userLocation?.heading !== null) {
+      console.log('Setting lastHeading to:', userLocation.heading);
       setLastHeading(userLocation.heading);
     }
   }, [userLocation?.heading]);
 
   // 실제 사용할 방향 정보 (현재 방향 또는 마지막 유효한 방향)
   const effectiveHeading = hasHeading ? userLocation?.heading : lastHeading;
-  const showDirectionMarker = effectiveHeading !== null && effectiveHeading !== undefined;
+  
+  // 트래킹 모드에서만 방향 마커 표시
+  const showDirectionMarker = isTrackingMode && effectiveHeading !== null && effectiveHeading !== undefined;
+  
+  // 디버깅: 방향 정보 확인
+  console.log('Marker rendering with:', { 
+    hasHeading, 
+    heading: userLocation?.heading, 
+    lastHeading, 
+    effectiveHeading, 
+    showDirectionMarker,
+    isTrackingMode
+  });
 
   return (
     <>
@@ -75,18 +91,20 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
           <Marker
             position={userLocation}
             icon={{
-              path: showDirectionMarker
-                ? google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+              path: showDirectionMarker 
+                ? google.maps.SymbolPath.FORWARD_CLOSED_ARROW 
                 : google.maps.SymbolPath.CIRCLE,
               fillColor: "#4285F4",
               fillOpacity: 1,
               strokeColor: "#FFFFFF",
               strokeWeight: 2,
               scale: shouldShowAccuracyCircle ? 4 : 8,
-              rotation: showDirectionMarker ? effectiveHeading : 0,
+              rotation: showDirectionMarker ? effectiveHeading || 0 : 0,
             }}
-            title="My Position"
-            clickable={false}
+            title={showDirectionMarker 
+              ? `My Position (Heading: ${effectiveHeading !== null && effectiveHeading !== undefined ? effectiveHeading.toFixed(2) : 'N/A'}°)` 
+              : "My Position"}
+            clickable={true}
           />
 
           {shouldShowAccuracyCircle && userLocation.accuracy && (

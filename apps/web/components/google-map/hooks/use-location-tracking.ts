@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Coordinates, LocationMode } from '../types';
+import { useDeviceOrientation } from './use-device-orientation';
 
 interface UseLocationTrackingProps {
   map: google.maps.Map | null;
@@ -48,6 +49,12 @@ export const useLocationTracking = ({
   // 오류 플래그 참조
   const errorRef = useRef<string | null>(null);
 
+  // 디바이스 방향 정보 사용
+  const { heading: deviceHeading, requestPermission: requestOrientationPermission } = useDeviceOrientation();
+  
+  // 디바이스 방향 정보 요청 완료 여부
+  const [orientationPermissionRequested, setOrientationPermissionRequested] = useState(false);
+
   /**
    * 위치 추적 시작 함수
    * 현재 위치 모드에 따라 다른 동작 수행
@@ -68,18 +75,14 @@ export const useLocationTracking = ({
     }
     
     if (navigator.geolocation) {
-      // 위치 추적 시작 전 로딩 상태 설정 (ref 직접 업데이트)
+      // 로딩 상태 설정 (ref 직접 업데이트)
       isLoadingLocationRef.current = true;
       
-      // iOS 기기에서 방향 권한 요청 (조용히 진행)
-      try {
-        if (typeof DeviceOrientationEvent !== 'undefined' && 
-            typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-          (DeviceOrientationEvent as any).requestPermission()
-            .catch(() => {/* 오류 무시 */});
-        }
-      } catch (error) {
-        // 오류 무시
+      // 디바이스 방향 정보 권한 요청 (아직 요청하지 않은 경우)
+      if (!orientationPermissionRequested) {
+        requestOrientationPermission().then(() => {
+          setOrientationPermissionRequested(true);
+        });
       }
       
       if (currentLocationMode === LocationMode.LOCATE) {
@@ -146,11 +149,20 @@ export const useLocationTracking = ({
               lat: position.coords.latitude,
               lng: position.coords.longitude,
               accuracy: position.coords.accuracy,
-              // 이전 방향 정보 유지하면서 새 방향 정보가 있으면 업데이트
-              heading: position.coords.heading !== null && position.coords.heading !== undefined 
-                ? position.coords.heading 
-                : prevLocationRef.current?.heading,
+              // 디바이스 방향 정보 우선 사용, 없으면 GPS 방향 정보 사용, 둘 다 없으면 이전 방향 정보 유지
+              heading: deviceHeading !== null 
+                ? deviceHeading 
+                : position.coords.heading !== null && position.coords.heading !== undefined 
+                  ? position.coords.heading 
+                  : prevLocationRef.current?.heading,
             };
+            
+            // 디버깅: heading 정보 확인
+            console.log('TRACKING mode heading:', {
+              deviceHeading,
+              gpsHeading: position.coords.heading,
+              finalHeading: newLocation.heading
+            });
             
             // 추적 모드: 지도 중앙 이동
             if (map) {
@@ -169,19 +181,14 @@ export const useLocationTracking = ({
             prevLocationRef.current = newLocation;
           },
           (error) => {
-            // 오류 발생 시 로딩 상태 해제 (ref 직접 업데이트)
+            // 로딩 상태 해제 (ref 직접 업데이트)
             isLoadingLocationRef.current = false;
-            
-            // 권한 거부 오류 시 위치 모드를 OFF로 변경 (useEffect에서 처리)
-            if (error.code === 1) { // PERMISSION_DENIED
-              // 직접 상태 업데이트 대신 ref를 통해 플래그 설정
-              errorRef.current = 'PERMISSION_DENIED';
-            }
+            console.error("위치 추적 오류:", error);
           },
           {
             enableHighAccuracy: true,
-            timeout: 10000, // 타임아웃 증가
-            maximumAge: 1000, // 캐시된 위치 정보 사용 시간 증가
+            maximumAge: 0,
+            timeout: 5000,
           }
         );
         
@@ -189,7 +196,7 @@ export const useLocationTracking = ({
         watchPositionIdRef.current = watchId;
       }
     }
-  }, [locationMode, map, onLocationUpdate]);
+  }, [locationMode, map, onLocationUpdate, deviceHeading, orientationPermissionRequested, requestOrientationPermission]);
 
   /**
    * 위치 추적 중지 함수
@@ -303,5 +310,11 @@ export const useLocationTracking = ({
     startLocationTracking,
     stopLocationTracking,
     isTrackingLocation: locationMode === LocationMode.TRACKING,
+    // 위치 정보 업데이트 로직 개선
+    updateLocation: (newLocation: Coordinates) => {
+      onLocationUpdate(newLocation);
+      setLocationLoaded(true);
+      prevLocationRef.current = newLocation;
+    },
   };
 };
