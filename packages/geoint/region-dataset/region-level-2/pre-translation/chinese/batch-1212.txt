@@ -1,0 +1,100 @@
+Nuevo Mariscal (16.97889, -91.18444) 新马里斯卡尔
+Las Hoyas Altas (19.23278, -101.42139) 高洼地
+Poblado Morelos (17.15167, -96.77528) 莫雷洛斯村
+El Escalon (16.70639, -92.51806) 埃尔埃斯卡隆
+Santa Rita de Casia (20.19806, -100.98694) 圣丽塔德卡西亚
+Alamo Rustico (20.10111, -98.71583) 乡村阿拉莫
+Botidi (19.96639, -99.84278) 博蒂迪
+Mesa de Bani (19.86881, -100.05317) 巴尼桌
+Cuahuichotla (18.46492, -97.06535) 瓜维乔特拉
+Icalumtic (16.86417, -92.65833) 伊卡卢姆蒂克
+La Frontera Uno (16.93167, -92.28472) 边境一号
+Acuayucan (18.54861, -97.11167) 阿库尤坎
+Valle Alto (19.12694, -96.21972) 高谷
+Montoya (21.87861, -101.98111) 蒙托亚
+La Escondidita (21.30056, -100.62528) 小隐秘
+Toreador de en Medio (21.3262, -100.53576) 中间斗牛士
+El Costoche (16.40167, -96.39083) 埃尔科斯托切
+Tanleab Uno (21.54306, -98.95694) 坦利阿布一号
+Nexcuayo II (21.32583, -98.79583) 内克斯库约二号
+Lomas de Monterrey (23.25472, -106.25667) 蒙特雷山丘
+Arroyo Delicias (16.11667, -90.55139) 美味溪流
+Bosques del Mineral (20.05833, -98.775) 矿物森林
+Nuevo Israel (20.69833, -103.26667) 新以色列
+San Isidro Naranjal (17.88917, -96.12694) 圣伊西德罗橙园
+Cueyatla (20.29192, -98.08329) 库亚特拉
+Lomas de Menchaca (20.63722, -100.38444) 门查卡山丘
+Panalillo (22.14806, -100.815) 帕纳利略
+Joloniel (17.35889, -92.31778) 霍洛尼尔
+Durango Daboxtha (20.54417, -99.06778) 杜兰戈达博克斯塔
+Metztitla (19.12722, -99.42278) 梅茨蒂特拉
+Mixquitlixco (18.1375, -98.08222) 米斯基特利斯科
+El Viejon Nuevo (19.68833, -96.41111) 新老头
+Rustico San Pedro (21.03333, -101.70556) 乡村圣佩德罗
+Tixcuayuca (21.18389, -98.81167) 蒂克斯库尤卡
+La Chuparrosa (25.53917, -108.54472) 吸蜜鸟
+Matamoros los Hoyos (21.83528, -102.02278) 马塔莫罗斯洼地
+Ejido el Barrancon (21.67222, -98.86028) 埃希多巴兰孔
+Maxmadi (16.76833, -98.58833) 马克斯马迪
+Mazatianquixco (18.43667, -97.07861) 马萨蒂安基斯科
+Tecpantzingo (20.10111, -97.46694) 特克潘津戈
+De Rojas (18.63, -97.65667) 德罗哈斯
+Ejido San Lucas (27.22222, -112.22389) 埃希多圣卢卡斯
+Arocutin (19.55667, -101.69583) 阿罗库廷
+Diecinueve de Abril (17.13389, -97.78167) 四月十九日
+Puente Colorado (18.70431, -97.36056) 科罗拉多桥
+Coacoyunga (19.81393, -98.02896) 科阿科永加
+Barcelo Maya (20.4875, -87.24611) 巴塞罗玛雅
+Rincon de Cozahuapa (17.82885, -98.94934) 科萨瓦帕角落
+La Arbolada Plus (20.53694, -103.36389) 树林加
+Barrio de Belen (19.84611, -98.8525) 贝伦区
+La Compuerta (18.97694, -99.59944) 闸门
+El Mohon (19.90783, -97.28149) 埃尔莫洪
+Sendero Real (20.52806, -103.35167) 皇家小径
+San Jose Atotonilco (16.10556, -97.18139) 圣何塞阿托托尼尔科
+Jardin Viejo (20.91167, -97.65222) 老花园
+Sactzu (16.79611, -92.60861) 萨克祖
+Colonia Buenos Aires (17.15639, -100.41444) 布宜诺斯艾利斯殖民地
+Jalapa del Valle (17.06806, -96.87833) 山谷哈拉帕
+Amozoquillo Piletas (18.83464, -97.39745) 阿莫索基略泳池
+Paso del Rosario (18.73472, -96.71139) 玫瑰经通道
+Chulna (16.78778, -92.18444) 楚尔纳
+Matancillas (22.26778, -101.055) 马坦西利亚斯
+San Francisco Ocotal (17.21583, -93.15) 圣弗朗西斯科奥科塔尔
+Dolores (La Borrega) (25.5925, -103.54944) 多洛雷斯（拉博雷加）
+Barrio del Carmen (19.45111, -99.79611) 卡门区
+Xalpantzingo (20.02466, -97.4713) 夏尔潘津戈
+Apixita (18.31611, -95.29278) 阿皮希塔
+Campo Numero Dos (28.44806, -106.94417) 二号田
+Zanja Vieja (19.49618, -99.57932) 老沟
+Sabino Buenavista (20.07722, -101.58833) 萨比诺布埃纳维斯塔
+Asuncion Etla (17.21333, -96.79611) 阿松森埃特拉
+Linderos (-5.69111, -78.80076) 林德罗斯
+Barrio la Guadalupe (16.91917, -96.77917) 瓜达卢佩区
+Conta (19.92768, -97.30089) 孔塔
+Plan de Santo Tomas (16.41333, -91.58278) 圣托马斯计划
+Nuevo Brasil (15.19758, -92.53347) 新巴西
+Flor de Mayo (15.85306, -92.00778) 五月花
+El Chirimoyo (17.34361, -98.88889) 埃尔奇里莫约
+Canada de Guadalupe (16.15944, -97.15944) 瓜达卢佩峡谷
+Yutniotic (16.8225, -92.64611) 尤特尼奥蒂克
+Patelna (17.23944, -92.17417) 帕特尔纳
+Torrecitas (21.08528, -100.19944) 小塔
+Fronton Vivero (19.17611, -100.225) 苗圃前台
+Barrio la Venta (19.24121, -99.63606) 拉文塔区
+Ajocotzingo (19.81573, -97.48151) 阿霍科津戈
+Meje (19.69389, -99.69889) 梅赫
+San Antonio de Abajo (18.88667, -97.36194) 下圣安东尼奥
+Bomintza (20.9425, -99.99806) 博明扎
+Zompeltepec (17.56028, -99.06306) 宗佩尔特佩克
+El Tabacal (17.11361, -99.34306) 埃尔塔巴卡尔
+Aviacion (17.05282, -98.68411) 航空
+San Diego los Sauces (19.08, -98.29444) 圣迭戈洛斯索塞斯
+Colonia Union Obrera (21.655, -102.99194) 工人联合殖民地
+El Madronal (15.28278, -92.70694) 埃尔马德罗纳尔
+Chuchilton (16.95806, -92.83083) 楚奇尔顿
+Pilateno (21.33167, -98.96917) 皮拉特诺
+Tierritas Blancas (22.12, -101.9175) 白土地
+Yuvinani (17.21306, -98.39389) 尤维纳尼
+La Huapilla (20.42194, -99.3725) 小华皮拉
+Playa de Soyaltepec (18.10972, -96.41694) 索亚尔特佩克海滩

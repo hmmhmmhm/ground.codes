@@ -1,0 +1,100 @@
+Denham Court (-33.98307, 150.84606) 丹汉姆苑
+Denistone (-33.79835, 151.09051) 丹尼斯通
+Denistone West (-33.80049, 151.07617) 丹尼斯通西
+Dolls Point (-33.99341, 151.14474) 多尔斯角
+Dundas Valley (-33.78826, 151.05261) 邓达斯谷
+East Lindfield (-33.76664, 151.18685) 东林菲尔德
+East Ryde (-33.81031, 151.13153) 东莱德
+Edmondson Park (-33.95695, 150.86134) 埃德蒙森公园
+Emu Heights (-33.73453, 150.64874) 鸸鹋高地
+Ermington (-33.81483, 151.05467) 埃尔明顿
+Fairfield East (-33.86938, 150.97129) 费尔菲尔德东
+Fairfield Heights (39.82861, -86.38224) 费尔菲尔德高地
+Fairlight (-33.79575, 151.27346) 费尔莱特
+Glen Alpine (-34.086, 150.78512) 格伦阿尔卑斯
+Greenhills Beach (-34.03672, 151.15916) 绿丘海滩
+Gregory Hills (-34.02673, 150.7707) 格雷戈里山
+Guildford West (-33.84939, 150.96475) 吉尔福德西
+Harris Park (-33.82285, 151.00781) 哈里斯公园
+Hassall Grove (-33.73349, 150.83542) 哈索尔格罗夫
+Homebush West (-33.86269, 151.06696) 霍姆布什西
+Hornsby Heights (-33.6713, 151.09428) 霍恩斯比高地
+Horsley Park (-33.84322, 150.84889) 霍斯利公园
+Hurstville (-33.9677, 151.10149) 赫斯特维尔
+Ingleside (27.8778, -97.21166) 英格尔赛德
+Kellyville Ridge (-33.70156, 150.9179) 凯利维尔岭
+Kemps Creek (-33.88059, 150.78761) 坎普斯溪
+Killarney Heights (-33.77451, 151.22028) 基拉尼高地
+Kingswood Park (-33.76651, 150.7144) 金斯伍德公园
+Renown Park (-34.89174, 138.57729) 雷诺公园
+Kogarah Bay (-33.97951, 151.12119) 科格拉湾
+Brompton (-34.89445, 138.5782) 布朗普顿
+Kurraba Point (-33.84235, 151.22256) 库拉巴角
+Kyle Bay (-33.98787, 151.09939) 凯尔湾
+Lane Cove West (-33.81613, 151.15145) 车道湾西
+Macquarie Links (-33.98454, 150.87027) 麦考瑞林克斯
+Marsfield (-33.77784, 151.10574) 马斯菲尔德
+Mays Hill (-33.82032, 150.99433) 梅斯山
+Merrylands West (-33.83269, 150.96906) 梅里兰兹西
+Middle Dural (-33.64006, 151.01721) 中杜拉尔
+Middleton Grange (-33.91704, 150.84186) 米德尔顿农场
+Miller (-33.92089, 150.88469) 米勒
+Mount Lewis (-33.9175, 151.04828) 刘易斯山
+Narellan Vale (-34.04974, 150.74392) 纳雷兰谷
+Narraweena (-33.75519, 151.27659) 纳拉维纳
+North Balgowlah (-33.78631, 151.24801) 北巴尔戈拉
+North Bondi (-33.88787, 151.28075) 北邦迪
+North Curl Curl (-33.76434, 151.29727) 北库尔库尔
+North Epping (-33.75944, 151.09248) 北埃平
+North Manly (-33.77561, 151.26921) 北曼利
+North Strathfield (-33.85693, 151.09124) 北斯特拉斯菲尔德
+North Wahroonga (-33.70531, 151.12278) 北瓦胡加
+Old Toongabbie (-33.78763, 150.96897) 老通加比
+Oran Park (-34.00564, 150.74032) 奥兰公园
+Orchard Hills (40.58618, -79.53143) 果园山
+Padstow Heights (-33.9674, 151.03991) 帕德斯托高地
+Parklea (-33.72439, 150.9182) 帕克利亚
+Peakhurst Heights (-33.97735, 151.05557) 皮克赫斯特高地
+Picnic Point (47.88111, -122.3284) 野餐点
+Potts Hill (-33.89314, 151.03369) 波茨山
+Ramsgate Beach (-33.98523, 151.14634) 拉姆斯盖特海滩
+Regentville (-33.77517, 150.66552) 摄政村
+Revesby Heights (-33.9671, 151.01841) 里夫斯比高地
+Rodd Point (-33.86662, 151.13995) 罗德角
+Roseville Chase (-33.77852, 151.19677) 罗斯维尔切斯
+South Coogee (-33.93106, 151.25599) 南库吉
+South Maroota (-33.50397, 150.95678) 南马鲁塔
+South Penrith (-33.77349, 150.69466) 南彭里斯
+South Turramurra (-33.74941, 151.11257) 南图拉穆拉
+South Wentworthville (-33.8185, 150.96344) 南温特沃斯维尔
+South Windsor (41.82371, -72.6212) 南温莎
+Spring Farm (-34.06851, 150.71182) 春田农场
+Stanhope Gardens (-33.72206, 150.92597) 斯坦霍普花园
+Strathfield South (-33.89252, 151.08334) 斯特拉斯菲尔德南
+Sydney Olympic Park (-33.84983, 151.06828) 悉尼奥林匹克公园
+Telopea (-33.79279, 151.03858) 特洛皮亚
+Wareemba (-33.85819, 151.13085) 瓦里姆巴
+Werrington County (-33.7465, 150.73929) 韦灵顿县
+Werrington Downs (-33.74206, 150.72779) 韦灵顿唐斯
+West Pennant Hills (-33.7457, 151.04764) 西潘南特山
+West Ryde (-33.80543, 151.07386) 西莱德
+Wheeler Heights (-33.73119, 151.28049) 惠勒高地
+Wollstonecraft (-33.8328, 151.18981) 沃尔斯通克拉夫特
+Woronora Heights (-34.03562, 151.02734) 沃罗诺拉高地
+The Gardens (-12.44856, 130.83695) 花园
+Woolner (-12.43779, 130.84773) 伍尔纳
+Muirhead (-12.35863, 130.89352) 缪尔黑德
+Karama (-12.40219, 130.916) 卡拉马
+Bellamack (-12.51707, 130.98355) 贝拉马克
+Coolalinga (-12.52314, 131.04149) 库拉林加
+Berry Springs (-12.70042, 131.01454) 贝里斯普林斯
+Acacia Hills (-12.79411, 131.12543) 金合欢山
+Erindale (-34.92785, 138.66313) 埃林代尔
+Frewville (-34.94763, 138.6306) 弗鲁维尔
+Glenunga (-34.95013, 138.63841) 格伦加
+Hazelwood Park (-34.93947, 138.65879) 黑泽尔伍德公园
+Kensington Gardens (-34.92582, 138.66145) 肯辛顿花园
+Leabrook (-34.92976, 138.65862) 利布鲁克
+Linden Park (-34.94347, 138.64728) 林登公园
+Tusmore (-34.93894, 138.65059) 塔斯莫尔
+Wattle Park (-34.92516, 138.67501) 瓦特尔公园

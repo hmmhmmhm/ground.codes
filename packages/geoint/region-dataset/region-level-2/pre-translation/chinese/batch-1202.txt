@@ -1,0 +1,100 @@
+Jolsibaquil (17.25972, -92.48167) 乔尔西巴基尔
+Concepcion Caro (19.77139, -99.90917) 康塞普西翁·卡罗
+Chiquinival (16.99111, -91.96028) 奇基尼瓦尔
+Santiago Centro (21.20528, -98.86361) 圣地亚哥中心
+Guadalupe Calderon (18.96611, -97.85833) 瓜达卢佩·卡尔德隆
+Los Liros (16.73972, -98.21722) 洛斯·利罗斯
+Nexpan (19.88389, -97.42333) 内克斯潘
+El Cabi (19.18986, -98.85371) 埃尔·卡比
+Techichili (19.17139, -99.42222) 特奇奇利
+Pena del Panal (19.77333, -101.18944) 佩尼亚·德尔·帕纳尔
+La Corregidora (21.44417, -104.81222) 拉·科雷希多拉
+Bochojbo Alto (16.73583, -92.71694) 博乔博·阿尔托
+San Jose Manzanitos (19.26111, -97.21472) 圣何塞·曼萨尼托斯
+Misija (17.26611, -92.38167) 米西哈
+Lomas de Romero (18.91444, -97.71722) 罗马斯·德·罗梅罗
+Lomas de Tlatelolco (32.48306, -116.80167) 罗马斯·德·特拉特洛尔科
+Kilometro 40 (17.04944, -99.77056) 公里40
+El Metlapil (16.84167, -99.74889) 埃尔·梅特拉皮尔
+San Benito Encinal (17.98722, -95.91056) 圣贝尼托·恩西纳尔
+Ejido San Cristobal (19.5425, -98.89417) 埃希多·圣克里斯托瓦尔
+Cerro del Murcielago (19.28194, -99.75472) 穆尔西埃拉戈山
+Tlatilpa (18.73389, -97.14417) 特拉特尔帕
+Nueva Frontera (16.88806, -99.81583) 新边界
+San Isidro Palotal (18.94417, -96.96583) 圣伊西德罗·帕洛塔尔
+El Tintal (20.89194, -87.46611) 埃尔·廷塔尔
+Loma de Yerbabuena (21.06056, -101.44944) 耶尔巴布埃纳山
+Tutepec (16.92167, -99.15639) 图特佩克
+San Jose Buena Vista (18.40528, -97.26833) 圣何塞·布埃纳维斯塔
+Banco Nacional (25.87139, -103.35667) 国家银行
+Rincon de Aguirre (18.89947, -100.13659) 阿吉雷角
+Miravalle (21.9725, -102.31139) 米拉瓦耶
+Acuaco (19.7625, -97.56444) 阿夸科
+Adjuntas del Rio (21.11667, -100.86806) 河畔阿洪塔斯
+Colonia los Cerritos (18.95389, -99.1925) 洛斯·塞里托斯殖民地
+San Juan Zapotitlan (17.80528, -96.60639) 圣胡安·萨波蒂特兰
+Santa Rosa Segundo (19.97778, -88.2625) 圣罗莎·塞贡多
+Rincon de los Reyes (19.19444, -97.16056) 洛斯·雷耶斯角
+Praderas del Potrero (19.88472, -99.23028) 波特雷罗草原
+Zoyotla (19.92778, -97.69389) 索约特拉
+Manzana Segunda (19.56722, -99.59389) 曼萨纳·塞贡达
+El Olvera (20.27, -99.02556) 埃尔·奥尔韦拉
+Ejido el Castillo (19.43583, -99.30583) 埃希多·埃尔·卡斯蒂略
+Tocoy (21.63861, -98.87083) 托科伊
+La Nueva Era (17.69861, -95.80833) 新时代
+Ocuiltzapoyo (21.32444, -98.72861) 奥库伊尔扎波约
+Joconoxtle (La Tuna) (20.45222, -102.67639) 霍科诺克斯特莱（拉·图纳）
+Guadalupe Morelos (19.02556, -97.80417) 瓜达卢佩·莫雷洛斯
+Tinajas 1ra. Seccion (14.7175, -92.32861) 蒂纳哈斯第一部分
+El Ramal (Porvenir) (15.86583, -92.94556) 埃尔·拉马尔（波尔韦尼尔）
+Molino de San Jose (21.57083, -101.26389) 圣何塞磨坊
+10 de Abril (16.82917, -99.74083) 四月十日
+El Espinalillo (16.98472, -100.12694) 埃尔·埃斯皮纳利略
+Pugchen Mumuntic (16.86389, -92.82361) 普格琴·穆蒙蒂克
+Canton Villaflor (15.11424, -92.35261) 维拉弗洛尔区
+San Julio (25.93639, -103.42083) 圣胡里奥
+Coahuixtla (18.57417, -99.37) 科阿维斯特拉
+El Camalote (15.8725, -96.62361) 埃尔·卡马洛特
+Yopi (19.82667, -97.38028) 约皮
+Tlacuilola (21.2375, -98.86806) 特拉库伊洛拉
+Santa Ana Chapitiro (19.52611, -101.6525) 圣安娜·查皮蒂罗
+Loma Chapultepec (18.11972, -96.83917) 查普尔特佩克山
+Campo de Aguila (18.0675, -94.98611) 阿吉拉田
+Manzana la Cofradia (19.54944, -100.35583) 曼萨纳·拉·科夫拉迪亚
+Texocoyohuac (19.77778, -97.59028) 特索科约瓦克
+San Jose Boxay (20.26236, -99.10085) 圣何塞·博克赛
+Mariscal Subikuski (17.3325, -92.38083) 马里斯卡尔·苏比库斯基
+Lodo Grande (17.60972, -99.21194) 洛多·格兰德
+Pintillo (20.79667, -100.41694) 平蒂略
+Jesus Tepactepec (19.22917, -98.31417) 耶稣·特帕克特佩克
+Oxinam (16.86306, -92.54917) 奥西南
+Arroyo San Isidro (18.48667, -95.41333) 圣伊西德罗溪
+Barrio de San Ramon (19.37361, -99.33111) 圣拉蒙区
+Tetelcingo (18.23917, -98.02667) 特特尔辛戈
+18 de Marzo (18.96889, -98.16028) 三月十八日
+Pueblo Benito Garcia (30.51583, -115.93278) 贝尼托·加西亚村
+Apantla (17.03972, -99.16944) 阿潘特拉
+Colonia San Luis (16.38, -95.24111) 圣路易斯殖民地
+Corralejo de Arriba (20.89667, -100.65444) 科拉莱霍·德·阿里巴
+Nenehuaca (19.14389, -97.04222) 内内瓦卡
+Aguas Buenas (18.2569, -66.10294) 阿瓜斯·布埃纳斯
+Camembaro (19.42722, -100.39889) 卡门巴罗
+San Clemente de Lima (20.73722, -105.27083) 圣克莱门特·德·利马
+El Siviral (Jigica) (27.10222, -109.50083) 埃尔·西维拉尔（吉吉卡）
+Jose Colomo (17.94691, -92.46659) 何塞·科洛莫
+Las Pintas (19.89667, -98.88694) 拉斯·平塔斯
+Cuto de la Esperanza (19.73083, -101.34028) 库托·德·拉·埃斯佩兰萨
+Colonia Alborada (16.88151, -99.81779) 阿尔博拉达殖民地
+Ejido Miraflores (19.57, -99.3975) 埃希多·米拉弗洛雷斯
+Pena Colorada (17.47778, -97.79417) 佩尼亚·科洛拉达
+Tetlatzinga (18.69472, -97.18444) 特特拉津加
+Nuevo Carmen Tonapac (16.69667, -92.95556) 新卡门·托纳帕克
+Las Plazuelas (16.87417, -99.78556) 拉斯·普拉苏埃拉斯
+El Progreso Hidalgo (18.84639, -99.61417) 埃尔·普罗格雷索·伊达尔戈
+San Miguel Tlamahuco (19.32417, -98.23972) 圣米格尔·特拉马胡科
+El Huidero (18.3875, -95.17917) 埃尔·惠德罗
+San Jose Barbabosa (19.27583, -99.72) 圣何塞·巴尔巴博萨
+Estacion Corralejo (20.47, -101.61639) 科拉莱霍站
+Tlacpac (20.14889, -98.21694) 特拉克帕克
+Colonia el Florido (18.73833, -99.36722) 埃尔·弗洛里多殖民地
+Tlamaya Grande (20.14689, -97.80313) 特拉马亚·格兰德

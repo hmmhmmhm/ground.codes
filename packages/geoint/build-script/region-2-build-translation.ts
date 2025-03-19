@@ -49,11 +49,6 @@ export default async () => {
     return;
   }
 
-  if (!fs.existsSync(filePaths.preTranslationTxt)) {
-    console.log(chalk.yellow(`The pre-translation file does not exist.`));
-    return;
-  }
-
   // Function to extract region name and coordinates from a translation line
   function parseTranslationLine(
     line: string
@@ -134,6 +129,11 @@ export default async () => {
         )}`
       )
     );
+
+    if (!fs.existsSync(filePaths.preTranslationTxt)) {
+      console.log(chalk.yellow(`The pre-translation file does not exist.`));
+      return;
+    }
 
     // Find duplicate region names (appearing more than once)
     const duplicateRegions = Array.from(regionNameCounts.entries())

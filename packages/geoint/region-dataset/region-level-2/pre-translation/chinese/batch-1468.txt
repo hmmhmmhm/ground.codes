@@ -1,0 +1,100 @@
+Okoneshnikovo (54.83767, 75.08343) 奥科涅什尼科沃
+Odesskoye (54.215, 72.9651) 敖德斯科耶
+Obukhovskoye (56.8345, 62.612) 奥布霍夫斯科耶
+Ob' (54.9872, 82.7166) 鄂毕
+Nyda (66.62472, 72.92278) 尼达
+Nyagan (62.14056, 65.39361) 尼亚甘
+Noyabrsk (63.19309, 75.43728) 诺亚布尔斯克
+Novyy Urengoy (66.08333, 76.63333) 新乌连戈伊
+Novaya Zaimka (56.48571, 66.92413) 新扎伊姆卡
+Novovarshavka (54.1721, 74.6946) 新瓦尔沙夫卡
+Novotyryshkino (52.0833, 84.9089) 新特雷什基诺
+Novosineglazovskiy (55.03928, 61.3768) 新西涅格拉佐夫斯基
+Novosilikatnyy (53.30972, 83.62389) 新硅酸盐
+Novosibirsk (55.0415, 82.9346) 新西伯利亚
+Novoselovo (54.99959, 90.97306) 新谢洛沃
+Novopesterevo (54.4429, 85.7401) 新佩斯捷列沃
+Novopeschanoye (53.4093, 78.5212) 新佩斯查诺耶
+Novoomskiy (54.84152, 73.30174) 新鄂木斯基
+Novomikhaylovka (53.3497, 83.4772) 新米哈伊洛夫卡
+Novolugovoye (54.9792, 83.1138) 新卢戈沃耶
+Novokuznetsk (53.7557, 87.1099) 新库兹涅茨克
+Novogornyy (55.63, 60.7919) 新戈尔内
+Novochernorechenskiy (56.26658, 91.09234) 新切尔诺列琴斯基
+Novobiryusinskiy (56.9578, 97.7076) 新比留辛斯基
+Novoasbest (57.74225, 60.28773) 新石棉
+Novoaltaysk (53.3917, 83.9363) 新阿尔泰斯克
+Novoagansk (61.9449, 76.6625) 新阿甘斯克
+Novikovo (52.62231, 85.96392) 诺维科沃
+Novichikha (52.204, 81.3877) 诺维奇哈
+Novaya Lyalya (59.05233, 60.59315) 新利亚利亚
+Norilsk (69.3535, 88.2027) 诺里尔斯克
+Nizhnyaya Tavda (57.6687, 66.17821) 下塔夫达
+Souzga (51.88722, 85.84944) 苏兹加
+Nizhnyaya Salda (58.07756, 60.7202) 下萨尔达
+Nizhnyaya Poyma (56.1643, 97.2065) 下波伊马
+Nizhnyaya Omka (55.43375, 74.94256) 下鄂姆卡
+Nizhniy Ingash (56.2003, 96.5373) 下因加什
+Nizhnevartovsk (60.9344, 76.5531) 下瓦尔托夫斯克
+Nizhneudinsk (54.90725, 99.03396) 下乌金斯克
+NikoloPavlovskoye (57.78306, 60.05778) 尼科洛帕夫洛夫斯科耶
+Nikitinskiy (54.5845, 86.0115) 尼基京斯基
+NeyvoShaytanskiy (57.7286, 61.24956) 内伊沃沙伊坦斯基
+NeyvoRudyanka (57.3444, 60.1343) 内伊沃鲁迪扬卡
+Nev'yansk (57.49233, 60.21415) 涅夫扬斯克
+Neninka (52.6734, 86.1983) 涅宁卡
+Gal'bshtadt (53.2264, 78.9845) 加尔布施塔特
+Nefteyugansk (61.09979, 72.60349) 涅夫捷尤甘斯克
+Nazyvayevsk (55.56975, 71.35294) 纳兹瓦耶夫斯克
+Nazarovo (56.01138, 90.41656) 纳扎罗沃
+Nauchnyy Gorodok (53.4203, 83.521) 科学城
+Nalobikha (53.2009, 84.6) 纳洛比哈
+Nadym (65.53333, 72.51667) 纳德姆
+Myski (53.709, 87.8014) 米斯基
+Muzhi (65.4003, 64.70278) 穆日
+Muromtsevo (56.37238, 75.24175) 穆罗姆采沃
+Mundybash (53.211, 87.2983) 门迪巴什
+Mul'ta (50.1723, 85.9582) 穆尔塔
+MugurAksy (50.38072, 90.43739) 穆古尔阿克西
+Motygino (58.18401, 94.69339) 莫特吉诺
+Moskalenki (54.93823, 71.93507) 莫斯卡连基
+Moshkovo (55.3053, 83.6104) 莫什科沃
+Moryakovskiy Zaton (56.69448, 84.65145) 莫里亚科夫斯基扎通
+Mortka (59.33222, 66.02139) 莫尔特卡
+Monetnyy (57.0472, 60.8794) 莫涅特内
+Molchanovo (57.58112, 83.76053) 莫尔查诺沃
+Mokrousovo (55.80871, 66.77095) 莫克罗乌索沃
+Mokhnatushka (53.22944, 83.57944) 莫赫纳图什卡
+Mochishche (55.1586, 83.1229) 莫奇谢
+Minusinsk (53.70117, 91.70797) 米努辛斯克
+Miasskoye (55.28155, 61.89266) 米亚斯科耶
+Miass (55.04552, 60.10756) 米亚斯
+Mezhdurechenskiy (59.6, 65.93333) 梅日杜列琴斯基
+Mel'nikovo (56.55687, 84.0814) 梅利尼科沃
+Melioratorov (57.21065, 65.60774) 梅利奥拉托罗夫
+Megion (61.03429, 76.10683) 梅吉翁
+Mayma (52.01577, 85.90963) 迈马
+Maslyanino (54.34361, 84.21111) 马斯利亚尼诺
+Mar'yanovka (54.96102, 72.64415) 马里亚诺夫卡
+Martyush (56.4, 61.88194) 马尔秋什
+Martynovo (53.26667, 85.88333) 马尔蒂诺沃
+Manzya (58.49222, 96.26167) 曼兹亚
+Manzherok (51.83028, 85.775) 曼热罗克
+Mamontovo (52.7055, 81.6244) 马蒙托沃
+Malysheva (57.11851, 61.40345) 马雷舍娃
+Malougrenevo (52.5568, 85.33908) 马洛乌格列涅沃
+Malinovoye Ozero (51.67528, 79.7825) 马利诺沃耶湖
+Lyubinskiy (55.15421, 72.69247) 柳宾斯基
+Lugovskoy (56.95849, 64.52897) 卢戈夫斯科伊
+Losinyy (57.13862, 61.06663) 洛西内
+Lokosovo (61.13333, 74.81667) 洛科索沃
+Lobva (59.18538, 60.51846) 洛布瓦
+Listvyanskiy (54.4399, 83.4984) 利斯特维扬斯基
+Listvyagi (53.6772, 86.951) 利斯特维亚吉
+Lesosibirsk (58.23544, 92.48351) 列索西比尔斯克
+Lesnikovo (55.28222, 65.3175) 列斯尼科沃
+LeninskKuznetsky (54.6567, 86.1737) 列宁斯克库兹涅茨基
+Labytnangi (66.65722, 66.41833) 拉比坦吉
+Laborovaya (67.64046, 67.5515) 拉博罗瓦亚
+KyzylMazhalyk (51.14594, 90.5808) 克孜勒马扎雷克
+KyzylKhaya (50.04986, 89.87821) 克孜勒哈亚

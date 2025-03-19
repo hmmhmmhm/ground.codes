@@ -1,0 +1,100 @@
+Catena (43.84254, 11.01658) - 卡特纳
+Fossoli (44.8216, 10.88977) - 福索利
+San Bartolomeo (41.48265, 13.85747) - 圣巴托洛梅奥
+Fabbrica (43.50833, 10.75833) - 法布里卡
+Semogo (46.48499, 10.27005) - 塞莫戈
+San Vigilio (45.60808, 10.19442) - 圣维吉利奥
+Lido Campomarino (41.95751, 15.0526) - 利多坎波马里诺
+Scarlino Scalo (42.93992, 10.83766) - 斯卡尔利诺斯卡洛
+Ponte Pattoli (43.17807, 12.42842) - 蓬特帕托利
+Cologna Spiaggia (42.72152, 13.98311) - 科洛尼亚斯皮亚贾
+Protonotaro (38.12077, 15.19238) - 普罗托诺塔罗
+Mezzate (45.44385, 9.29452) - 梅扎泰
+San BovioSan Felice (45.46282, 9.31263) - 圣博维奥圣费利切
+Pradelle (45.28315, 10.87083) - 普拉德莱
+MontignanoMarzocca (43.67451, 13.29093) - 蒙蒂尼亚诺马尔佐卡
+Centinarola (43.83117, 12.98962) - 森蒂纳罗拉
+Fenile (43.84126, 12.96747) - 费尼莱
+Case Bruciate (43.8959, 12.82997) - 卡塞布鲁恰特
+Pianacce (42.55588, 14.08808) - 皮亚纳切
+Fondotoce (45.94649, 8.49226) - 丰多托切
+Cropani Marina (38.92376, 16.8108) - 克罗帕尼马里纳
+Roccelletta (38.81126, 16.5982) - 罗切莱塔
+Monterusciello (40.86874, 14.08276) - 蒙特鲁谢洛
+Romano Banco (45.42309, 9.10707) - 罗马诺班科
+Casa Santa (38.02514, 12.5484) - 卡萨桑塔
+Paolo VI (40.52218, 17.27401) - 保罗六世
+Breo (44.39865, 7.81903) - 布雷奥
+Mejaniga (45.45768, 11.90644) - 梅贾尼加
+ChiugianaLa Commenda (43.09823, 12.30818) - 乔吉亚纳拉科门达
+San ZenoSan Giuseppe (45.75727, 11.76208) - 圣泽诺圣朱塞佩
+SpicchioSovigliana (43.73016, 10.93921) - 斯皮基奥索维利亚纳
+Ponte Cingoli (45.59751, 10.10687) - 蓬特金戈利
+Fiesso (45.41954, 12.03378) - 菲耶索
+Canalicchio (37.54097, 15.09645) - 卡纳利基奥
+ColombieraMolicciara (44.0875, 10.01037) - 科隆比耶拉莫利恰拉
+Selcetta (41.76529, 12.47533) - 塞尔切塔
+Andreotta (39.3075, 16.2177) - 安德雷奥塔
+CasanoDogana-Isola (44.07565, 10.03381) - 卡萨诺多加纳-伊索拉
+Ciaculli (38.0753, 13.40719) - 夏库利
+Vill'Albese (45.79684, 9.18859) - 维尔阿尔贝塞
+Villatora (45.38768, 11.96736) - 维拉托拉
+Pontasserchio (43.77953, 10.41673) - 蓬塔塞尔基奥
+VeggiaVillalunga (44.5607, 10.75621) - 维贾维拉隆加
+Quadrivio (40.62494, 15.10353) - 夸德里维奥
+Gerbole (45.00115, 7.5067) - 杰尔博莱
+LancusiPenta-Bolano (40.76125, 14.78524) - 兰库西彭塔-博拉诺
+Frescada (45.62878, 12.23671) - 弗雷斯卡达
+Lanzara (40.77473, 14.67619) - 兰扎拉
+Airali (44.8167, 7.25157) - 艾拉利
+Vado Centro (44.26857, 8.43225) - 瓦多中心
+Eremo (45.13119, 10.74271) - 埃雷莫
+San Nicolo a Tordino (42.69648, 13.79708) - 圣尼科洛阿托尔迪诺
+Villa Raspa (42.45542, 14.18457) - 维拉拉斯帕
+CanovaSan Zeno (45.72116, 9.4003) - 卡诺瓦圣泽诺
+Setteville (45.92125, 11.93109) - 塞特维莱
+Pagliare (42.86906, 13.76906) - 帕利亚雷
+Rometta Marea (38.23264, 15.40955) - 罗梅塔马雷亚
+Piazzola (40.87265, 14.50016) - 皮亚佐拉
+Roveleto (44.96332, 9.8539) - 罗韦莱托
+Colle Verde (41.97694, 12.61855) - 科莱韦尔德
+San Martino Bassa (42.51827, 14.13045) - 圣马蒂诺巴萨
+Regoledo (46.13319, 9.54597) - 雷戈莱多
+Ciconia (42.73356, 12.134) - 奇科尼亚
+StraMontanara-Pieve (45.42367, 11.15749) - 斯特拉蒙塔纳拉-皮耶韦
+Valle Martella (41.87827, 12.74677) - 瓦莱马特拉
+TorrettaScalzapecora (40.91015, 14.13456) - 托雷塔斯卡尔扎佩科拉
+TorelliTorrette (40.90777, 14.75184) - 托雷利托雷特
+PiazzaTralia-Pendolo (40.67351, 14.50455) - 皮亚扎特拉利亚-彭多洛
+Villa Rosa (42.85059, 13.92015) - 维拉罗萨
+Su Planu (39.25487, 9.1066) - 苏普拉努
+Genio Civile (41.54807, 12.69161) - 热尼奥奇维莱
+Carobbio (45.66424, 9.83027) - 卡罗比奥
+Borgo Stazione (43.28461, 13.6442) - 博尔戈斯塔齐奥内
+Capaccio Scalo (40.45531, 15.00891) - 卡帕乔斯卡洛
+Piazza Roma (40.70434, 14.543) - 罗马广场
+Parco Leonardo (41.80035, 12.30028) - 莱昂纳多公园
+Toscanella (44.38248, 11.63965) - 托斯卡内拉
+LunettaFrassino (45.16016, 10.82059) - 卢内塔弗拉西诺
+Vighignolo (45.49542, 9.04308) - 维吉尼奥洛
+Osteria Grande (44.42845, 11.5218) - 大酒馆
+Roe (45.62576, 10.4996) - 罗埃
+Laghetto (41.96734, 12.65609) - 拉盖托
+One (45.78374, 11.87404) - 奥内
+San Brancato (40.25822, 16.25661) - 圣布兰卡托
+BojonLova (45.33981, 12.08282) - 博永洛瓦
+MercataleSan Quirico (44.04426, 11.15163) - 梅尔卡塔莱圣奎里科
+BolladelloPeveranza (45.68649, 8.84517) - 博拉德洛佩韦兰扎
+Castelnuovo Vomano (42.62933, 13.85003) - 卡斯特尔努沃沃马诺
+Valcanneto (41.95078, 12.15734) - 瓦尔坎内托
+San FlorianoOlmi (45.67349, 12.33039) - 圣弗洛里亚诺奥尔米
+Fossignano (41.59226, 12.56333) - 福西尼亚诺
+Manoppello Scalo (42.30762, 14.05363) - 马诺佩洛斯卡洛
+Garino (44.97325, 7.61728) - 加里诺
+Annunziata (41.121, 14.36518) - 安努齐亚塔
+Villa d'Agri (40.35426, 15.8277) - 维拉达格里
+Torre Caracciolo (40.87551, 14.17859) - 托雷卡拉乔洛
+Piazza Caduti (45.70513, 9.50251) - 卡杜蒂广场
+Campo LimpidoFavale (41.96732, 12.77016) - 坎波林皮多法瓦莱
+Marina di Davoli (38.66361, 16.54825) - 达沃利海滨
+CrocettaNogare (45.82707, 12.03013) - 克罗切塔诺加雷

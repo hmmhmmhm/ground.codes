@@ -1,0 +1,100 @@
+Orda (57.19197, 56.90462) 奥尔达
+Oranzherei (45.84756, 47.56635) 奥兰热雷伊
+Opochka (56.71448, 28.66287) 奥波奇卡
+Opechenskiy Posad (58.2751, 34.11731) 奥佩琴斯基波萨德
+Oparino (59.85098, 48.28614) 奥帕里诺
+Opalikha (55.82593, 37.25278) 奥帕利哈
+Onega (63.9057, 38.09944) 奥涅加
+Omutninsk (58.67015, 52.19313) 奥穆特宁斯克
+Olym (51.682, 38.17652) 奥利姆
+Olonets (60.98106, 32.97261) 奥洛涅茨
+Ol'khovka (49.85921, 44.56234) 奥尔霍夫卡
+Ol'khovatka (50.28308, 39.28715) 奥尔霍瓦特卡
+Ol'gino (59.83702, 29.92266) 奥尔吉诺
+Ol'ginskaya (47.18732, 39.95187) 奥尔金斯卡亚
+Ol'ginka (44.2075, 38.89111) 奥尔金卡
+Olenino (56.20917, 33.48888) 奥列尼诺
+Olenegorsk (68.1432, 33.25287) 奥列涅戈尔斯克
+Okulovka (58.40801, 33.28852) 奥库洛夫卡
+Oktyabr'skoye (45.28866, 34.13521) 十月村
+TsotsinYurt (43.24206, 46.00013) 佐辛尤尔特
+Oktyabr'skiy (55.60806, 37.97738) 十月斯基
+Oktyabrsky (54.48147, 53.47103) 十月斯基
+Takhtamukay (44.92198, 38.99486) 塔赫塔穆凯
+Oktyabr'sk (53.16722, 48.70056) 十月斯克
+Oksovskiy (62.60623, 39.89845) 奥克索夫斯基
+Okhansk (57.71491, 55.3906) 奥汉斯克
+Odoyev (53.93567, 36.68821) 奥多耶夫
+Odintsovo (55.66977, 37.27716) 奥金佐沃
+Ocher (57.88227, 54.71827) 奥切尔
+Obukhovo (59.84389, 30.45111) 奥布霍沃
+Obsharovka (53.125, 48.85306) 奥布沙罗夫卡
+Oboyan' (51.21224, 36.27859) 奥博扬
+Obninsk (55.10993, 36.61238) 奥布宁斯克
+Oblivskaya (48.53616, 42.50143) 奥布利夫斯卡亚
+Nyuksenitsa (60.41159, 44.23309) 纽克谢尼察
+Nytva (57.93771, 55.34136) 尼特瓦
+Nyrob (60.733, 56.72024) 尼罗布
+Nyazepetrovsk (56.03715, 59.59852) 尼亚泽彼得罗夫斯克
+Nyandoma (61.6718, 40.21221) 尼扬多马
+Nurma (59.55, 31.01667) 努尔马
+Nurlat (54.42766, 50.80511) 努尔拉特
+Nuradilovo (43.28447, 46.45763) 努拉迪洛沃
+Nudol' (56.1, 36.51667) 努多尔
+NozhayYurt (43.09437, 46.37582) 诺扎尤尔特
+Novyy Yegorlyk (46.3927, 41.87162) 新叶戈尔雷克
+Novyy Toryal (57.00394, 48.73419) 新托里亚尔
+Novyy Ropsk (52.29678, 32.31226) 新罗普斯克
+Novyy Rogachik (48.67685, 44.06081) 新罗加奇克
+Novy Oskol (50.76331, 37.86415) 新奥斯科尔
+Novyy Nekouz (57.9043, 38.06729) 新涅库兹
+Novyy Milet (55.70744, 38.05847) 新米列特
+Novyy Karachay (43.82076, 41.90322) 新卡拉恰伊
+Novyye Lyady (58.0552, 56.6104) 新利亚迪
+Novyye Kuz'minki (55.7, 37.75) 新库兹明基
+Novyye Gorki (56.72535, 41.06014) 新戈尔基
+Novyye Cheremushki (55.7, 37.58333) 新切列穆什基
+Novyye Burasy (52.13236, 46.07144) 新布拉西
+Novyye Bobovichi (52.6238, 31.7338) 新博博维奇
+Novyye Atagi (43.13528, 45.77306) 新阿塔吉
+Novyy Byt (55.05857, 37.61348) 新比特
+Novyy Buyan (53.68611, 50.04691) 新布扬
+Novy (44.93375, 40.16936) 新村
+Novozybkov (52.53711, 31.93659) 新兹布科夫
+Novozhivotinnoye (51.8853, 39.1753) 新日沃廷诺耶
+Novozavedennoye (44.26278, 43.63806) 新扎韦登诺耶
+Novoye Selo (55.55625, 38.19521) 新村
+Novoye Leushino (56.80732, 40.51443) 新列乌希诺
+Novoye Devyatkino (60.06364, 30.48328) 新杰维亚特基诺
+Novoye (55.63104, 38.92001) 新村
+Novovyazniki (56.1975, 42.17111) 新维亚兹尼基
+Novovoronezh (51.30719, 39.21732) 新沃罗涅日
+Novovelichkovskaya (45.27638, 38.84165) 新韦利奇科夫斯卡亚
+Novouzensk (50.45917, 48.14306) 新乌津斯克
+Novoutkinsk (56.99295, 59.55714) 新乌特金斯克
+Novoul'yanovsk (54.14961, 48.38907) 新乌里扬诺夫斯克
+Novoukrainskoye (45.37833, 40.52972) 新乌克兰斯科耶
+Novoukrainskiy (44.8942, 38.04886) 新乌克兰斯基
+Novotroitskaya (45.32667, 41.52528) 新特罗伊茨卡亚
+Novotroitsk (51.20099, 58.31318) 新特罗伊茨克
+Novotitarovskaya (45.23756, 38.98059) 新季塔罗夫斯卡亚
+NovoTalitsy (57.00392, 40.85936) 新塔利茨
+Novospasskoye (53.14683, 47.75138) 新斯帕斯科耶
+Novosokol'niki (56.34775, 30.15681) 新索科利尼基
+Novosmolinskiy (56.2841, 43.05071) 新斯莫林斯基
+Novosil' (52.97277, 37.03958) 新西尔
+Novosheshminsk (55.06513, 51.23376) 新舍什明斯克
+Novoshcherbinovskaya (46.47669, 38.64757) 新谢尔比诺夫斯卡亚
+Novoshchapovo (56.37286, 36.79939) 新沙波沃
+Novoshakhtinsk (47.76037, 39.93335) 新沙赫京斯克
+Novosergiyevka (52.087, 53.6463) 新谢尔吉耶夫卡
+Novosemeykino (53.37056, 50.35428) 新谢梅伊基诺
+Novoselitskoye (44.75083, 43.43694) 新谢利茨科耶
+Novorzhev (57.0308, 29.33257) 新尔热夫
+Novorudnyy (51.5026, 58.1873) 新鲁德内
+Novorozhdestvenskaya (45.86057, 39.94968) 新罗日杰斯特文斯卡亚
+Novorossiysk (44.73188, 37.76176) 新罗西斯克
+Novopokrovskaya (45.95761, 40.69811) 新波克罗夫斯卡亚
+Novopokrovka (49.83561, 36.55704) 新波克罗夫卡
+Novopodrezkovo (55.93972, 37.34417) 新波德列兹科沃
+Novoplatnirovskaya (46.1065, 39.4191) 新普拉特尼罗夫斯卡亚

@@ -1,0 +1,100 @@
+Vaqueria (19.31699, -96.95541) 瓦克里亚
+La Trinitaria (16.11859, -92.05201) 三一
+La Tortuga (20.56703, -99.92317) 乌龟
+La Tigrilla (15.98769, -92.8522) 小老虎
+Las Vinatas (17.86, -99.85139) 酒厂
+Las Vigas de Ramirez (19.63722, -97.09821) 拉米雷斯的横梁
+Las Truchas (19.78566, -97.08579) 鳟鱼
+Las Salvias (15.45239, -92.30504) 鼠尾草
+Las Piedras (-34.7302, -56.21915) 石头
+Las Palmeras (14.86704, -92.27584) 棕榈树
+Las Moras (25.65745, -108.45807) 桑树
+Las Minas (16.80437, -99.54) 矿山
+San Miguel las Minas (18.51833, -98.33417) 圣米格尔矿山
+Las Margaritas (16.31265, -91.98107) 雏菊
+Maravillas (22.39988, -102.01676) 奇迹
+Las Golondrinas (17.88826, -90.81299) 燕子
+Modelo Dos Rios (17.39614, -94.76477) 两河模型
+Las Delicias (32.40889, -116.94361) 美味
+Canton las Delicias (15.10245, -92.50002) 美味区
+Las Cruces (32.31232, -106.77834) 十字架
+Las Compuertas (25.84202, -109.0198) 水闸
+Las Choapas (17.91177, -94.09646) 乔帕斯
+Canton las Brisas (15.14839, -92.6272) 微风区
+Las Barrillas (18.18617, -94.59542) 小酒吧
+Las Badeas (21.7415, -98.4126) 巴德亚斯
+Larrainzar (16.88392, -92.71329) 拉赖因萨尔
+Congregacion Reforma (14.78208, -92.31424) 改革会众
+Las Puentes (28.29682, -105.44742) 桥梁
+La Presa (32.70811, -116.99725) 水坝
+La Polka (15.9575, -93.66412) 波尔卡
+La Pesca (23.7866, -97.77712) 捕鱼
+La Perla (18.92817, -97.13362) 珍珠
+La Palmilla (20.02041, -97.14553) 小棕榈
+La Orduna (19.45141, -96.93598) 奥尔杜尼亚
+Nueva Morelia (15.61784, -92.14517) 新莫雷利亚
+Ejido La Noria (20.93686, -97.79585) 拉诺里亚集体农场
+La Nopalera (18.79806, -99.0575) 仙人掌园
+Landero y Coss (19.73499, -96.85231) 兰德罗与科斯
+Landa de Matamoros (21.18484, -99.31985) 马塔莫罗斯的兰达
+La Mision (23.80326, -99.17025) 使命
+La Mestiza (18.99118, -96.57201) 混血
+La Ameca (21.24798, -98.93005) 阿梅卡
+Magdalena Atlicpac (19.36906, -98.94935) 马格达莱纳·阿特利克帕克
+La Magdalena (19.94796, -99.99947) 马格达莱纳
+Canton la Lima (15.02554, -92.43428) 莱马区
+Santiago la Libertad (16.5624, -96.53186) 圣地亚哥自由
+La Laja (20.58007, -103.12183) 石板
+La Lagunilla (20.06787, -98.47801) 小湖
+La Ladrillera (18.92753, -99.48305) 砖厂
+La Ladera (19.99778, -102.18083) 山坡
+Gilberto Camacho (20.37365, -97.88546) 吉尔伯托·卡马乔
+La Joya (32.44619, -117.00103) 宝石
+La Jordana (19.79604, -99.99547) 约旦
+La Isla (18.6, -96.15) 岛
+La Independencia (16.25263, -92.02371) 独立
+La Huleria (17.99359, -91.38743) 橡胶厂
+La Hacienda (9.8815, 124.3923) 庄园
+Lagunillas (10.13008, -71.25946) 小湖泊
+Laguna Guerrero (18.68975, -88.26721) 格雷罗湖
+Laguna de Majahual (18.65896, -95.29885) 马哈瓦尔湖
+Laguna del Cofre (15.62751, -92.64143) 箱子湖
+Laguna de Farfan (19.80327, -96.64386) 法尔凡湖
+La Guasima (22.40607, -105.38767) 瓜西马
+La Guadalupe (20.37336, -96.91925) 瓜达卢佩
+La Grandeza (15.51033, -92.22603) 伟大
+Galeana (18.6381, -99.2124) 加莱亚纳
+Luis Espinoza (17.15045, -93.42239) 路易斯·埃斯皮诺萨
+La Defensa (20.10507, -96.96079) 防御
+Cruz y Cruz (24.09787, -99.18789) 十字与十字
+La Cruz de Tenango (20.28272, -98.27373) 特南戈十字架
+Constancia y Venecia (18.43569, -92.82325) 康斯坦西亚与威尼斯
+La Concha (25.63524, -103.38136) 贝壳
+Casa del Campesino (23.2624, -98.84464) 农民之家
+La Sidra (18.9338, -97.07989) 苹果酒
+Lachixova (17.31667, -95.96583) 拉奇索瓦
+Santiago Lachivia (16.37021, -96.21595) 圣地亚哥·拉奇维亚
+San Martin Lachila (16.61186, -96.84882) 圣马丁·拉奇拉
+La Cardona (21.76352, -100.74) 卡尔多纳
+San Jose la Capilla (19.22408, -97.37928) 圣何塞教堂
+Kuchel (20.85017, -89.89766) 库切尔
+Kopoma (20.64906, -89.89989) 科波马
+Komchen (21.10367, -89.66149) 科姆琴
+Konchen (19.5938, -89.85185) 孔琴
+Kochol (20.61867, -90.15906) 科乔尔
+San Francisco Koben (19.91516, -90.41709) 圣弗朗西斯科·科本
+Kini (21.13557, -89.31691) 基尼
+Kinchil (20.91696, -89.94728) 金奇尔
+Kimbila (20.93403, -89.1247) 金比拉
+Kaua (20.6219, -88.41585) 卡瓦
+Kantunil (20.79645, -89.03539) 坎图尼尔
+Kancabdzonot (20.5092, -88.71023) 坎卡布佐诺特
+Kanasin (20.93482, -89.55871) 卡纳辛
+Jumiltepec (18.91359, -98.77666) 胡米尔特佩克
+Juchitepec (19.10059, -98.8788) 胡奇特佩克
+Juchitan de Zaragoza (16.43603, -95.01975) 萨拉戈萨的胡奇坦
+Juchique de Ferrer (19.83985, -96.69463) 费雷尔的胡奇克
+Colonia Juarez (16.20967, -95.02722) 华雷斯殖民地
+Juan Sarabia (18.50035, -88.48013) 胡安·萨拉比亚
+Juan Rincon (23.92799, -99.19878) 胡安·林孔
+Juan Garcia (18.27302, -95.64203) 胡安·加西亚

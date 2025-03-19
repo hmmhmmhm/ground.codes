@@ -1,0 +1,100 @@
+Noatak (67.57111, -162.96528) 努阿塔克
+Noorvik (66.83833, -161.03278) 努尔维克
+North Pole (64.75111, -147.34944) 北极
+Nunapitchuk (60.89694, -162.45944) 努纳皮丘克
+Pilot Station (61.93889, -162.875) 飞行员站
+Point MacKenzie (61.35972, -149.97833) 麦肯齐角
+Point Hope (68.34861, -166.73472) 霍普角
+Prudhoe Bay (70.25528, -148.33722) 普鲁德霍湾
+Quinhagak (59.74889, -161.91583) 昆哈加克
+St. Mary's (62.0534, -163.17787) 圣玛丽
+Salamatof (60.61538, -151.31944) 萨拉马托夫
+Sand Point (55.33597, -160.50071) 沙点
+Savoonga (63.69417, -170.47889) 萨文加
+Scammon Bay (61.84278, -165.58167) 斯卡蒙湾
+Selawik (66.60389, -160.00694) 塞拉威克
+Shishmaref (66.25621, -166.07229) 希什马雷夫
+Soldotna (60.48778, -151.05833) 索尔多特纳
+Stebbins (63.52009, -162.28871) 斯特宾斯
+Talkeetna (62.32389, -150.10944) 塔尔基特纳
+Tanaina (61.62694, -149.42806) 塔纳伊纳
+Togiak (59.06194, -160.37639) 托吉亚克
+Tok (63.33667, -142.98556) 托克
+Toksook Bay (60.53378, -165.10366) 托克苏克湾
+Unalakleet (63.87306, -160.78806) 乌纳拉克利特
+Unalaska (53.87413, -166.53408) 乌纳拉斯加
+Wasilla (61.5809, -149.4415) 瓦西拉
+Willow (61.74722, -150.0375) 威洛
+Womens Bay (57.68222, -152.66861) 女士湾
+Moose Creek (64.71, -147.14361) 麋鹿溪
+Akiachak (60.90944, -161.43139) 阿基亚查克
+Akutan (54.1343, -165.77515) 阿库坦
+Alakanuk (62.68889, -164.61528) 阿拉卡努克
+Anchor Point (59.77667, -151.83139) 锚点
+Aniak (61.57833, -159.52222) 阿尼亚克
+Utqiagvik (71.29058, -156.78872) 乌特克亚维克
+Big Delta (64.1525, -145.84222) 大三角洲
+Johns Creek (34.02893, -84.19858) 约翰溪
+GrantValkaria (27.9398, -80.57104) 格兰特瓦尔卡里亚
+HelenaWest Helena (34.5291, -90.59) 海伦娜西海伦娜
+Summerset (44.18998, -103.34384) 萨默塞特
+Cutler Bay (25.5783, -80.3377) 卡特勒湾
+Morningside Heights (40.81, -73.9625) 晨边高地
+East Harlem (40.79472, -73.9425) 东哈莱姆
+Alafaya (28.5641, -81.2114) 阿拉法亚
+Little Havana (25.76806, -80.23306) 小哈瓦那
+New Fairview (33.09917, -97.44639) 新费尔维尤
+Cobb Island (38.25846, -76.84386) 科布岛
+Millburn (40.72482, -74.30404) 米尔本
+St Johnsbury (44.42526, -72.01512) 圣约翰斯伯里
+Briarwood (40.70935, -73.81529) 布赖尔伍德
+Stevenson Ranch (34.39048, -118.57372) 史蒂文森牧场
+Holly Lake Ranch (32.71336, -95.19756) 霍利湖牧场
+Hidden Trails (33.1395, -117.02295) 隐藏小径
+Times Square (40.75636, -73.98644) 时代广场
+Fort Liberty (35.139, -79.00603) 自由堡
+North Brunswick (40.454, -74.482) 北布伦瑞克
+Kapolei (21.33555, -158.0582) 卡波雷
+Elko New Market (44.56472, -93.32694) 埃尔科新市场
+South Blooming Grove (41.37337, -74.17843) 南布鲁明格罗夫
+DeweyHumboldt (34.53, -112.24222) 杜威洪堡
+Loch Lloyd (38.83106, -94.59774) 洛伊德湖
+Carpendale (39.63321, -78.78374) 卡彭代尔
+Peppermill Village (38.89472, -76.88654) 胡椒磨村
+Boulevard Gardens (26.12326, -80.17997) 林荫大道花园
+Roosevelt Gardens (26.14087, -80.18027) 罗斯福花园
+City of Sammamish (47.60444, -122.03768) 萨马米什市
+Parker Strip (34.21941, -114.19824) 帕克地带
+Peaceful Valley (48.93815, -122.14733) 宁静谷
+Rio Communities (34.64959, -106.73403) 里奥社区
+Silver Firs (47.86602, -122.1551) 银枞
+Verde Village (34.7105, -112.01152) 维尔德村
+Vista West (42.86689, -106.43471) 维斯塔西
+Chattahoochee Hills (33.55063, -84.76049) 查塔胡奇山
+Gramercy Park (40.7375, -73.98611) 格拉梅西公园
+Desert Edge (33.92417, -116.44139) 沙漠边缘
+Fox Chase (40.39557, -75.96216) 狐狸追逐
+Montrose Manor (40.30494, -75.98908) 蒙特罗斯庄园
+Dammeron Valley (37.30526, -113.67056) 达梅隆谷
+Captains Cove (37.98996, -75.42272) 船长湾
+Weston Lakes (29.68324, -95.93571) 韦斯顿湖
+Hideout (40.63804, -111.41076) 隐匿处
+North Castle (41.14, -73.68389) 北城堡
+Saddlebrooke (32.53945, -110.90057) 鞍溪
+Kew Gardens Hills (40.73002, -73.8234) 丘园山
+Deep River Center (41.38221, -72.43862) 深河中心
+Essex Village (41.35544, -72.39101) 埃塞克斯村
+Guilford Center (41.28156, -72.67619) 吉尔福德中心
+Madison Center (41.27925, -72.60048) 麦迪逊中心
+New Hartford Center (41.87996, -72.9753) 新哈特福德中心
+Northwest Harwinton (41.77685, -73.07922) 西北哈温顿
+Old Saybrook Center (41.29123, -72.37176) 老塞布鲁克中心
+Oxoboxo River (41.44391, -72.12502) 奥克索博克索河
+Plainfield Village (41.67686, -71.92489) 普莱恩菲尔德村
+Simsbury Center (41.88088, -72.81116) 辛斯伯里中心
+Wallingford Center (41.44987, -72.81892) 沃灵福德中心
+Westbrook Center (41.27997, -72.44254) 韦斯特布鲁克中心
+Woodbury Center (41.54453, -73.20476) 伍德伯里中心
+Brunswick Station (43.8867, -69.93264) 布伦瑞克站
+Acushnet Center (41.68508, -70.90642) 阿库什内特中心
+Harwich Center (41.69235, -70.06938) 哈里奇中心

@@ -1,0 +1,100 @@
+Paraje Nuevo (18.87886, -96.86066) 新地点
+Miguel Aguilar (18.93976, -96.90017) 米格尔·阿吉拉尔
+Ejido los Naranjos (18.96694, -96.85806) 洛斯纳兰霍斯集体农场
+Trapiche Viejo (18.84306, -96.94556) 老甘蔗磨坊
+Cotlaixco (18.7675, -96.94944) 科特莱斯科
+El Campanario (18.77167, -97.19361) 钟楼
+Cuesta del Mexicano (18.80472, -96.98972) 墨西哥人的坡道
+San Jose de Tapia (18.84722, -96.95389) 塔皮亚的圣何塞
+El Palenque Palotal (18.96778, -96.97917) 帕洛塔尔斗鸡场
+Tecamilla (18.99694, -96.98556) 特卡米利亚
+Monte Salas (18.93722, -97.01833) 萨拉斯山
+Zapoapan (18.84018, -96.99297) 萨波阿潘
+Campo Chico (18.83639, -97.02802) 小田野
+Moyoapan (18.91681, -97.04559) 莫约阿潘
+Rincon Grande (18.94527, -97.09813) 大角落
+Cumbre del Espanol (18.97194, -97.14806) 西班牙人的山顶
+Tlilapan (18.8056, -97.09867) 特利拉潘
+Rancho de Pala (18.88278, -97.1375) 帕拉牧场
+Agua Escondida (19.97893, -99.57829) 隐藏的水
+San Isidro el Berro (18.92722, -97.20556) 圣伊西德罗·埃尔贝罗
+San Jose Suchil (18.88778, -97.23722) 苏奇尔的圣何塞
+Cecilio Teran (18.8148, -97.22526) 塞西里奥·特兰
+Zacamitla (19.05085, -96.92424) 萨卡米特拉
+Frijol Colorado (19.58872, -97.35237) 红豆
+Loma de la Palma (18.24476, -94.98789) 棕榈山
+Encino Amarillo (18.28946, -94.79211) 黄栎树
+Cuilonia Nuevo (18.1548, -94.91447) 新奎洛尼亚
+La Estribera (18.11675, -94.88851) 马鞍架
+Pitalillo (18.0839, -94.91757) 皮塔利略
+Ixtagapa (18.05601, -94.93966) 伊斯塔加帕
+Comejen (18.06126, -94.88552) 白蚁
+San Andres Chamilpa (18.09178, -94.85375) 查米尔帕的圣安德烈斯
+Amamaloya (18.14913, -94.80811) 阿马马洛亚
+Jicacal (18.21413, -94.61251) 希卡卡尔
+Jose F. Gutierrez (18.02526, -94.61028) 何塞·F·古铁雷斯
+Calzadas (18.10121, -94.45524) 卡尔萨达斯
+El Veinticinco (18.02235, -94.33803) 二十五号
+Mundo Nuevo (18.08831, -94.39024) 新世界
+Guillermo Prieto (18.16077, -94.27658) 吉列尔莫·普列托
+Tlacuilolapan (17.97778, -94.26306) 特拉奎洛拉潘
+Tecuanapa (18.00422, -94.91368) 特库阿纳帕
+Colonia Lealtad (17.96306, -94.9025) 忠诚殖民地
+Congregacion Hidalgo (17.9375, -94.97056) 伊达尔戈集会
+Dehesa (17.94167, -94.99806) 德埃萨
+El Tulin (18.2475, -94.95373) 图林
+Chijol Diecisiete (22.25035, -98.27434) 奇霍尔十七
+Antonio J Bermudez (22.15046, -98.15873) 安东尼奥·J·贝穆德斯
+Miravegas (22.12693, -98.05252) 米拉维加斯
+El Pueblito (20.53996, -100.43817) 小村庄
+El Chote (20.40167, -97.34389) 乔特
+Ejido Rancho Alegre (21.71833, -98.35247) 快乐牧场集体农场
+Cucharas (21.61568, -97.66099) 勺子
+San Pedro Coyutla (21.2241, -98.43002) 科尤特拉的圣佩德罗
+Xiloxuchitl (21.34708, -98.27135) 希洛苏奇特尔
+Palma Alta (21.43443, -98.22745) 高棕榈
+Ixcanelco (21.13938, -98.1931) 伊斯卡内尔科
+Mata de Otate (21.34755, -97.98555) 奥塔特丛林
+Carmona y Valle (21.36056, -97.79554) 卡尔莫纳与瓦耶
+Vara Alta (20.99612, -97.67484) 高杆
+Estero de Milpas (21.2537, -97.45082) 米尔帕斯河口
+La Selva (18.02333, -92.96306) 丛林
+Zonzonapa (20.68917, -98.44006) 宗佐纳帕
+Chahuatlan (20.78309, -98.39335) 查瓦特兰
+Huitztipan (20.83667, -98.36306) 维斯蒂潘
+Tetzacual (20.77329, -98.26876) 特扎夸尔
+Limontitla (20.73703, -98.23509) 利蒙蒂特拉
+La Mirra (20.62724, -98.35042) 没药
+Tenantitla (20.77031, -98.14433) 特南蒂特拉
+Reyixtla (20.87537, -98.0553) 雷伊斯特拉
+Calaco (20.8865, -98.18563) 卡拉科
+Alahualtitla (20.92747, -98.16732) 阿拉瓦尔蒂特拉
+Ayacaxtle (20.96703, -97.99478) 阿亚卡斯特莱
+Ixcacuatitla (20.90804, -98.02345) 伊斯卡夸蒂特拉
+Cacahuatengo (20.78548, -98.0399) 卡卡瓦滕戈
+El Tizan (20.76254, -98.06761) 蒂赞
+Lomas de Vinazco (20.86396, -97.88217) 维纳斯科山
+Monte Chiquito (20.96323, -97.80068) 小山
+La Camelia (20.89631, -97.77247) 山茶花
+Paso del Perro (20.84557, -97.79151) 狗的通道
+Estero del Idolo (20.88953, -97.65878) 偶像河口
+Rodriguez Clara (20.88756, -97.73102) 罗德里格斯·克拉拉
+Villa Hermosa (16.93861, -99.33) 美丽村庄
+Cerro Dulce (20.84483, -97.6131) 甜山
+Tincontlan (20.82141, -97.69083) 廷孔特兰
+Mequetla (20.79468, -97.68855) 梅克特拉
+La Granadilla (20.83444, -97.56943) 大石榴
+Doctor Montes de Oca (20.93477, -97.55585) 蒙特斯·德·奥卡医生
+Zacate Colorado (20.49735, -97.52416) 红草
+Acontitla (20.68206, -97.38469) 阿孔蒂特拉
+Nuevo Tejamanil (20.72305, -97.39243) 新特哈马尼尔
+Pena de Afuera (20.83475, -97.36591) 外部岩石
+La Encantada (23.46365, -102.8739) 迷人的地方
+Plan de Limon (20.66077, -97.27345) 柠檬计划
+Puente de Piedra (20.6055, -97.19601) 石桥
+Vicente Herrera (20.57695, -97.34973) 比森特·埃雷拉
+Polutla (20.52799, -97.25884) 波卢特拉
+Maximo Garcia (20.09418, -96.9693) 马克西莫·加西亚
+Fuerte de Anaya (20.29695, -96.96738) 阿纳亚堡
+Cruz de los Esteros (20.43974, -97.02096) 泻湖十字架
+Hueytepec (20.32635, -97.0268) 韦特佩克

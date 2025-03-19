@@ -1,0 +1,100 @@
+KnoppLabach (49.33333, 7.5) 克诺普拉巴赫
+Knittlingen (49.02487, 8.75606) 克尼特林根
+Knittelsheim (49.19167, 8.25139) 克尼特尔斯海姆
+Knetzgau (49.98333, 10.55) 克内茨高
+Kneitlingen (52.17477, 10.76197) 克奈特林根
+Knau (50.65033, 11.71967) 克瑙
+Knappenrode (51.40333, 14.32016) 克纳彭罗德
+Knapendorf (51.37591, 11.9384) 克纳彭多夫
+Kluetz (53.9647, 11.16367) 克吕茨
+Kluesserath (49.845, 6.85086) 克吕瑟拉特
+Kluse (52.93633, 7.34093) 克卢塞
+Kludenbach (49.98333, 7.36667) 克卢登巴赫
+Klotzsche (51.11053, 13.76862) 克洛茨舍
+Kloetze (52.62725, 11.16424) 克洛策
+Klotten (50.16667, 7.2) 克洛滕
+Kloster Vessra (50.5, 10.65) 克洛斯特费斯拉
+Kloster Neuendorf (52.52567, 11.4635) 克洛斯特诺因多夫
+Klostermansfeld (51.58333, 11.5) 克洛斯特曼斯费尔德
+Klosterlechfeld (48.15586, 10.82986) 克洛斯特莱希费尔德
+Klosterkumbd (50.03333, 7.53333) 克洛斯特库姆德
+Klosterhaeseler (51.16358, 11.61195) 克洛斯特海瑟勒
+Kloschwitz (51.58533, 11.75605) 克洛施维茨
+Kloeden (51.76178, 12.83169) 克勒登
+Klobikau (51.35, 11.83333) 克洛比考
+Klixbuell (54.80339, 8.8957) 克利克斯比尔
+Klitten (51.35109, 14.60526) 克利滕
+Klipphausen (51.06841, 13.51374) 克利普豪森
+Klinkrade (53.71667, 10.55) 克林克拉德
+Klink (53.47758, 12.62131) 克林克
+Klings (50.65, 10.11667) 克林斯
+Klingenthal (50.35963, 12.46463) 克林根塔尔
+Klingenstein (48.41849, 9.90812) 克林根施泰因
+Klingenmunster (49.14056, 8.01861) 克林根明斯特
+Klingenberg am Main (49.78507, 9.18025) 克林根贝格
+Klingelbach (50.27551, 7.96966) 克林格尔巴赫
+Klietz (52.66835, 12.06812) 克利茨
+Klieken (51.88806, 12.3707) 克利肯
+Kliding (50.11667, 7.05) 克利丁
+Kleve (51.78826, 6.13865) 克莱韦
+Klettstedt (51.15, 10.75) 克莱特施泰特
+Klettbach (50.91667, 11.15) 克莱特巴赫
+Kletkamp (54.25, 10.63333) 克莱特坎普
+Klempau (53.76667, 10.66667) 克伦保
+Kleinzschocher (51.31568, 12.31979) 克莱因佐赫
+Klein Zecher (53.58333, 10.86667) 克莱因策赫
+Klein Wittensee (54.39115, 9.73323) 克莱因维滕塞
+Kleinwittenberg (51.86628, 12.61516) 克莱因维滕贝格
+KleinWinternheim (49.93833, 8.21194) 克莱因温特海姆
+Klein Wesenberg (53.81667, 10.55) 克莱因韦森贝格
+Kleinwenden (51.41611, 10.65902) 克莱因文登
+Klein Wanzleben (52.07005, 11.36594) 克莱因万茨莱本
+Kleinwallstadt (49.87464, 9.16927) 克莱因瓦尔施塔特
+Klein Vielen (53.45249, 13.02755) 克莱因费伦
+Klein Trebbow (53.71131, 11.37208) 克莱因特雷博
+Kleinsteinhausen (49.2, 7.46667) 克莱因施泰因豪森
+Kleinsendelbach (49.59558, 11.15773) 克莱因森德尔巴赫
+Klein Schwuelper (52.34153, 10.42903) 克莱因施维尔珀
+Klein Schretstaken (53.58608, 10.57086) 克莱因施雷茨塔肯
+Klein Roennau (53.96667, 10.31667) 克莱因勒瑙
+Klein Rogahn (53.60534, 11.34579) 克莱因罗甘
+Klein Rodensleben (52.11563, 11.43875) 克莱因罗登斯莱本
+Kleinrinderfeld (49.70028, 9.84472) 克莱因林德费尔德
+Klein Rheide (54.44956, 9.47569) 克莱因赖德
+Klein Reken (51.7871, 7.04367) 克莱因雷肯
+Kleinpaschleben (51.78396, 11.88464) 克莱因帕施莱本
+Klein Pampau (53.51245, 10.5891) 克莱因潘保
+Kleinostheim (50, 9.06667) 克莱因奥斯特海姆
+Klein Nordende (53.72219, 9.65424) 克莱因诺登德
+Kleinniedesheim (49.58694, 8.32222) 克莱因尼德斯海姆
+Kleinneuhausen (51.15, 11.28333) 克莱因诺伊豪森
+Kleinmuehlingen (51.94721, 11.74535) 克莱因米林根
+Kleinmolsen (51.03333, 11.11667) 克莱因莫尔森
+Klein Meckelsen (53.3, 9.45) 克莱因梅克尔森
+Kleinmaischeid (50.51345, 7.6083) 克莱因迈谢德
+Kleinmachnow (52.40786, 13.22514) 克莱因马赫瑙
+Kleinlangheim (49.77087, 10.2843) 克莱因朗海姆
+Kleinlangenfeld (50.26667, 6.48333) 克莱因朗根费尔德
+Klein Kussewitz (54.13368, 12.24285) 克莱因库瑟维茨
+Kleinkarlbach (49.53861, 8.14972) 克莱因卡尔巴赫
+Kleinkahl (50.11667, 9.26667) 克莱因卡尔
+Kleinich (49.9, 7.18333) 克莱尼希
+Kleinheubach (49.72109, 9.21346) 克莱因霍伊巴赫
+Klein Gusborn (53.08331, 11.19323) 克莱因古斯博恩
+Klein Gladebrugge (53.91667, 10.31667) 克莱因格拉德布吕格
+Kleinfurra (51.41556, 10.76454) 克莱因富拉
+Kleinfischlingen (49.26333, 8.18694) 克莱因菲施林根
+Kleineutersdorf (50.78333, 11.58333) 克莱因奥伊特斯多夫
+Kleinebersdorf (50.81667, 11.83333) 克莱因埃伯斯多夫
+Klein Buenzow (53.93016, 13.63253) 克莱因本措
+Kleinbundenbach (49.31667, 7.43333) 克莱因本登巴赫
+Kleinbockedra (50.84222, 11.6466) 克莱因博克德拉
+Kleinblittersdorf (49.1578, 7.03734) 克莱因布利特斯多夫
+Klein Berssen (52.76797, 7.46182) 克莱因贝尔森
+Klein Bennebek (54.40099, 9.45049) 克莱因本内贝克
+Klein Belitz (53.9382, 11.96617) 克莱因贝利茨
+Kleinbartloff (51.35, 10.38333) 克莱因巴特洛夫
+Klein Barkau (54.23333, 10.13333) 克莱因巴考
+Kleinau (52.79952, 11.51096) 克莱瑙
+Klein Ammensleben (52.21796, 11.52034) 克莱因阿门斯莱本
+Kleinaitingen (48.2185, 10.86923) 克莱因艾廷根

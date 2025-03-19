@@ -1,0 +1,100 @@
+Morra de Sanctis (40.92902, 15.24285) 莫拉德桑克蒂斯
+Morozzo (44.42277, 7.71006) 莫罗佐
+Morolo (41.63838, 13.19809) 莫罗洛
+Mornago (45.74516, 8.75046) 莫尔纳戈
+Morlupo (42.15002, 12.50306) 莫尔卢波
+Morimondo (45.35381, 8.95626) 莫里蒙多
+Morigerati (40.14056, 15.55508) 莫里杰拉蒂
+Moricone (42.11661, 12.77234) 莫里科内
+Mori (34.83333, 137.93333) 森
+Morgex (45.75664, 7.04123) 莫尔热
+Morfasso (44.7227, 9.70221) 莫尔法索
+Moretta (44.76137, 7.53632) 莫雷塔
+Moresco (43.08666, 13.73041) 莫雷斯科
+Mordano (44.39696, 11.80763) 莫尔达诺
+Morcone (41.34269, 14.66889) 莫尔科内
+Morciano di Romagna (43.9144, 12.65104) 罗马涅的莫尔恰诺
+Morbegno (46.1372, 9.57415) 莫尔贝尼奥
+Morano sul Po (45.16621, 8.36674) 波河畔莫拉诺
+Monzuno (44.27825, 11.26684) 蒙祖诺
+Monzone (44.16437, 10.12714) 蒙佐内
+Monzambano (45.38534, 10.69331) 蒙赞巴诺
+Monza (45.58005, 9.27246) 蒙扎
+Montu Beccaria (45.03633, 9.31268) 蒙图贝卡里亚
+Montresta (40.37365, 8.49962) 蒙特雷斯塔
+Montottone (43.06205, 13.59009) 蒙托托内
+Montorso Vicentino (45.49089, 11.36019) 维琴察的蒙托尔索
+Montorio Romano (42.13738, 12.80404) 罗马的蒙托里奥
+Montorio al Vomano (42.58123, 13.63715) 沃马诺河畔蒙托里奥
+Montopoli (43.67354, 10.74951) 蒙托波利
+Montopoli in Sabina (42.24593, 12.69208) 萨比纳的蒙托波利
+Montone (43.36078, 12.32346) 蒙托内
+Montoggio (44.51699, 9.04923) 蒙托焦
+Montodine (45.28419, 9.7091) 蒙托迪内
+Montjovet (45.70796, 7.67411) 蒙若韦
+Montignoso (44.02405, 10.17259) 蒙蒂尼奥索
+Montiglio (45.06462, 8.09878) 蒙蒂廖
+Montieri (43.13113, 11.01663) 蒙蒂耶里
+Cadiroggio (44.54926, 10.74291) 卡迪罗焦
+Monticiano (43.13965, 11.1771) 蒙蒂恰诺
+Montichiari (45.41317, 10.39799) 蒙蒂基亚里
+Monticelli (40.65, 15.01667) 蒙蒂切利
+Monticelli d'Ongina (45.08851, 9.93424) 翁吉纳的蒙蒂切利
+Monticchio (42.32035, 13.46382) 蒙蒂基奥
+Montiano (44.08232, 12.30455) 蒙蒂亚诺
+Monti (40.80715, 9.32553) 蒙蒂
+Montevirginio (42.14834, 12.12604) 蒙特维尔吉尼奥
+Monte Vidon Corrado (43.12087, 13.48931) 蒙特维东科拉多
+Monte Vidon Combatte (43.04895, 13.63119) 蒙特维东康巴特
+Monteviale (45.5592, 11.45715) 蒙特维亚莱
+Monteverdi Marittimo (43.17787, 10.71133) 蒙特韦尔迪马里蒂莫
+Monteverde (40.99858, 15.53361) 蒙特韦尔德
+Montevarchi (43.5252, 11.57238) 蒙特瓦尔基
+Monteu Roero (44.78059, 7.93383) 蒙特乌罗埃罗
+Monte Urano (43.19039, 13.6618) 蒙特乌拉诺
+Monteu da Po (45.15031, 8.01428) 波河畔蒙特乌
+Montespertoli (43.6426, 11.07331) 蒙泰斯佩尔托利
+Montesilvano Marina (42.5114, 14.14507) 蒙特西尔瓦诺马里纳
+Montesegale (44.90696, 9.12636) 蒙特塞加莱
+Montese (44.26993, 10.94545) 蒙泰塞
+Montescudo (43.91753, 12.54083) 蒙特斯库多
+Montescaglioso (40.55024, 16.66541) 蒙特斯卡廖索
+Montesarchio (41.06227, 14.64096) 蒙特萨尔基奥
+Monte San Vito (43.60056, 13.26817) 圣维托山
+Monte Sant'Angelo (41.7053, 15.96068) 圣安杰洛山
+Monte San Savino (43.33213, 11.72663) 圣萨维诺山
+Monte San Martino (43.03219, 13.44033) 圣马蒂诺山
+Monte San Giusto (43.23565, 13.59316) 圣朱斯托山
+Monte San Giacomo (40.34411, 15.54221) 圣贾科莫山
+Monte San Biagio (41.3536, 13.35184) 圣比亚焦山
+Monterubiaglio (42.76667, 12.01667) 蒙特鲁比亚廖
+Monterubbiano (43.0856, 13.71911) 蒙特鲁比亚诺
+Monterotondo (42.05159, 12.61969) 蒙特罗通多
+Monterosso al Mare (44.14666, 9.65494) 海滨蒙特罗索
+Monterosi (42.19698, 12.30842) 蒙特罗西
+Monteroni di Lecce (40.31929, 18.09163) 莱切的蒙特罗尼
+Monteroni d'Arbia (43.22968, 11.42228) 阿尔比亚的蒙特罗尼
+Monte Romano (42.26745, 11.89658) 蒙特罗马诺
+Monteroduni (41.5224, 14.17641) 蒙特罗杜尼
+Monte Roberto (43.48056, 13.13797) 蒙特罗伯托
+Monte Rinaldo (43.02825, 13.58198) 蒙特里纳尔多
+Monteriggioni (43.38994, 11.22323) 蒙特里久尼
+Monterenzio (44.32632, 11.40446) 蒙特伦齐奥
+Montereale (42.52332, 13.24585) 蒙特雷亚莱
+Monterchi (43.48733, 12.11054) 蒙特尔基
+Monterappoli (43.67931, 10.94262) 蒙特拉波利
+Monterado (43.69686, 13.09056) 蒙特拉多
+Montepulciano (43.09998, 11.78704) 蒙特普尔恰诺
+Monteprandone (42.9205, 13.8391) 蒙特普兰多内
+Monte Porzio Catone (41.81585, 12.71432) 蒙特波尔齐奥卡托内
+Montepiano (44.09067, 11.16009) 蒙特皮亚诺
+Montepastore (44.36815, 11.12337) 蒙特帕斯托雷
+Monteparano (40.44335, 17.41308) 蒙特帕拉诺
+Montepagano (42.67682, 13.98966) 蒙特帕加诺
+Monteombraro (44.38333, 11) 蒙特翁布拉罗
+Monteodorisio (42.08485, 14.65386) 蒙特奥多里西奥
+Montenerodomo (41.97682, 14.25177) 蒙特内罗多莫
+Montemurro (40.29765, 15.99182) 蒙特穆罗
+Montemurlo (43.92686, 11.03718) 蒙特穆尔洛
+Montemonaco (42.89871, 13.33018) 蒙特莫纳科
+Montemitro (41.88813, 14.64666) 蒙特米特罗

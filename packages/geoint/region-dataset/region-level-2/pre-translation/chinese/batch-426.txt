@@ -1,0 +1,100 @@
+Winsen (Aller) (52.68367, 9.9095) 温森（阿勒）
+Neuwied (50.4336, 7.47057) 诺伊维德
+Neuweiler (48.66667, 8.6) 诺伊魏勒
+NeuUlm (48.39279, 10.01112) 新乌尔姆
+Neutrebbin (52.66482, 14.22802) 新特雷宾
+Neutraubling (48.98737, 12.201) 新特劳布林
+Neustrelitz (53.3613, 13.07292) 新施特雷利茨
+Neustadt in Holstein (54.10707, 10.8145) 霍尔斯坦的新施塔特
+NeustadtGlewe (53.37846, 11.59264) 新施塔特-格勒韦
+Neustadt bei Coburg (50.32975, 11.12058) 科堡附近的新施塔特
+Neustadt am Main (49.93021, 9.56808) 美因河畔新施塔特
+Neue Neustadt (52.15, 11.63333) 新新施塔特
+Neustadt/Harz (51.56667, 10.83333) 哈茨的新施塔特
+Neustadt in Sachsen (51.02844, 14.21785) 萨克森的新施塔特
+Neustadt (Hessen) (50.85, 9.11667) 黑森的新施塔特
+Neustadt/Westerwald (50.62965, 8.04023) 韦斯特瓦尔德的新施塔特
+Neustadt Vogtland (50.461, 12.33224) 沃格特兰的新施塔特
+Neuss (51.19807, 6.68504) 诺伊斯
+Neusorg (49.93333, 11.96667) 诺伊索尔格
+Neusitz (49.37185, 10.22559) 诺伊西茨
+Neusiss (50.74493, 10.88951) 诺伊西斯
+Neuschonau (48.88419, 13.47576) 新舍瑙
+NeusalzaSpremberg (51.03945, 14.5356) 新萨尔察-施普伦贝格
+Neuruppin (52.92815, 12.80311) 新鲁平
+Neuried (48.09322, 11.46561) 诺伊里德
+Neureichenau (48.74861, 13.74699) 新赖兴瑙
+Neupotz (49.11778, 8.31944) 新波茨
+Neu Poserin (53.5529, 12.16461) 新波瑟林
+Neupetershain (51.608, 14.16507) 新彼得斯海恩
+Neuotting (48.24102, 12.68998) 新厄廷
+Neunkirchen am Sand (49.52464, 11.31955) 桑德附近的诺因基兴
+Neunkirchen am Main (49.923, 11.64793) 美因河畔诺因基兴
+Neunkhausen (50.70722, 7.90278) 诺因豪森
+Neunheilingen (51.19239, 10.67529) 诺因海林根
+Neundorf (51.8208, 11.57484) 诺因多夫
+Neunburg vorm Wald (49.34782, 12.38621) 瓦尔德前的诺因堡
+Neumuenster (54.07477, 9.98195) 新明斯特
+Neumuehle (53.63171, 11.37085) 新米勒
+NeumarktSankt Veit (48.36051, 12.50723) 新马克特-圣维特
+Neumark (50.6601, 12.35619) 新马克
+Neulussheim (49.29333, 8.52194) 新吕斯海姆
+Neulewin (52.72434, 14.27922) 新莱温
+Neuler (48.92803, 10.06888) 诺伊勒
+Neuleiningen (49.54167, 8.13889) 新莱宁根
+Neulehe (53.00449, 7.41428) 新莱赫
+Neuland (53.46965, 10.03287) 新兰德
+Neu Kosenow (53.79342, 13.7521) 新科瑟诺
+Neukoelln (52.47719, 13.43126) 新克尔恩
+Neukloster (53.86548, 11.68512) 新克洛斯特
+Neukirchen vorm Wald (48.68333, 13.38333) 瓦尔德前的新基兴
+NeukirchenBalbini (49.29101, 12.43643) 新基兴-巴尔比尼
+Neukirch (47.65738, 9.70333) 新基尔希
+Neukirch/Lausitz (51.09727, 14.30789) 劳西茨的新基尔希
+Neukieritzsch (51.14995, 12.4109) 新基里茨
+Neu Kaliss (53.17466, 11.29446) 新卡利斯
+Neukalen (53.82275, 12.79015) 新卡伦
+NeuIsenburg (50.04832, 8.69406) 新伊森堡
+Neuhutten (50, 9.41667) 新胡滕
+Neuhuetten (49.64266, 7.01497) 新胡滕
+Neuhof an der Zenn (49.4569, 10.64548) 泽恩河畔新霍夫
+Heringsdorf (54.301, 11.00658) 黑灵斯多夫
+Neuhof (50.45313, 9.6175) 新霍夫
+Neuhemsbach (49.51667, 7.91667) 新亨斯巴赫
+Neuheilenbach (50.11667, 6.56667) 新海伦巴赫
+NeuhausSchierschnitz (50.31237, 11.24019) 新豪斯-希尔施尼茨
+Neuhausen ob Eck (47.97257, 8.92759) 埃克附近的新豪森
+Neuhaeusel (50.3836, 7.7096) 新豪瑟尔
+Neuhaus an der Oste (53.80043, 9.03348) 奥斯特河畔新豪斯
+Neuhaus am Rennweg (50.51006, 11.13787) 伦韦格附近的新豪斯
+Neuhaus am Inn (48.46086, 13.42083) 因河畔新豪斯
+Neuharlingersiel (53.69993, 7.70288) 新哈灵厄尔西尔
+Neuhardenberg (52.59601, 14.23768) 新哈登贝格
+Neu Guelze (53.38009, 10.78821) 新居尔策
+NeugrabenFischbek (53.46579, 9.84344) 新格拉本-菲施贝克
+Neugersdorf (50.97729, 14.60881) 新格尔斯多夫
+Neugernsdorf (50.71667, 12.13333) 新格恩斯多夫
+Neugattersleben (51.85095, 11.70783) 新加特斯莱本
+Neufraunhofen (48.4, 12.21667) 新弗劳恩霍芬
+Neufra (48.1288, 9.47554) 新弗劳
+Neuffen (48.5546, 9.3755) 诺伊芬
+Neufelderkoog (53.9, 8.96667) 新费尔德科格
+Neufeld (53.9, 9.01667) 新费尔德
+Neufahrn (48.25587, 12.44078) 新法恩
+Neuerkirch (50.01667, 7.48333) 新埃尔基希
+Neuerburg (50.00102, 6.94828) 新堡
+Neuental (51, 9.21667) 新恩塔尔
+Neuenstein (49.2049, 9.58) 新恩施泰因
+Neuenstadt am Kocher (49.23498, 9.33215) 科赫河畔新恩施塔特
+Neuensalz (50.5, 12.21667) 新恩萨尔茨
+Neuenrade (51.28278, 7.7825) 新恩拉德
+Neuenmarkt (50.09193, 11.58033) 新恩马克特
+Neuenkirchen (52.24472, 7.37183) 新恩基兴
+Neuenhofe (52.30259, 11.46261) 新恩霍费
+Neuenhagen (52.52985, 13.68914) 新恩哈根
+Neuengors (53.9, 10.38333) 新恩戈尔斯
+Neuengonna (50.98333, 11.65) 新恩戈纳
+Neuenfelde (53.51829, 9.79828) 新恩费尔德
+Neuendorf (50.03333, 9.65) 新恩多夫
+Neuendettelsau (49.28333, 10.78333) 新恩德特尔绍
+Neuendeich (53.68333, 9.61667) 新恩代希
