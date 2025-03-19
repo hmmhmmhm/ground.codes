@@ -45,10 +45,10 @@ export const v1Decode = new Elysia().post(
       ),
       language: t.Optional(
         t.String({
-          default: "English",
-          example: "English",
+          default: "english",
+          example: "english",
           description: "Language for word set decoding",
-          enum: ["English", "Korean"],
+          enum: ["english", "korean", "chinese"],
         })
       ),
     }),
