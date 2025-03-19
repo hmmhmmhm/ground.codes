@@ -1,28 +1,33 @@
 import { toBaseN } from "./base-n.js";
 
-export type SupportedLanguage = "English" | "Korean";
+export type SupportedLanguage = "english" | "korean" | "chinese";
 
-export const WordSetBaseCount: Record<SupportedLanguage, number> = {
-  English: 6000,
-  Korean: 5630,
+export const wordSetBaseCount: Record<SupportedLanguage, number> = {
+  english: 6000,
+  korean: 5630,
+  chinese: 5140,
 };
 
 export const encodeByWordSet = async ({
   n,
-  language = "English",
+  language = "english",
 }: {
   n: number;
   language?: SupportedLanguage;
 }) => {
   let wordSet: string[] | null = null;
-  const baseSet = toBaseN(n, WordSetBaseCount[language]);
-  if (language === "English") {
+  const baseSet = toBaseN(n, wordSetBaseCount[language]);
+  if (language.toLowerCase() === "english") {
     // @ts-ignore
     wordSet = (await import("@repo/codebook/codebook-dist/english.json"))
       .default as string[];
-  } else if (language === "Korean") {
+  } else if (language.toLowerCase() === "korean") {
     // @ts-ignore
     wordSet = (await import("@repo/codebook/codebook-dist/korean.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "chinese") {
+    // @ts-ignore
+    wordSet = (await import("@repo/codebook/codebook-dist/chinese.json"))
       .default as string[];
   } else {
     throw new Error(`Invalid language: ${language}`);
@@ -38,7 +43,7 @@ export const encodeByWordSet = async ({
  */
 export const decodeByWordSet = async ({
   encoded,
-  language = "English",
+  language = "english",
 }: {
   encoded: string;
   language?: SupportedLanguage;
@@ -52,11 +57,11 @@ export const decodeByWordSet = async ({
 
   // Load the appropriate word set based on language
   let wordSet: string[] = [];
-  if (language === "English") {
+  if (language.toLowerCase() === "english") {
     // @ts-ignore
     wordSet = (await import("@repo/codebook/codebook-dist/english.json"))
       .default as string[];
-  } else if (language === "Korean") {
+  } else if (language.toLowerCase() === "korean") {
     // @ts-ignore
     wordSet = (await import("@repo/codebook/codebook-dist/korean.json"))
       .default as string[];
@@ -75,7 +80,7 @@ export const decodeByWordSet = async ({
 
   // Convert from base-N back to a single number
   // This is the inverse of toBaseN used in encodeByWordSet
-  const base = WordSetBaseCount[language];
+  const base = wordSetBaseCount[language];
   let result = 0;
   for (let i = 0; i < indices.length; i++) {
     result = result * base + indices[i]!;

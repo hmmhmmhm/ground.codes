@@ -30,15 +30,20 @@ export const findClosestRegion = async (
         (await import("@repo/geoint/region-dist/region-1.json"))
           .default as Region[];
     } else if (regionLevel == 2) {
-      if (!language || language === "English") {
+      if (!language || language.toLowerCase() === "english") {
         // Import region-2 data using the new module system
         regions = // @ts-ignore
           (await import("@repo/geoint/region-dist/region-2.json"))
             .default as Region[];
-      } else if (language === "Korean") {
+      } else if (language.toLowerCase() === "korean") {
         // Import region-2-korean data using the new module system
         regions = // @ts-ignore
           (await import("@repo/geoint/region-dist/region-2-korean.json"))
+            .default as Region[];
+      } else if (language.toLowerCase() === "chinese") {
+        // Import region-2-chinese data using the new module system
+        regions = // @ts-ignore
+          (await import("@repo/geoint/region-dist/region-2-chinese.json"))
             .default as Region[];
       } else {
         throw new Error(`Invalid language: ${language}`);
@@ -114,15 +119,20 @@ export const findRegionByCodeOrName = async (
         (await import("@repo/geoint/region-dist/region-1.json"))
           .default as Region[];
     } else if (regionLevel === 2) {
-      if (!language || language === "English") {
+      if (!language || language.toLowerCase() === "english") {
         // Import region-2 data
         regions = // @ts-ignore
           (await import("@repo/geoint/region-dist/region-2.json"))
             .default as Region[];
-      } else if (language === "Korean") {
+      } else if (language.toLowerCase() === "korean") {
         // Import region-2-korean data
         regions = // @ts-ignore
           (await import("@repo/geoint/region-dist/region-2-korean.json"))
+            .default as Region[];
+      } else if (language.toLowerCase() === "chinese") {
+        // Import region-2-chinese data
+        regions = // @ts-ignore
+          (await import("@repo/geoint/region-dist/region-2-chinese.json"))
             .default as Region[];
       } else {
         throw new Error(`Invalid language: ${language}`);
