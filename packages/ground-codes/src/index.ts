@@ -100,12 +100,22 @@ export const decode = async (
     // Hangul Jamo range: U+1100-U+11FF
     const koreanPattern = /[\u1100-\u11FF\uAC00-\uD7A3]/;
 
-    // Test if the text contains Korean characters
+    // Check if the text contains Chinese characters
+    // CJK Unified Ideographs range: U+4E00-U+9FFF
+    // CJK Unified Ideographs Extension A: U+3400-U+4DBF
+    // CJK Unified Ideographs Extension B: U+20000-U+2A6DF
+    // CJK Compatibility Ideographs: U+F900-U+FAFF
+    const chinesePattern =
+      /[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]|[\uD840-\uD869][\uDC00-\uDFFF]/;
+
+    // Test if the text contains Korean or Chinese characters
     if (koreanPattern.test(actualEncoded)) {
-      language = "Korean";
+      language = "korean";
+    } else if (chinesePattern.test(actualEncoded)) {
+      language = "chinese";
     } else {
-      // Default to English if no Korean characters are detected
-      language = "English";
+      // Default to English if no Korean or Chinese characters are detected
+      language = "english";
     }
   }
 
