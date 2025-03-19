@@ -16,6 +16,7 @@ The primary purpose of the Codebook is to provide a dictionary of words that can
 
 - **English Codebook**: Contains 6,000 curated words
 - **Korean Codebook**: Contains 5,630 curated words
+- **Chinese Codebook**: Contains 5,140 curated words
 
 ## Word Generation Process
 
