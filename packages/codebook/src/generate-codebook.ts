@@ -6,7 +6,7 @@ import fs from "fs";
 import path from "path";
 
 const batchSize = 10;
-const timeout = 30_000; // 30 seconds timeout
+const timeout = 60_000; // 30 seconds timeout
 
 export default async () => {
   console.log(
