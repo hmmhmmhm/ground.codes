@@ -20,18 +20,25 @@ export const v1Encode = new Elysia().post(
       throw new Error("Failed to find region");
     }
 
-    const encoded = await encode(
-      { lat, lng },
-      {
-        regionLevel,
-        language: language as SupportedLanguage,
-        precisionMeters,
-        center: {
-          lat: center[0].lat,
-          lng: center[0].long,
-        },
-      }
-    );
+    const encodeOptions: {
+      regionLevel: number;
+      language: SupportedLanguage;
+      center: { lat: number; lng: number };
+      precisionMeters?: number;
+    } = {
+      regionLevel,
+      language: language as SupportedLanguage,
+      center: {
+        lat: center[0].lat,
+        lng: center[0].long,
+      },
+    };
+
+    if (precisionMeters !== undefined) {
+      encodeOptions.precisionMeters = precisionMeters;
+    }
+
+    const encoded = await encode({ lat, lng }, encodeOptions);
 
     return `${regionLevel === 1 ? center[0].code : center[0].name}-${encoded}`;
   },
