@@ -24,7 +24,7 @@
     "groundCode": "地面代码",
     "encoding": "编码中",
     "accuracy": {
-      "label": "GPS精度: {accuracy}米"
+      "label": "GPS精度：{accuracy}米"
     }
   },
   "common": {

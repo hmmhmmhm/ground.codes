@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useI18n } from "@/lib/i18n/i18n-context";
+import enPlaceTypes from "@/messages/en/placeTypes.json";
+import koPlaceTypes from "@/messages/ko/placeTypes.json";
+import cnPlaceTypes from "@/messages/cn/placeTypes.json";
+import { Locale } from "@/i18n";
 
 interface PlaceDetailsProps {
   map: google.maps.Map | null;
@@ -16,7 +20,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
   location,
   onClose,
 }) => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [placeDetails, setPlaceDetails] = useState<any>(null);
@@ -81,6 +85,26 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
 
   if (!visible) return null;
 
+  // 타입 정의를 위한 인터페이스
+  type PlaceTypesRecord = Record<string, string>;
+  
+  const placeTypes: Record<Locale, PlaceTypesRecord> = {
+    en: enPlaceTypes as PlaceTypesRecord,
+    ko: koPlaceTypes as PlaceTypesRecord,
+    cn: cnPlaceTypes as PlaceTypesRecord,
+  };
+
+  // 현재 장소 유형의 번역된 이름 가져오기
+  const getPlaceTypeName = (type: string): string => {
+    if (!type) return "";
+    
+    // 현재 로케일에 맞는 번역 찾기
+    const translatedType = placeTypes[locale as Locale][type];
+    
+    // 번역이 없으면 기본 형식으로 변환 (언더스코어를 공백으로)
+    return translatedType || type.replace(/_/g, " ");
+  };
+
   return (
     <div className="fixed left-0 top-0 bottom-0 z-20 w-full md:w-[400px] overflow-auto">
       <div className="h-auto bg-black/60 backdrop-blur-md p-4 border-r border-white/20 min-h-screen">
@@ -111,7 +135,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
             {placeDetails.types && placeDetails.types.length > 0 && (
               <div className="mb-3">
                 <span className="text-gray-300 text-sm">
-                  {placeDetails.types[0].replace(/_/g, " ")}
+                  {getPlaceTypeName(placeDetails.types[0])}
                 </span>
               </div>
             )}
