@@ -1,7 +1,7 @@
 export const encode = async ({
   lat,
   lng,
-  language = "English",
+  language = "english",
 }: {
   lat: number;
   lng: number;

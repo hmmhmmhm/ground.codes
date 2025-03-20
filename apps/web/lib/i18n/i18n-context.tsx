@@ -96,6 +96,11 @@ const getBrowserLanguage = (): Locale => {
     if (langCode === "ko") {
       return "ko" as Locale;
     }
+    
+    // 중국어인 경우 특별히 처리 (명시적으로 중국어 지원)
+    if (langCode === "zh" || langCode === "zh-cn" || langCode === "zh-tw") {
+      return "cn" as Locale;
+    }
 
     // 다른 지원 언어 확인
     if (langCode && isValidLocale(langCode)) {
@@ -137,7 +142,9 @@ export const I18nProvider: React.FC<{
     const confirmMessage =
       locale === "ko"
         ? "언어 설정을 변경하면 페이지가 새로고침되며 현재 보고 있는 내용이 초기화됩니다. 계속하시겠습니까?"
-        : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
+        : locale === "cn"
+          ? "更改语言设置将刷新页面并重置您当前查看的内容。是否继续？"
+          : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
 
     const userConfirmed = window.confirm(confirmMessage);
 

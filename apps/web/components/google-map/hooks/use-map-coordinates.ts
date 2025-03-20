@@ -21,8 +21,13 @@ export const useMapCoordinates = (selectedArea: Coordinates | null) => {
       // 함수 내부에서 직접 locale 참조
       const currentLocale = locale;
       // Map locale to language for the API
-      const language = currentLocale === 'ko' ? 'Korean' : 'English';
-      
+      let language = "english"; // 기본값
+      if (currentLocale === "ko") {
+        language = "korean";
+      } else if (currentLocale === "cn") {
+        language = "chinese";
+      }
+
       const encoded = await encode({
         lat: selectedArea.lat,
         lng: selectedArea.lng,
