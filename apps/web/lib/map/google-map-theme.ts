@@ -167,4 +167,28 @@ export const googleMapDarkTheme = [
       },
     ],
   },
+  {
+    featureType: "landscape.man_made.building",
+    elementType: "geometry.fill",
+    stylers: [
+      {
+        color: "#2b2b2b",
+      },
+      {
+        visibility: "on",
+      },
+    ],
+  },
+  {
+    featureType: "landscape.man_made.building",
+    elementType: "geometry.stroke",
+    stylers: [
+      {
+        color: "#4d4d4d",
+      },
+      {
+        visibility: "on",
+      },
+    ],
+  },
 ];
