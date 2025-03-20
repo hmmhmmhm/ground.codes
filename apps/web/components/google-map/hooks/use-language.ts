@@ -46,6 +46,10 @@ export const useLanguage = () => {
 
       // 쿠키에 유효한 로케일이 있으면 사용
       if (cookieLocale && cookieLocale.trim() !== "") {
+        // 중국어 로케일을 구글 맵 API 형식으로 변환
+        if (cookieLocale === "cn") {
+          return "zh-CN";
+        }
         return cookieLocale;
       }
 
@@ -54,6 +58,10 @@ export const useLanguage = () => {
 
       // 다른 지원 언어 확인
       if (langCode && isValidLocale(langCode)) {
+        // 중국어 로케일을 구글 맵 API 형식으로 변환
+        if (langCode === "cn") {
+          return "zh-CN";
+        }
         return langCode;
       }
 

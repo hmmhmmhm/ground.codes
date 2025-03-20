@@ -22,14 +22,17 @@ export const useMapContainer = () => {
   const { isChangingLanguage } = useI18n();
 
   // Get language from cookie for Google Maps API
-  // Always use 'en' as default to prevent re-renders with unsupported languages
+  // Google Maps API uses standard language codes:
+  // - English: 'en'
+  // - Korean: 'ko'
+  // - Chinese: 'zh-CN' (not 'cn')
   const mapLanguage = isChangingLanguage ? "en" : getUserLanguage();
 
   // Load Google Maps API
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    language: mapLanguage, // Use language from cookie or default to 'en'
+    language: mapLanguage, // Language code for Google Maps API
     libraries, // Use the constant libraries array
   });
 
