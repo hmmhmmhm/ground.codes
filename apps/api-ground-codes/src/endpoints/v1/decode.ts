@@ -4,7 +4,7 @@ import { decode, SupportedLanguage } from "ground-codes";
 
 export const v1Decode = new Elysia().post(
   "/decode",
-  async ({ body: { code, regionLevel = 2, language = "English" } }) => {
+  async ({ body: { code, regionLevel = 2, language = "english" } }) => {
     const codes = code.split("-");
     const name = codes[0];
     const encoded = codes.slice(1).join("-");
@@ -28,6 +28,7 @@ export const v1Decode = new Elysia().post(
   {
     detail: {
       tags: ["Code"],
+      summary: "Decode a ground code to coordinates",
       description: "Decode a ground code to coordinates",
     },
     body: t.Object({

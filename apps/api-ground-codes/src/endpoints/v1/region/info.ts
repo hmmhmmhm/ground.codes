@@ -3,7 +3,7 @@ import { info } from "@ground-codes/geoint";
 
 export const v1RegionInfo = new Elysia().post(
   "/region/info",
-  async ({ body: { name, language = "English", regionLevel = 2 } }) => {
+  async ({ body: { name, language = "english", regionLevel = 2 } }) => {
     const data = await info({
       name,
       regionName: `region-${regionLevel}${
@@ -27,6 +27,7 @@ export const v1RegionInfo = new Elysia().post(
   {
     detail: {
       tags: ["Code"],
+      summary: "Get information about a region",
       description: "Get information about a region",
     },
     body: t.Object({

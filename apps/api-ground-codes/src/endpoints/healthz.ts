@@ -8,6 +8,7 @@ export const healthz = new Elysia().get(
   {
     detail: {
       tags: ["Health"],
+      summary: "Health Check",
       description: "Health check endpoint",
     },
     response: t.String({

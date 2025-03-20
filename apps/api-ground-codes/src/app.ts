@@ -3,7 +3,7 @@ import { healthz } from "./endpoints/healthz.js";
 import { swaggerEndpoint } from "./endpoints/swagger.js";
 import { corsEndpoint } from "./endpoints/cors.js";
 import { staticPlugin } from "@elysiajs/static";
-import { codeEndpoint } from "./endpoints/code.js";
+import { codeEndpoint, rootRedirectEndpoint } from "./endpoints/code.js";
 import { v1Endpoints } from "./endpoints/v1/v1-endpoints.js";
 
 /**
@@ -23,5 +23,6 @@ export const createApp = (port: string | number) =>
     .use(swaggerEndpoint)
     .use(healthz)
     .use(codeEndpoint)
+    .use(rootRedirectEndpoint)
     .use(v1Endpoints)
     .listen(port);

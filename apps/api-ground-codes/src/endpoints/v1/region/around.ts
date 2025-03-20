@@ -8,7 +8,7 @@ export const v1RegionAround = new Elysia().post(
       lat,
       lng,
       regionLevel = 2,
-      language = "English",
+      language = "english",
       maxResults = 5,
       maxDistance,
     },
@@ -37,6 +37,7 @@ export const v1RegionAround = new Elysia().post(
   {
     detail: {
       tags: ["Code"],
+      summary: "Find regions around a point",
       description: "Find regions around a point",
     },
     body: t.Object(
@@ -85,7 +86,7 @@ export const v1RegionAround = new Elysia().post(
             lat: 37.422,
             lng: 127.024,
             regionLevel: 2,
-            language: "English",
+            language: "english",
             maxResults: 5,
           },
         ],

@@ -5,7 +5,7 @@ import { encode, SupportedLanguage } from "ground-codes";
 export const v1Encode = new Elysia().post(
   "/encode",
   async ({
-    body: { lat, lng, regionLevel = 2, language = "English", precisionMeters },
+    body: { lat, lng, regionLevel = 2, language = "english", precisionMeters },
   }) => {
     const center = await around({
       lat,
@@ -45,6 +45,7 @@ export const v1Encode = new Elysia().post(
   {
     detail: {
       tags: ["Code"],
+      summary: "Encode the coordinates to a ground code",
       description: "Encode the coordinates to a ground code",
     },
     body: t.Object({
