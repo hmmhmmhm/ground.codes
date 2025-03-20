@@ -229,6 +229,10 @@ export const useMapContainer = () => {
         setSelectedPlaceId((e as any).placeId);
         setSelectedLocation(e.latLng || null);
         setPlaceDetailsVisible(true);
+        
+        // POI 클릭 시 선택된 영역 초기화하여 그리드 셀 인포윈도우가 표시되지 않도록 함
+        setSelectedArea(null);
+        
         // Prevent grid cell click handling when POI is clicked
         return;
       }

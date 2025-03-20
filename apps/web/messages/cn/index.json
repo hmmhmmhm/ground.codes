@@ -3,7 +3,7 @@
     "controls": {
       "toggleGrid": "切换网格显示",
       "myLocation": "前往我的位置",
-      "stopTracking": "停止追踪我的位置",
+      "stopTracking": "停止跟踪我的位置",
       "roadmap": "切换到卫星地图",
       "satellite": "切换到普通地图",
       "roadmapLabel": "卫星地图",
@@ -40,6 +40,17 @@
     "photos": "照片",
     "reviews": "评论",
     "viewOnGoogleMaps": "在谷歌地图上查看",
+    "groundCode": "地面代码",
+    "copyAddress": "复制地址",
+    "call": "拨打电话",
+    "addressCopied": "地址已复制到剪贴板",
+    "viewFullImage": "查看完整图片",
+    "loading": "加载中...",
+    "unavailable": "不可用",
+    "copyGroundCode": "复制地面代码",
+    "groundCodeCopied": "地面代码已复制",
+    "copyPhone": "复制电话号码",
+    "phoneCopied": "电话号码已复制",
     "error": {
       "placeDetails": "无法加载地点详情。请稍后再试。"
     }
