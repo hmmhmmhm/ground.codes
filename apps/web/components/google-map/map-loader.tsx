@@ -27,6 +27,8 @@ const MapLoader: React.FC = () => {
     toggleMapType,
     isFullscreen,
     toggleFullscreen,
+    showInfoWindow,
+    setShowInfoWindow,
   } = useMapContainer();
 
   return isLoaded ? (
@@ -44,6 +46,8 @@ const MapLoader: React.FC = () => {
           selectedArea={selectedArea} 
           encodedCoordinates={encodedCoordinates}
           isEncoding={isEncoding}
+          showInfoWindow={showInfoWindow}
+          setShowInfoWindow={setShowInfoWindow}
         />
       </GoogleMap>
 
