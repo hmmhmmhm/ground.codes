@@ -191,6 +191,7 @@ export const useMapContainer = () => {
           map.setOptions({
             styles: googleMapDarkTheme,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
+            mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID || "",
           });
         } else {
           // For satellite view, use empty styles array and explicitly set satellite map type
@@ -418,6 +419,7 @@ export const useMapContainer = () => {
         mapInstance.setOptions({
           styles: googleMapDarkTheme,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
+          mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID || "",
         });
       } else {
         mapInstance.setOptions({
