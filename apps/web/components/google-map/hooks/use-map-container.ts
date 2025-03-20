@@ -36,6 +36,7 @@ export const useMapContainer = () => {
     libraries, // Use the constant libraries array
   });
 
+  console.log("Debug mapId:", process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID);
   // Map state
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [center, setCenter] = useState(defaultCenter);
