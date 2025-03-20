@@ -209,4 +209,16 @@ export const googleMapDarkTheme = [
       },
     ],
   },
+  {
+    featureType: "landscape.natural.terrain",
+    elementType: "geometry.fill",
+    stylers: [
+      {
+        color: "#263e0f",
+      },
+      {
+        visibility: "on",
+      },
+    ],
+  },
 ];
