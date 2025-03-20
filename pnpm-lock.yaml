@@ -42,8 +42,8 @@ importers:
         specifier: latest
         version: 1.2.25(@sinclair/typebox@0.25.24)(openapi-types@12.1.3)(typescript@5.8.2)
       ground-codes:
-        specifier: ^0.0.7
-        version: 0.0.7
+        specifier: ^0.0.8
+        version: 0.0.8
     devDependencies:
       bun-types:
         specifier: latest
@@ -3250,8 +3250,8 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  ground-codes@0.0.7:
-    resolution: {integrity: sha512-tqmCtVukg0Aln+YZOtZiDSiXrHkqLRkWkkjDK3apqtQskgBqzIkyEzt7RMyT899YQwJmXVrhEgUaAIEGdgCeoQ==}
+  ground-codes@0.0.8:
+    resolution: {integrity: sha512-Z1S9Kqmyb/tnIa//9bltX0tkwK0JcesD/1SmCwk2kSZ+hqE7VXDRC2Cp8jGFm769jrIyNgOWM+8Mrrd3TaYMTw==}
 
   handlebars@4.7.8:
     resolution: {integrity: sha512-vafaFqs8MZkRrSX7sFVUdo3ap/eNiLnb4IakshzvP56X5Nr1iGKAIqdX6tMlm6HcNRIkr6AxO5jFEoJzzpT8aQ==}
@@ -8238,7 +8238,7 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  ground-codes@0.0.7: {}
+  ground-codes@0.0.8: {}
 
   handlebars@4.7.8:
     dependencies:
