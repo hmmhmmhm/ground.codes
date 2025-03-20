@@ -6,8 +6,8 @@ import { googleMapDarkTheme } from "@/lib/map/google-map-theme";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useLanguage } from "./use-language";
 import { useI18n } from "@/lib/i18n/i18n-context";
-import { useLocationTracking } from './use-location-tracking';
-import { Coordinates, LocationMode } from '../types';
+import { useLocationTracking } from "./use-location-tracking";
+import { Coordinates, LocationMode } from "../types";
 
 const defaultCenter = {
   lat: 37.5665,
@@ -74,6 +74,9 @@ export const useMapContainer = () => {
     null
   );
 
+  // Show info window state
+  const [showInfoWindow, setShowInfoWindow] = useState(false);
+
   // 위치 추적 관련 기능 사용
   const {
     locationMode,
@@ -88,16 +91,19 @@ export const useMapContainer = () => {
     isTrackingMode: true,
     onLocationUpdate: useCallback((location) => {
       if (location) {
-        console.log('Map container updating location with heading:', location.heading);
-        
+        console.log(
+          "Map container updating location with heading:",
+          location.heading
+        );
+
         // 명시적으로 heading 정보를 포함하여 상태 업데이트
         setUserLocation({
           lat: location.lat,
           lng: location.lng,
           accuracy: location.accuracy,
-          heading: location.heading
+          heading: location.heading,
         });
-        
+
         setUserLocationLoaded(true);
       }
     }, []),
@@ -109,7 +115,7 @@ export const useMapContainer = () => {
     if (isLoadingLocation !== undefined) {
       setIsLoading(isLoadingLocation);
     }
-  // 빈 의존성 배열로 컴포넌트 마운트 시 한 번만 실행되도록 함
+    // 빈 의존성 배열로 컴포넌트 마운트 시 한 번만 실행되도록 함
   }, []);
 
   // Get user location using the hook
@@ -118,15 +124,10 @@ export const useMapContainer = () => {
     getUserLocation: getGeoLocation,
     cancelGeolocationRequest,
     requestOrientationPermission,
-  } = useGeolocation(
-    map,
-    setCenter,
-    setSelectedArea,
-    {
-      autoGetLocation: true, // 자동으로 위치를 가져오도록 변경
-      initialFetch: true, // 최초 위치 정보 가져오기 모드로 설정
-    }
-  );
+  } = useGeolocation(map, setCenter, setSelectedArea, {
+    autoGetLocation: true, // 자동으로 위치를 가져오도록 변경
+    initialFetch: true, // 최초 위치 정보 가져오기 모드로 설정
+  });
 
   // 위치 추적 시작 함수
   const startWatchingPosition = useCallback(() => {
@@ -144,10 +145,10 @@ export const useMapContainer = () => {
     if (locationMode === LocationMode.OFF) {
       // OFF 모드: 위치 추적 중지
       stopWatchingPosition();
-      
+
       // 위치 요청 취소 및 로딩 상태 초기화
       cancelGeolocationRequest();
-      
+
       // 이전 위치 참조 초기화하여 다시 위치 모드 활성화 시 처음부터 시작하도록 함
       prevLocationRef.current = null;
     } else if (locationMode === LocationMode.LOCATE) {
@@ -164,7 +165,7 @@ export const useMapContainer = () => {
         // 위치 정보가 없으면 먼저 가져오기
         getGeoLocation();
       }
-      
+
       // 위치 추적 시작 (watchPosition)
       startWatchingPosition();
     }
@@ -180,7 +181,9 @@ export const useMapContainer = () => {
 
   // Toggle map type between roadmap and satellite
   const toggleMapType = useCallback(() => {
-    setMapType((prevType) => (prevType === "roadmap" ? "satellite" : "roadmap"));
+    setMapType((prevType) =>
+      prevType === "roadmap" ? "satellite" : "roadmap"
+    );
   }, []);
 
   // Toggle fullscreen mode
@@ -223,16 +226,20 @@ export const useMapContainer = () => {
 
       // Check if a POI was clicked
       if ((e as any).placeId) {
+        // Immediately stop the default POI click behavior
         (e as google.maps.IconMouseEvent).stop();
 
         // A POI was clicked
         setSelectedPlaceId((e as any).placeId);
         setSelectedLocation(e.latLng || null);
         setPlaceDetailsVisible(true);
-        
+
         // POI 클릭 시 선택된 영역 초기화하여 그리드 셀 인포윈도우가 표시되지 않도록 함
         setSelectedArea(null);
-        
+
+        // Hide any existing info windows
+        setShowInfoWindow(false);
+
         // Prevent grid cell click handling when POI is clicked
         return;
       }
@@ -253,7 +260,10 @@ export const useMapContainer = () => {
     setPlaceDetailsVisible(false);
     setSelectedPlaceId(null);
     setSelectedLocation(null);
-  }, []);
+
+    // Place Details가 닫힐 때 InfoWindow를 표시합니다
+    setShowInfoWindow(true);
+  }, [setShowInfoWindow]);
 
   // Map zoom change handler
   const onZoomChanged = useCallback(() => {
@@ -360,6 +370,11 @@ export const useMapContainer = () => {
         </div>
       `;
         infoWindow.setContent(content);
+
+        // 검색 결과에 대한 InfoWindow는 계속 표시
+        // 단, 이 경우에는 그라운드 코드 InfoWindow는 숨김
+        setShowInfoWindow(false);
+
         infoWindow.open(map, searchMarker);
       }
 
@@ -383,6 +398,14 @@ export const useMapContainer = () => {
       // Set up grid and event handlers
       drawGrid(mapInstance);
       setupMapEventHandlers(mapInstance);
+
+      // POI 클릭 이벤트를 가로채서 기본 InfoWindow 표시를 방지
+      mapInstance.addListener("click", (e: google.maps.MapMouseEvent) => {
+        if ((e as any).placeId) {
+          // 기본 POI 클릭 동작 중지
+          (e as google.maps.IconMouseEvent).stop();
+        }
+      });
     },
     [drawGrid, setupMapEventHandlers]
   );
@@ -468,6 +491,10 @@ export const useMapContainer = () => {
     // Coordinates encoding state
     encodedCoordinates,
     isEncoding,
+
+    // InfoWindow state
+    showInfoWindow,
+    setShowInfoWindow,
 
     // Map event handlers
     onLoad,

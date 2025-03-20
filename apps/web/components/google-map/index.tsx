@@ -38,6 +38,9 @@ function GoogleMapComponent() {
     selectedPlaceId,
     selectedLocation,
     closePlaceDetails,
+    // InfoWindow state
+    showInfoWindow,
+    setShowInfoWindow,
   } = useMapContainer();
 
   // 언어 변경 중에는 맵 컴포넌트를 렌더링하지 않음
@@ -67,7 +70,6 @@ function GoogleMapComponent() {
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
-          clickableIcons: true, // Enable clickable POIs
         }}
       >
         <MapMarkers
@@ -76,7 +78,9 @@ function GoogleMapComponent() {
           zoom={zoom}
           encodedCoordinates={encodedCoordinates}
           isEncoding={isEncoding}
-          isTrackingMode={locationMode === 'TRACKING'}
+          isTrackingMode={locationMode === "TRACKING"}
+          showInfoWindow={showInfoWindow}
+          setShowInfoWindow={setShowInfoWindow}
         />
       </GoogleMap>
 

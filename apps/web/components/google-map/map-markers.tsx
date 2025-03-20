@@ -19,6 +19,8 @@ interface MapMarkersProps {
   encodedCoordinates: string;
   isEncoding: boolean;
   isTrackingMode?: boolean;
+  showInfoWindow: boolean;
+  setShowInfoWindow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MapMarkers: React.FC<MapMarkersProps> = ({
@@ -28,9 +30,10 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
   encodedCoordinates,
   isEncoding,
   isTrackingMode = false,
+  showInfoWindow,
+  setShowInfoWindow,
 }) => {
   const { t } = useI18n();
-  const [showInfoWindow, setShowInfoWindow] = useState(true);
 
   // Determine if selected area marker should be shown based on grid visibility
   const shouldShowSelectedAreaMarker =
@@ -45,8 +48,10 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
 
   // Close info window when coordinates change (to prevent stale data)
   useEffect(() => {
+    // 좌표가 변경되면 InfoWindow를 표시합니다
+    // 단, POI가 선택된 상태에서는 표시하지 않습니다
     setShowInfoWindow(true);
-  }, [encodedCoordinates]);
+  }, [encodedCoordinates, setShowInfoWindow]);
 
   // Determine if we should show accuracy circle based on accuracy value
   const shouldShowAccuracyCircle =
