@@ -64,7 +64,6 @@ function GoogleMapComponent() {
         onClick={onMapClick}
         onZoomChanged={onZoomChanged}
         options={{
-          mapTypeId: mapType,
           disableDefaultUI: true, // Disables all default UI controls
           zoomControl: false,
           mapTypeControl: false,

@@ -181,10 +181,33 @@ export const useMapContainer = () => {
 
   // Toggle map type between roadmap and satellite
   const toggleMapType = useCallback(() => {
-    setMapType((prevType) =>
-      prevType === "roadmap" ? "satellite" : "roadmap"
-    );
-  }, []);
+    setMapType((prevType) => {
+      const newType = prevType === "roadmap" ? "satellite" : "roadmap";
+
+      // Update map styles based on the new map type
+      if (map) {
+        if (newType === "roadmap") {
+          // Apply dark theme for roadmap view
+          map.setOptions({
+            styles: googleMapDarkTheme,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+          });
+        } else {
+          // For satellite view, use empty styles array and explicitly set satellite map type
+          map.setOptions({
+            styles: [],
+            mapTypeId: google.maps.MapTypeId.HYBRID, // Use HYBRID instead of SATELLITE to show labels
+            // Ensure POIs are visible in satellite view
+            mapTypeControlOptions: {
+              mapTypeIds: [google.maps.MapTypeId.HYBRID],
+            },
+          });
+        }
+      }
+
+      return newType;
+    });
+  }, [map]);
 
   // Toggle fullscreen mode
   const toggleFullscreen = useCallback(() => {
@@ -390,10 +413,22 @@ export const useMapContainer = () => {
     (mapInstance: google.maps.Map) => {
       setMap(mapInstance);
 
-      // Apply dark theme if needed
-      mapInstance.setOptions({
-        styles: googleMapDarkTheme,
-      });
+      // Apply styles based on initial map type
+      if (mapType === "roadmap") {
+        mapInstance.setOptions({
+          styles: googleMapDarkTheme,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+        });
+      } else {
+        mapInstance.setOptions({
+          styles: [],
+          mapTypeId: google.maps.MapTypeId.HYBRID, // Use HYBRID instead of SATELLITE to show labels
+          // Ensure POIs are visible in satellite view
+          mapTypeControlOptions: {
+            mapTypeIds: [google.maps.MapTypeId.HYBRID],
+          },
+        });
+      }
 
       // Set up grid and event handlers
       drawGrid(mapInstance);
@@ -407,7 +442,7 @@ export const useMapContainer = () => {
         }
       });
     },
-    [drawGrid, setupMapEventHandlers]
+    [drawGrid, setupMapEventHandlers, mapType]
   );
 
   // Map unload handler
