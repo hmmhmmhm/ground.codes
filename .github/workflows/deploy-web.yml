@@ -55,6 +55,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+          NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID }}
         run: |
           cd apps/web
           pnpm run pages:build && wrangler pages deploy
