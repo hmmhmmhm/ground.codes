@@ -43,6 +43,7 @@
     "groundCode": "Ground Code",
     "copyAddress": "Copy address",
     "call": "Call",
+    "addressCopied": "Address Copied",
     "viewFullImage": "View full image",
     "loading": "Loading...",
     "unavailable": "Unavailable",

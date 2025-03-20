@@ -20,7 +20,6 @@ import {
   FaStar,
   FaRegStar,
   FaCode,
-  FaCheck,
 } from "react-icons/fa";
 import { createPortal } from "react-dom";
 
@@ -57,8 +56,14 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
       return;
     }
 
-    // 새로운 장소가 선택되면 그라운드 코드 초기화
+    // 새로운 장소가 선택되면 이전 데이터 초기화
+    setPlaceDetails(null);
     setGroundCode("");
+    setPhotoErrors({});
+    setSelectedPhoto(null);
+    setCopiedAddress(false);
+    setCopiedGroundCode(false);
+    setCopiedPhoneNumber(false);
 
     const fetchPlaceDetails = async () => {
       setIsLoading(true);
@@ -183,6 +188,21 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
       generateGroundCode();
     }
   }, [location, locale, visible, generateGroundCode]);
+
+  // 컴포넌트가 숨겨질 때 데이터 초기화
+  useEffect(() => {
+    if (!visible) {
+      setPlaceDetails(null);
+      setGroundCode("");
+      setError(null);
+      setPhotoErrors({});
+      setSelectedPhoto(null);
+      setCopiedAddress(false);
+      setCopiedGroundCode(false);
+      setCopiedPhoneNumber(false);
+      setIsLoading(false);
+    }
+  }, [visible]);
 
   // 이미지 로드 에러 처리
   const handleImageError = (index: number) => {
@@ -533,7 +553,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
           </div>
         )}
 
-        {placeDetails && (
+        {!isLoading && placeDetails && (
           <div className="text-white mt-6">
             {/* 사진 정보 - 사진이 있고 모든 사진이 에러가 아닌 경우에만 표시 */}
             {placeDetails.photos &&
@@ -784,7 +804,11 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline break-all overflow-hidden text-ellipsis max-w-full inline-block"
                       onClick={(e) => e.stopPropagation()}
-                      style={{ wordWrap: "break-word", overflowWrap: "break-word", hyphens: "auto" }}
+                      style={{
+                        wordWrap: "break-word",
+                        overflowWrap: "break-word",
+                        hyphens: "auto",
+                      }}
                     >
                       {placeDetails.website
                         .replace(/^https?:\/\//, "")
