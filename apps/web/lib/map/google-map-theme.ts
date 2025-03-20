@@ -191,4 +191,22 @@ export const googleMapDarkTheme = [
       },
     ],
   },
+  {
+    featureType: "poi.park",
+    elementType: "geometry.fill",
+    stylers: [
+      {
+        color: "#1c291b",
+      },
+      {
+        visibility: "on",
+      },
+      {
+        lightness: "-25",
+      },
+      {
+        saturation: "-32",
+      },
+    ],
+  },
 ];
