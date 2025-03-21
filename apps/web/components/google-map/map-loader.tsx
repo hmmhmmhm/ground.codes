@@ -25,6 +25,9 @@ const MapLoader: React.FC = () => {
     isEncoding,
     mapType,
     toggleMapType,
+    mapHeading,
+    resetMapHeading,
+    setMapHeading,
     isFullscreen,
     toggleFullscreen,
     showInfoWindow,
@@ -41,9 +44,9 @@ const MapLoader: React.FC = () => {
         onUnmount={onUnmount}
         onClick={onMapClick}
       >
-        <MapMarkers 
-          userLocation={userLocation} 
-          selectedArea={selectedArea} 
+        <MapMarkers
+          userLocation={userLocation}
+          selectedArea={selectedArea}
           encodedCoordinates={encodedCoordinates}
           isEncoding={isEncoding}
           showInfoWindow={showInfoWindow}
@@ -57,6 +60,9 @@ const MapLoader: React.FC = () => {
         getUserLocation={getUserLocation}
         mapType={mapType}
         toggleMapType={toggleMapType}
+        mapHeading={mapHeading}
+        resetMapHeading={resetMapHeading}
+        setMapHeading={setMapHeading}
         isFullscreen={isFullscreen}
         toggleFullscreen={toggleFullscreen}
       />

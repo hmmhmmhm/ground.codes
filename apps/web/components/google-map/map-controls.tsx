@@ -20,9 +20,12 @@ interface MapControlsProps {
   toggleMapType: () => void;
   mapHeading: number;
   resetMapHeading: () => void;
+  setMapHeading?: (heading: number) => void;
   isLoadingLocation?: boolean;
   isTrackingLocation?: boolean;
   locationMode?: LocationMode;
+  isFullscreen?: boolean;
+  toggleFullscreen?: () => void;
 }
 
 const MapControls: React.FC<MapControlsProps> = ({
@@ -33,9 +36,12 @@ const MapControls: React.FC<MapControlsProps> = ({
   toggleMapType,
   mapHeading,
   resetMapHeading,
+  setMapHeading,
   isLoadingLocation = false,
   isTrackingLocation = false,
   locationMode = 0,
+  isFullscreen = false,
+  toggleFullscreen = () => {},
 }) => {
   const { t, locale, setLocale } = useI18n();
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
@@ -292,6 +298,7 @@ const MapControls: React.FC<MapControlsProps> = ({
       <Compass 
         mapHeading={mapHeading}
         resetMapHeading={resetMapHeading}
+        setMapHeading={setMapHeading}
         title={t("map.controls.resetRotation")}
         ariaLabel={t("map.controls.resetRotation")}
       />

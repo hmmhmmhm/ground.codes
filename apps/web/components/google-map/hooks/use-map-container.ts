@@ -49,10 +49,6 @@ export const useMapContainer = () => {
   const { isChangingLanguage } = useI18n();
 
   // Get language from cookie for Google Maps API
-  // Google Maps API uses standard language codes:
-  // - English: 'en'
-  // - Korean: 'ko'
-  // - Chinese: 'zh-CN' (not 'cn')
   const mapLanguage = isChangingLanguage ? "en" : getUserLanguage();
 
   // Load Google Maps API
@@ -70,6 +66,7 @@ export const useMapContainer = () => {
   const [zoom, setZoom] = useState(18);
   const userZoomRef = useRef<number>(18); // 사용자가 설정한 zoom 값을 저장할 ref
   const [mapHeading, setMapHeading] = useState(0); // 지도의 회전 각도를 저장할 상태
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   // User location state
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
@@ -238,6 +235,19 @@ export const useMapContainer = () => {
     }
   }, [map]);
 
+  // Set map heading to a specific value
+  const setMapHeadingValue = useCallback((heading: number) => {
+    if (map) {
+      console.log("Setting map heading to:", heading);
+      // 지도 회전 가능하도록 설정
+      map.setOptions({ rotateControl: true });
+      map.setHeading(heading);
+      setMapHeading(heading);
+    } else {
+      console.warn("Map is not initialized yet");
+    }
+  }, [map]);
+
   // Map heading change handler
   const onHeadingChanged = useCallback(() => {
     if (map) {
@@ -270,6 +280,36 @@ export const useMapContainer = () => {
       setLocationMode(LocationMode.OFF);
     }
   }, [locationMode, setLocationMode]);
+
+  // Toggle fullscreen function
+  const toggleFullscreen = useCallback(() => {
+    const mapContainer = document.querySelector('.map-container');
+    
+    if (!mapContainer) return;
+    
+    if (!document.fullscreenElement) {
+      mapContainer.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  }, []);
+
+  // Listen for fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   // Get encoded coordinates using the hook
   const { encodedCoordinates, isEncoding, encodeSelectedAreaCoordinates } =
@@ -452,7 +492,14 @@ export const useMapContainer = () => {
   // Map load handler
   const onLoad = useCallback(
     (mapInstance: google.maps.Map) => {
+      console.log("Map loaded");
       setMap(mapInstance);
+
+      // 지도 회전 가능하도록 설정
+      mapInstance.setOptions({
+        rotateControl: true,
+        tilt: 0, // 기울기 없이 평면으로 시작
+      });
 
       // Apply styles based on initial map type
       if (mapType === "roadmap") {
@@ -533,6 +580,9 @@ export const useMapContainer = () => {
     toggleMapType,
     mapHeading,
     resetMapHeading,
+    setMapHeading: setMapHeadingValue,
+    isFullscreen,
+    toggleFullscreen,
 
     // User location state
     userLocation,

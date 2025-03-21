@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useCallback, useRef, useState, useEffect } from "react";
 
 interface CompassProps {
   mapHeading: number;
   resetMapHeading: () => void;
+  setMapHeading?: (heading: number) => void;
   className?: string;
   title: string;
   ariaLabel: string;
@@ -11,19 +12,247 @@ interface CompassProps {
 const Compass: React.FC<CompassProps> = ({
   mapHeading,
   resetMapHeading,
+  setMapHeading,
   className = "absolute bottom-[100px] right-[10px]",
   title,
-  ariaLabel
+  ariaLabel,
 }) => {
+  const [isDragging, setIsDragging] = useState(false);
+  const compassRef = useRef<HTMLButtonElement>(null);
+  const startAngleRef = useRef<number>(0);
+  const startHeadingRef = useRef<number>(0);
+  const hasDraggedRef = useRef<boolean>(false); // 드래그가 실제로 발생했는지 추적
+  const startPosRef = useRef<{x: number, y: number} | null>(null); // 드래그 시작 위치
+  const lastDragTimeRef = useRef<number>(0); // 마지막 드래그 시간을 저장
+  
+  // 마우스 위치 계산 함수
+  const calculateAngle = useCallback(
+    (centerX: number, centerY: number, pointX: number, pointY: number) => {
+      return Math.atan2(pointY - centerY, pointX - centerX) * (180 / Math.PI);
+    },
+    []
+  );
+
+  // 드래그 중 마우스 이동 처리
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!compassRef.current || !setMapHeading) return;
+    
+    // 드래그 시작 위치와 현재 위치의 차이를 계산하여 실제 드래그 여부 판단
+    if (startPosRef.current) {
+      const dx = Math.abs(e.clientX - startPosRef.current.x);
+      const dy = Math.abs(e.clientY - startPosRef.current.y);
+      
+      // 일정 거리 이상 움직였을 때만 드래그로 간주
+      if (dx > 3 || dy > 3) {
+        hasDraggedRef.current = true;
+        lastDragTimeRef.current = Date.now(); // 마지막 드래그 시간 업데이트
+      }
+    }
+    
+    console.log("Mouse move detected");
+    
+    const rect = compassRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    const currentAngle = calculateAngle(centerX, centerY, e.clientX, e.clientY);
+    
+    // 시작 각도와 현재 각도의 차이 계산
+    let angleDiff = currentAngle - startAngleRef.current;
+    
+    // 각도 차이가 180도를 넘어가면 반대 방향으로 계산 (최단 경로 회전)
+    if (angleDiff > 180) angleDiff -= 360;
+    if (angleDiff < -180) angleDiff += 360;
+    
+    // 회전 각도 계산 (시계 방향으로 회전하면 각도가 감소)
+    let newHeading = (startHeadingRef.current - angleDiff) % 360;
+    if (newHeading < 0) newHeading += 360;
+    
+    console.log("Current angle:", currentAngle, "Angle diff:", angleDiff, "New heading:", newHeading);
+    setMapHeading(newHeading);
+  }, [calculateAngle, setMapHeading]);
+  
+  // 터치 이동 처리
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (!compassRef.current || !setMapHeading || !e.touches[0]) return;
+    
+    // 드래그 시작 위치와 현재 위치의 차이를 계산하여 실제 드래그 여부 판단
+    if (startPosRef.current) {
+      const dx = Math.abs(e.touches[0].clientX - startPosRef.current.x);
+      const dy = Math.abs(e.touches[0].clientY - startPosRef.current.y);
+      
+      // 일정 거리 이상 움직였을 때만 드래그로 간주
+      if (dx > 3 || dy > 3) {
+        hasDraggedRef.current = true;
+        lastDragTimeRef.current = Date.now(); // 마지막 드래그 시간 업데이트
+      }
+    }
+    
+    console.log("Touch move detected");
+    
+    const rect = compassRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    const currentAngle = calculateAngle(
+      centerX, 
+      centerY, 
+      e.touches[0].clientX, 
+      e.touches[0].clientY
+    );
+    
+    // 시작 각도와 현재 각도의 차이 계산
+    let angleDiff = currentAngle - startAngleRef.current;
+    
+    // 각도 차이가 180도를 넘어가면 반대 방향으로 계산 (최단 경로 회전)
+    if (angleDiff > 180) angleDiff -= 360;
+    if (angleDiff < -180) angleDiff += 360;
+    
+    // 회전 각도 계산 (시계 방향으로 회전하면 각도가 감소)
+    let newHeading = (startHeadingRef.current - angleDiff) % 360;
+    if (newHeading < 0) newHeading += 360;
+    
+    console.log("Current angle:", currentAngle, "Angle diff:", angleDiff, "New heading:", newHeading);
+    setMapHeading(newHeading);
+    
+    // 기본 동작 방지
+    e.preventDefault();
+  }, [calculateAngle, setMapHeading]);
+  
+  // 드래그 종료 처리
+  const handleDragEnd = useCallback((e: MouseEvent | TouchEvent) => {
+    console.log("Drag ended, hasDragged:", hasDraggedRef.current);
+    setIsDragging(false);
+    
+    // 드래그 상태 초기화 (다음 상호작용을 위해)
+    const wasDragging = hasDraggedRef.current;
+    hasDraggedRef.current = false;
+    startPosRef.current = null;
+    
+    // 드래그가 발생했다면 클릭 이벤트 방지를 위해 마지막 드래그 시간 기록
+    if (wasDragging) {
+      lastDragTimeRef.current = Date.now();
+      
+      // 드래그 후 컴포넌트 내에서 마우스를 떼었을 때 클릭 이벤트가 발생하지 않도록 함
+      if (e instanceof MouseEvent) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+  }, []);
+  
+  // 이벤트 리스너 등록 및 제거
+  useEffect(() => {
+    if (isDragging) {
+      console.log("Adding event listeners for drag");
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("touchmove", handleTouchMove, { passive: false });
+      document.addEventListener("mouseup", handleDragEnd);
+      document.addEventListener("touchend", handleDragEnd);
+    } else {
+      console.log("Removing event listeners for drag");
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("mouseup", handleDragEnd);
+      document.removeEventListener("touchend", handleDragEnd);
+    }
+    
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("mouseup", handleDragEnd);
+      document.removeEventListener("touchend", handleDragEnd);
+    };
+  }, [isDragging, handleMouseMove, handleTouchMove, handleDragEnd]);
+  
+  // 마우스 드래그 시작
+  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!compassRef.current || !setMapHeading) return;
+    
+    // 기본 동작 및 버블링 방지
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log("Mouse down detected");
+    
+    // 드래그 시작 위치 저장
+    startPosRef.current = { x: e.clientX, y: e.clientY };
+    hasDraggedRef.current = false;
+    
+    const rect = compassRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    startAngleRef.current = calculateAngle(centerX, centerY, e.clientX, e.clientY);
+    startHeadingRef.current = mapHeading;
+    
+    console.log("Start angle:", startAngleRef.current, "Start heading:", startHeadingRef.current);
+    
+    setIsDragging(true);
+  }, [calculateAngle, mapHeading, setMapHeading]);
+  
+  // 터치 드래그 시작
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLButtonElement>) => {
+    if (!compassRef.current || !setMapHeading || !e.touches[0]) return;
+    
+    // 기본 동작 및 버블링 방지
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log("Touch start detected");
+    
+    // 드래그 시작 위치 저장
+    startPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    hasDraggedRef.current = false;
+    
+    const rect = compassRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    startAngleRef.current = calculateAngle(
+      centerX, 
+      centerY, 
+      e.touches[0].clientX, 
+      e.touches[0].clientY
+    );
+    startHeadingRef.current = mapHeading;
+    
+    console.log("Start angle:", startAngleRef.current, "Start heading:", startHeadingRef.current);
+    
+    setIsDragging(true);
+  }, [calculateAngle, mapHeading, setMapHeading]);
+  
+  // 클릭 처리 (드래그가 아닌 경우에만 리셋)
+  const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    // 최근에 드래그가 있었는지 확인 (300ms 이내)
+    const timeSinceLastDrag = Date.now() - lastDragTimeRef.current;
+    console.log("Click detected, time since last drag:", timeSinceLastDrag);
+    
+    // 드래그가 발생했거나 최근에 드래그가 끝난 경우 클릭 이벤트 무시
+    if (hasDraggedRef.current || timeSinceLastDrag < 300) {
+      console.log("Ignoring click after drag");
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    
+    // 드래그가 발생하지 않은 순수한 클릭인 경우에만 리셋 함수 호출
+    console.log("Pure click detected, resetting heading");
+    resetMapHeading();
+  }, [resetMapHeading]);
+
   return (
     <button
-      onClick={resetMapHeading}
-      className={`${className} bg-black/50 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center z-10 overflow-hidden`}
-      title={title}
+      ref={compassRef}
+      onClick={handleClick}
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
+      className={`${className} ${isDragging ? "cursor-grabbing" : "cursor-grab"} bg-black/50 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] flex justify-center items-center z-10 overflow-hidden`}
+      title={isDragging ? "드래그하여 지도 회전" : title}
       aria-label={ariaLabel}
       style={{
         transform: `rotate(-${mapHeading}deg)`,
-        transition: "transform 0.3s ease-in-out",
+        transition: isDragging ? "none" : "transform 0.3s ease-in-out",
       }}
     >
       <svg
@@ -201,25 +430,25 @@ const Compass: React.FC<CompassProps> = ({
         <circle
           cx="12"
           cy="12"
-          r="5"
-          fill="#333333"
-          stroke="#444444"
+          r="1"
+          fill="#FFFFFF"
+          stroke="#FFFFFF"
           strokeWidth="0.5"
         />
         <line
           x1="12"
-          y1="7"
+          y1="9"
           x2="12"
-          y2="17"
-          stroke="#777777"
+          y2="15"
+          stroke="#FFFFFF"
           strokeWidth="0.5"
         />
         <line
-          x1="7"
+          x1="9"
           y1="12"
-          x2="17"
+          x2="15"
           y2="12"
-          stroke="#777777"
+          stroke="#FFFFFF"
           strokeWidth="0.5"
         />
       </svg>

@@ -32,6 +32,7 @@ function GoogleMapComponent() {
     toggleMapType,
     mapHeading,
     resetMapHeading,
+    setMapHeading,
     locationMode,
     // Place Details state
     placeDetailsVisible,
@@ -94,6 +95,7 @@ function GoogleMapComponent() {
           toggleMapType,
           mapHeading,
           resetMapHeading,
+          setMapHeading,
           isLoadingLocation: isLoading,
           isTrackingLocation,
           locationMode,
