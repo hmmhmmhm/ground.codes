@@ -13,7 +13,8 @@
       "language": "언어",
       "fullscreen": "전체화면 전환",
       "enterFullscreen": "전체화면으로 보기",
-      "exitFullscreen": "전체화면 종료"
+      "exitFullscreen": "전체화면 종료",
+      "resetRotation": "지도 회전 초기화"
     },
     "loading": "로딩 중...",
     "coordinates": {

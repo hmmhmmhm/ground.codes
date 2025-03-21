@@ -13,7 +13,8 @@
       "language": "Language",
       "fullscreen": "Toggle fullscreen",
       "enterFullscreen": "Enter fullscreen",
-      "exitFullscreen": "Exit fullscreen"
+      "exitFullscreen": "Exit fullscreen",
+      "resetRotation": "Reset map rotation"
     },
     "loading": "Loading...",
     "coordinates": {

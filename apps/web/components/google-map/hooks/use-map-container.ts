@@ -67,9 +67,9 @@ export const useMapContainer = () => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [center, setCenter] = useState(defaultCenter);
   const [mapType, setMapType] = useState<string>(getMapTypeFromCookie());
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoom, setZoom] = useState(18);
   const userZoomRef = useRef<number>(18); // 사용자가 설정한 zoom 값을 저장할 ref
+  const [mapHeading, setMapHeading] = useState(0); // 지도의 회전 각도를 저장할 상태
 
   // User location state
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
@@ -230,34 +230,34 @@ export const useMapContainer = () => {
     }
   }, [mapType]);
 
-  // Apply map styles based on map type when the map is loaded
-  useEffect(() => {
+  // Reset map heading to 0 (north)
+  const resetMapHeading = useCallback(() => {
     if (map) {
-      if (mapType === "roadmap") {
-        // Apply dark theme for roadmap view
-        map.setOptions({
-          styles: googleMapDarkTheme,
-          mapTypeId: google.maps.MapTypeId.ROADMAP,
-          mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID,
-        });
-      } else {
-        // For satellite view, use empty styles array and explicitly set satellite map type
-        map.setOptions({
-          styles: [],
-          mapTypeId: google.maps.MapTypeId.HYBRID, // Use HYBRID instead of SATELLITE to show labels
-          mapTypeControlOptions: {
-            mapTypeIds: [google.maps.MapTypeId.HYBRID],
-          },
-          mapId: null,
-        });
+      map.setHeading(0);
+      setMapHeading(0);
+    }
+  }, [map]);
+
+  // Map heading change handler
+  const onHeadingChanged = useCallback(() => {
+    if (map) {
+      const newHeading = map.getHeading();
+      if (newHeading !== undefined) {
+        setMapHeading(newHeading);
       }
     }
-  }, [map, mapType]);
+  }, [map]);
 
-  // Toggle fullscreen mode
-  const toggleFullscreen = useCallback(() => {
-    setIsFullscreen((prev) => !prev);
-  }, []);
+  // Map zoom change handler
+  const onZoomChanged = useCallback(() => {
+    if (map) {
+      const newZoom = map.getZoom();
+      if (newZoom) {
+        setZoom(newZoom);
+        userZoomRef.current = newZoom;
+      }
+    }
+  }, [map]);
 
   // 사용자 위치 가져오기 함수
   const getUserLocation = useCallback(() => {
@@ -283,6 +283,13 @@ export const useMapContainer = () => {
     removeMapEventHandlers,
     handleGridCellClick,
   } = useGridSystem(showGrid, selectedArea, setSelectedArea);
+
+  // 지도 클릭 시 위치 추적 모드 해제
+  const handleMapInteraction = useCallback(() => {
+    if (locationMode === LocationMode.TRACKING) {
+      setLocationMode(LocationMode.OFF);
+    }
+  }, [locationMode, setLocationMode]);
 
   // Map click handler
   const onMapClick = useCallback(
@@ -333,24 +340,6 @@ export const useMapContainer = () => {
     setShowInfoWindow(true);
   }, [setShowInfoWindow]);
 
-  // Map zoom change handler
-  const onZoomChanged = useCallback(() => {
-    if (map) {
-      const newZoom = map.getZoom();
-      if (newZoom) {
-        setZoom(newZoom);
-        userZoomRef.current = newZoom;
-      }
-    }
-  }, [map]);
-
-  // 지도 클릭 시 위치 추적 모드 해제
-  const handleMapInteraction = useCallback(() => {
-    if (locationMode === LocationMode.TRACKING) {
-      setLocationMode(LocationMode.OFF);
-    }
-  }, [locationMode, setLocationMode]);
-
   // Setup map event handlers when map is ready
   useEffect(() => {
     if (map) {
@@ -366,9 +355,15 @@ export const useMapContainer = () => {
       // 지도 드래그 이벤트 리스너 추가
       map.addListener("dragstart", handleMapInteraction);
 
+      // Add heading changed listener
+      map.addListener("heading_changed", () => {
+        onHeadingChanged();
+      });
+
       return () => {
         if (map) {
           google.maps.event.clearListeners(map, "dragstart");
+          google.maps.event.clearListeners(map, "heading_changed");
         }
       };
     }
@@ -381,6 +376,7 @@ export const useMapContainer = () => {
     drawGrid,
     selectedArea,
     handleMapInteraction,
+    onHeadingChanged,
   ]);
 
   // Encode coordinates when selected area changes
@@ -487,8 +483,13 @@ export const useMapContainer = () => {
           (e as google.maps.IconMouseEvent).stop();
         }
       });
+
+      // Add heading changed listener
+      mapInstance.addListener("heading_changed", () => {
+        onHeadingChanged();
+      });
     },
-    [drawGrid, setupMapEventHandlers, mapType]
+    [drawGrid, setupMapEventHandlers, mapType, onHeadingChanged]
   );
 
   // Map unload handler
@@ -530,8 +531,8 @@ export const useMapContainer = () => {
     zoom,
     mapType,
     toggleMapType,
-    isFullscreen,
-    toggleFullscreen,
+    mapHeading,
+    resetMapHeading,
 
     // User location state
     userLocation,

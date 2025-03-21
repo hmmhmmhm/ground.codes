@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import { locales, Locale } from "@/i18n";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { LocationMode } from "./types";
+import Compass from './compass';
 
 // 위치 모드 상태를 정의하는 열거형 (use-map-container.ts와 동일하게 유지)
 // enum LocationMode {
@@ -17,8 +18,8 @@ interface MapControlsProps {
   getUserLocation: () => void;
   mapType: string;
   toggleMapType: () => void;
-  isFullscreen: boolean;
-  toggleFullscreen: () => void;
+  mapHeading: number;
+  resetMapHeading: () => void;
   isLoadingLocation?: boolean;
   isTrackingLocation?: boolean;
   locationMode?: LocationMode;
@@ -30,8 +31,8 @@ const MapControls: React.FC<MapControlsProps> = ({
   getUserLocation,
   mapType,
   toggleMapType,
-  isFullscreen,
-  toggleFullscreen,
+  mapHeading,
+  resetMapHeading,
   isLoadingLocation = false,
   isTrackingLocation = false,
   locationMode = 0,
@@ -120,7 +121,6 @@ const MapControls: React.FC<MapControlsProps> = ({
               >
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="3" y1="9" x2="21" y2="9"></line>
-                <line x1="3" y1="15" x2="21" y2="15"></line>
                 <line x1="9" y1="3" x2="9" y2="21"></line>
                 <line x1="15" y1="3" x2="15" y2="21"></line>
               </svg>
@@ -289,55 +289,12 @@ const MapControls: React.FC<MapControlsProps> = ({
         )}
       </button>
 
-      <button
-        onClick={toggleFullscreen}
-        className="absolute bottom-[100px] right-[10px] bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center z-10"
-        title={
-          isFullscreen
-            ? t("map.controls.exitFullscreen")
-            : t("map.controls.enterFullscreen")
-        }
-        aria-label={
-          isFullscreen
-            ? t("map.controls.exitFullscreen")
-            : t("map.controls.enterFullscreen")
-        }
-        style={{
-          backgroundColor: isFullscreen
-            ? "rgba(66, 133, 244, 0.7)"
-            : "rgba(0, 0, 0, 0.3)",
-        }}
-      >
-        {isFullscreen ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
-          </svg>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-          </svg>
-        )}
-      </button>
+      <Compass 
+        mapHeading={mapHeading}
+        resetMapHeading={resetMapHeading}
+        title={t("map.controls.resetRotation")}
+        ariaLabel={t("map.controls.resetRotation")}
+      />
     </>
   );
 };
