@@ -8,6 +8,8 @@
       "satellite": "일반지도로 전환",
       "roadmapLabel": "위성지도",
       "satelliteLabel": "일반지도",
+      "switchToSatelliteWithRefresh": "위성지도로 전환 (페이지가 새로고침됩니다)",
+      "switchToRoadmapWithRefresh": "일반지도로 전환 (페이지가 새로고침됩니다)",
       "language": "언어",
       "fullscreen": "전체화면 전환",
       "enterFullscreen": "전체화면으로 보기",

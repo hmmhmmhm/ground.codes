@@ -8,6 +8,8 @@
       "satellite": "Switch to normal map",
       "roadmapLabel": "Satellite Map",
       "satelliteLabel": "Normal Map",
+      "switchToSatelliteWithRefresh": "Switch to satellite map (page will refresh)",
+      "switchToRoadmapWithRefresh": "Switch to normal map (page will refresh)",
       "language": "Language",
       "fullscreen": "Toggle fullscreen",
       "enterFullscreen": "Enter fullscreen",

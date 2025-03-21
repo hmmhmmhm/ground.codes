@@ -17,6 +17,33 @@ const defaultCenter = {
 // Define libraries array as a constant to prevent recreation on each render
 const libraries: "places"[] = ["places"];
 
+// Get map type from cookie
+const getMapTypeFromCookie = (): string => {
+  try {
+    if (typeof window === "undefined") return "roadmap";
+
+    const cookieMapTypeMatch = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("MAP_TYPE="));
+
+    const cookieMapType = cookieMapTypeMatch
+      ? cookieMapTypeMatch.split("=")[1]
+      : undefined;
+
+    if (
+      cookieMapType &&
+      (cookieMapType === "roadmap" || cookieMapType === "satellite")
+    ) {
+      return cookieMapType;
+    }
+
+    return "roadmap";
+  } catch (error) {
+    console.error("Error getting map type from cookie:", error);
+    return "roadmap";
+  }
+};
+
 export const useMapContainer = () => {
   const { getUserLanguage } = useLanguage();
   const { isChangingLanguage } = useI18n();
@@ -39,7 +66,7 @@ export const useMapContainer = () => {
   // Map state
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [center, setCenter] = useState(defaultCenter);
-  const [mapType, setMapType] = useState<string>("roadmap");
+  const [mapType, setMapType] = useState<string>(getMapTypeFromCookie());
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [zoom, setZoom] = useState(18);
   const userZoomRef = useRef<number>(18); // 사용자가 설정한 zoom 값을 저장할 ref
@@ -181,34 +208,51 @@ export const useMapContainer = () => {
 
   // Toggle map type between roadmap and satellite
   const toggleMapType = useCallback(() => {
-    setMapType((prevType) => {
-      const newType = prevType === "roadmap" ? "satellite" : "roadmap";
+    const newType = mapType === "roadmap" ? "satellite" : "roadmap";
 
-      // Update map styles based on the new map type
-      if (map) {
-        if (newType === "roadmap") {
-          // Apply dark theme for roadmap view
-          map.setOptions({
-            styles: googleMapDarkTheme,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID,
-          });
-        } else {
-          // For satellite view, use empty styles array and explicitly set satellite map type
-          map.setOptions({
-            styles: [],
-            mapTypeId: google.maps.MapTypeId.HYBRID, // Use HYBRID instead of SATELLITE to show labels
-            // Ensure POIs are visible in satellite view
-            mapTypeControlOptions: {
-              mapTypeIds: [google.maps.MapTypeId.HYBRID],
-            },
-          });
-        }
+    // 사용자에게 새로고침 경고 표시
+    const confirmMessage =
+      "지도 유형을 변경하면 페이지가 새로고침됩니다. 계속하시겠습니까?";
+    const userConfirmed = window.confirm(confirmMessage);
+
+    if (!userConfirmed) return;
+
+    try {
+      // 쿠키에 맵 타입 저장 (1년 유효)
+      document.cookie = `MAP_TYPE=${newType};path=/;max-age=31536000`;
+
+      // 약간의 지연 후 페이지 새로고침
+      setTimeout(() => {
+        window.location.reload();
+      }, 10);
+    } catch (error) {
+      console.error("Failed to change map type:", error);
+    }
+  }, [mapType]);
+
+  // Apply map styles based on map type when the map is loaded
+  useEffect(() => {
+    if (map) {
+      if (mapType === "roadmap") {
+        // Apply dark theme for roadmap view
+        map.setOptions({
+          styles: googleMapDarkTheme,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID,
+        });
+      } else {
+        // For satellite view, use empty styles array and explicitly set satellite map type
+        map.setOptions({
+          styles: [],
+          mapTypeId: google.maps.MapTypeId.HYBRID, // Use HYBRID instead of SATELLITE to show labels
+          mapTypeControlOptions: {
+            mapTypeIds: [google.maps.MapTypeId.HYBRID],
+          },
+          mapId: null,
+        });
       }
-
-      return newType;
-    });
-  }, [map]);
+    }
+  }, [map, mapType]);
 
   // Toggle fullscreen mode
   const toggleFullscreen = useCallback(() => {
@@ -425,10 +469,10 @@ export const useMapContainer = () => {
         mapInstance.setOptions({
           styles: [],
           mapTypeId: google.maps.MapTypeId.HYBRID, // Use HYBRID instead of SATELLITE to show labels
-          // Ensure POIs are visible in satellite view
           mapTypeControlOptions: {
             mapTypeIds: [google.maps.MapTypeId.HYBRID],
           },
+          mapId: null,
         });
       }
 

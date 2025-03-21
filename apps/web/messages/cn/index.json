@@ -8,6 +8,8 @@
       "satellite": "切换到普通地图",
       "roadmapLabel": "卫星地图",
       "satelliteLabel": "普通地图",
+      "switchToSatelliteWithRefresh": "切换到卫星地图（页面将刷新）",
+      "switchToRoadmapWithRefresh": "切换到普通地图（页面将刷新）",
       "language": "语言",
       "fullscreen": "切换全屏",
       "enterFullscreen": "进入全屏",

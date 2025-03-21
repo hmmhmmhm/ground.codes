@@ -75,13 +75,13 @@ const MapControls: React.FC<MapControlsProps> = ({
           className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm"
           title={
             mapType === "roadmap"
-              ? t("map.controls.roadmap")
-              : t("map.controls.satellite")
+              ? t("map.controls.switchToSatelliteWithRefresh")
+              : t("map.controls.switchToRoadmapWithRefresh")
           }
           aria-label={
             mapType === "roadmap"
-              ? t("map.controls.roadmap")
-              : t("map.controls.satellite")
+              ? t("map.controls.switchToSatelliteWithRefresh")
+              : t("map.controls.switchToRoadmapWithRefresh")
           }
         >
           {mapType === "roadmap" ? (
@@ -302,6 +302,11 @@ const MapControls: React.FC<MapControlsProps> = ({
             ? t("map.controls.exitFullscreen")
             : t("map.controls.enterFullscreen")
         }
+        style={{
+          backgroundColor: isFullscreen
+            ? "rgba(66, 133, 244, 0.7)"
+            : "rgba(0, 0, 0, 0.3)",
+        }}
       >
         {isFullscreen ? (
           <svg
