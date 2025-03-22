@@ -103,7 +103,7 @@ function GoogleMapComponent() {
       />
 
       {/* Weather Information */}
-      <WeatherInfo />
+      <WeatherInfo map={map} />
 
       {/* Place Details UI */}
       <PlaceDetails
