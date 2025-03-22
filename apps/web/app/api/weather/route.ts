@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
+export const timeout = 8000;
 export interface WeatherData {
   main: {
     temp: number;

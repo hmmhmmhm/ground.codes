@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
+export const timeout = 8000;
 
 export interface AirQualityData {
   dateTime: string;
@@ -94,7 +95,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: "Failed to fetch air quality data",
-        detail: (error as Error).message,
       },
       { status: 500 }
     );
