@@ -66,6 +66,7 @@ export const useMapContainer = () => {
   const [zoom, setZoom] = useState(18);
   const userZoomRef = useRef<number>(18); // 사용자가 설정한 zoom 값을 저장할 ref
   const [mapHeading, setMapHeading] = useState(0); // 지도의 회전 각도를 저장할 상태
+  const [mapTilt, setMapTilt] = useState(0); // 지도의 기울기 각도를 저장할 상태
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   // User location state
@@ -84,6 +85,7 @@ export const useMapContainer = () => {
 
   // Grid state
   const [showGrid, setShowGrid] = useState(true);
+  const [gridWasVisible, setGridWasVisible] = useState(true); // 기울기/회전 전 그리드 상태 저장
 
   // Selected area state
   const [selectedArea, setSelectedArea] = useState<Coordinates | null>(null);
@@ -236,17 +238,20 @@ export const useMapContainer = () => {
   }, [map]);
 
   // Set map heading to a specific value
-  const setMapHeadingValue = useCallback((heading: number) => {
-    if (map) {
-      console.log("Setting map heading to:", heading);
-      // 지도 회전 가능하도록 설정
-      map.setOptions({ rotateControl: true });
-      map.setHeading(heading);
-      setMapHeading(heading);
-    } else {
-      console.warn("Map is not initialized yet");
-    }
-  }, [map]);
+  const setMapHeadingValue = useCallback(
+    (heading: number) => {
+      if (map) {
+        console.log("Setting map heading to:", heading);
+        // 지도 회전 가능하도록 설정
+        map.setOptions({ rotateControl: true });
+        map.setHeading(heading);
+        setMapHeading(heading);
+      } else {
+        console.warn("Map is not initialized yet");
+      }
+    },
+    [map]
+  );
 
   // Map heading change handler
   const onHeadingChanged = useCallback(() => {
@@ -254,20 +259,51 @@ export const useMapContainer = () => {
       const newHeading = map.getHeading();
       if (newHeading !== undefined) {
         setMapHeading(newHeading);
-      }
-    }
-  }, [map]);
 
-  // Map zoom change handler
-  const onZoomChanged = useCallback(() => {
-    if (map) {
-      const newZoom = map.getZoom();
-      if (newZoom) {
-        setZoom(newZoom);
-        userZoomRef.current = newZoom;
+        // 회전이 있는 경우 그리드 끄기
+        if (newHeading !== 0 && showGrid) {
+          setGridWasVisible(true); // 현재 그리드 상태 저장
+          setShowGrid(false); // 그리드 끄기
+        }
+        // 회전이 없고 이전에 그리드가 켜져 있었다면 그리드 다시 켜기
+        else if (
+          newHeading === 0 &&
+          !showGrid &&
+          gridWasVisible &&
+          mapTilt === 0
+        ) {
+          setShowGrid(true); // 그리드 다시 켜기
+          setGridWasVisible(false); // 상태 초기화
+        }
       }
     }
-  }, [map]);
+  }, [map, showGrid, mapTilt, gridWasVisible]);
+
+  // Map tilt change handler
+  const onTiltChanged = useCallback(() => {
+    if (map) {
+      const newTilt = map.getTilt();
+      if (newTilt !== undefined) {
+        setMapTilt(newTilt);
+
+        // 기울기가 있는 경우 그리드 끄기
+        if (newTilt !== 0 && showGrid) {
+          setGridWasVisible(true); // 현재 그리드 상태 저장
+          setShowGrid(false); // 그리드 끄기
+        }
+        // 기울기가 없고 이전에 그리드가 켜져 있었다면 그리드 다시 켜기
+        else if (
+          newTilt === 0 &&
+          !showGrid &&
+          gridWasVisible &&
+          mapHeading === 0
+        ) {
+          setShowGrid(true); // 그리드 다시 켜기
+          setGridWasVisible(false); // 상태 초기화
+        }
+      }
+    }
+  }, [map, showGrid, mapHeading, gridWasVisible]);
 
   // 사용자 위치 가져오기 함수
   const getUserLocation = useCallback(() => {
@@ -283,12 +319,12 @@ export const useMapContainer = () => {
 
   // Toggle fullscreen function
   const toggleFullscreen = useCallback(() => {
-    const mapContainer = document.querySelector('.map-container');
-    
+    const mapContainer = document.querySelector(".map-container");
+
     if (!mapContainer) return;
-    
+
     if (!document.fullscreenElement) {
-      mapContainer.requestFullscreen().catch(err => {
+      mapContainer.requestFullscreen().catch((err) => {
         console.error(`Error attempting to enable fullscreen: ${err.message}`);
       });
       setIsFullscreen(true);
@@ -303,11 +339,11 @@ export const useMapContainer = () => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
     };
-    
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
     return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
 
@@ -400,10 +436,16 @@ export const useMapContainer = () => {
         onHeadingChanged();
       });
 
+      // Add tilt changed listener
+      map.addListener("tilt_changed", () => {
+        onTiltChanged();
+      });
+
       return () => {
         if (map) {
           google.maps.event.clearListeners(map, "dragstart");
           google.maps.event.clearListeners(map, "heading_changed");
+          google.maps.event.clearListeners(map, "tilt_changed");
         }
       };
     }
@@ -417,6 +459,7 @@ export const useMapContainer = () => {
     selectedArea,
     handleMapInteraction,
     onHeadingChanged,
+    onTiltChanged,
   ]);
 
   // Encode coordinates when selected area changes
@@ -535,8 +578,13 @@ export const useMapContainer = () => {
       mapInstance.addListener("heading_changed", () => {
         onHeadingChanged();
       });
+
+      // Add tilt changed listener
+      mapInstance.addListener("tilt_changed", () => {
+        onTiltChanged();
+      });
     },
-    [drawGrid, setupMapEventHandlers, mapType, onHeadingChanged]
+    [drawGrid, setupMapEventHandlers, mapType, onHeadingChanged, onTiltChanged]
   );
 
   // Map unload handler
@@ -570,6 +618,17 @@ export const useMapContainer = () => {
     ]
   );
 
+  // Map zoom change handler
+  const onZoomChanged = useCallback(() => {
+    if (map) {
+      const newZoom = map.getZoom();
+      if (newZoom) {
+        setZoom(newZoom);
+        userZoomRef.current = newZoom;
+      }
+    }
+  }, [map]);
+
   return {
     // Map state
     isLoaded,
@@ -579,6 +638,7 @@ export const useMapContainer = () => {
     mapType,
     toggleMapType,
     mapHeading,
+    mapTilt,
     resetMapHeading,
     setMapHeading: setMapHeadingValue,
     isFullscreen,
