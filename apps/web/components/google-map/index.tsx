@@ -5,6 +5,7 @@ import MapMarkers from "./map-markers";
 import MapControls from "./map-controls";
 import MapSearch from "./map-search";
 import PlaceDetails from "./place-details";
+import WeatherInfo from "./weather-info";
 import { useI18n } from "@/lib/i18n/i18n-context";
 
 function GoogleMapComponent() {
@@ -100,6 +101,9 @@ function GoogleMapComponent() {
           locationMode,
         }}
       />
+
+      {/* Weather Information */}
+      <WeatherInfo />
 
       {/* Place Details UI */}
       <PlaceDetails

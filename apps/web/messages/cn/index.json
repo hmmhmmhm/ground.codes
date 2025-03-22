@@ -28,6 +28,11 @@
     "encoding": "编码中",
     "accuracy": {
       "label": "GPS精度：{accuracy}米"
+    },
+    "weather": {
+      "weatherInfo": "天气信息",
+      "temperature": "温度",
+      "airQuality": "空气质量"
     }
   },
   "common": {

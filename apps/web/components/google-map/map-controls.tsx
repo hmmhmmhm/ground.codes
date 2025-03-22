@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import { locales, Locale } from "@/i18n";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { LocationMode } from "./types";
-import Compass from './compass';
+import Compass from "./compass";
 
 // 위치 모드 상태를 정의하는 열거형 (use-map-container.ts와 동일하게 유지)
 // enum LocationMode {
@@ -76,7 +76,7 @@ const MapControls: React.FC<MapControlsProps> = ({
   return (
     <>
       {/* Map Type Control and Language Selector (Top Right) */}
-      <div className="absolute top-[10px] right-[10px] flex flex-row gap-2 z-10">
+      <div className="absolute top-[64px] right-[10px] flex flex-row gap-2 z-10">
         <button
           onClick={toggleMapType}
           className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm"
@@ -295,7 +295,7 @@ const MapControls: React.FC<MapControlsProps> = ({
         )}
       </button>
 
-      <Compass 
+      <Compass
         mapHeading={mapHeading}
         resetMapHeading={resetMapHeading}
         setMapHeading={setMapHeading}

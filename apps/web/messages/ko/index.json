@@ -28,6 +28,11 @@
     "encoding": "인코딩 중",
     "accuracy": {
       "label": "GPS 정확도: {accuracy}m"
+    },
+    "weather": {
+      "weatherInfo": "날씨 정보",
+      "temperature": "온도",
+      "airQuality": "대기질"
     }
   },
   "common": {

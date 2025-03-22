@@ -28,6 +28,11 @@
     "encoding": "Encoding",
     "accuracy": {
       "label": "GPS Accuracy: {accuracy}m"
+    },
+    "weather": {
+      "weatherInfo": "Weather information",
+      "temperature": "Temperature",
+      "airQuality": "Air Quality"
     }
   },
   "common": {

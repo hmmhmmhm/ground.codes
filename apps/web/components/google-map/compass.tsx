@@ -275,7 +275,7 @@ const Compass: React.FC<CompassProps> = ({
           cx="12"
           cy="12"
           r="11"
-          fill="#222222"
+          fill="rgba(34, 34, 34, 0.14)"
           stroke="#444444"
           strokeWidth="1"
         />
