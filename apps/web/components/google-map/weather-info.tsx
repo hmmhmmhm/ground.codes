@@ -10,7 +10,7 @@ interface WeatherInfoProps {
 }
 
 const WeatherInfo: React.FC<WeatherInfoProps> = ({
-  className = "absolute top-[10px] right-[10px]",
+  className = "absolute top-[10px] left-[10px]",
   map = null,
 }) => {
   const { t } = useI18n();
@@ -44,10 +44,16 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({
   }, [map]);
 
   // Use the air quality hook to fetch real-time air quality data
-  const { temperature, weatherIcon, airQuality, isLoading, error, weatherData } =
-    useAirQuality(mapCenter, {
-      debounceMs: 1500, // Debounce map center changes to prevent excessive API calls
-    });
+  const {
+    temperature,
+    weatherIcon,
+    airQuality,
+    isLoading,
+    error,
+    weatherData,
+  } = useAirQuality(mapCenter, {
+    debounceMs: 1500, // Debounce map center changes to prevent excessive API calls
+  });
 
   // Get the air quality index from the response
   const airQualityIndex = airQuality?.indexes?.[0]?.aqi || 0;
@@ -55,22 +61,22 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({
 
   // Convert RGB object to CSS color string
   const rgbToColorString = (colorObj: any) => {
-    if (!colorObj || typeof colorObj !== 'object') return "#808080"; // Default gray
-    
+    if (!colorObj || typeof colorObj !== "object") return "#808080"; // Default gray
+
     // Check if it's already a hex color string
-    if (typeof colorObj === 'string' && colorObj.startsWith('#')) {
+    if (typeof colorObj === "string" && colorObj.startsWith("#")) {
       return colorObj;
     }
-    
+
     // Check if it has RGB components
-    if ('red' in colorObj && 'green' in colorObj && 'blue' in colorObj) {
+    if ("red" in colorObj && "green" in colorObj && "blue" in colorObj) {
       // Convert 0-1 range to 0-255 range
       const r = Math.round(colorObj.red * 255);
       const g = Math.round(colorObj.green * 255);
       const b = Math.round(colorObj.blue * 255);
       return `rgb(${r}, ${g}, ${b})`;
     }
-    
+
     return "#808080"; // Default gray
   };
 
@@ -101,7 +107,7 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({
         className={`${className} z-10 flex flex-col items-end`}
         aria-label={t("map.weather.weatherInfo")}
       >
-        <div 
+        <div
           className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 text-white flex items-center gap-2 cursor-pointer hover:bg-black/40 transition-colors duration-200"
           onClick={handleOpenModal}
           title={t("map.weather.clickForDetails")}
@@ -137,7 +143,7 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({
       </div>
 
       {/* Weather Detail Modal */}
-      <WeatherDetailModal 
+      <WeatherDetailModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         weatherData={weatherData}

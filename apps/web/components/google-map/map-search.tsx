@@ -54,8 +54,8 @@ const MapSearch: React.FC<MapSearchProps> = ({ map, onPlaceSelect }) => {
   }, [map, onPlaceSelect]);
 
   return (
-    <div className="absolute top-0 left-0 z-10 m-2 w-full md:w-64 px-2 md:px-0">
-      <div className="rounded-lg overflow-hidden relative max-w-[calc(100%-120px)] md:max-w-full bg-black/30 backdrop-blur-md border border-white/20">
+    <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 z-10 w-full md:w-64 px-2 md:px-0">
+      <div className="rounded-lg overflow-hidden relative max-w-[calc(100%-120px)] md:max-w-full mx-auto bg-black/30 backdrop-blur-md border border-white/20">
         <input
           ref={searchInputRef}
           type="text"

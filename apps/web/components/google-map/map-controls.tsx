@@ -76,7 +76,7 @@ const MapControls: React.FC<MapControlsProps> = ({
   return (
     <>
       {/* Map Type Control and Language Selector (Top Right) */}
-      <div className="absolute top-[64px] right-[10px] flex flex-row gap-2 z-10">
+      <div className="absolute top-[10px] right-[10px] flex flex-row gap-2 z-10">
         <button
           onClick={toggleMapType}
           className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm"
