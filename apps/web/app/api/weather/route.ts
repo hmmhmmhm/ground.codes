@@ -51,8 +51,7 @@ export async function POST(request: NextRequest) {
     }
 
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=${apiKey}`,
-      { cache: "no-store" } // Disable caching to always get fresh data
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=${apiKey}`
     );
 
     if (!response.ok) {

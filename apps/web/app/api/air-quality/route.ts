@@ -77,7 +77,6 @@ export async function POST(request: NextRequest) {
           ],
           languageCode: "en", // Default to English on server side
         }),
-        cache: "no-store", // Disable caching to always get fresh data
       }
     );
 
@@ -93,7 +92,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching air quality data:", error);
     return NextResponse.json(
-      { error: "Failed to fetch air quality data" },
+      {
+        error: "Failed to fetch air quality data",
+        detail: (error as Error).message,
+      },
       { status: 500 }
     );
   }
