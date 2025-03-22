@@ -8,7 +8,17 @@ import { getGridCellCenter } from "./utils";
 export function useMapEventHandlers(
   showGrid: boolean,
   drawGrid: (mapInstance: google.maps.Map) => void,
-  handleGridCellClick: (e: google.maps.MapMouseEvent) => void
+  handleGridCellClick: (e: google.maps.MapMouseEvent) => void,
+  options?: {
+    locationMode?: any; 
+    setLocationMode?: (mode: any) => void; 
+    placeDetailsVisible?: boolean;
+    setPlaceDetailsVisible?: (visible: boolean) => void;
+    setSelectedPlaceId?: (placeId: string | null) => void;
+    setSelectedLocation?: (location: google.maps.LatLng | null) => void;
+    setSelectedArea?: (area: Coordinates | null) => void;
+    setShowInfoWindow?: (show: boolean) => void;
+  }
 ) {
   return useCallback(
     (mapInstance: google.maps.Map) => {
@@ -23,10 +33,61 @@ export function useMapEventHandlers(
 
       // Add click event listener to map
       mapInstance.addListener("click", (e: google.maps.MapMouseEvent) => {
+        console.log("Map click from use-map-handlers", e);
+        
+        // Handle location mode if provided
+        if (options?.locationMode === "TRACKING" && options.setLocationMode) {
+          options.setLocationMode("OFF");
+        }
+
+        // Check if a POI was clicked
+        if ((e as any).placeId) {
+          // Immediately stop the default POI click behavior
+          (e as google.maps.IconMouseEvent).stop();
+
+          // A POI was clicked
+          if (options?.setSelectedPlaceId) {
+            options.setSelectedPlaceId((e as any).placeId);
+          }
+          if (options?.setSelectedLocation) {
+            options.setSelectedLocation(e.latLng || null);
+          }
+          if (options?.setPlaceDetailsVisible) {
+            options.setPlaceDetailsVisible(true);
+          }
+
+          // POI 클릭 시 선택된 영역 초기화하여 그리드 셀 인포윈도우가 표시되지 않도록 함
+          if (options?.setSelectedArea) {
+            options.setSelectedArea(null);
+          }
+
+          // Hide any existing info windows
+          if (options?.setShowInfoWindow) {
+            options.setShowInfoWindow(false);
+          }
+
+          // Prevent grid cell click handling when POI is clicked
+          return;
+        }
+
+        // Close place details if open
+        if (options?.placeDetailsVisible) {
+          if (options.setPlaceDetailsVisible) {
+            options.setPlaceDetailsVisible(false);
+          }
+          if (options.setSelectedPlaceId) {
+            options.setSelectedPlaceId(null);
+          }
+          if (options.setSelectedLocation) {
+            options.setSelectedLocation(null);
+          }
+        }
+
+        // Handle grid cell click
         handleGridCellClick(e);
       });
     },
-    [drawGrid, showGrid, handleGridCellClick]
+    [drawGrid, showGrid, handleGridCellClick, options]
   );
 }
 
@@ -52,8 +113,6 @@ export function useGridCellClickHandler(
         } else {
           return;
         }
-      } else {
-        return;
       }
 
       // Check if grid should be visible at current zoom level

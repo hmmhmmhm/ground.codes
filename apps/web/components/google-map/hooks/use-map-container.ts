@@ -352,7 +352,20 @@ export const useMapContainer = () => {
     setupMapEventHandlers,
     removeMapEventHandlers,
     handleGridCellClick,
-  } = useGridSystem(showGrid, selectedArea, setSelectedArea);
+  } = useGridSystem(
+    showGrid,
+    selectedArea,
+    setSelectedArea,
+    {
+      locationMode,
+      setLocationMode,
+      placeDetailsVisible,
+      setPlaceDetailsVisible,
+      setSelectedPlaceId,
+      setSelectedLocation,
+      setShowInfoWindow,
+    }
+  );
 
   // 지도 클릭 시 위치 추적 모드 해제
   const handleMapInteraction = useCallback(() => {
@@ -360,45 +373,6 @@ export const useMapContainer = () => {
       setLocationMode(LocationMode.OFF);
     }
   }, [locationMode, setLocationMode]);
-
-  // Map click handler
-  const onMapClick = useCallback(
-    (e: google.maps.MapMouseEvent) => {
-      // 지도 클릭 시 위치 추적 모드 해제
-      if (locationMode === LocationMode.TRACKING) {
-        setLocationMode(LocationMode.OFF);
-      }
-
-      // Check if a POI was clicked
-      if ((e as any).placeId) {
-        // Immediately stop the default POI click behavior
-        (e as google.maps.IconMouseEvent).stop();
-
-        // A POI was clicked
-        setSelectedPlaceId((e as any).placeId);
-        setSelectedLocation(e.latLng || null);
-        setPlaceDetailsVisible(true);
-
-        // POI 클릭 시 선택된 영역 초기화하여 그리드 셀 인포윈도우가 표시되지 않도록 함
-        setSelectedArea(null);
-
-        // Hide any existing info windows
-        setShowInfoWindow(false);
-
-        // Prevent grid cell click handling when POI is clicked
-        return;
-      }
-      // Close place details if open
-      if (placeDetailsVisible) {
-        setPlaceDetailsVisible(false);
-        setSelectedPlaceId(null);
-        setSelectedLocation(null);
-      }
-
-      handleGridCellClick(e);
-    },
-    [handleGridCellClick, locationMode, placeDetailsVisible, setLocationMode]
-  );
 
   // Close place details
   const closePlaceDetails = useCallback(() => {
@@ -687,7 +661,6 @@ export const useMapContainer = () => {
     // Map event handlers
     onLoad,
     onUnmount,
-    onMapClick,
     onZoomChanged,
   };
 };

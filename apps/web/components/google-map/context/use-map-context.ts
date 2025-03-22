@@ -103,14 +103,6 @@ export const useMapContextState = (): MapContextType => {
     [clearAllGridLines, removeMapEventHandlers]
   );
 
-  // Map click handler
-  const onMapClick = useCallback(
-    (e: google.maps.MapMouseEvent) => {
-      handleGridCellClick(e);
-    },
-    [handleGridCellClick]
-  );
-
   return {
     map,
     setMap,
@@ -132,6 +124,5 @@ export const useMapContextState = (): MapContextType => {
     removeMapEventHandlers,
     handleGridCellClick,
     onUnmount,
-    onMapClick,
   };
 };

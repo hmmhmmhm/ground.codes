@@ -39,7 +39,6 @@ export interface MapContextType {
 
   // Map event handlers
   onUnmount: (mapInstance: google.maps.Map) => void;
-  onMapClick: (e: google.maps.MapMouseEvent) => void;
 }
 
 export interface MapProviderProps {

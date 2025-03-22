@@ -16,7 +16,16 @@ import {
 export function useGridSystem(
   showGrid: boolean,
   selectedArea: Coordinates | null,
-  setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>
+  setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>,
+  mapOptions?: {
+    locationMode?: any; 
+    setLocationMode?: (mode: any) => void; 
+    placeDetailsVisible?: boolean;
+    setPlaceDetailsVisible?: (visible: boolean) => void;
+    setSelectedPlaceId?: (placeId: string | null) => void;
+    setSelectedLocation?: (location: google.maps.LatLng | null) => void;
+    setShowInfoWindow?: (show: boolean) => void;
+  }
 ): GridSystemHookResult {
   const {
     gridLinesRef,
@@ -164,11 +173,15 @@ export function useGridSystem(
     drawGrid
   );
 
-  // Create the map event handlers setup function
+  // Create the map event handlers setup function with enhanced options
   const setupMapEventHandlers = useMapEventHandlers(
     showGrid,
     drawGrid,
-    handleGridCellClick
+    handleGridCellClick,
+    {
+      ...mapOptions,
+      setSelectedArea,
+    }
   );
 
   return {

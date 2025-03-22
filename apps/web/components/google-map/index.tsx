@@ -16,7 +16,6 @@ function GoogleMapComponent() {
     map,
     onLoad,
     onUnmount,
-    onMapClick,
     onZoomChanged,
     userLocation,
     selectedArea,
@@ -62,7 +61,6 @@ function GoogleMapComponent() {
           },
         }}
         zoom={zoom}
-        onClick={onMapClick}
         onZoomChanged={onZoomChanged}
         options={{
           disableDefaultUI: true, // Disables all default UI controls
@@ -70,6 +68,7 @@ function GoogleMapComponent() {
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
+          clickableIcons: true,
         }}
       >
         <MapMarkers
