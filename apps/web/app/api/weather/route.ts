@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = "edge";
 export interface WeatherData {
   main: {
     temp: number;
