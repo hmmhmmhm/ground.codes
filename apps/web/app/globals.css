@@ -1,3 +1,7 @@
+body {
+  -webkit-overflow-scrolling: touch;
+}
+
 /* Remove Google from the Google Maps search bar */
 .pac-container:after {
   background-image: none !important;
