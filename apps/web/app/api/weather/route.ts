@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Access API key securely from server environment
-    const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
+    const apiKey = process.env.OPENWEATHER_API_KEY;
 
     if (!apiKey) {
       console.error("OpenWeatherMap API key is missing");
