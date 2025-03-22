@@ -5,7 +5,6 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@repo/ui"],
-  output: "export",
   images: {
     unoptimized: true,
   },
