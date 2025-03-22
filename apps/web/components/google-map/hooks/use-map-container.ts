@@ -540,7 +540,10 @@ export const useMapContainer = () => {
       // Apply styles based on initial map type
       if (mapType === "roadmap") {
         mapInstance.setOptions({
-          styles: googleMapDarkTheme,
+          styles:
+            process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID !== undefined
+              ? null
+              : googleMapDarkTheme,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID,
         });

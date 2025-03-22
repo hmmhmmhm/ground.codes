@@ -57,7 +57,6 @@ export function useGridSystem(
         // Get map boundaries
         const bounds = mapInstance.getBounds();
         if (!bounds) {
-          console.warn("Map bounds not available, waiting for map to be idle");
           // Schedule a redraw after a short delay to allow bounds to become available
           setTimeout(() => {
             if (mapInstanceRef.current) drawGrid(mapInstanceRef.current);
