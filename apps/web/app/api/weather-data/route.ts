@@ -71,7 +71,7 @@ export interface CombinedWeatherData {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { lat, lng } = body;
+    const { lat, lng, language = "en" } = body;
 
     if (!lat || !lng) {
       return NextResponse.json(
@@ -92,6 +92,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Map the language code to supported languages for each API
+    // OpenWeatherMap supports more languages than Google Air Quality API
+    // For Air Quality API, fallback to closest supported language
+    const airQualityLanguageMap: { [key: string]: string } = {
+      en: "en",
+      ko: "ko",
+      cn: "zh-CN",
+    };
+
+    // Get the appropriate language code for Air Quality API
+    const airQualityLanguage = airQualityLanguageMap[language] || "en";
+
+    // Map the language code to supported languages for each API
+    // OpenWeatherMap supports more languages than Google Air Quality API
+    // For Air Quality API, fallback to closest supported language
+    const weatherLanguageMap: { [key: string]: string } = {
+      en: "en",
+      ko: "kr",
+      cn: "zh-cn",
+    };
+    const weatherLanguage = weatherLanguageMap[language] || "en";
+
     // Fetch both air quality and weather data in parallel
     const [airQualityResponse, weatherResponse] = await Promise.allSettled([
       // Air Quality API request
@@ -111,18 +133,18 @@ export async function POST(request: NextRequest) {
               "POLLUTANT_CONCENTRATION",
               "HEALTH_RECOMMENDATIONS",
             ],
-            languageCode: "en", // Default to English on server side
+            languageCode: airQualityLanguage, // Use the mapped language code
           }),
         }
-      ).then(res => {
+      ).then((res) => {
         if (!res.ok) throw new Error(`Air Quality API error: ${res.status}`);
         return res.json();
       }),
 
       // Weather API request
       fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&appid=${openWeatherApiKey}`
-      ).then(res => {
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&lang=${weatherLanguage}&appid=${openWeatherApiKey}`
+      ).then((res) => {
         if (!res.ok) throw new Error(`Weather API error: ${res.status}`);
         return res.json();
       }),
@@ -138,7 +160,10 @@ export async function POST(request: NextRequest) {
     if (airQualityResponse.status === "fulfilled") {
       response.airQuality = airQualityResponse.value;
     } else if (airQualityResponse.status === "rejected") {
-      console.error("Air quality data fetch failed:", airQualityResponse.reason);
+      console.error(
+        "Air quality data fetch failed:",
+        airQualityResponse.reason
+      );
     }
 
     // Handle weather data
@@ -154,10 +179,10 @@ export async function POST(request: NextRequest) {
       weatherResponse.status === "rejected"
     ) {
       return NextResponse.json(
-        { 
+        {
           error: "Failed to fetch weather and air quality data",
           airQuality: null,
-          weather: null
+          weather: null,
         },
         { status: 500 }
       );
@@ -170,7 +195,7 @@ export async function POST(request: NextRequest) {
       {
         error: "Failed to fetch weather data",
         airQuality: null,
-        weather: null
+        weather: null,
       },
       { status: 500 }
     );

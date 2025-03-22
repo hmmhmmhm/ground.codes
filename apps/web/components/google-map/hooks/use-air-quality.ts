@@ -5,6 +5,7 @@ import type {
   AirQualityData,
   CombinedWeatherData
 } from "@/app/api/weather-data/route";
+import { useI18n } from "@/lib/i18n/i18n-context";
 
 // Simple debounce function implementation
 const useDebounce = <T>(value: T, delay: number): T => {
@@ -35,6 +36,7 @@ export const useAirQuality = (
   options: UseAirQualityOptions = {}
 ) => {
   const { debounceMs = 1000 } = options;
+  const { locale } = useI18n();
 
   const [airQuality, setAirQuality] = useState<AirQualityData | null>(null);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -72,7 +74,10 @@ export const useAirQuality = (
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(debouncedCoordinates),
+          body: JSON.stringify({
+            ...debouncedCoordinates,
+            language: locale, // 현재 맵의 언어 설정 전달
+          }),
         });
 
         if (!response.ok) {
@@ -104,7 +109,7 @@ export const useAirQuality = (
     };
 
     fetchData();
-  }, [debouncedCoordinates]);
+  }, [debouncedCoordinates, locale]); // locale 의존성 추가
 
   // Calculate temperature and weather icon
   const temperature =
