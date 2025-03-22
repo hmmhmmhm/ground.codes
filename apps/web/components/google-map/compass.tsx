@@ -50,8 +50,6 @@ const Compass: React.FC<CompassProps> = ({
         }
       }
 
-      console.log("Mouse move detected");
-
       const rect = compassRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -73,15 +71,6 @@ const Compass: React.FC<CompassProps> = ({
       // 회전 각도 계산 (시계 방향으로 회전하면 각도가 감소)
       let newHeading = (startHeadingRef.current - angleDiff) % 360;
       if (newHeading < 0) newHeading += 360;
-
-      console.log(
-        "Current angle:",
-        currentAngle,
-        "Angle diff:",
-        angleDiff,
-        "New heading:",
-        newHeading
-      );
       setMapHeading(newHeading);
     },
     [calculateAngle, setMapHeading]
@@ -104,8 +93,6 @@ const Compass: React.FC<CompassProps> = ({
         }
       }
 
-      console.log("Touch move detected");
-
       const rect = compassRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
@@ -127,15 +114,6 @@ const Compass: React.FC<CompassProps> = ({
       // 회전 각도 계산 (시계 방향으로 회전하면 각도가 감소)
       let newHeading = (startHeadingRef.current - angleDiff) % 360;
       if (newHeading < 0) newHeading += 360;
-
-      console.log(
-        "Current angle:",
-        currentAngle,
-        "Angle diff:",
-        angleDiff,
-        "New heading:",
-        newHeading
-      );
       setMapHeading(newHeading);
 
       // 기본 동작 방지
@@ -146,7 +124,6 @@ const Compass: React.FC<CompassProps> = ({
 
   // 드래그 종료 처리
   const handleDragEnd = useCallback((e: MouseEvent | TouchEvent) => {
-    console.log("Drag ended, hasDragged:", hasDraggedRef.current);
     setIsDragging(false);
 
     // 드래그 상태 초기화 (다음 상호작용을 위해)
@@ -169,7 +146,6 @@ const Compass: React.FC<CompassProps> = ({
   // 이벤트 리스너 등록 및 제거
   useEffect(() => {
     if (isDragging) {
-      console.log("Adding event listeners for drag");
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("touchmove", handleTouchMove, {
         passive: false,
@@ -177,7 +153,6 @@ const Compass: React.FC<CompassProps> = ({
       document.addEventListener("mouseup", handleDragEnd);
       document.addEventListener("touchend", handleDragEnd);
     } else {
-      console.log("Removing event listeners for drag");
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("mouseup", handleDragEnd);
@@ -201,8 +176,6 @@ const Compass: React.FC<CompassProps> = ({
       e.preventDefault();
       e.stopPropagation();
 
-      console.log("Mouse down detected");
-
       // 드래그 시작 위치 저장
       startPosRef.current = { x: e.clientX, y: e.clientY };
       hasDraggedRef.current = false;
@@ -218,14 +191,6 @@ const Compass: React.FC<CompassProps> = ({
         e.clientY
       );
       startHeadingRef.current = mapHeading;
-
-      console.log(
-        "Start angle:",
-        startAngleRef.current,
-        "Start heading:",
-        startHeadingRef.current
-      );
-
       setIsDragging(true);
     },
     [calculateAngle, mapHeading, setMapHeading]
@@ -239,8 +204,6 @@ const Compass: React.FC<CompassProps> = ({
       // 기본 동작 및 버블링 방지
       e.preventDefault();
       e.stopPropagation();
-
-      console.log("Touch start detected");
 
       // 드래그 시작 위치 저장
       startPosRef.current = {
@@ -260,14 +223,6 @@ const Compass: React.FC<CompassProps> = ({
         e.touches[0].clientY
       );
       startHeadingRef.current = mapHeading;
-
-      console.log(
-        "Start angle:",
-        startAngleRef.current,
-        "Start heading:",
-        startHeadingRef.current
-      );
-
       setIsDragging(true);
     },
     [calculateAngle, mapHeading, setMapHeading]
@@ -278,18 +233,15 @@ const Compass: React.FC<CompassProps> = ({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       // 최근에 드래그가 있었는지 확인 (300ms 이내)
       const timeSinceLastDrag = Date.now() - lastDragTimeRef.current;
-      console.log("Click detected, time since last drag:", timeSinceLastDrag);
 
       // 드래그가 발생했거나 최근에 드래그가 끝난 경우 클릭 이벤트 무시
       if (hasDraggedRef.current || timeSinceLastDrag < 300) {
-        console.log("Ignoring click after drag");
         e.preventDefault();
         e.stopPropagation();
         return;
       }
 
       // 드래그가 발생하지 않은 순수한 클릭인 경우에만 리셋 함수 호출
-      console.log("Pure click detected, resetting heading");
       resetMapHeading();
     },
     [resetMapHeading]

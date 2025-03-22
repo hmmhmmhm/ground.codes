@@ -32,8 +32,6 @@ export function useGridSystem(
   // Draw grid lines
   const drawGrid = useCallback(
     (mapInstance: google.maps.Map) => {
-      console.log("Drawing grid, showGrid:", showGrid);
-
       // Store map instance reference
       mapInstanceRef.current = mapInstance;
 
@@ -42,7 +40,6 @@ export function useGridSystem(
 
       // Don't draw if grid is disabled
       if (!showGrid) {
-        console.log("Grid is disabled, not drawing");
         gridVisibleRef.current = false;
         return;
       }
@@ -50,10 +47,8 @@ export function useGridSystem(
       // Check zoom level (only show grid at zoom level 16 or higher)
       const zoom = mapInstance.getZoom();
       currentZoomRef.current = zoom || null;
-      console.log("Current zoom level:", zoom);
 
       if (!isGridVisibleAtZoom(zoom)) {
-        console.log("Grid not visible at current zoom level");
         gridVisibleRef.current = false;
         return;
       }
@@ -65,10 +60,7 @@ export function useGridSystem(
           console.warn("Map bounds not available, waiting for map to be idle");
           // Schedule a redraw after a short delay to allow bounds to become available
           setTimeout(() => {
-            if (mapInstanceRef.current) {
-              console.log("Retrying grid draw after delay");
-              drawGrid(mapInstanceRef.current);
-            }
+            if (mapInstanceRef.current) drawGrid(mapInstanceRef.current);
           }, 500);
           return;
         }
@@ -97,19 +89,15 @@ export function useGridSystem(
         const latLines = Math.round((endLat - startLat) / latDegreePerCell) + 1;
         const lngLines = Math.round((endLng - startLng) / lngDegreePerCell) + 1;
 
-        console.log("Grid dimensions:", { latLines, lngLines });
-
         // Limit the number of grid cells (to prevent performance issues)
         const maxLines = 150;
         if (latLines > maxLines || lngLines > maxLines) {
-          console.log("Too many grid lines, not drawing");
           gridVisibleRef.current = false;
           return;
         }
 
         // Update grid visibility state
         gridVisibleRef.current = true;
-        console.log("Grid is now visible");
 
         const newLines: google.maps.Polyline[] = [];
 
@@ -149,14 +137,10 @@ export function useGridSystem(
 
         // Store new grid lines in reference array
         gridLinesRef.current = newLines;
-        console.log(`Grid drawn with ${newLines.length} lines`);
 
         // Draw selected area rectangle if there's a selected area
         if (selectedArea) {
-          console.log("Drawing selected area rectangle");
           drawSelectedAreaRectangle(mapInstance, selectedArea);
-        } else {
-          console.log("No selected area to draw");
         }
       } catch (error) {
         console.error("Error drawing grid:", error);

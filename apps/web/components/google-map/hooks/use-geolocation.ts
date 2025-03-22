@@ -69,7 +69,7 @@ export const useGeolocation = (
       if (prevHeading === heading) {
         return;
       }
-      
+
       // 방향 변화가 충분히 큰 경우에만 업데이트 (작은 변화는 무시)
       if (prevHeading !== null) {
         const angleDiff = Math.abs(heading - prevHeading);
@@ -78,11 +78,11 @@ export const useGeolocation = (
           return;
         }
       }
-      
+
       // 방향 업데이트 플래그 설정
       isHeadingUpdateRef.current = true;
       prevHeadingRef.current = heading;
-      
+
       // 렌더링 사이클 분리를 위해 requestAnimationFrame 사용
       requestAnimationFrame(() => {
         setUserLocation((prev) => {
@@ -112,23 +112,26 @@ export const useGeolocation = (
 
       // Update loading ref directly instead of state
       isLoadingRef.current = true;
-      
+
       // 이전 위치 정보 유지 (방향 정보 포함)
       const prevLocation = userLocation;
-      
+
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
           // Update loading ref directly
           isLoadingRef.current = false;
-          
+
           // 새 위치 정보 생성 (이전 방향 정보 유지)
           const newLocation = updateUserLocation(position);
-          
+
           // 방향 정보 업데이트 플래그 설정
-          if (position.coords.heading !== null && position.coords.heading !== undefined) {
+          if (
+            position.coords.heading !== null &&
+            position.coords.heading !== undefined
+          ) {
             isHeadingUpdateRef.current = true;
           }
-          
+
           // 위치 정보 업데이트
           setUserLocation(newLocation);
         },
@@ -149,34 +152,36 @@ export const useGeolocation = (
   }, [cancelGeolocationRequest, userLocation]);
 
   // 위치 정보 업데이트 함수
-  const updateUserLocation = useCallback((position: GeolocationPosition) => {
-    // 새 위치 정보 생성
-    const newLocation = {
-      lat: position.coords.latitude,
-      lng: position.coords.longitude,
-      accuracy: position.coords.accuracy,
-      // 방향 정보 처리 (새 방향 정보가 있으면 업데이트, 없으면 이전 방향 정보 유지)
-      heading: position.coords.heading !== null && position.coords.heading !== undefined
-        ? position.coords.heading
-        : userLocation?.heading || null,
-    };
-    
-    // 디버깅: 방향 정보 확인
-    console.log('Geolocation updating with heading:', position.coords.heading, 'Final heading:', newLocation.heading);
-    
-    // 위치 정보 업데이트
-    setUserLocation(newLocation);
-    return newLocation;
-  }, [userLocation]);
+  const updateUserLocation = useCallback(
+    (position: GeolocationPosition) => {
+      // 새 위치 정보 생성
+      const newLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+        // 방향 정보 처리 (새 방향 정보가 있으면 업데이트, 없으면 이전 방향 정보 유지)
+        heading:
+          position.coords.heading !== null &&
+          position.coords.heading !== undefined
+            ? position.coords.heading
+            : userLocation?.heading || null,
+      };
+
+      // 위치 정보 업데이트
+      setUserLocation(newLocation);
+      return newLocation;
+    },
+    [userLocation]
+  );
 
   const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
       // Cancel any existing request first
       cancelGeolocationRequest();
-      
+
       // Set loading state (directly update ref)
       isLoadingRef.current = true;
-      
+
       // Get current position
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -184,15 +189,16 @@ export const useGeolocation = (
           isHeadingUpdateRef.current = false;
 
           const newUserLocation = updateUserLocation(position);
-          
+
           // Batch state updates to prevent re-renders between updates
-          const shouldUpdateCenter = setCenter && 
+          const shouldUpdateCenter =
+            setCenter &&
             (isTrackingMode || (!isTrackingMode && !userLocationLoaded));
-          
+
           // Update loading state first
           setUserLocationLoaded(true);
           isLoadingRef.current = false;
-          
+
           // Update center if needed
           if (shouldUpdateCenter && map) {
             map.panTo({
@@ -200,7 +206,7 @@ export const useGeolocation = (
               lng: position.coords.longitude,
             });
           }
-          
+
           // Call the callback with the new location
           onPositionUpdate?.(newUserLocation);
         },

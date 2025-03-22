@@ -13,7 +13,6 @@ export function useGridDrawing() {
 
   // Remove all grid lines
   const clearAllGridLines = useCallback(() => {
-    console.log("Clearing all grid lines");
     // Remove all grid lines from the map
     gridLinesRef.current.forEach((line) => {
       line.setMap(null);
@@ -24,7 +23,6 @@ export function useGridDrawing() {
 
     // Clear selected rectangle if exists
     if (selectedRectangleRef.current) {
-      console.log("Clearing selected rectangle");
       selectedRectangleRef.current.setMap(null);
       selectedRectangleRef.current = null;
     }
@@ -35,8 +33,6 @@ export function useGridDrawing() {
   // Draw selected area rectangle
   const drawSelectedAreaRectangle = useCallback(
     (mapInstance: google.maps.Map, selectedArea: Coordinates) => {
-      console.log("Drawing selected area rectangle for:", selectedArea);
-
       // Clear previous rectangle if exists
       if (selectedRectangleRef.current) {
         selectedRectangleRef.current.setMap(null);
@@ -69,8 +65,6 @@ export function useGridDrawing() {
         const east = (lngIndex + 1) * lngDegreePerCell;
         const west = lngIndex * lngDegreePerCell;
 
-        console.log("Rectangle bounds:", { north, south, east, west });
-
         // Create rectangle
         selectedRectangleRef.current = new google.maps.Rectangle({
           bounds: {
@@ -85,10 +79,8 @@ export function useGridDrawing() {
           fillColor: "#FF5722",
           fillOpacity: 0.35,
           map: mapInstance,
-          zIndex: 100, // Ensure it's above the grid lines
+          zIndex: 100,
         });
-
-        console.log("Rectangle created successfully");
       } catch (error) {
         console.error("Error drawing rectangle:", error);
       }

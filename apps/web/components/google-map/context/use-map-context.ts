@@ -38,11 +38,8 @@ export const useMapContextState = (): MapContextType => {
   }, [geoLocation, geoLocationLoaded]);
 
   // Get encoded coordinates using the hook
-  const {
-    encodedCoordinates,
-    isEncoding,
-    encodeSelectedAreaCoordinates,
-  } = useMapCoordinates(selectedArea);
+  const { encodedCoordinates, isEncoding, encodeSelectedAreaCoordinates } =
+    useMapCoordinates(selectedArea);
 
   // Get grid system functions using the hook
   const {
@@ -99,7 +96,6 @@ export const useMapContextState = (): MapContextType => {
   // Map unmount handler
   const onUnmount = useCallback(
     (mapInstance: google.maps.Map) => {
-      console.log("Map unmounting");
       clearAllGridLines();
       removeMapEventHandlers(mapInstance);
       setMap(null);
@@ -110,7 +106,6 @@ export const useMapContextState = (): MapContextType => {
   // Map click handler
   const onMapClick = useCallback(
     (e: google.maps.MapMouseEvent) => {
-      console.log("Map click in component:", e.latLng?.toString());
       handleGridCellClick(e);
     },
     [handleGridCellClick]

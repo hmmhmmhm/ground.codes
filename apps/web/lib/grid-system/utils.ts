@@ -14,7 +14,6 @@ export function calculateGridCellSize(
   const lngDegreePerCell =
     precisionMeters / (DEG_PER_METER * Math.cos((latitude * Math.PI) / 180));
 
-  console.log("Grid cell size:", { latDegreePerCell, lngDegreePerCell });
   return { latDegreePerCell, lngDegreePerCell };
 }
 
@@ -36,13 +35,6 @@ export function getGridCellCenter(
   // Calculate the center of the grid cell
   const centerLatCoord = latIndex * latDegreePerCell + latDegreePerCell / 2;
   const centerLngCoord = lngIndex * lngDegreePerCell + lngDegreePerCell / 2;
-
-  console.log("Grid cell center calculation:", {
-    input: { lat, lng, centerLat },
-    cellSizes: { latDegreePerCell, lngDegreePerCell },
-    indices: { latIndex, lngIndex },
-    result: { lat: centerLatCoord, lng: centerLngCoord },
-  });
 
   return { lat: centerLatCoord, lng: centerLngCoord };
 }

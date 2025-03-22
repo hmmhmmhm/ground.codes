@@ -10,7 +10,6 @@ export function useGridVisibility() {
   // Check if grid should be visible at current zoom level
   const isGridVisibleAtZoom = useCallback((zoom: number | undefined) => {
     const isVisible = zoom !== undefined && zoom >= 16;
-    console.log("Grid visibility check:", { zoom, isVisible });
     return isVisible;
   }, []);
 

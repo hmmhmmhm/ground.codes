@@ -70,8 +70,6 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
       setError(null);
 
       try {
-        console.log("Fetching place details for:", placeId);
-
         // Create a PlacesService instance
         const service = new google.maps.places.PlacesService(map);
 
@@ -98,10 +96,8 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               status === google.maps.places.PlacesServiceStatus.OK &&
               result
             ) {
-              console.log("Place details received:", result);
               setPlaceDetails(result);
             } else {
-              console.error("Failed to fetch place details:", status);
               setError(t("common.error.placeDetails"));
             }
             setIsLoading(false);
@@ -217,14 +213,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
   // 영업 중인지 확인하는 함수
   const isOpenNow = () => {
     try {
-      console.log("Opening hours data:", placeDetails?.opening_hours);
-
-      // periods 데이터를 사용한 방법
       if (placeDetails?.opening_hours?.periods) {
-        console.log(
-          "Checking periods data:",
-          placeDetails.opening_hours.periods
-        );
         const now = new Date();
         const day = now.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
         const hours = now.getHours();
@@ -236,15 +225,12 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
           (period: any) => period.open && period.open.day === day
         );
 
-        console.log("Today's periods:", todayPeriods);
-
         // 24시간 영업 확인 (periods 길이가 1이고 close가 없는 경우)
         if (
           placeDetails.opening_hours.periods.length === 1 &&
           placeDetails.opening_hours.periods[0].open &&
           !placeDetails.opening_hours.periods[0].close
         ) {
-          console.log("24-hour operation detected from periods data");
           return true;
         }
 
@@ -260,23 +246,15 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
             parseInt(period.close.time.substring(0, 2)) * 60 +
             parseInt(period.close.time.substring(2, 4));
 
-          console.log(
-            `Period: open=${openTime}min, close=${closeTime}min, current=${currentTime}min`
-          );
-
           // 일반적인 경우 (오픈 시간이 마감 시간보다 이른 경우)
           if (openTime < closeTime) {
             if (currentTime >= openTime && currentTime < closeTime) {
-              console.log("Open: current time is within business hours");
               return true;
             }
           }
           // 자정을 넘어가는 경우 (예: 오후 10시 - 오전 2시)
           else {
             if (currentTime >= openTime || currentTime < closeTime) {
-              console.log(
-                "Open: current time is within overnight business hours"
-              );
               return true;
             }
           }
@@ -285,11 +263,6 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
 
       // 3. weekday_text를 파싱하는 방법 (periods가 없는 경우 대체 방법)
       if (placeDetails?.opening_hours?.weekday_text) {
-        console.log(
-          "Checking weekday_text:",
-          placeDetails.opening_hours.weekday_text
-        );
-
         // 현재 시간과 요일 확인
         const now = new Date();
         const currentDay = now.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
@@ -298,7 +271,6 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
 
         // 현재 요일에 해당하는 텍스트 찾기
         const dayText = placeDetails.opening_hours.weekday_text[currentDay];
-        console.log("Current day text:", dayText);
 
         if (dayText) {
           // 24시간 영업인 경우
@@ -307,7 +279,6 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
             dayText.includes("24시간") ||
             dayText.toLowerCase().includes("open 24 hours")
           ) {
-            console.log("24-hour operation detected from text");
             return true;
           }
 
@@ -317,7 +288,6 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
             dayText.includes("휴무") ||
             dayText.includes("休息")
           ) {
-            console.log("Closed day detected from text");
             return false;
           }
 
@@ -337,8 +307,6 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
             const match = dayText.match(pattern);
             if (!match) continue;
 
-            console.log("Time pattern matched:", match);
-
             let openHour24, openMinute, closeHour24, closeMinute;
 
             // 패턴에 따라 다르게 처리
@@ -347,10 +315,10 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               const [
                 _,
                 openHour,
-                openMinute,
+                _openMinute,
                 openAmPm,
                 closeHour,
-                closeMinute,
+                _closeMinute,
                 closeAmPm,
               ] = match;
 
@@ -401,25 +369,15 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               closeHour24 * 60 +
               (typeof closeMinute === "string" ? parseInt(closeMinute) : 0);
 
-            console.log(
-              `Parsed times: open=${openTime}min, close=${closeTime}min, current=${currentTime}min`
-            );
-
             // 일반적인 경우 (오픈 시간이 마감 시간보다 이른 경우)
             if (openTime < closeTime) {
               if (currentTime >= openTime && currentTime < closeTime) {
-                console.log(
-                  "Open: current time is within business hours (text parsing)"
-                );
                 return true;
               }
             }
             // 자정을 넘어가는 경우 (예: 오후 10시 - 오전 2시)
             else {
               if (currentTime >= openTime || currentTime < closeTime) {
-                console.log(
-                  "Open: current time is within overnight business hours (text parsing)"
-                );
                 return true;
               }
             }
@@ -431,9 +389,6 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
       }
 
       // 기본값으로 false 반환
-      console.log(
-        "No valid opening hours information found, defaulting to closed"
-      );
       return false;
     } catch (error) {
       console.error("Error checking if place is open:", error);
