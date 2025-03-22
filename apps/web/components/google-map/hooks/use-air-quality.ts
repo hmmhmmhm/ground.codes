@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { Coordinates } from "../types";
-import type { WeatherData } from "@/app/api/weather/route";
-import type { AirQualityData } from "@/app/api/air-quality/route";
+import type { 
+  WeatherData, 
+  AirQualityData,
+  CombinedWeatherData
+} from "@/app/api/weather-data/route";
 
 // Simple debounce function implementation
 const useDebounce = <T>(value: T, delay: number): T => {
@@ -54,7 +57,7 @@ export const useAirQuality = (
     return "🌡️"; // Default
   }, []);
 
-  // Fetch air quality and weather data when coordinates change
+  // Fetch combined weather and air quality data when coordinates change
   useEffect(() => {
     const fetchData = async () => {
       if (!debouncedCoordinates) return;
@@ -63,62 +66,34 @@ export const useAirQuality = (
       setError(null);
 
       try {
-        // Fetch both air quality and weather data using API endpoints
-        const [airQualityData, weatherDataResult] = await Promise.allSettled([
-          fetch("/api/air-quality", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(debouncedCoordinates),
-          }).then((res) => {
-            if (!res.ok)
-              throw new Error(`Air quality API error: ${res.status}`);
-            return res.json();
-          }),
-          fetch("/api/weather", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(debouncedCoordinates),
-          }).then((res) => {
-            if (!res.ok) throw new Error(`Weather API error: ${res.status}`);
-            return res.json();
-          }),
-        ]);
+        // Fetch both air quality and weather data using the combined API endpoint
+        const response = await fetch("/api/weather-data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(debouncedCoordinates),
+        });
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const data: CombinedWeatherData = await response.json();
 
         // Handle air quality data
-        if (airQualityData.status === "fulfilled" && airQualityData.value) {
-          setAirQuality(airQualityData.value);
-        } else if (airQualityData.status === "rejected") {
-          console.error(
-            "Air quality data fetch failed:",
-            airQualityData.reason
-          );
-          setError("Failed to fetch air quality data");
+        if (data.airQuality) {
+          setAirQuality(data.airQuality);
         }
 
         // Handle weather data
-        if (
-          weatherDataResult.status === "fulfilled" &&
-          weatherDataResult.value
-        ) {
-          setWeatherData(weatherDataResult.value);
-        } else if (weatherDataResult.status === "rejected") {
-          console.error("Weather data fetch failed:", weatherDataResult.reason);
-          // Don't set error for weather failure if air quality succeeded
-          if (airQualityData.status !== "fulfilled") {
-            setError("Failed to fetch weather data");
-          }
+        if (data.weather) {
+          setWeatherData(data.weather);
         }
 
-        // If both failed, set a general error
-        if (
-          airQualityData.status !== "fulfilled" &&
-          weatherDataResult.status !== "fulfilled"
-        ) {
-          setError("Failed to fetch weather and air quality data");
+        // Handle error if both failed
+        if (!data.airQuality && !data.weather) {
+          setError(data.error || "Failed to fetch weather and air quality data");
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to fetch data");
