@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "edge";
-export const timeout = 8000;
+export const maxDuration = 8000;
 
 export interface AirQualityData {
   dateTime: string;
