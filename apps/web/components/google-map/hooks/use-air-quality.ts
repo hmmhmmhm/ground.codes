@@ -1,10 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Coordinates } from "../types";
-import { fetchWeatherData, WeatherData } from "@/app/api/weather/actions";
-import {
-  fetchAirQualityData,
-  AirQualityData,
-} from "@/app/api/air-quality/actions";
+import type { WeatherData } from "@/app/api/weather/route";
+import type { AirQualityData } from "@/app/api/air-quality/route";
 
 // Simple debounce function implementation
 const useDebounce = <T>(value: T, delay: number): T => {
@@ -66,10 +63,29 @@ export const useAirQuality = (
       setError(null);
 
       try {
-        // Fetch both air quality and weather data using server actions
+        // Fetch both air quality and weather data using API endpoints
         const [airQualityData, weatherDataResult] = await Promise.allSettled([
-          fetchAirQualityData(debouncedCoordinates),
-          fetchWeatherData(debouncedCoordinates),
+          fetch("/api/air-quality", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(debouncedCoordinates),
+          }).then((res) => {
+            if (!res.ok)
+              throw new Error(`Air quality API error: ${res.status}`);
+            return res.json();
+          }),
+          fetch("/api/weather", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(debouncedCoordinates),
+          }).then((res) => {
+            if (!res.ok) throw new Error(`Weather API error: ${res.status}`);
+            return res.json();
+          }),
         ]);
 
         // Handle air quality data

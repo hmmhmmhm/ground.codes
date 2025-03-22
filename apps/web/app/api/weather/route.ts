@@ -1,6 +1,4 @@
-"use server";
-
-import { Coordinates } from "@/components/google-map/types";
+import { NextRequest, NextResponse } from "next/server";
 
 export interface WeatherData {
   main: {
@@ -25,21 +23,30 @@ export interface WeatherData {
 }
 
 /**
- * Server action to fetch weather data from OpenWeatherMap API
+ * API route to fetch weather data from OpenWeatherMap API
  * This keeps the API key secure on the server side
  */
-export async function fetchWeatherData(
-  coordinates: Coordinates
-): Promise<WeatherData | null> {
+export async function POST(request: NextRequest) {
   try {
-    const { lat, lng } = coordinates;
+    const body = await request.json();
+    const { lat, lng } = body;
+
+    if (!lat || !lng) {
+      return NextResponse.json(
+        { error: "Latitude and longitude are required" },
+        { status: 400 }
+      );
+    }
 
     // Access API key securely from server environment
     const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
 
     if (!apiKey) {
       console.error("OpenWeatherMap API key is missing");
-      return null;
+      return NextResponse.json(
+        { error: "API configuration error" },
+        { status: 500 }
+      );
     }
 
     const response = await fetch(
@@ -48,12 +55,19 @@ export async function fetchWeatherData(
     );
 
     if (!response.ok) {
-      throw new Error(`Weather API error: ${response.status}`);
+      return NextResponse.json(
+        { error: `Weather API error: ${response.status}` },
+        { status: response.status }
+      );
     }
 
-    return await response.json();
+    const data = await response.json();
+    return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching weather data:", error);
-    return null;
+    return NextResponse.json(
+      { error: "Failed to fetch weather data" },
+      { status: 500 }
+    );
   }
 }

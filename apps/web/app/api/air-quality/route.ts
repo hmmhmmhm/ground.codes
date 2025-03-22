@@ -1,6 +1,4 @@
-"use server";
-
-import { Coordinates } from "@/components/google-map/types";
+import { NextRequest, NextResponse } from "next/server";
 
 export interface AirQualityData {
   dateTime: string;
@@ -33,21 +31,30 @@ export interface AirQualityData {
 }
 
 /**
- * Server action to fetch air quality data from Google Maps Air Quality API
+ * API route to fetch air quality data from Google Maps Air Quality API
  * This keeps the API key secure on the server side
  */
-export async function fetchAirQualityData(
-  coordinates: Coordinates
-): Promise<AirQualityData | null> {
+export async function POST(request: NextRequest) {
   try {
-    const { lat, lng } = coordinates;
+    const body = await request.json();
+    const { lat, lng } = body;
+
+    if (!lat || !lng) {
+      return NextResponse.json(
+        { error: "Latitude and longitude are required" },
+        { status: 400 }
+      );
+    }
 
     // Access API key securely from server environment
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_NODEJS_API_KEY;
 
     if (!apiKey) {
       console.error("Google Maps API key is missing");
-      return null;
+      return NextResponse.json(
+        { error: "API configuration error" },
+        { status: 500 }
+      );
     }
 
     const response = await fetch(
@@ -73,12 +80,19 @@ export async function fetchAirQualityData(
     );
 
     if (!response.ok) {
-      throw new Error(`Air Quality API error: ${response.status}`);
+      return NextResponse.json(
+        { error: `Air Quality API error: ${response.status}` },
+        { status: response.status }
+      );
     }
 
-    return await response.json();
+    const data = await response.json();
+    return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching air quality data:", error);
-    return null;
+    return NextResponse.json(
+      { error: "Failed to fetch air quality data" },
+      { status: 500 }
+    );
   }
 }
