@@ -1,11 +1,16 @@
+/**
+ * Encodes a set of coordinates into a ground code.
+ */
 export const encode = async ({
   lat,
   lng,
   language = "english",
+  precisionMeters = 3,
 }: {
   lat: number;
   lng: number;
-  language: string;
+  language?: string;
+  precisionMeters?: number;
 }) => {
   const response = await fetch("https://api.ground.codes/encode", {
     method: "POST",
@@ -17,7 +22,7 @@ export const encode = async ({
       lng,
       regionLevel: 2,
       language,
-      precisionMeters: 3,
+      precisionMeters,
     }),
   });
 

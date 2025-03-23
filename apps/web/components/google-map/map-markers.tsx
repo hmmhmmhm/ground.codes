@@ -48,8 +48,8 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
 
   // Close info window when coordinates change (to prevent stale data)
   useEffect(() => {
-    // 좌표가 변경되면 InfoWindow를 표시합니다
-    // 단, POI가 선택된 상태에서는 표시하지 않습니다
+    // When coordinates change, display InfoWindow
+    // Do not display if a POI is selected
     setShowInfoWindow(true);
   }, [encodedCoordinates, setShowInfoWindow]);
 
@@ -61,20 +61,20 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
   const hasHeading =
     userLocation?.heading !== undefined && userLocation?.heading !== null;
 
-  // 방향 마커 관련 상태 관리
+  // Direction marker related state management
   const [lastHeading, setLastHeading] = useState<number | null>(null);
 
-  // 방향 정보가 변경될 때 마지막 유효한 방향 정보 저장
+  // When heading information changes, store the last valid heading
   useEffect(() => {
     if (userLocation?.heading !== undefined && userLocation?.heading !== null) {
       setLastHeading(userLocation.heading);
     }
   }, [userLocation?.heading]);
 
-  // 실제 사용할 방향 정보 (현재 방향 또는 마지막 유효한 방향)
+  // Actual heading to use (current heading or last valid heading)
   const effectiveHeading = hasHeading ? userLocation?.heading : lastHeading;
 
-  // 트래킹 모드에서만 방향 마커 표시
+  // Display direction marker only in tracking mode
   const showDirectionMarker =
     isTrackingMode &&
     effectiveHeading !== null &&

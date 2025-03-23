@@ -1,14 +1,14 @@
 /**
- * 위치 모드 열거형
+ * Location mode enum
  */
 export enum LocationMode {
-  OFF = 'OFF',
-  LOCATE = 'LOCATE',
-  TRACKING = 'TRACKING',
+  OFF = "OFF",
+  LOCATE = "LOCATE",
+  TRACKING = "TRACKING",
 }
 
 /**
- * 좌표 인터페이스
+ * Coordinate interface
  */
 export interface Coordinates {
   lat: number;
@@ -18,7 +18,7 @@ export interface Coordinates {
 }
 
 /**
- * 마커 인터페이스
+ * Marker interface
  */
 export interface Marker {
   id: string;

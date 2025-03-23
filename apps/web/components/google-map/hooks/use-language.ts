@@ -1,24 +1,24 @@
 import { useCallback } from "react";
-import { Locale, defaultLocale, locales } from "@/i18n";
+import { Locale, locales } from "@/i18n";
 
-// 로케일인지 확인하는 함수
+// Check if a value is a valid locale
 const isValidLocale = (value: string | undefined): value is Locale => {
   if (!value) return false;
   return (locales as readonly string[]).includes(value);
 };
 
-// 안전하게 브라우저 언어 가져오기
+// Safely get browser language
 const getSafeBrowserLanguage = (): string => {
   try {
-    // 전역 객체 확인
+    // Check global object
     if (typeof window === "undefined") return "";
     if (!window.navigator) return "";
 
-    // navigator.language 속성 확인
+    // Check navigator.language property
     const navLang = window.navigator.language;
     if (typeof navLang !== "string" || !navLang) return "";
 
-    // 언어 코드 추출
+    // Extract language code
     const langParts = navLang.split("-");
     if (!langParts || langParts.length === 0) return "";
 
@@ -32,10 +32,10 @@ const getSafeBrowserLanguage = (): string => {
 export const useLanguage = () => {
   const getUserLanguage = useCallback(() => {
     try {
-      // 서버 사이드 렌더링 확인
+      // Check server-side rendering
       if (typeof window === "undefined") return "en";
 
-      // 쿠키에서 로케일 확인
+      // Check cookie for locale
       const cookieLocaleMatch = document.cookie
         .split("; ")
         .find((row) => row.startsWith("NEXT_LOCALE="));
@@ -44,28 +44,28 @@ export const useLanguage = () => {
         ? cookieLocaleMatch.split("=")[1]
         : undefined;
 
-      // 쿠키에 유효한 로케일이 있으면 사용
+      // Use valid locale from cookie
       if (cookieLocale && cookieLocale.trim() !== "") {
-        // 중국어 로케일을 구글 맵 API 형식으로 변환
+        // Convert Chinese locale to Google Maps API format
         if (cookieLocale === "cn") {
           return "zh-CN";
         }
         return cookieLocale;
       }
 
-      // 브라우저 언어 확인
+      // Check browser language
       const langCode = getSafeBrowserLanguage();
 
-      // 다른 지원 언어 확인
+      // Check other supported languages
       if (langCode && isValidLocale(langCode)) {
-        // 중국어 로케일을 구글 맵 API 형식으로 변환
+        // Convert Chinese locale to Google Maps API format
         if (langCode === "cn") {
           return "zh-CN";
         }
         return langCode;
       }
 
-      // 기본값으로 영어 사용
+      // Default to English
       return "en";
     } catch (error) {
       console.error("Error in getUserLanguage:", error);

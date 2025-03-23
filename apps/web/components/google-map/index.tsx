@@ -44,7 +44,7 @@ function GoogleMapComponent() {
     setShowInfoWindow,
   } = useMapContainer();
 
-  // 언어 변경 중에는 맵 컴포넌트를 렌더링하지 않음
+  // Language change in progress, do not render map component
   if (isChangingLanguage) {
     return <div className="relative w-full h-full bg-gray-200"></div>;
   }

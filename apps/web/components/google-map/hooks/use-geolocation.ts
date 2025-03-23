@@ -13,7 +13,7 @@ interface UseGeolocationOptions {
   timeout?: number;
   maximumAge?: number;
   autoGetLocation?: boolean;
-  initialFetch?: boolean; // 최초 위치 정보 가져오기 여부
+  initialFetch?: boolean;
 }
 
 interface UseGeolocationReturn {
@@ -31,7 +31,7 @@ export const useGeolocation = (
   setCenter?: (location: Location) => void,
   setSelectedArea?: (location: Location) => void,
   options: UseGeolocationOptions = {},
-  isTrackingMode: boolean = false, // Add isTrackingMode parameter with default false
+  isTrackingMode: boolean = false,
   onPositionUpdate?: (location: Location) => void
 ): UseGeolocationReturn => {
   const {
@@ -39,7 +39,7 @@ export const useGeolocation = (
     timeout = 5000,
     maximumAge = 0,
     autoGetLocation = true,
-    initialFetch = false, // 기본값은 false
+    initialFetch = false,
   } = options;
 
   const [userLocation, setUserLocation] = useState<Location | null>(null);
@@ -62,15 +62,15 @@ export const useGeolocation = (
 
   // Update user location when heading changes from device orientation
   useEffect(() => {
-    // 방향 정보가 있고 추적 모드일 때만 방향 업데이트
+    // Update user location when heading changes from device orientation
     if (userLocation && heading !== null && isTrackingMode) {
-      // 이전 방향과 현재 방향이 같으면 업데이트 건너뛰기
+      // Skip update if previous heading is the same as current heading
       const prevHeading = prevHeadingRef.current;
       if (prevHeading === heading) {
         return;
       }
 
-      // 방향 변화가 충분히 큰 경우에만 업데이트 (작은 변화는 무시)
+      // Update only if the heading difference is significant (small changes are ignored)
       if (prevHeading !== null) {
         const angleDiff = Math.abs(heading - prevHeading);
         const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff;
@@ -79,11 +79,11 @@ export const useGeolocation = (
         }
       }
 
-      // 방향 업데이트 플래그 설정
+      // Set heading update flag
       isHeadingUpdateRef.current = true;
       prevHeadingRef.current = heading;
 
-      // 렌더링 사이클 분리를 위해 requestAnimationFrame 사용
+      // Use requestAnimationFrame to avoid render cycles
       requestAnimationFrame(() => {
         setUserLocation((prev) => {
           if (!prev) return null;
@@ -113,7 +113,7 @@ export const useGeolocation = (
       // Update loading ref directly instead of state
       isLoadingRef.current = true;
 
-      // 이전 위치 정보 유지 (방향 정보 포함)
+      // Maintain previous location info (include heading)
       const prevLocation = userLocation;
 
       const watchId = navigator.geolocation.watchPosition(
@@ -121,10 +121,10 @@ export const useGeolocation = (
           // Update loading ref directly
           isLoadingRef.current = false;
 
-          // 새 위치 정보 생성 (이전 방향 정보 유지)
+          // Create new location info (maintain previous heading)
           const newLocation = updateUserLocation(position);
 
-          // 방향 정보 업데이트 플래그 설정
+          // Set heading update flag
           if (
             position.coords.heading !== null &&
             position.coords.heading !== undefined
@@ -132,7 +132,7 @@ export const useGeolocation = (
             isHeadingUpdateRef.current = true;
           }
 
-          // 위치 정보 업데이트
+          // Update location
           setUserLocation(newLocation);
         },
         (error) => {
@@ -151,15 +151,15 @@ export const useGeolocation = (
     }
   }, [cancelGeolocationRequest, userLocation]);
 
-  // 위치 정보 업데이트 함수
+  // Update location function
   const updateUserLocation = useCallback(
     (position: GeolocationPosition) => {
-      // 새 위치 정보 생성
+      // Create new location info
       const newLocation = {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
         accuracy: position.coords.accuracy,
-        // 방향 정보 처리 (새 방향 정보가 있으면 업데이트, 없으면 이전 방향 정보 유지)
+        // Heading processing (update if new heading exists, otherwise maintain previous heading)
         heading:
           position.coords.heading !== null &&
           position.coords.heading !== undefined
@@ -167,7 +167,7 @@ export const useGeolocation = (
             : userLocation?.heading || null,
       };
 
-      // 위치 정보 업데이트
+      // Update location
       setUserLocation(newLocation);
       return newLocation;
     },

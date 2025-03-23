@@ -5,11 +5,11 @@ import { useI18n } from "@/lib/i18n/i18n-context";
 import { LocationMode } from "./types";
 import Compass from "./compass";
 
-// 위치 모드 상태를 정의하는 열거형 (use-map-container.ts와 동일하게 유지)
+// Define location mode enum (same as use-map-container.ts)
 // enum LocationMode {
-//   OFF = 0,        // 꺼짐
-//   LOCATE = 1,     // 내 위치 보기
-//   TRACKING = 2,   // 위치 추적
+//   OFF = 0,        // Off
+//   LOCATE = 1,     // My Location
+//   TRACKING = 2,   // Tracking
 // }
 
 interface MapControlsProps {
@@ -51,7 +51,7 @@ const MapControls: React.FC<MapControlsProps> = ({
     setShowLanguageOptions(false);
   };
 
-  // 위치 모드에 따른 버튼 배경색 결정
+  // Get location button style based on location mode
   const getLocationButtonStyle = () => {
     if (locationMode === LocationMode.TRACKING) {
       return { backgroundColor: "rgba(66, 133, 244, 0.7)" };
@@ -62,7 +62,7 @@ const MapControls: React.FC<MapControlsProps> = ({
     }
   };
 
-  // 위치 모드에 따른 툴팁 텍스트 결정
+  // Get location button tooltip text based on location mode
   const getLocationButtonTitle = () => {
     if (locationMode === LocationMode.TRACKING) {
       return t("map.controls.stopTracking");

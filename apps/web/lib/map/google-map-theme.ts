@@ -1,3 +1,6 @@
+/**
+ * A dark theme for Google Maps.
+ */
 export const googleMapDarkTheme = [
   {
     elementType: "geometry",

@@ -12,16 +12,16 @@ export const useMapCoordinates = (selectedArea: Coordinates | null) => {
   const [encodedCoordinates, setEncodedCoordinates] = useState<string>("");
   const [isEncoding, setIsEncoding] = useState(false);
 
-  // locale을 클로저로 캡처하지 않고 함수 내부에서 참조하도록 수정
+  // Locale to be captured in a closure
   const encodeSelectedAreaCoordinates = useCallback(async () => {
     if (!selectedArea) return;
 
     try {
       setIsEncoding(true);
-      // 함수 내부에서 직접 locale 참조
+      // Locale to be captured in a closure
       const currentLocale = locale;
       // Map locale to language for the API
-      let language = "english"; // 기본값
+      let language = "english"; // Default value
       if (currentLocale === "ko") {
         language = "korean";
       } else if (currentLocale === "cn") {
@@ -36,11 +36,11 @@ export const useMapCoordinates = (selectedArea: Coordinates | null) => {
       setEncodedCoordinates(encoded);
     } catch (error) {
       console.error(`Error encoding coordinates (${locale}):`, error);
-      setEncodedCoordinates("인코딩 오류");
+      setEncodedCoordinates("Encoding error");
     } finally {
       setIsEncoding(false);
     }
-  }, [selectedArea]); // locale 의존성 제거
+  }, [selectedArea]); // Locale dependency removed
 
   return {
     encodedCoordinates,

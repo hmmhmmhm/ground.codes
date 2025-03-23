@@ -21,11 +21,11 @@ const Compass: React.FC<CompassProps> = ({
   const compassRef = useRef<HTMLButtonElement>(null);
   const startAngleRef = useRef<number>(0);
   const startHeadingRef = useRef<number>(0);
-  const hasDraggedRef = useRef<boolean>(false); // 드래그가 실제로 발생했는지 추적
-  const startPosRef = useRef<{ x: number; y: number } | null>(null); // 드래그 시작 위치
-  const lastDragTimeRef = useRef<number>(0); // 마지막 드래그 시간을 저장
+  const hasDraggedRef = useRef<boolean>(false); // Whether a drag actually occurred
+  const startPosRef = useRef<{ x: number; y: number } | null>(null); // Drag start position
+  const lastDragTimeRef = useRef<number>(0); // Last drag time
 
-  // 마우스 위치 계산 함수
+  // Calculate mouse position
   const calculateAngle = useCallback(
     (centerX: number, centerY: number, pointX: number, pointY: number) => {
       return Math.atan2(pointY - centerY, pointX - centerX) * (180 / Math.PI);
@@ -33,20 +33,20 @@ const Compass: React.FC<CompassProps> = ({
     []
   );
 
-  // 드래그 중 마우스 이동 처리
+  // Handle mouse movement during drag
   const handleMouseMove = useCallback(
     (e: MouseEvent) => {
       if (!compassRef.current || !setMapHeading) return;
 
-      // 드래그 시작 위치와 현재 위치의 차이를 계산하여 실제 드래그 여부 판단
+      // Calculate the difference between the start position and current position
       if (startPosRef.current) {
         const dx = Math.abs(e.clientX - startPosRef.current.x);
         const dy = Math.abs(e.clientY - startPosRef.current.y);
 
-        // 일정 거리 이상 움직였을 때만 드래그로 간주
+        // Consider it a drag only if the mouse moved more than 3 pixels
         if (dx > 3 || dy > 3) {
           hasDraggedRef.current = true;
-          lastDragTimeRef.current = Date.now(); // 마지막 드래그 시간 업데이트
+          lastDragTimeRef.current = Date.now(); // Update last drag time
         }
       }
 
@@ -61,14 +61,14 @@ const Compass: React.FC<CompassProps> = ({
         e.clientY
       );
 
-      // 시작 각도와 현재 각도의 차이 계산
+      // Calculate the difference between the start angle and current angle
       let angleDiff = currentAngle - startAngleRef.current;
 
-      // 각도 차이가 180도를 넘어가면 반대 방향으로 계산 (최단 경로 회전)
+      // If the angle difference exceeds 180 degrees, calculate the opposite direction (shortest path rotation)
       if (angleDiff > 180) angleDiff -= 360;
       if (angleDiff < -180) angleDiff += 360;
 
-      // 회전 각도 계산 (시계 방향으로 회전하면 각도가 감소)
+      // Calculate rotation angle (clockwise rotation decreases angle)
       let newHeading = (startHeadingRef.current - angleDiff) % 360;
       if (newHeading < 0) newHeading += 360;
       setMapHeading(newHeading);
@@ -76,20 +76,20 @@ const Compass: React.FC<CompassProps> = ({
     [calculateAngle, setMapHeading]
   );
 
-  // 터치 이동 처리
+  // Handle touch movement
   const handleTouchMove = useCallback(
     (e: TouchEvent) => {
       if (!compassRef.current || !setMapHeading || !e.touches[0]) return;
 
-      // 드래그 시작 위치와 현재 위치의 차이를 계산하여 실제 드래그 여부 판단
+      // Calculate the difference between the start position and current position
       if (startPosRef.current) {
         const dx = Math.abs(e.touches[0].clientX - startPosRef.current.x);
         const dy = Math.abs(e.touches[0].clientY - startPosRef.current.y);
 
-        // 일정 거리 이상 움직였을 때만 드래그로 간주
+        // Consider it a drag only if the touch moved more than 3 pixels
         if (dx > 3 || dy > 3) {
           hasDraggedRef.current = true;
-          lastDragTimeRef.current = Date.now(); // 마지막 드래그 시간 업데이트
+          lastDragTimeRef.current = Date.now(); // Update last drag time
         }
       }
 
@@ -104,38 +104,38 @@ const Compass: React.FC<CompassProps> = ({
         e.touches[0].clientY
       );
 
-      // 시작 각도와 현재 각도의 차이 계산
+      // Calculate the difference between the start angle and current angle
       let angleDiff = currentAngle - startAngleRef.current;
 
-      // 각도 차이가 180도를 넘어가면 반대 방향으로 계산 (최단 경로 회전)
+      // If the angle difference exceeds 180 degrees, calculate the opposite direction (shortest path rotation)
       if (angleDiff > 180) angleDiff -= 360;
       if (angleDiff < -180) angleDiff += 360;
 
-      // 회전 각도 계산 (시계 방향으로 회전하면 각도가 감소)
+      // Calculate rotation angle (clockwise rotation decreases angle)
       let newHeading = (startHeadingRef.current - angleDiff) % 360;
       if (newHeading < 0) newHeading += 360;
       setMapHeading(newHeading);
 
-      // 기본 동작 방지
+      // Prevent default action
       e.preventDefault();
     },
     [calculateAngle, setMapHeading]
   );
 
-  // 드래그 종료 처리
+  // Handle drag end
   const handleDragEnd = useCallback((e: MouseEvent | TouchEvent) => {
     setIsDragging(false);
 
-    // 드래그 상태 초기화 (다음 상호작용을 위해)
+    // Reset drag state (for next interaction)
     const wasDragging = hasDraggedRef.current;
     hasDraggedRef.current = false;
     startPosRef.current = null;
 
-    // 드래그가 발생했다면 클릭 이벤트 방지를 위해 마지막 드래그 시간 기록
+    // If a drag occurred, prevent click event
     if (wasDragging) {
       lastDragTimeRef.current = Date.now();
 
-      // 드래그 후 컴포넌트 내에서 마우스를 떼었을 때 클릭 이벤트가 발생하지 않도록 함
+      // Prevent click event after drag
       if (e instanceof MouseEvent) {
         e.preventDefault();
         e.stopPropagation();
@@ -143,7 +143,7 @@ const Compass: React.FC<CompassProps> = ({
     }
   }, []);
 
-  // 이벤트 리스너 등록 및 제거
+  // Event listener registration and cleanup
   useEffect(() => {
     if (isDragging) {
       document.addEventListener("mousemove", handleMouseMove);
@@ -167,16 +167,16 @@ const Compass: React.FC<CompassProps> = ({
     };
   }, [isDragging, handleMouseMove, handleTouchMove, handleDragEnd]);
 
-  // 마우스 드래그 시작
+  // Handle mouse drag start
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       if (!compassRef.current || !setMapHeading) return;
 
-      // 기본 동작 및 버블링 방지
+      // Prevent default action and event bubbling
       e.preventDefault();
       e.stopPropagation();
 
-      // 드래그 시작 위치 저장
+      // Store drag start position
       startPosRef.current = { x: e.clientX, y: e.clientY };
       hasDraggedRef.current = false;
 
@@ -196,16 +196,16 @@ const Compass: React.FC<CompassProps> = ({
     [calculateAngle, mapHeading, setMapHeading]
   );
 
-  // 터치 드래그 시작
+  // Handle touch drag start
   const handleTouchStart = useCallback(
     (e: React.TouchEvent<HTMLButtonElement>) => {
       if (!compassRef.current || !setMapHeading || !e.touches[0]) return;
 
-      // 기본 동작 및 버블링 방지
+      // Prevent default action and event bubbling
       e.preventDefault();
       e.stopPropagation();
 
-      // 드래그 시작 위치 저장
+      // Store drag start position
       startPosRef.current = {
         x: e.touches[0].clientX,
         y: e.touches[0].clientY,
@@ -228,20 +228,20 @@ const Compass: React.FC<CompassProps> = ({
     [calculateAngle, mapHeading, setMapHeading]
   );
 
-  // 클릭 처리 (드래그가 아닌 경우에만 리셋)
+  // Handle click (reset only if no drag occurred recently)
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      // 최근에 드래그가 있었는지 확인 (300ms 이내)
+      // Check if a drag occurred recently (300ms within)
       const timeSinceLastDrag = Date.now() - lastDragTimeRef.current;
 
-      // 드래그가 발생했거나 최근에 드래그가 끝난 경우 클릭 이벤트 무시
+      // If a drag occurred or recently ended, ignore click event
       if (hasDraggedRef.current || timeSinceLastDrag < 300) {
         e.preventDefault();
         e.stopPropagation();
         return;
       }
 
-      // 드래그가 발생하지 않은 순수한 클릭인 경우에만 리셋 함수 호출
+      // If no drag occurred recently, reset heading
       resetMapHeading();
     },
     [resetMapHeading]
@@ -254,7 +254,7 @@ const Compass: React.FC<CompassProps> = ({
       onMouseDown={handleMouseDown}
       onTouchStart={handleTouchStart}
       className={`${className} ${isDragging ? "cursor-grabbing" : "cursor-grab"} bg-black/50 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] flex justify-center items-center z-10 overflow-hidden`}
-      title={isDragging ? "드래그하여 지도 회전" : title}
+      title={isDragging ? "Drag to rotate map" : title}
       aria-label={ariaLabel}
       style={{
         transform: `rotate(-${mapHeading}deg)`,
@@ -270,7 +270,7 @@ const Compass: React.FC<CompassProps> = ({
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        {/* 나침반 외부 원 */}
+        {/* Compass outer circle */}
         <circle
           cx="12"
           cy="12"
@@ -280,8 +280,8 @@ const Compass: React.FC<CompassProps> = ({
           strokeWidth="1"
         />
 
-        {/* 눈금 표시 - 정적으로 구현 */}
-        {/* 12시 방향 (북) */}
+        {/* Compass ticks - statically implemented */}
+        {/* 12 o'clock (north) */}
         <line
           x1="12"
           y1="1"
@@ -290,7 +290,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="1"
         />
-        {/* 1시 방향 */}
+        {/* 1 o'clock (east) */}
         <line
           x1="15.5"
           y1="2.2"
@@ -299,7 +299,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="0.5"
         />
-        {/* 2시 방향 */}
+        {/* 2 o'clock (east) */}
         <line
           x1="18.5"
           y1="4.5"
@@ -308,7 +308,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="1"
         />
-        {/* 3시 방향 (동) */}
+        {/* 3 o'clock (east) */}
         <line
           x1="20.8"
           y1="7.5"
@@ -325,7 +325,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="1"
         />
-        {/* 5시 방향 */}
+        {/* 5 o'clock (west) */}
         <line
           x1="20.8"
           y1="16.5"
@@ -334,7 +334,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="0.5"
         />
-        {/* 6시 방향 (남) */}
+        {/* 6 o'clock (south) */}
         <line
           x1="18.5"
           y1="19.5"
@@ -343,7 +343,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="1"
         />
-        {/* 7시 방향 */}
+        {/* 7 o'clock (west) */}
         <line
           x1="15.5"
           y1="21.8"
@@ -352,7 +352,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="0.5"
         />
-        {/* 8시 방향 */}
+        {/* 8 o'clock (west) */}
         <line
           x1="12"
           y1="23"
@@ -361,7 +361,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="1"
         />
-        {/* 9시 방향 */}
+        {/* 9 o'clock (west) */}
         <line
           x1="8.5"
           y1="21.8"
@@ -370,7 +370,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="0.5"
         />
-        {/* 10시 방향 (서) */}
+        {/* 10 o'clock (west) */}
         <line
           x1="5.5"
           y1="19.5"
@@ -379,7 +379,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="1"
         />
-        {/* 11시 방향 */}
+        {/* 11 o'clock (west) */}
         <line
           x1="3.2"
           y1="16.5"
@@ -396,7 +396,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="1"
         />
-        {/* 1시 방향 */}
+        {/* 1 o'clock (east) */}
         <line
           x1="3.2"
           y1="7.5"
@@ -405,7 +405,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="0.5"
         />
-        {/* 2시 방향 */}
+        {/* 2 o'clock (east) */}
         <line
           x1="5.5"
           y1="4.5"
@@ -414,7 +414,7 @@ const Compass: React.FC<CompassProps> = ({
           stroke="#FFFFFF"
           strokeWidth="1"
         />
-        {/* 3시 방향 */}
+        {/* 3 o'clock (east) */}
         <line
           x1="8.5"
           y1="2.2"
@@ -424,7 +424,7 @@ const Compass: React.FC<CompassProps> = ({
           strokeWidth="0.5"
         />
 
-        {/* 북쪽 방향 표시 - 빨간색 삼각형 */}
+        {/* Compass north direction indicator - red triangle */}
         <path
           d="M12 1L14.5 4L9.5 4L12 1Z"
           fill="#FF4444"
@@ -432,7 +432,7 @@ const Compass: React.FC<CompassProps> = ({
           strokeWidth="0.5"
         />
 
-        {/* 중앙 십자선 */}
+        {/* Compass center crosshair */}
         <circle
           cx="12"
           cy="12"

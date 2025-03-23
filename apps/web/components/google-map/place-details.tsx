@@ -56,7 +56,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
       return;
     }
 
-    // 새로운 장소가 선택되면 이전 데이터 초기화
+    // When a new place is selected, reset previous data
     setPlaceDetails(null);
     setGroundCode("");
     setPhotoErrors({});
@@ -113,7 +113,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     fetchPlaceDetails();
   }, [map, placeId, visible]);
 
-  // 주소 복사 함수
+  // Copy address to clipboard function
   const copyAddressToClipboard = useCallback(() => {
     if (placeDetails?.formatted_address) {
       navigator.clipboard
@@ -128,7 +128,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     }
   }, [placeDetails]);
 
-  // 그라운드 코드 복사 함수
+  // Copy ground code to clipboard function
   const copyGroundCodeToClipboard = useCallback(() => {
     if (groundCode) {
       navigator.clipboard
@@ -143,7 +143,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     }
   }, [groundCode]);
 
-  // 전화번호 복사 함수
+  // Copy phone number to clipboard function
   const copyPhoneNumberToClipboard = useCallback(() => {
     if (placeDetails?.formatted_phone_number) {
       navigator.clipboard
@@ -158,7 +158,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     }
   }, [placeDetails]);
 
-  // 그라운드 코드 생성 (위도/경도 기반 간단한 인코딩)
+  // Generate ground code (simple encoding based on latitude/longitude)
   const generateGroundCode = useCallback(async () => {
     if (!location) return "";
     try {
@@ -178,14 +178,14 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     }
   }, [location, locale]);
 
-  // location이나 locale이 변경될 때만 그라운드 코드 생성
+  // When location or locale changes, generate ground code
   useEffect(() => {
     if (location && visible) {
       generateGroundCode();
     }
   }, [location, locale, visible, generateGroundCode]);
 
-  // 컴포넌트가 숨겨질 때 데이터 초기화
+  // When component is hidden, reset data
   useEffect(() => {
     if (!visible) {
       setPlaceDetails(null);
@@ -200,32 +200,32 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     }
   }, [visible]);
 
-  // 이미지 로드 에러 처리
+  // Handle image load error
   const handleImageError = (index: number) => {
     setPhotoErrors((prev) => ({ ...prev, [index]: true }));
   };
 
-  // 현재 요일 확인 (0: 일요일, 1: 월요일, ..., 6: 토요일)
+  // Get current day index (0: Sunday, 1: Monday, ..., 6: Saturday)
   const getCurrentDayIndex = () => {
     return new Date().getDay();
   };
 
-  // 영업 중인지 확인하는 함수
+  // Check if the place is open now
   const isOpenNow = () => {
     try {
       if (placeDetails?.opening_hours?.periods) {
         const now = new Date();
-        const day = now.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+        const day = now.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
         const hours = now.getHours();
         const minutes = now.getMinutes();
-        const currentTime = hours * 60 + minutes; // 현재 시간을 분 단위로 변환
+        const currentTime = hours * 60 + minutes; // Convert current time to minutes
 
-        // 현재 요일에 해당하는 영업 시간 찾기
+        // Find opening hours for the current day
         const todayPeriods = placeDetails.opening_hours.periods.filter(
           (period: any) => period.open && period.open.day === day
         );
 
-        // 24시간 영업 확인 (periods 길이가 1이고 close가 없는 경우)
+        // Check if the place is open 24 hours (periods length is 1 and no close time)
         if (
           placeDetails.opening_hours.periods.length === 1 &&
           placeDetails.opening_hours.periods[0].open &&
@@ -234,11 +234,11 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
           return true;
         }
 
-        // 현재 시간이 영업 시간 내인지 확인
+        // Check if current time is within business hours
         for (const period of todayPeriods) {
           if (!period.open || !period.close) continue;
 
-          // 시간 형식 변환 (예: "0900" -> 9*60 = 540분)
+          // Convert time format (e.g., "0900" -> 9*60 = 540 minutes)
           const openTime =
             parseInt(period.open.time.substring(0, 2)) * 60 +
             parseInt(period.open.time.substring(2, 4));
@@ -246,13 +246,13 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
             parseInt(period.close.time.substring(0, 2)) * 60 +
             parseInt(period.close.time.substring(2, 4));
 
-          // 일반적인 경우 (오픈 시간이 마감 시간보다 이른 경우)
+          // Normal case (opening time is earlier than closing time)
           if (openTime < closeTime) {
             if (currentTime >= openTime && currentTime < closeTime) {
               return true;
             }
           }
-          // 자정을 넘어가는 경우 (예: 오후 10시 - 오전 2시)
+          // Crossing midnight case (e.g., 10:00 PM - 2:00 AM)
           else {
             if (currentTime >= openTime || currentTime < closeTime) {
               return true;
@@ -261,19 +261,19 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
         }
       }
 
-      // 3. weekday_text를 파싱하는 방법 (periods가 없는 경우 대체 방법)
+      // Check weekday_text
       if (placeDetails?.opening_hours?.weekday_text) {
-        // 현재 시간과 요일 확인
+        // Get current time and day
         const now = new Date();
-        const currentDay = now.getDay(); // 0: 일요일, 1: 월요일, ..., 6: 토요일
+        const currentDay = now.getDay(); // 0: Sunday, 1: Monday, ..., 6: Saturday
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
 
-        // 현재 요일에 해당하는 텍스트 찾기
+        // Find the text for the current day
         const dayText = placeDetails.opening_hours.weekday_text[currentDay];
 
         if (dayText) {
-          // 24시간 영업인 경우
+          // 24-hour operation check
           if (
             dayText.includes("24 hours") ||
             dayText.includes("24시간") ||
@@ -291,27 +291,27 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
             return false;
           }
 
-          // 시간 추출 패턴 - 다양한 형식 지원
-          // "Monday: 9:00 AM – 5:00 PM" 또는 "월요일: 오전 9:00 - 오후 5:00" 등
+          // Extract time patterns - support various formats
+          // "Monday: 9:00 AM – 5:00 PM" or "월요일: 오전 9:00 - 오후 5:00" etc
           const timePatterns = [
-            // 영어 형식 (AM/PM)
+            // English format (AM/PM)
             /(\d{1,2}):(\d{2})\s*(AM|PM)\s*[–-]\s*(\d{1,2}):(\d{2})\s*(AM|PM)/i,
-            // 24시간 형식
+            // 24-hour format
             /(\d{1,2}):(\d{2})\s*[–-]\s*(\d{1,2}):(\d{2})/i,
-            // 한국어 형식 (오전/오후)
+            // Korean format (오전/오후)
             /(오전|오후)\s*(\d{1,2}):(\d{2})\s*[–-]\s*(오전|오후)\s*(\d{1,2}):(\d{2})/i,
           ];
 
-          // 각 패턴으로 시도
+          // Try each pattern
           for (const pattern of timePatterns) {
             const match = dayText.match(pattern);
             if (!match) continue;
 
             let openHour24, openMinute, closeHour24, closeMinute;
 
-            // 패턴에 따라 다르게 처리
+            // Handle pattern
             if (pattern.source.includes("AM|PM")) {
-              // 영어 AM/PM 형식
+              // English AM/PM format
               const [
                 _,
                 openHour,
@@ -322,7 +322,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                 closeAmPm,
               ] = match;
 
-              // 24시간제로 변환
+              // Convert to 24-hour format
               openHour24 = parseInt(openHour);
               if (openAmPm.toUpperCase() === "PM" && openHour24 < 12)
                 openHour24 += 12;
@@ -360,7 +360,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               closeHour24 = parseInt(closeHour);
             }
 
-            // 현재 시간이 영업 시간 내인지 확인
+            // Check if current time is within business hours
             const currentTime = currentHour * 60 + currentMinute;
             const openTime =
               openHour24 * 60 +
@@ -382,13 +382,13 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               }
             }
 
-            // 패턴이 매치되었으면 더 이상 다른 패턴을 시도하지 않음
+            // If pattern matches, stop trying other patterns
             break;
           }
         }
       }
 
-      // 기본값으로 false 반환
+      // Default to false
       return false;
     } catch (error) {
       console.error("Error checking if place is open:", error);
@@ -396,11 +396,11 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     }
   };
 
-  // 요일 문자열에서 요일 확인 (예: "Monday: 9:00 AM – 5:00 PM" -> 1)
+  // Get day index from day string (e.g., "Monday: 9:00 AM – 5:00 PM" -> 1)
   const getDayIndexFromString = (dayString: string | undefined): number => {
     if (!dayString) return -1;
 
-    // 영어 요일 이름 배열
+    // English day names array
     const days = [
       "Sunday",
       "Monday",
@@ -411,7 +411,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
       "Saturday",
     ];
 
-    // 한국어 요일 이름 배열
+    // Korean day names array
     const koDays = [
       "일요일",
       "월요일",
@@ -422,7 +422,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
       "토요일",
     ];
 
-    // 중국어 요일 이름 배열
+    // Chinese day names array
     const cnDays = [
       "星期日",
       "星期一",
@@ -433,21 +433,21 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
       "星期六",
     ];
 
-    // 영어 요일 확인
+    // English day check
     for (let i = 0; i < days.length; i++) {
       if (dayString.startsWith(days[i]!)) {
         return i;
       }
     }
 
-    // 한국어 요일 확인
+    // Korean day check
     for (let i = 0; i < koDays.length; i++) {
       if (dayString.includes(koDays[i]!)) {
         return i;
       }
     }
 
-    // 중국어 요일 확인
+    // Chinese day check
     for (let i = 0; i < cnDays.length; i++) {
       if (dayString.includes(cnDays[i]!)) {
         return i;
@@ -457,14 +457,14 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     return -1;
   };
 
-  // 사진 확대 보기 닫기
+  // Close photo view
   const closePhotoView = () => {
     setSelectedPhoto(null);
   };
 
   if (!visible) return null;
 
-  // 타입 정의를 위한 인터페이스
+  // Type definition interface
   type PlaceTypesRecord = Record<string, string>;
 
   const placeTypes: Record<Locale, PlaceTypesRecord> = {
@@ -473,21 +473,21 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     cn: cnPlaceTypes as PlaceTypesRecord,
   };
 
-  // 현재 장소 유형의 번역된 이름 가져오기
+  // Get translated place type name
   const getPlaceTypeName = (type: string | undefined): string => {
     if (!type) return "";
 
-    // 현재 로케일에 맞는 번역 찾기
+    // Find translation for current locale
     const translatedType = placeTypes[locale as Locale][type];
 
-    // 번역이 없으면 기본 형식으로 변환 (언더스코어를 공백으로)
+    // If no translation, convert to default format (underscores to spaces)
     return translatedType || type.replace(/_/g, " ");
   };
 
   return (
     <div className="fixed left-0 top-0 bottom-0 z-20 w-full md:w-[400px] overflow-auto">
       <div className="h-auto bg-black/70 backdrop-blur-md p-4 border-r border-white/20 min-h-screen">
-        {/* 닫기 버튼 */}
+        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 z-30 bg-black/50 hover:bg-black/70 text-white rounded-full w-10 h-10 flex items-center justify-center transition-colors"
@@ -510,7 +510,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
 
         {!isLoading && placeDetails && (
           <div className="text-white mt-6">
-            {/* 사진 정보 - 사진이 있고 모든 사진이 에러가 아닌 경우에만 표시 */}
+            {/* Photo information - only show if there are photos and no errors */}
             {placeDetails.photos &&
               placeDetails.photos.length > 0 &&
               Object.keys(photoErrors).length < placeDetails.photos.length && (
@@ -527,7 +527,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                     {placeDetails.photos
                       .slice(0, 4)
                       .map((photo: any, index: number) => {
-                        // 이미지 에러가 있는 경우 렌더링하지 않음
+                        // If there is an image error, do not render
                         if (photoErrors[index]) return null;
 
                         const photoUrl = photo.getUrl({
@@ -563,7 +563,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                 </div>
               )}
 
-            {/* 장소 이름 및 타입 */}
+            {/* Place name and type */}
             <div className="mb-6 pb-4 border-b border-white/10">
               <h2 className="text-2xl font-bold mb-2">{placeDetails.name}</h2>
 
@@ -576,7 +576,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                 </div>
               )}
 
-              {/* 별점 표시 */}
+              {/* Rating display */}
               {placeDetails.rating && (
                 <div className="flex items-center mb-1">
                   <div className="flex items-center">
@@ -598,7 +598,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               )}
             </div>
 
-            {/* 주소 정보 */}
+            {/* Address information */}
             {placeDetails.formatted_address && (
               <div
                 className="mb-4 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-colors cursor-pointer"
@@ -638,7 +638,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               </div>
             )}
 
-            {/* 그라운드 코드 */}
+            {/* Ground code */}
             {location && (
               <div
                 className="mb-4 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-colors cursor-pointer"
@@ -690,7 +690,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               </div>
             )}
 
-            {/* 전화번호 정보 */}
+            {/* Phone number information */}
             {placeDetails.formatted_phone_number && (
               <div
                 className="mb-4 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-colors cursor-pointer"
@@ -738,7 +738,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               </div>
             )}
 
-            {/* 웹사이트 정보 */}
+            {/* Website information */}
             {placeDetails.website && (
               <div
                 className="mb-4 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-colors cursor-pointer"
@@ -774,7 +774,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               </div>
             )}
 
-            {/* 영업시간 정보 */}
+            {/* Business hours information */}
             {placeDetails.opening_hours && (
               <div className="mb-4 p-4 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-colors">
                 <div className="flex items-start">
@@ -823,7 +823,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               </div>
             )}
 
-            {/* Google Maps 링크 */}
+            {/* Google Maps link */}
             <div className="mt-6 flex justify-center">
               <a
                 href={placeDetails.url}
@@ -839,7 +839,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
         )}
       </div>
 
-      {/* 사진 확대 보기 모달 - React Portal 사용 */}
+      {/* Photo view modal - React Portal usage */}
       {selectedPhoto &&
         createPortal(
           <div

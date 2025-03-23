@@ -3,10 +3,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Locale, defaultLocale, locales } from "@/i18n";
 
-// 언어별 메시지 타입
+// Message type
 type Messages = Record<string, any>;
 
-// 컨텍스트 타입 정의
+// Context type
 interface I18nContextType {
   locale: Locale;
   messages: Messages;
@@ -15,7 +15,7 @@ interface I18nContextType {
   isChangingLanguage: boolean; // Add flag to indicate language is changing
 }
 
-// 기본값 설정
+// Default context
 const defaultContext: I18nContextType = {
   locale: defaultLocale,
   messages: {},
@@ -24,41 +24,41 @@ const defaultContext: I18nContextType = {
   isChangingLanguage: false,
 };
 
-// 컨텍스트 생성
+// Create context
 const I18nContext = createContext<I18nContextType>(defaultContext);
 
-// 컨텍스트 훅
+// Context hook
 export const useI18n = () => useContext(I18nContext);
 
-// 메시지에서 중첩된 키 값 가져오기
+// Get nested value from message
 const getNestedValue = (obj: any, path: string): string => {
   const keys = path.split(".");
   return keys.reduce((acc, key) => {
     if (acc && typeof acc === "object" && key in acc) {
       return acc[key];
     }
-    return path; // 키를 찾지 못하면 원래 경로 반환
+    return path; // If key not found, return original path
   }, obj);
 };
 
-// 로케일인지 확인하는 함수
+// Check if value is a valid locale
 const isValidLocale = (value: string | undefined): value is Locale => {
   if (!value) return false;
   return (locales as readonly string[]).includes(value as Locale);
 };
 
-// 안전하게 브라우저 언어 가져오기
+// Get safe browser language
 const getSafeBrowserLanguage = (): string => {
   try {
-    // 전역 객체 확인
+    // Check global object
     if (typeof window === "undefined") return "";
     if (!window.navigator) return "";
 
-    // navigator.language 속성 확인
+    // Check navigator.language
     const navLang = window.navigator.language;
     if (typeof navLang !== "string" || !navLang) return "";
 
-    // 언어 코드 추출
+    // Extract language code
     const langParts = navLang.split("-");
     if (!langParts || langParts.length === 0) return "";
 
@@ -69,13 +69,13 @@ const getSafeBrowserLanguage = (): string => {
   }
 };
 
-// 브라우저 언어 가져오기
+// Get browser language
 const getBrowserLanguage = (): Locale => {
   try {
-    // 서버 사이드 렌더링 확인
+    // Server side rendering check
     if (typeof window === "undefined") return defaultLocale;
 
-    // 쿠키에서 로케일 확인
+    // Check cookie for locale
     const cookieLocaleMatch = document.cookie
       .split("; ")
       .find((row) => row.startsWith("NEXT_LOCALE="));
@@ -84,30 +84,30 @@ const getBrowserLanguage = (): Locale => {
       ? cookieLocaleMatch.split("=")[1]
       : undefined;
 
-    // 쿠키에 유효한 로케일이 있으면 사용
+    // If valid locale found in cookie, use it
     if (cookieLocale && isValidLocale(cookieLocale as Locale)) {
       return cookieLocale as Locale;
     }
 
-    // 브라우저 언어 확인
+    // Check browser language
     const langCode = getSafeBrowserLanguage();
 
-    // 한국어인 경우 특별히 처리 (명시적으로 한국어 지원)
+    // If Korean, handle specially (explicit Korean support)
     if (langCode === "ko") {
       return "ko" as Locale;
     }
-    
-    // 중국어인 경우 특별히 처리 (명시적으로 중국어 지원)
+
+    // If Chinese, handle specially (explicit Chinese support)
     if (langCode === "zh" || langCode === "zh-cn" || langCode === "zh-tw") {
       return "cn" as Locale;
     }
 
-    // 다른 지원 언어 확인
+    // If valid locale found in browser, use it
     if (langCode && isValidLocale(langCode)) {
       return langCode as Locale;
     }
 
-    // 기본값으로 영어 사용
+    // Default to English
     return "en" as Locale;
   } catch (error) {
     console.error("Error in getBrowserLanguage:", error);
@@ -115,16 +115,16 @@ const getBrowserLanguage = (): Locale => {
   }
 };
 
-// URL 경로에서 로케일 부분 업데이트
+// Update URL with locale
 const updateUrlWithLocale = (newLocale: Locale) => {
-  // URL 변경 없이 로케일만 쿠키에 저장
+  // URL change without locale cookie
   if (typeof window === "undefined") return;
 
-  // 쿠키에 로케일 저장
+  // Store locale in cookie
   document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
 };
 
-// 프로바이더 컴포넌트
+// Provider component
 export const I18nProvider: React.FC<{
   children: React.ReactNode;
   initialLocale?: Locale;
@@ -133,12 +133,12 @@ export const I18nProvider: React.FC<{
   const [messages, setMessages] = useState<Messages>({});
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
 
-  // 로케일 변경 시 메시지 로드 및 쿠키 설정
+  // Set locale and update messages and cookie
   const setLocale = async (newLocale: Locale) => {
-    // 이미 같은 로케일이면 변경하지 않음
+    // If same locale, do nothing
     if (newLocale === locale) return;
 
-    // 사용자에게 새로고침 경고 표시
+    // Show refresh warning to user
     const confirmMessage =
       locale === "ko"
         ? "언어 설정을 변경하면 페이지가 새로고침되며 현재 보고 있는 내용이 초기화됩니다. 계속하시겠습니까?"
@@ -169,11 +169,11 @@ export const I18nProvider: React.FC<{
     }
   };
 
-  // 번역 함수
+  // Translation function
   const t = (key: string, params?: Record<string, any>): string => {
     let value = getNestedValue(messages, key);
 
-    // 파라미터 치환
+    // Parameter replacement
     if (params && typeof value === "string") {
       Object.entries(params).forEach(([paramKey, paramValue]) => {
         value = value.replace(
@@ -186,11 +186,11 @@ export const I18nProvider: React.FC<{
     return value;
   };
 
-  // 초기 로케일 로드
+  // Load initial locale
   useEffect(() => {
     const loadMessages = async () => {
       try {
-        // 쿠키에서 로케일 확인
+        // Check cookie for locale
         const cookieLocaleMatch = document.cookie
           .split("; ")
           .find((row) => row.startsWith("NEXT_LOCALE="));
@@ -199,14 +199,14 @@ export const I18nProvider: React.FC<{
           ? cookieLocaleMatch.split("=")[1]
           : undefined;
 
-        // URL에서 로케일 확인
+        // Check URL for locale
         const pathParts = window.location.pathname.split("/").filter(Boolean);
         const pathLocale = pathParts.length > 0 ? pathParts[0] : undefined;
 
-        // 브라우저 언어 확인
+        // Check browser language
         const browserLocale = getBrowserLanguage();
 
-        // 사용할 로케일 결정 (URL > 쿠키 > 브라우저 > 기본값)
+        // Determine locale to use (URL > cookie > browser > default)
         let localeToUse = defaultLocale;
 
         if (isValidLocale(pathLocale)) {
@@ -217,18 +217,18 @@ export const I18nProvider: React.FC<{
           localeToUse = browserLocale;
         }
 
-        // 메시지 로드
+        // Load messages
         const loadedMessages = (
           await import(`@/messages/${localeToUse}/index.json`)
         ).default;
         setMessages(loadedMessages);
         setLocaleState(localeToUse);
 
-        // 쿠키가 없고 브라우저 언어를 사용한 경우에만 쿠키 설정
+        // Set cookie only if cookie doesn't exist and browser language is used
         if (!cookieLocale && localeToUse === browserLocale) {
           updateUrlWithLocale(localeToUse);
         }
-        // URL 업데이트 (URL에 로케일이 없는 경우)
+        // Update URL if URL doesn't have locale
         else if (!isValidLocale(pathLocale)) {
           updateUrlWithLocale(localeToUse);
         }

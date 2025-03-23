@@ -64,9 +64,9 @@ export const useMapContainer = () => {
   const [center, setCenter] = useState(defaultCenter);
   const [mapType, setMapType] = useState<string>(getMapTypeFromCookie());
   const [zoom, setZoom] = useState(18);
-  const userZoomRef = useRef<number>(18); // 사용자가 설정한 zoom 값을 저장할 ref
-  const [mapHeading, setMapHeading] = useState(0); // 지도의 회전 각도를 저장할 상태
-  const [mapTilt, setMapTilt] = useState(0); // 지도의 기울기 각도를 저장할 상태
+  const userZoomRef = useRef<number>(18);
+  const [mapHeading, setMapHeading] = useState(0);
+  const [mapTilt, setMapTilt] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   // User location state
@@ -85,7 +85,7 @@ export const useMapContainer = () => {
 
   // Grid state
   const [showGrid, setShowGrid] = useState(true);
-  const [gridWasVisible, setGridWasVisible] = useState(true); // 기울기/회전 전 그리드 상태 저장
+  const [gridWasVisible, setGridWasVisible] = useState(true);
 
   // Selected area state
   const [selectedArea, setSelectedArea] = useState<Coordinates | null>(null);
@@ -103,7 +103,7 @@ export const useMapContainer = () => {
   // Show info window state
   const [showInfoWindow, setShowInfoWindow] = useState(false);
 
-  // 위치 추적 관련 기능 사용
+  // Location tracking
   const {
     locationMode,
     setLocationMode,
@@ -117,7 +117,7 @@ export const useMapContainer = () => {
     isTrackingMode: true,
     onLocationUpdate: useCallback((location) => {
       if (location) {
-        // 명시적으로 heading 정보를 포함하여 상태 업데이트
+        // Explicitly include heading information in state update
         setUserLocation({
           lat: location.lat,
           lng: location.lng,
@@ -130,13 +130,13 @@ export const useMapContainer = () => {
     }, []),
   });
 
-  // 로딩 상태 동기화 - 의존성 배열 비우기
+  // Synchronize loading state - empty dependency array
   useEffect(() => {
-    // 함수 내부에서 최신 isLoadingLocation 값을 직접 참조
+    // Directly reference the latest isLoadingLocation value
     if (isLoadingLocation !== undefined) {
       setIsLoading(isLoadingLocation);
     }
-    // 빈 의존성 배열로 컴포넌트 마운트 시 한 번만 실행되도록 함
+    // Empty dependency array to run only once on mount
   }, []);
 
   // Get user location using the hook
@@ -146,48 +146,48 @@ export const useMapContainer = () => {
     cancelGeolocationRequest,
     requestOrientationPermission,
   } = useGeolocation(map, setCenter, setSelectedArea, {
-    autoGetLocation: true, // 자동으로 위치를 가져오도록 변경
-    initialFetch: true, // 최초 위치 정보 가져오기 모드로 설정
+    autoGetLocation: true,
+    initialFetch: true,
   });
 
-  // 위치 추적 시작 함수
+  // Location tracking start function
   const startWatchingPosition = useCallback(() => {
     startLocationTracking();
   }, [startLocationTracking]);
 
-  // 위치 추적 중지 함수
+  // Location tracking stop function
   const stopWatchingPosition = useCallback(() => {
     stopLocationTracking();
   }, [stopLocationTracking]);
 
-  // 위치 모드 변경 시 추적 상태 업데이트
+  // Location mode change update tracking state
   useEffect(() => {
-    // 위치 모드에 따라 다른 동작 수행
+    // Perform different actions based on location mode
     if (locationMode === LocationMode.OFF) {
-      // OFF 모드: 위치 추적 중지
+      // OFF mode: stop location tracking
       stopWatchingPosition();
 
-      // 위치 요청 취소 및 로딩 상태 초기화
+      // Cancel location request and reset loading state
       cancelGeolocationRequest();
 
-      // 이전 위치 참조 초기화하여 다시 위치 모드 활성화 시 처음부터 시작하도록 함
+      // Reset previous location reference to start from scratch when location mode is activated
       prevLocationRef.current = null;
     } else if (locationMode === LocationMode.LOCATE) {
-      // LOCATE 모드: 위치를 한 번만 확인
-      // 이미 위치 정보가 있는지 확인
+      // LOCATE mode: location confirmation
+      // Check if location information exists
       if (!userLocationLoaded) {
-        // 위치 정보가 없는 경우에만 getCurrentPosition 실행
+        // Execute getCurrentPosition if location information does not exist
         getGeoLocation();
       }
     } else if (locationMode === LocationMode.TRACKING) {
-      // TRACKING 모드: 위치 추적 시작
-      // 이미 위치 정보가 있는지 확인
+      // TRACKING mode: start location tracking
+      // Check if location information exists
       if (!userLocationLoaded || !userLocation) {
-        // 위치 정보가 없으면 먼저 가져오기
+        // Execute getCurrentPosition if location information does not exist
         getGeoLocation();
       }
 
-      // 위치 추적 시작 (watchPosition)
+      // Start location tracking (watchPosition)
       startWatchingPosition();
     }
   }, [
@@ -204,18 +204,17 @@ export const useMapContainer = () => {
   const toggleMapType = useCallback(() => {
     const newType = mapType === "roadmap" ? "satellite" : "roadmap";
 
-    // 사용자에게 새로고침 경고 표시
-    const confirmMessage =
-      "지도 유형을 변경하면 페이지가 새로고침됩니다. 계속하시겠습니까?";
+    // Display refresh warning to user
+    const confirmMessage = "Map type change will refresh the page. Continue?";
     const userConfirmed = window.confirm(confirmMessage);
 
     if (!userConfirmed) return;
 
     try {
-      // 쿠키에 맵 타입 저장 (1년 유효)
+      // Store map type in cookie (1 year validity)
       document.cookie = `MAP_TYPE=${newType};path=/;max-age=31536000`;
 
-      // 약간의 지연 후 페이지 새로고침
+      // Refresh page after a short delay
       setTimeout(() => {
         window.location.reload();
       }, 10);
@@ -236,7 +235,7 @@ export const useMapContainer = () => {
   const setMapHeadingValue = useCallback(
     (heading: number) => {
       if (map) {
-        // 지도 회전 가능하도록 설정
+        // Set map to be rotatable
         map.setOptions({ rotateControl: true });
         map.setHeading(heading);
         setMapHeading(heading);
@@ -254,20 +253,20 @@ export const useMapContainer = () => {
       if (newHeading !== undefined) {
         setMapHeading(newHeading);
 
-        // 회전이 있는 경우 그리드 끄기
+        // If rotation is present, turn off grid
         if (newHeading !== 0 && showGrid) {
-          setGridWasVisible(true); // 현재 그리드 상태 저장
-          setShowGrid(false); // 그리드 끄기
+          setGridWasVisible(true); // Store current grid state
+          setShowGrid(false); // Turn off grid
         }
-        // 회전이 없고 이전에 그리드가 켜져 있었다면 그리드 다시 켜기
+        // If rotation is absent and grid was previously on, turn it back on
         else if (
           newHeading === 0 &&
           !showGrid &&
           gridWasVisible &&
           mapTilt === 0
         ) {
-          setShowGrid(true); // 그리드 다시 켜기
-          setGridWasVisible(false); // 상태 초기화
+          setShowGrid(true); // Turn grid back on
+          setGridWasVisible(false); // Reset state
         }
       }
     }
@@ -280,28 +279,28 @@ export const useMapContainer = () => {
       if (newTilt !== undefined) {
         setMapTilt(newTilt);
 
-        // 기울기가 있는 경우 그리드 끄기
+        // If tilt is present, turn off grid
         if (newTilt !== 0 && showGrid) {
-          setGridWasVisible(true); // 현재 그리드 상태 저장
-          setShowGrid(false); // 그리드 끄기
+          setGridWasVisible(true); // Store current grid state
+          setShowGrid(false); // Turn off grid
         }
-        // 기울기가 없고 이전에 그리드가 켜져 있었다면 그리드 다시 켜기
+        // If tilt is absent and grid was previously on, turn it back on
         else if (
           newTilt === 0 &&
           !showGrid &&
           gridWasVisible &&
           mapHeading === 0
         ) {
-          setShowGrid(true); // 그리드 다시 켜기
-          setGridWasVisible(false); // 상태 초기화
+          setShowGrid(true); // Turn grid back on
+          setGridWasVisible(false); // Reset state
         }
       }
     }
   }, [map, showGrid, mapHeading, gridWasVisible]);
 
-  // 사용자 위치 가져오기 함수
+  // Get user location function
   const getUserLocation = useCallback(() => {
-    // 위치 모드 토글 (OFF -> LOCATE -> TRACKING -> OFF)
+    // Toggle location mode (OFF -> LOCATE -> TRACKING -> OFF)
     if (locationMode === LocationMode.OFF) {
       setLocationMode(LocationMode.LOCATE);
     } else if (locationMode === LocationMode.LOCATE) {
@@ -351,23 +350,17 @@ export const useMapContainer = () => {
     clearAllGridLines,
     setupMapEventHandlers,
     removeMapEventHandlers,
-    handleGridCellClick,
-  } = useGridSystem(
-    showGrid,
-    selectedArea,
-    setSelectedArea,
-    {
-      locationMode,
-      setLocationMode,
-      placeDetailsVisible,
-      setPlaceDetailsVisible,
-      setSelectedPlaceId,
-      setSelectedLocation,
-      setShowInfoWindow,
-    }
-  );
+  } = useGridSystem(showGrid, selectedArea, setSelectedArea, {
+    locationMode,
+    setLocationMode,
+    placeDetailsVisible,
+    setPlaceDetailsVisible,
+    setSelectedPlaceId,
+    setSelectedLocation,
+    setShowInfoWindow,
+  });
 
-  // 지도 클릭 시 위치 추적 모드 해제
+  // Handle map interaction (e.g., click) to disable location tracking
   const handleMapInteraction = useCallback(() => {
     if (locationMode === LocationMode.TRACKING) {
       setLocationMode(LocationMode.OFF);
@@ -380,7 +373,7 @@ export const useMapContainer = () => {
     setSelectedPlaceId(null);
     setSelectedLocation(null);
 
-    // Place Details가 닫힐 때 InfoWindow를 표시합니다
+    // When Place Details is closed, show InfoWindow
     setShowInfoWindow(true);
   }, [setShowInfoWindow]);
 
@@ -396,7 +389,7 @@ export const useMapContainer = () => {
         drawGrid(map);
       }
 
-      // 지도 드래그 이벤트 리스너 추가
+      // Add map drag start listener
       map.addListener("dragstart", handleMapInteraction);
 
       // Add heading changed listener
@@ -449,7 +442,7 @@ export const useMapContainer = () => {
     (place: google.maps.places.PlaceResult) => {
       if (!place.geometry || !place.geometry.location || !map) return;
 
-      // 검색 시 위치 추적 모드 해제
+      // When place is selected, disable location tracking
       if (locationMode === LocationMode.TRACKING) {
         setLocationMode(LocationMode.OFF);
       }
@@ -486,8 +479,8 @@ export const useMapContainer = () => {
       `;
         infoWindow.setContent(content);
 
-        // 검색 결과에 대한 InfoWindow는 계속 표시
-        // 단, 이 경우에는 그라운드 코드 InfoWindow는 숨김
+        // Keep search result InfoWindow open
+        // Hide ground codes InfoWindow
         setShowInfoWindow(false);
 
         infoWindow.open(map, searchMarker);
@@ -505,10 +498,10 @@ export const useMapContainer = () => {
     (mapInstance: google.maps.Map) => {
       setMap(mapInstance);
 
-      // 지도 회전 가능하도록 설정
+      // Set map options to allow rotation
       mapInstance.setOptions({
         rotateControl: true,
-        tilt: 0, // 기울기 없이 평면으로 시작
+        tilt: 0, // Start without tilt
       });
 
       // Apply styles based on initial map type
@@ -536,10 +529,10 @@ export const useMapContainer = () => {
       drawGrid(mapInstance);
       setupMapEventHandlers(mapInstance);
 
-      // POI 클릭 이벤트를 가로채서 기본 InfoWindow 표시를 방지
+      // Intercept POI click event to prevent default InfoWindow display
       mapInstance.addListener("click", (e: google.maps.MapMouseEvent) => {
         if ((e as any).placeId) {
-          // 기본 POI 클릭 동작 중지
+          // Stop default POI click action
           (e as google.maps.IconMouseEvent).stop();
         }
       });
@@ -574,7 +567,7 @@ export const useMapContainer = () => {
         infoWindow.close();
       }
 
-      // 위치 추적 중지
+      // Stop location tracking
       stopLocationTracking();
 
       setMap(null);
