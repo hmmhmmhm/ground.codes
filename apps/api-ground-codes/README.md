@@ -1,35 +1,36 @@
-# API Ground.codes
+# 🚀 API Ground.codes
 
 <p align="center">
   <img src="https://i.imgur.com/eQ9JpzY.png" width="128" alt="Ground.codes Logo">
   <br />
-  Docs: <a href="https://api.ground.codes">api.ground.codes</a>
+  <br />
+  📚 Docs: <a href="https://api.ground.codes">api.ground.codes</a>
 </p>
 
 API Ground.codes is a RESTful API service built with Elysia.js and Bun that provides geolocation encoding and decoding functionality. It converts geographic coordinates into human-readable, memorable codes and vice versa, making location sharing easier and more intuitive.
 
-## Features
+## ✨ Features
 
-- **Encode Coordinates**: Convert latitude and longitude to memorable ground codes
-- **Decode Ground Codes**: Convert ground codes back to geographic coordinates
-- **Region Information**: Get information about specific regions
-- **Multilingual Support**: Support for multiple languages (English, Korean, Chinese)
-- **Customizable Precision**: Adjust the precision of encoded locations
-- **Swagger Documentation**: Interactive API documentation
-- **High-Performance Geospatial Queries**: Utilizes optimized spatial indexing for fast location searches
+- 🔄 **Encode Coordinates**: Convert latitude and longitude to memorable ground codes
+- 🔍 **Decode Ground Codes**: Convert ground codes back to geographic coordinates
+- 🌎 **Region Information**: Get information about specific regions
+- 🌐 **Multilingual Support**: Support for multiple languages (English, Korean, Chinese)
+- 🎯 **Customizable Precision**: Adjust the precision of encoded locations
+- 📝 **Swagger Documentation**: Interactive API documentation
+- ⚡ **High-Performance Geospatial Queries**: Utilizes optimized spatial indexing for fast location searches
 
-## Performance Optimization
+## 🚀 Performance Optimization
 
 API Ground.codes leverages the `@ground-codes/geoint` package's advanced optimization techniques for high-performance geospatial operations:
 
-### LevelDB and Spatial Indexing
+### 💾 LevelDB and Spatial Indexing
 
-- **Fast Region Lookup**: Uses LevelDB for efficient key-value storage of region data
-- **Spatial Indexing**: Implements KDBush and GeoKDBush for lightning-fast nearest-neighbor searches
-- **Optimized Data Structure**: Pre-built spatial indexes stored in binary format for minimal memory footprint
-- **Sub-millisecond Response Times**: Delivers extremely fast responses for location-based queries
+- 🔍 **Fast Region Lookup**: Uses LevelDB for efficient key-value storage of region data
+- 🗺️ **Spatial Indexing**: Implements KDBush and GeoKDBush for lightning-fast nearest-neighbor searches
+- 📊 **Optimized Data Structure**: Pre-built spatial indexes stored in binary format for minimal memory footprint
+- ⚡ **Sub-millisecond Response Times**: Delivers extremely fast responses for location-based queries
 
-### Implementation in API Endpoints
+### 🔧 Implementation in API Endpoints
 
 The API uses these optimization techniques in several key endpoints:
 
@@ -40,13 +41,13 @@ The API uses these optimization techniques in several key endpoints:
 
 This implementation enables the API to handle high volumes of geospatial queries with minimal latency, making it suitable for production applications with strict performance requirements.
 
-## Getting Started
+## 🏁 Getting Started
 
-### Prerequisites
+### 📋 Prerequisites
 
 - [Bun](https://bun.sh/) (JavaScript runtime)
 
-### Installation
+### 📥 Installation
 
 1. Clone the repository
 2. Navigate to the project directory
@@ -56,9 +57,9 @@ This implementation enables the API to handle high volumes of geospatial queries
 bun install
 ```
 
-### Running the API
+### 🏃‍♂️ Running the API
 
-#### Development Mode
+#### 🛠️ Development Mode
 
 ```bash
 bun run dev
@@ -66,30 +67,30 @@ bun run dev
 
 This starts the server in development mode with hot reloading.
 
-#### Production Mode
+#### 🚀 Production Mode
 
 ```bash
 bun run start
 ```
 
-## API Endpoints
+## 🔌 API Endpoints
 
-### Core Endpoints
+### 🧩 Core Endpoints
 
 - `POST /encode`: Encode geographic coordinates to a ground code
 - `POST /decode`: Decode a ground code to geographic coordinates
 - `GET /v1/region/around`: Get regions around specific coordinates
 - `GET /v1/region/info`: Get information about a specific region
 
-### Utility Endpoints
+### 🔧 Utility Endpoints
 
 - `GET /healthz`: Health check endpoint
 - `GET /swagger`: Swagger UI for API documentation
 - `GET /`: Redirects to Swagger documentation
 
-## Usage Examples
+## 📝 Usage Examples
 
-### Encode Coordinates
+### 🔄 Encode Coordinates
 
 ```bash
 curl -X POST http://localhost:3000/encode \
@@ -103,7 +104,7 @@ Response:
 "Seoul-Happy-Tiger"
 ```
 
-### Decode Ground Code
+### 🔍 Decode Ground Code
 
 ```bash
 curl -X POST http://localhost:3000/decode \
@@ -120,18 +121,18 @@ Response:
 }
 ```
 
-## Configuration
+## ⚙️ Configuration
 
 The API supports various configuration options:
 
-- **Region Level**: Choose between city names (level 2) or airport codes (level 1)
-- **Language**: Select from supported languages (English, Korean, Chinese)
-- **Precision**: Adjust the precision of encoded locations in meters
+- 🏙️ **Region Level**: Choose between city names (level 2) or airport codes (level 1)
+- 🌐 **Language**: Select from supported languages (English, Korean, Chinese)
+- 📏 **Precision**: Adjust the precision of encoded locations in meters
 
-## Documentation
+## 📚 Documentation
 
 Interactive API documentation is available at the `/swagger` endpoint when the server is running.
 
-## License
+## 📄 License
 
 This project is part of the Ground.codes ecosystem.
