@@ -2,21 +2,29 @@
 
 <p align="center">
   <img src="https://i.imgur.com/eQ9JpzY.png" width="128" alt="Ground Codes Logo">
+  <br />
+  Ground Code Web Demo: <a href="https://ground.codes">ground.codes</a><br />
+  How Grok Spiral works: <a href="https://grok-spiral.ground.codes">grok-spiral.ground.codes</a><br />
+  API Documentation: <a href="https://api.ground.codes">api.ground.codes</a>
 </p>
 
 ## What is Ground Codes?
 
 Ground Codes is a coordinate-based addressing system that allows you to pinpoint any location in the world using just a region name and two words (e.g., "Yongsan-Happiness-Smile"). It leverages geographic coordinate systems (GCS) to provide a user-friendly alternative to traditional latitude and longitude coordinates.
 
+And Ground Codes is a **multi-planetary addressing system** that aims to provide a universal coordinate-based solution across celestial bodies. Currently operational on Earth, it will soon expand to support Mars and the Moon as part of its vision for a comprehensive multi-planetary address framework.
+
 > [!WARNING]
 > ground.codes is an ongoing project and has not yet reached completion.
 
 ### Packages & Apps
 
-- [`@repo/ground-codes`](./packages/ground-codes/README.md): the core implementation package that provides the fundamental encoding and decoding functionality for the Ground Codes coordinate-based addressing system
+- [`ground-codes`](./packages/ground-codes/README.md): the core implementation package that provides the fundamental encoding and decoding functionality for the Ground Codes coordinate-based addressing system
 - [`@repo/geoint`](./packages/geoint/README.md): a package for processing and providing curated geographical information about global regions with populations of 500 or more people
 - [`@repo/codebook`](./packages/codebook/README.md): a package for managing the word codebooks used in the coordinate encoding system
 - [`apps/grok-spiral`](./apps/grok-spiral/README.md): an interactive visualization app demonstrating the Grok Spiral coordinate generation system that powers Ground Codes' geospatial indexing
+- [`apps/web`](./apps/web/README.md): the main web application featuring an interactive Google Maps interface with POI details, grid system, and multilingual support for the Ground Codes system
+- [`apps/api-ground-codes`](./apps/api-ground-codes/README.md): the API server providing endpoints for Ground Codes encoding/decoding services with OpenAPI/Swagger documentation
 
 ## Key Features
 
