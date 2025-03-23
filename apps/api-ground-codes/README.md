@@ -16,6 +16,29 @@ API Ground.codes is a RESTful API service built with Elysia.js and Bun that prov
 - **Multilingual Support**: Support for multiple languages (English, Korean, Chinese)
 - **Customizable Precision**: Adjust the precision of encoded locations
 - **Swagger Documentation**: Interactive API documentation
+- **High-Performance Geospatial Queries**: Utilizes optimized spatial indexing for fast location searches
+
+## Performance Optimization
+
+API Ground.codes leverages the `@ground-codes/geoint` package's advanced optimization techniques for high-performance geospatial operations:
+
+### LevelDB and Spatial Indexing
+
+- **Fast Region Lookup**: Uses LevelDB for efficient key-value storage of region data
+- **Spatial Indexing**: Implements KDBush and GeoKDBush for lightning-fast nearest-neighbor searches
+- **Optimized Data Structure**: Pre-built spatial indexes stored in binary format for minimal memory footprint
+- **Sub-millisecond Response Times**: Delivers extremely fast responses for location-based queries
+
+### Implementation in API Endpoints
+
+The API uses these optimization techniques in several key endpoints:
+
+- `/v1/region/around`: Finds regions near specified coordinates using GeoKDBush spatial indexing
+- `/v1/region/info`: Retrieves region information using LevelDB's fast key-value lookups
+- `/encode`: Utilizes the optimized region search to find the nearest region for encoding coordinates
+- `/decode`: Uses efficient region data retrieval when decoding ground codes
+
+This implementation enables the API to handle high volumes of geospatial queries with minimal latency, making it suitable for production applications with strict performance requirements.
 
 ## Getting Started
 

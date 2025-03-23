@@ -56,6 +56,41 @@ The package processes and outputs data in the following structure:
 - `/src`: Source code for data processing scripts
 - `/region-dataset`: Raw data files and intermediate processing files
 - `/region-dist`: Final processed JSON files ready for use
+- `/region-db`: Optimized database files using LevelDB and KDBush spatial indexing
+
+## Location Optimization
+
+The GEOINT package implements high-performance location search and retrieval using a combination of technologies:
+
+### LevelDB for Fast Data Storage
+
+- Uses LevelDB (via the `level` package) to create embedded key-value databases for each region dataset
+- Provides extremely fast data retrieval by region code or name
+- Stores region data in an optimized format for quick access
+- Each region dataset has its own LevelDB instance in the `/region-db` directory
+
+### KDBush and GeoKDBush for Spatial Indexing
+
+- Implements KDBush spatial indexing for efficient geographic point storage
+- Uses GeoKDBush for lightning-fast nearest-neighbor searches
+- Enables rapid retrieval of regions around specific coordinates
+- Optimized for both memory usage and query performance
+- Spatial indexes are stored as binary files with `.index` extension
+
+### Implementation Details
+
+The optimization process works as follows:
+
+1. During build time, region data is processed and stored in both LevelDB and KDBush indexes
+2. Region data is indexed by both ID and name/code for flexible querying
+3. At runtime, the `load()` function initializes the databases and indexes
+4. The `around()` function uses GeoKDBush to find regions near specified coordinates
+5. The `info()` function retrieves detailed information about specific regions
+
+This approach provides significant performance benefits:
+- Sub-millisecond response times for location queries
+- Efficient memory usage through binary spatial indexes
+- Scalable to handle large datasets with minimal performance impact
 
 ## Output Files
 
@@ -70,6 +105,30 @@ The package processes and outputs data in the following structure:
 ```bash
 # Install dependencies
 pnpm install
+```
+
+### Programmatic Usage
+
+```typescript
+import { load, around, info } from "@ground-codes/geoint";
+
+// Load the region databases (done once at startup)
+await load(["region-1", "region-2"]);
+
+// Find regions around a specific point
+const nearbyRegions = await around({
+  regionName: "region-2",
+  lat: 37.5665,
+  lng: 126.9780,
+  maxResults: 5,
+  maxDistance: 10000 // meters
+});
+
+// Get information about a specific region
+const regionInfo = await info({
+  regionName: "region-2",
+  name: "Seoul"
+});
 ```
 
 ### Running Scripts
