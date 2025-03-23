@@ -28,7 +28,7 @@ Ground.codes web application is an interactive map service utilizing the Google 
 
 - **🌐 Multilingual Support**
 
-  - 🇰🇷 Korean (default), 🇬🇧 English, and 🇨🇳 Chinese
+  - 🇬🇧 English (default), 🇰🇷 Korean, 🇨🇳 Chinese
   - 🍪 Cookie-based language settings without URL locale prefixes
   - 🏷️ Multilingual display of place types
 
@@ -155,3 +155,4 @@ apps/web/
 ├── messages/             # Multilingual message files
 ├── public/               # Static files
 └── wrangler.toml         # Cloudflare deployment configuration
+```
