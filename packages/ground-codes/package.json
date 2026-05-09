@@ -9,6 +9,15 @@
   "scripts": {
     "dev": "tsup --config tsup.config.ts --watch",
     "build": "tsup --config tsup.config.ts",
+    "test": "tsx --test test/*.test.ts",
+    "generate-spiral-fixture": "tsx scripts/generate-spiral-fixture.ts",
+    "benchmark:spiral": "tsx scripts/benchmark-spiral.ts",
+    "benchmark:spiral-scale": "tsx scripts/benchmark-spiral-scale.ts",
+    "check:spiral-bigint": "tsx scripts/check-spiral-bigint.ts",
+    "compare:spiral-baseline": "tsx scripts/compare-spiral-baseline.ts",
+    "explore:spiral-math": "tsx scripts/explore-spiral-math.ts",
+    "explore:spiral-index": "tsx scripts/explore-spiral-index.ts",
+    "stress:spiral-edge-cases": "tsx scripts/stress-spiral-edge-cases.ts",
     "publish-package": "turbo run build lint test && changeset version && changeset publish"
   },
   "files": [
@@ -29,7 +38,8 @@
     "@repo/typescript-config": "workspace:*",
     "@repo/codebook": "workspace:*",
     "@ground-codes/geoint": "workspace:*",
-    "tsup": "^8.4.0"
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.3"
   },
   "dependencies": {}
 }
