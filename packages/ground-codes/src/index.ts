@@ -61,6 +61,7 @@ export const encode = async (
   },
 ) => {
   let { center, precisionMeters, regionLevel = 2, language } = options ?? {};
+  const requestedRegionLevel = regionLevel;
 
   let code: string | null = null;
   let encoded = "";
@@ -89,7 +90,7 @@ export const encode = async (
   // Get n from diff
   const n = getNFromCoordinates(diff.lat, diff.lng);
 
-  if (regionLevel === 1) {
+  if (regionLevel === 1 && requestedRegionLevel === 1) {
     // Encoded (Base 32)
     encoded = encodeBase32(n);
   } else {
@@ -127,6 +128,7 @@ export const decode = async (
   },
 ) => {
   let { center, regionLevel = 2, language } = options ?? {};
+  const requestedRegionLevel = regionLevel;
 
   // Split the encoded string to get region code/name and the actual encoded value
   const parts = encoded.split("-");
@@ -189,7 +191,7 @@ export const decode = async (
   let n: number | bigint;
 
   // Decode based on region level
-  if (regionLevel === 1 || !regionLevel) {
+  if (regionLevel === 1 && requestedRegionLevel === 1) {
     n = decodeBase32(actualEncoded);
   } else {
     // For region level 2 and above, use word set decoding

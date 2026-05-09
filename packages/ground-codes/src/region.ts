@@ -44,6 +44,28 @@ const loadRegions = async (
     throw new Error(`Invalid language: ${language}`);
   }
 
+  if (regionLevel === 3) {
+    if (!language || language.toLowerCase() === "english") {
+      const module =
+        // @ts-ignore
+        await import("@ground-codes/geoint/region-dist/region-3.json");
+      return module.default as Region[];
+    }
+    if (language.toLowerCase() === "korean") {
+      const module =
+        // @ts-ignore
+        await import("@ground-codes/geoint/region-dist/region-3-korean.json");
+      return module.default as Region[];
+    }
+    if (language.toLowerCase() === "chinese") {
+      const module =
+        // @ts-ignore
+        await import("@ground-codes/geoint/region-dist/region-3-chinese.json");
+      return module.default as Region[];
+    }
+    throw new Error(`Invalid language: ${language}`);
+  }
+
   throw new Error(`Invalid region level: ${regionLevel}`);
 };
 
@@ -79,6 +101,15 @@ const findClosestInRegions = (
   return closestRegion;
 };
 
+const toRegionResult = (region: Region) => ({
+  name: region.name,
+  code: region.code,
+  lat: region.lat,
+  lng: region.long,
+  regionLevel: region.regionLevel,
+  distanceKm: region.distanceKm,
+});
+
 export const findClosestRegion = async (
   {
     lat,
@@ -113,37 +144,27 @@ export const findClosestRegion = async (
       closestRegion.distanceKm !== undefined &&
       closestRegion.distanceKm > region2FallbackDistanceKm
     ) {
-      const region1 = findClosestInRegions(
-        { lat, lng },
-        await loadRegions(1),
-        1,
+      const fallbackCandidates = [
+        closestRegion,
+        findClosestInRegions({ lat, lng }, await loadRegions(1), 1),
+        findClosestInRegions(
+          { lat, lng },
+          await loadRegions(3, language),
+          3,
+        ),
+      ].filter((region): region is Region => Boolean(region));
+
+      const fallbackRegion = fallbackCandidates.reduce((best, region) =>
+        (region.distanceKm ?? Infinity) < (best.distanceKm ?? Infinity)
+          ? region
+          : best,
       );
 
-      if (
-        region1 &&
-        region1.distanceKm !== undefined &&
-        region1.distanceKm < closestRegion.distanceKm
-      ) {
-        return {
-          name: region1.name,
-          code: region1.code,
-          lat: region1.lat,
-          lng: region1.long,
-          regionLevel: region1.regionLevel,
-          distanceKm: region1.distanceKm,
-        };
-      }
+      if (fallbackRegion !== closestRegion) return toRegionResult(fallbackRegion);
     }
 
     if (!closestRegion) return null;
-    return {
-      name: closestRegion.name,
-      code: closestRegion.code,
-      lat: closestRegion.lat,
-      lng: closestRegion.long,
-      regionLevel: closestRegion.regionLevel,
-      distanceKm: closestRegion.distanceKm,
-    };
+    return toRegionResult(closestRegion);
   } catch (error: unknown) {
     console.error("Error importing region data:", error);
     throw new Error(
@@ -199,20 +220,22 @@ export const findRegionByCodeOrName = async (
     }
 
     if (regionLevel === 2) {
-      const region1Match = (await loadRegions(1)).find(
-        (region) =>
-          region.code.toLowerCase() === normalizedSearch ||
-          region.name.toLowerCase() === normalizedSearch,
-      );
+      for (const fallbackLevel of [1, 3]) {
+        const fallbackMatch = (await loadRegions(fallbackLevel, language)).find(
+          (region) =>
+            region.code.toLowerCase() === normalizedSearch ||
+            region.name.toLowerCase() === normalizedSearch,
+        );
 
-      if (region1Match) {
-        return {
-          name: region1Match.name,
-          code: region1Match.code,
-          lat: region1Match.lat,
-          lng: region1Match.long,
-          regionLevel: 1,
-        };
+        if (fallbackMatch) {
+          return {
+            name: fallbackMatch.name,
+            code: fallbackMatch.code,
+            lat: fallbackMatch.lat,
+            lng: fallbackMatch.long,
+            regionLevel: fallbackLevel,
+          };
+        }
       }
     }
 
