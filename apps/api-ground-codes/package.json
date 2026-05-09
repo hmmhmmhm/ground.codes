@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "bun run --watch src/index.ts",
+    "build": "pnpm --filter @ground-codes/geoint build && pnpm --filter ground-codes build",
     "start": "bun run src/index.ts"
   },
   "dependencies": {
