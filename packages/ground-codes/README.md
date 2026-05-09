@@ -177,7 +177,7 @@ These optimizations preserve the same input/output ordering as the original
 Grok Spiral algorithm. They are intended to keep the common Earth-scale range
 usable even when precision is increased into BigInt territory.
 
-### Current Large-Range Benchmarks
+### Current Scale Benchmarks
 
 Benchmarks below were measured with cache disabled:
 
@@ -190,6 +190,22 @@ CASES=10 MAX_DIGITS=21 RUN_SLOW_BIGINT=1 SPIRAL_CACHE=0 SEED=424242 \
 
 | n digits | avg | median | p95 |
 |---:|---:|---:|---:|
+| 1 | 26.29us | 10.12us | 174.92us |
+| 2 | 10.45us | 9.46us | 19.50us |
+| 3 | 20.05us | 20.17us | 31.87us |
+| 4 | 21.07us | 19.37us | 44.92us |
+| 5 | 17.19us | 17.04us | 28.83us |
+| 6 | 19.12us | 19.08us | 34.83us |
+| 7 | 39.41us | 41.21us | 58.04us |
+| 8 | 117.04us | 136.79us | 167.17us |
+| 9 | 453.66us | 479.04us | 710.87us |
+| 10 | 1.683ms | 1.232ms | 4.267ms |
+| 11 | 2.769ms | 3.116ms | 3.379ms |
+| 12 | 6.577ms | 6.807ms | 8.149ms |
+| 13 | 16.444ms | 18.653ms | 20.740ms |
+| 14 | 40.237ms | 41.738ms | 51.001ms |
+| 15 | 17.799ms | 13.889ms | 49.210ms |
+| 16 | 17.446ms | 19.914ms | 27.461ms |
 | 17 | 45.449ms | 44.509ms | 58.040ms |
 | 18 | 194.446ms | 198.617ms | 284.583ms |
 | 19 | 316.517ms | 333.190ms | 407.028ms |
@@ -200,6 +216,13 @@ CASES=10 MAX_DIGITS=21 RUN_SLOW_BIGINT=1 SPIRAL_CACHE=0 SEED=424242 \
 
 | coordinate digits | avg | median | p95 |
 |---:|---:|---:|---:|
+| 1 | 164.21us | 5.38us | 1.435ms |
+| 2 | 14.61us | 11.42us | 32.83us |
+| 3 | 26.65us | 17.71us | 72.83us |
+| 4 | 49.30us | 40.04us | 99.83us |
+| 5 | 213.17us | 205.63us | 293.17us |
+| 6 | 1.466ms | 1.546ms | 1.918ms |
+| 7 | 12.243ms | 12.488ms | 17.032ms |
 | 8 | 52.343ms | 48.880ms | 77.558ms |
 | 9 | 130.253ms | 142.473ms | 168.166ms |
 | 10 | 681.954ms | 782.683ms | 908.628ms |
@@ -208,6 +231,8 @@ CASES=10 MAX_DIGITS=21 RUN_SLOW_BIGINT=1 SPIRAL_CACHE=0 SEED=424242 \
 For a single Earth-wide center at about 3mm precision, expected maximum values
 are around 10 coordinate digits and 21 index digits. Higher precision or larger
 single-center coverage can move more work into the slower BigInt path.
+The lower digit rows are included to show the fast number-path behavior for
+typical small or regional inputs.
 
 ## 🔗 Integration with Other Packages
 
