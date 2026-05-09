@@ -65,6 +65,10 @@ export const decodeByWordSet = async ({
     // @ts-ignore
     wordSet = (await import("@repo/codebook/codebook-dist/korean.json"))
       .default as string[];
+  } else if (language.toLowerCase() === "chinese") {
+    // @ts-ignore
+    wordSet = (await import("@repo/codebook/codebook-dist/chinese.json"))
+      .default as string[];
   } else {
     throw new Error(`Invalid language: ${language}`);
   }

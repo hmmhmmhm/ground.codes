@@ -3,12 +3,30 @@ import { info } from "@ground-codes/geoint";
 
 export const v1RegionInfo = new Elysia().post(
   "/region/info",
-  async ({ body: { name, language = "english", regionLevel = 2 } }) => {
+  async ({
+    body: { name, language = "english", regionLevel = 2, body = "earth" },
+  }) => {
+    const normalizedBody = body.toLowerCase();
+    const languageSuffix =
+      language.toLowerCase() === "korean"
+        ? "-korean"
+        : language.toLowerCase() === "chinese"
+          ? "-chinese"
+          : language.toLowerCase() === "english"
+            ? ""
+            : "";
+    const regionName =
+      normalizedBody === "earth"
+        ? `region-${regionLevel}${
+            language.toLowerCase() === "english"
+              ? ""
+              : `-${language.toLowerCase()}`
+          }`
+        : `region-${regionLevel}-${normalizedBody}${languageSuffix}`;
+
     const data = await info({
       name,
-      regionName: `region-${regionLevel}${
-        language.toLowerCase() === "english" ? "" : `-${language.toLowerCase()}`
-      }`,
+      regionName,
     });
 
     if (!data) {
@@ -41,7 +59,7 @@ export const v1RegionInfo = new Elysia().post(
           example: "english",
           description: "Language for word set encoding",
           enum: ["english", "korean", "chinese"],
-        })
+        }),
       ),
       regionLevel: t.Optional(
         t.Number({
@@ -49,7 +67,15 @@ export const v1RegionInfo = new Elysia().post(
           example: 2,
           description:
             "Region level for encoding (2: City Name, 1: Airport Code)",
-        })
+        }),
+      ),
+      body: t.Optional(
+        t.String({
+          default: "earth",
+          example: "moon",
+          description: "Celestial body for region lookup",
+          enum: ["earth", "moon", "mars"],
+        }),
       ),
     }),
 
@@ -74,14 +100,14 @@ export const v1RegionInfo = new Elysia().post(
         t.Number({
           example: 1000000,
           description: "Population of the region",
-        })
+        }),
       ),
       countryCode: t.Optional(
         t.String({
           example: "KR",
           description: "Country code of the region",
-        })
+        }),
       ),
     }),
-  }
+  },
 );

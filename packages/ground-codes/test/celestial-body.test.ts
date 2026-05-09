@@ -1,0 +1,157 @@
+import assert from "node:assert/strict";
+import { describe, test } from "node:test";
+
+import {
+  decode,
+  encode,
+  findClosestRegion,
+  getBodyMetersPerDegree,
+} from "../src/index.js";
+
+import marsRegions from "@ground-codes/geoint/region-dist/region-2-mars.json";
+import marsKoreanRegions from "@ground-codes/geoint/region-dist/region-2-mars-korean.json";
+import marsFallbackKoreanRegions from "@ground-codes/geoint/region-dist/region-3-mars-korean.json";
+import marsFallbackChineseRegions from "@ground-codes/geoint/region-dist/region-3-mars-chinese.json";
+import moonKoreanRegions from "@ground-codes/geoint/region-dist/region-2-moon-korean.json";
+import moonChineseRegions from "@ground-codes/geoint/region-dist/region-2-moon-chinese.json";
+import marsChineseRegions from "@ground-codes/geoint/region-dist/region-2-mars-chinese.json";
+
+const assertClose = (actual: number, expected: number, tolerance: number) => {
+  assert.ok(
+    Math.abs(actual - expected) <= tolerance,
+    `Expected ${actual} to be within ${tolerance} of ${expected}`,
+  );
+};
+
+describe("celestial bodies", () => {
+  test("keeps planetary localized datasets unique", () => {
+    const assertUniqueNames = (rows: { name: string }[]) => {
+      assert.equal(
+        new Set(rows.map((row) => row.name.toLowerCase())).size,
+        rows.length,
+      );
+    };
+
+    assert.equal(
+      marsRegions.filter((region) => region.name === "Bohar").length,
+      1,
+    );
+    assertUniqueNames(moonKoreanRegions);
+    assertUniqueNames(moonChineseRegions);
+    assertUniqueNames(marsKoreanRegions);
+    assertUniqueNames(marsChineseRegions);
+    assertUniqueNames(marsFallbackKoreanRegions);
+    assertUniqueNames(marsFallbackChineseRegions);
+  });
+
+  test("keeps earth as the default body", async () => {
+    const target = { lat: 37.566, lng: 126.978 };
+
+    const defaultEncoded = await encode(target, { regionLevel: 2 });
+    const earthEncoded = await encode(target, {
+      regionLevel: 2,
+      body: "earth",
+    });
+
+    assert.equal(defaultEncoded, earthEncoded);
+  });
+
+  test("finds official Moon nomenclature for lunar coordinates", async () => {
+    const region = await findClosestRegion(
+      { lat: 8.3487, lng: 30.8346 },
+      { body: "moon" },
+    );
+
+    assert.equal(region?.name, "Mare Tranquillitatis");
+    assert.equal(region?.code, "ME");
+    assert.equal(region?.body, "moon");
+  });
+
+  test("finds official Mars nomenclature for martian coordinates", async () => {
+    const region = await findClosestRegion(
+      { lat: 18.6528, lng: 226.1975 },
+      { body: "mars", regionLevel: 2 },
+    );
+
+    assert.equal(region?.name, "Olympus Mons");
+    assert.equal(region?.code, "MO");
+    assert.equal(region?.body, "mars");
+    assert.equal(region?.lng, -133.8025);
+  });
+
+  test("uses refined Mars crater labels when official nomenclature is sparse", async () => {
+    const region = await findClosestRegion(
+      { lat: 64.3, lng: -86.4 },
+      { body: "mars", regionLevel: 2 },
+    );
+
+    assert.equal(region?.body, "mars");
+    assert.equal(region?.regionLevel, 3);
+    assert.match(region?.name ?? "", /^[A-Z][A-Za-z]+ Crater \d+$/);
+    assert.match(region?.code ?? "", /^MCR-\d{2}-\d{6}$/);
+    assert.ok((region?.distanceKm ?? Infinity) < 200);
+  });
+
+  test("roundtrips Moon codes with lunar meter conversion", async () => {
+    const target = { lat: 8.35, lng: 30.84 };
+    const encoded = await encode(target, { body: "moon", regionLevel: 2 });
+
+    assert.match(encoded, /^Mare Tranquillitatis-/);
+
+    const decoded = await decode(encoded, { body: "moon" });
+    assertClose(decoded.lat, target.lat, 0.0002);
+    assertClose(decoded.lng, target.lng, 0.0002);
+  });
+
+  test("supports Korean Moon and Mars labels", async () => {
+    const moonCode = await encode(
+      { lat: 8.35, lng: 30.84 },
+      { body: "moon", regionLevel: 2, language: "korean" },
+    );
+    assert.match(moonCode, /^고요의 바다-/);
+
+    const marsCode = await encode(
+      { lat: 18.6528, lng: 226.1975 },
+      { body: "mars", regionLevel: 2, language: "korean" },
+    );
+    assert.match(marsCode, /^올림푸스 산-/);
+
+    const marsFallback = await encode(
+      { lat: 64.3, lng: -86.4 },
+      { body: "mars", regionLevel: 2, language: "korean" },
+    );
+    assert.match(marsFallback, /^[A-Za-z]+ 크레이터 \d+-/);
+
+    const decoded = await decode(moonCode, { body: "moon" });
+    assertClose(decoded.lat, 8.35, 0.0002);
+    assertClose(decoded.lng, 30.84, 0.0002);
+  });
+
+  test("supports Chinese Moon and Mars labels", async () => {
+    const moonCode = await encode(
+      { lat: 8.35, lng: 30.84 },
+      { body: "moon", regionLevel: 2, language: "chinese" },
+    );
+    assert.match(moonCode, /^宁静海-/);
+
+    const marsCode = await encode(
+      { lat: 18.6528, lng: 226.1975 },
+      { body: "mars", regionLevel: 2, language: "chinese" },
+    );
+    assert.match(marsCode, /^奥林帕斯山-/);
+
+    const marsFallback = await encode(
+      { lat: 64.3, lng: -86.4 },
+      { body: "mars", regionLevel: 2, language: "chinese" },
+    );
+    assert.match(marsFallback, /^[A-Za-z]+撞击坑\d+-/);
+
+    const decoded = await decode(moonCode, { body: "moon" });
+    assertClose(decoded.lat, 8.35, 0.0002);
+    assertClose(decoded.lng, 30.84, 0.0002);
+  });
+
+  test("uses a smaller meters-per-degree value on the Moon than on Earth", () => {
+    assert.ok(getBodyMetersPerDegree("moon") < getBodyMetersPerDegree("earth"));
+  });
+});

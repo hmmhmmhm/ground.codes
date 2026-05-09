@@ -1,6 +1,9 @@
 import { findClosestRegion, findRegionByCodeOrName } from "./region.js";
 import {
+  CelestialBody,
   calculateCoordinateDiff,
+  getBodyMetersPerDegree,
+  normalizeLongitudeForBody,
   reconstructCoordinateDiff,
 } from "./spherical.js";
 import {
@@ -58,9 +61,16 @@ export const encode = async (
     regionLevel?: number;
     precisionMeters?: number;
     language?: SupportedLanguage;
+    body?: CelestialBody;
   },
 ) => {
-  let { center, precisionMeters, regionLevel = 2, language } = options ?? {};
+  let {
+    center,
+    precisionMeters,
+    regionLevel = 2,
+    language,
+    body = "earth",
+  } = options ?? {};
   const requestedRegionLevel = regionLevel;
 
   let code: string | null = null;
@@ -69,7 +79,11 @@ export const encode = async (
   // If center is provided, encode based on the center
   if (!center) {
     // If center is not provided, find the closest region
-    const region = await findClosestRegion(target, { regionLevel, language });
+    const region = await findClosestRegion(target, {
+      regionLevel,
+      language,
+      body,
+    });
     if (!region) throw new Error("Could not find closest region");
 
     regionLevel = region.regionLevel ?? regionLevel;
@@ -85,7 +99,12 @@ export const encode = async (
   }
 
   // Get index (will be a small number since points are close)
-  const diff = calculateCoordinateDiff({ center, target, precisionMeters });
+  const diff = calculateCoordinateDiff({
+    center,
+    target,
+    precisionMeters,
+    body,
+  });
 
   // Get n from diff
   const n = getNFromCoordinates(diff.lat, diff.lng);
@@ -125,9 +144,10 @@ export const decode = async (
     center?: { lat: number; lng: number };
     regionLevel?: number;
     language?: SupportedLanguage;
+    body?: CelestialBody;
   },
 ) => {
-  let { center, regionLevel = 2, language } = options ?? {};
+  let { center, regionLevel = 2, language, body = "earth" } = options ?? {};
   const requestedRegionLevel = regionLevel;
 
   // Split the encoded string to get region code/name and the actual encoded value
@@ -173,6 +193,7 @@ export const decode = async (
       const region = await findRegionByCodeOrName(code, {
         regionLevel,
         language,
+        body,
       });
       if (!region)
         throw new Error(`Could not find region with code/name: ${code}`);
@@ -208,6 +229,7 @@ export const decode = async (
       lat: Number(coordinates.x),
       lng: Number(coordinates.y),
     },
+    body,
   });
 };
 
@@ -223,6 +245,8 @@ export {
   decodeByWordSet,
   calculateCoordinateDiff,
   reconstructCoordinateDiff,
+  getBodyMetersPerDegree,
+  normalizeLongitudeForBody,
 };
 
-export type { SupportedLanguage };
+export type { CelestialBody, SupportedLanguage };
