@@ -16,6 +16,33 @@ import {
   SupportedLanguage,
 } from "./wordset.js";
 
+const BASE_32_DIGITS = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+
+const encodeBase32 = (n: number | bigint) => {
+  if (typeof n === "number") return n.toString(32).toUpperCase();
+  if (n === 0n) return "0";
+
+  let value = n;
+  let encoded = "";
+  while (value > 0n) {
+    const digit = Number(value % 32n);
+    encoded = BASE_32_DIGITS[digit] + encoded;
+    value /= 32n;
+  }
+  return encoded;
+};
+
+const decodeBase32 = (encoded: string) => {
+  let value = 0n;
+  for (const char of encoded.toUpperCase()) {
+    const digit = BASE_32_DIGITS.indexOf(char);
+    if (digit === -1) throw new Error(`Invalid base32 digit: ${char}`);
+    value = value * 32n + BigInt(digit);
+  }
+
+  return value <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(value) : value;
+};
+
 /**
  * Encodes a target point based on a center point using the spiral algorithm.
  *
@@ -31,7 +58,7 @@ export const encode = async (
     regionLevel?: number;
     precisionMeters?: number;
     language?: SupportedLanguage;
-  }
+  },
 ) => {
   let { center, precisionMeters, regionLevel = 2, language } = options ?? {};
 
@@ -43,6 +70,8 @@ export const encode = async (
     // If center is not provided, find the closest region
     const region = await findClosestRegion(target, { regionLevel, language });
     if (!region) throw new Error("Could not find closest region");
+
+    regionLevel = region.regionLevel ?? regionLevel;
 
     if (regionLevel === 1) {
       // Use code for region 1
@@ -59,14 +88,16 @@ export const encode = async (
 
   // Get n from diff
   const n = getNFromCoordinates(diff.lat, diff.lng);
-  if (typeof n === "bigint") {
-    throw new Error("Encoded coordinate index exceeds the supported word-set range.");
-  }
 
   if (regionLevel === 1) {
     // Encoded (Base 32)
-    encoded = n.toString(32).toUpperCase();
+    encoded = encodeBase32(n);
   } else {
+    if (typeof n === "bigint") {
+      throw new Error(
+        "Encoded coordinate index exceeds the supported word-set range.",
+      );
+    }
     // Encoded By Word Set
     encoded = await encodeByWordSet({ n, language });
   }
@@ -93,7 +124,7 @@ export const decode = async (
     center?: { lat: number; lng: number };
     regionLevel?: number;
     language?: SupportedLanguage;
-  }
+  },
 ) => {
   let { center, regionLevel = 2, language } = options ?? {};
 
@@ -144,27 +175,22 @@ export const decode = async (
       if (!region)
         throw new Error(`Could not find region with code/name: ${code}`);
 
+      regionLevel = region.regionLevel ?? regionLevel;
       center = { lat: region.lat, lng: region.lng };
     }
   }
 
   if (!center) {
     throw new Error(
-      "Center point is required for decoding when no region code/name is provided"
+      "Center point is required for decoding when no region code/name is provided",
     );
   }
 
-  let n: number;
+  let n: number | bigint;
 
   // Decode based on region level
   if (regionLevel === 1 || !regionLevel) {
-    // Try to parse as base32 first (for region level 1 or when level is not specified)
-    try {
-      n = parseInt(actualEncoded, 32);
-    } catch (e) {
-      // If parsing fails, try word set decoding
-      n = await decodeByWordSet({ encoded: actualEncoded, language });
-    }
+    n = decodeBase32(actualEncoded);
   } else {
     // For region level 2 and above, use word set decoding
     n = await decodeByWordSet({ encoded: actualEncoded, language });
@@ -177,8 +203,8 @@ export const decode = async (
   return reconstructCoordinateDiff({
     center,
     diff: {
-      lat: coordinates.x,
-      lng: coordinates.y,
+      lat: Number(coordinates.x),
+      lng: Number(coordinates.y),
     },
   });
 };

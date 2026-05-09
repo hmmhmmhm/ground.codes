@@ -5,7 +5,79 @@ export interface Region {
   code: string;
   lat: number;
   long: number;
+  regionLevel?: number;
+  distanceKm?: number;
 }
+
+const DEFAULT_REGION_2_FALLBACK_DISTANCE_KM = 100;
+
+const loadRegions = async (
+  regionLevel: number,
+  language?: SupportedLanguage,
+): Promise<Region[]> => {
+  if (regionLevel === 1) {
+    const module =
+      // @ts-ignore
+      await import("@ground-codes/geoint/region-dist/region-1.json");
+    return module.default as Region[];
+  }
+
+  if (regionLevel === 2) {
+    if (!language || language.toLowerCase() === "english") {
+      const module =
+        // @ts-ignore
+        await import("@ground-codes/geoint/region-dist/region-2.json");
+      return module.default as Region[];
+    }
+    if (language.toLowerCase() === "korean") {
+      const module =
+        // @ts-ignore
+        await import("@ground-codes/geoint/region-dist/region-2-korean.json");
+      return module.default as Region[];
+    }
+    if (language.toLowerCase() === "chinese") {
+      const module =
+        // @ts-ignore
+        await import("@ground-codes/geoint/region-dist/region-2-chinese.json");
+      return module.default as Region[];
+    }
+    throw new Error(`Invalid language: ${language}`);
+  }
+
+  throw new Error(`Invalid region level: ${regionLevel}`);
+};
+
+const findClosestInRegions = (
+  target: { lat: number; lng: number },
+  regions: Region[],
+  regionLevel: number,
+) => {
+  let closestRegion: Region | null = null;
+  let closestRegionDistance = Infinity;
+
+  for (const region of regions) {
+    const distance = calculateDistance(
+      target.lat,
+      target.lng,
+      region.lat,
+      region.long,
+    );
+
+    if (distance < closestRegionDistance) {
+      closestRegionDistance = distance;
+      closestRegion = {
+        name: region.name,
+        code: region.code,
+        lat: region.lat,
+        long: region.long,
+        regionLevel,
+        distanceKm: distance,
+      };
+    }
+  }
+
+  return closestRegion;
+};
 
 export const findClosestRegion = async (
   {
@@ -18,73 +90,66 @@ export const findClosestRegion = async (
   options?: {
     regionLevel?: number;
     language?: SupportedLanguage;
-  }
+    region2FallbackDistanceKm?: number;
+  },
 ) => {
-  const { regionLevel = 1, language } = options ?? {};
+  const {
+    regionLevel = 1,
+    language,
+    region2FallbackDistanceKm = DEFAULT_REGION_2_FALLBACK_DISTANCE_KM,
+  } = options ?? {};
 
-  let regions: Region[] = [];
   try {
-    if (regionLevel === 1) {
-      // Import region-1 data using the new module system
-      regions = // @ts-ignore
-        (await import("@repo/geoint/region-dist/region-1.json"))
-          .default as Region[];
-    } else if (regionLevel == 2) {
-      if (!language || language.toLowerCase() === "english") {
-        // Import region-2 data using the new module system
-        regions = // @ts-ignore
-          (await import("@repo/geoint/region-dist/region-2.json"))
-            .default as Region[];
-      } else if (language.toLowerCase() === "korean") {
-        // Import region-2-korean data using the new module system
-        regions = // @ts-ignore
-          (await import("@repo/geoint/region-dist/region-2-korean.json"))
-            .default as Region[];
-      } else if (language.toLowerCase() === "chinese") {
-        // Import region-2-chinese data using the new module system
-        regions = // @ts-ignore
-          (await import("@repo/geoint/region-dist/region-2-chinese.json"))
-            .default as Region[];
-      } else {
-        throw new Error(`Invalid language: ${language}`);
+    const regions = await loadRegions(regionLevel, language);
+    const closestRegion = findClosestInRegions(
+      { lat, lng },
+      regions,
+      regionLevel,
+    );
+
+    if (
+      regionLevel === 2 &&
+      closestRegion &&
+      closestRegion.distanceKm !== undefined &&
+      closestRegion.distanceKm > region2FallbackDistanceKm
+    ) {
+      const region1 = findClosestInRegions(
+        { lat, lng },
+        await loadRegions(1),
+        1,
+      );
+
+      if (
+        region1 &&
+        region1.distanceKm !== undefined &&
+        region1.distanceKm < closestRegion.distanceKm
+      ) {
+        return {
+          name: region1.name,
+          code: region1.code,
+          lat: region1.lat,
+          lng: region1.long,
+          regionLevel: region1.regionLevel,
+          distanceKm: region1.distanceKm,
+        };
       }
-    } else {
-      throw new Error(`Invalid region level: ${regionLevel}`);
     }
+
+    if (!closestRegion) return null;
+    return {
+      name: closestRegion.name,
+      code: closestRegion.code,
+      lat: closestRegion.lat,
+      lng: closestRegion.long,
+      regionLevel: closestRegion.regionLevel,
+      distanceKm: closestRegion.distanceKm,
+    };
   } catch (error: unknown) {
     console.error("Error importing region data:", error);
     throw new Error(
-      `Failed to load region data for level ${regionLevel}: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to load region data for level ${regionLevel}: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
-
-  // Find the region that contains the target
-  let closestRegion: {
-    name: string;
-    code: string;
-    lat: number;
-    lng: number;
-  } | null = null;
-
-  let closestRegionDistance = Infinity;
-
-  for (const region of regions) {
-    // Calculate the distance between the target point and the region's center
-    const distance = calculateDistance(lat, lng, region.lat, region.long);
-
-    // Update the closest region if this one is closer
-    if (distance < closestRegionDistance) {
-      closestRegionDistance = distance;
-      closestRegion = {
-        name: region.name,
-        code: region.code,
-        lat: region.lat,
-        lng: region.long,
-      };
-    }
-  }
-
-  return closestRegion;
 };
 
 /**
@@ -96,10 +161,11 @@ export const findRegionByCodeOrName = async (
   options?: {
     regionLevel?: number;
     language?: SupportedLanguage;
-  }
+  },
 ): Promise<{
   lat: number;
   lng: number;
+  regionLevel?: number;
   name?: string;
   code?: string;
 } | null> => {
@@ -110,36 +176,7 @@ export const findRegionByCodeOrName = async (
   try {
     const { regionLevel = 2, language } = options ?? {};
 
-    // Load the appropriate region data based on regionLevel and language
-    let regions: Region[] = [];
-
-    if (regionLevel === 1) {
-      // Import region-1 data
-      regions = // @ts-ignore
-        (await import("@repo/geoint/region-dist/region-1.json"))
-          .default as Region[];
-    } else if (regionLevel === 2) {
-      if (!language || language.toLowerCase() === "english") {
-        // Import region-2 data
-        regions = // @ts-ignore
-          (await import("@repo/geoint/region-dist/region-2.json"))
-            .default as Region[];
-      } else if (language.toLowerCase() === "korean") {
-        // Import region-2-korean data
-        regions = // @ts-ignore
-          (await import("@repo/geoint/region-dist/region-2-korean.json"))
-            .default as Region[];
-      } else if (language.toLowerCase() === "chinese") {
-        // Import region-2-chinese data
-        regions = // @ts-ignore
-          (await import("@repo/geoint/region-dist/region-2-chinese.json"))
-            .default as Region[];
-      } else {
-        throw new Error(`Invalid language: ${language}`);
-      }
-    } else {
-      throw new Error(`Invalid region level: ${regionLevel}`);
-    }
+    const regions = await loadRegions(regionLevel, language);
 
     // Normalize the search term for case-insensitive comparison
     const normalizedSearch = codeOrName.toLowerCase().trim();
@@ -148,7 +185,7 @@ export const findRegionByCodeOrName = async (
     const matchedRegion = regions.find(
       (region) =>
         region.code.toLowerCase() === normalizedSearch ||
-        region.name.toLowerCase() === normalizedSearch
+        region.name.toLowerCase() === normalizedSearch,
     );
 
     if (matchedRegion) {
@@ -157,12 +194,31 @@ export const findRegionByCodeOrName = async (
         code: matchedRegion.code,
         lat: matchedRegion.lat,
         lng: matchedRegion.long,
+        regionLevel,
       };
+    }
+
+    if (regionLevel === 2) {
+      const region1Match = (await loadRegions(1)).find(
+        (region) =>
+          region.code.toLowerCase() === normalizedSearch ||
+          region.name.toLowerCase() === normalizedSearch,
+      );
+
+      if (region1Match) {
+        return {
+          name: region1Match.name,
+          code: region1Match.code,
+          lat: region1Match.lat,
+          lng: region1Match.long,
+          regionLevel: 1,
+        };
+      }
     }
 
     // If no exact match is found, try to find a region whose name contains the search term
     const partialMatch = regions.find((region) =>
-      region.name.toLowerCase().includes(normalizedSearch)
+      region.name.toLowerCase().includes(normalizedSearch),
     );
 
     if (partialMatch) {
@@ -171,6 +227,7 @@ export const findRegionByCodeOrName = async (
         code: partialMatch.code,
         lat: partialMatch.lat,
         lng: partialMatch.long,
+        regionLevel,
       };
     }
 
@@ -194,7 +251,7 @@ export function calculateDistance(
   lat1: number,
   lon1: number,
   lat2: number,
-  lon2: number
+  lon2: number,
 ): number {
   // Earth's radius in kilometers
   const R = 6371;

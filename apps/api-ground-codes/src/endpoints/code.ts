@@ -1,4 +1,3 @@
-import { around, info } from "@ground-codes/geoint";
 import Elysia, { redirect, t } from "elysia";
 import { decode, encode } from "ground-codes";
 
@@ -21,44 +20,11 @@ export const codeEndpoint = new Elysia().get(
     }
 
     if (input.includes("-")) {
-      const codes = input.split("-");
-      const name = codes[0];
-      const encoded = codes.slice(1).join("-");
-      const center = await info({
-        name,
-        regionName: "region-2",
-      });
-
-      return await decode(encoded, {
-        center: {
-          lat: center.lat,
-          lng: center.long,
-        },
-        regionLevel: 2,
-        language: "english",
-      });
+      return await decode(input, { regionLevel: 2, language: "english" });
     }
     if (input.includes(",")) {
       const [lat, lng] = input.split(",").map(Number);
-      const center = await around({
-        lat,
-        lng,
-        regionName: "region-2",
-        maxResults: 1,
-      });
-
-      const encoded = await encode(
-        { lat, lng },
-        {
-          center: {
-            lat: center[0].lat,
-            lng: center[0].long,
-          },
-          regionLevel: 2,
-        }
-      );
-
-      return `${center[0].name}-${encoded}`;
+      return await encode({ lat, lng }, { regionLevel: 2 });
     }
 
     // If path is undecodable, redirect to root
@@ -91,7 +57,7 @@ export const codeEndpoint = new Elysia().get(
         },
         {
           description: "Decoded result (when input is 'name-encoded')",
-        }
+        },
       ),
       t.Object(
         {
@@ -103,7 +69,7 @@ export const codeEndpoint = new Elysia().get(
         },
         {
           description: "Help message",
-        }
+        },
       ),
       t.Null(),
     ]),
@@ -121,7 +87,7 @@ export const codeEndpoint = new Elysia().get(
         "**Important:** `{path}` must be directly specified. Example: `37.566,126.97758167241173`",
       operationId: "encodeDecodeLocation",
     },
-  }
+  },
 );
 
 // Root path redirect endpoint
@@ -139,5 +105,5 @@ export const rootRedirectEndpoint = new Elysia().get(
       description: "Redirects to the root path.",
       operationId: "rootRedirect",
     },
-  }
+  },
 );
