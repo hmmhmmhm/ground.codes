@@ -3,7 +3,13 @@ import {
   calculateCoordinateDiff,
   reconstructCoordinateDiff,
 } from "./spherical.js";
-import { getCoordinates, getNFromCoordinates } from "./spiral.js";
+import {
+  clearSpiralCache,
+  getCoordinates,
+  getNFromCoordinates,
+  isSpiralCacheEnabled,
+  setSpiralCacheEnabled,
+} from "./spiral.js";
 import {
   decodeByWordSet,
   encodeByWordSet,
@@ -53,6 +59,9 @@ export const encode = async (
 
   // Get n from diff
   const n = getNFromCoordinates(diff.lat, diff.lng);
+  if (typeof n === "bigint") {
+    throw new Error("Encoded coordinate index exceeds the supported word-set range.");
+  }
 
   if (regionLevel === 1) {
     // Encoded (Base 32)
@@ -177,6 +186,9 @@ export const decode = async (
 export {
   getCoordinates,
   getNFromCoordinates,
+  clearSpiralCache,
+  isSpiralCacheEnabled,
+  setSpiralCacheEnabled,
   findClosestRegion,
   findRegionByCodeOrName,
   encodeByWordSet,
