@@ -8,11 +8,17 @@ import { useLanguage } from "./use-language";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { useLocationTracking } from "./use-location-tracking";
 import { Coordinates, LocationMode } from "../types";
-
-const defaultCenter = {
-  lat: 37.5665,
-  lng: 126.978,
-};
+import {
+  CelestialBody,
+  createPlanetaryMapType,
+  getDefaultPlanetaryLayerId,
+  getDefaultViewForBody,
+  getPlanetaryLayerConfig,
+  METERS_PER_DEGREE_BY_BODY,
+  parseCelestialBody,
+  parsePlanetaryLayerId,
+  PLANETARY_BODY_CONFIGS,
+} from "@/lib/map/celestial-bodies";
 
 // Define libraries array as a constant to prevent recreation on each render
 const libraries: "places"[] = ["places"];
@@ -44,9 +50,51 @@ const getMapTypeFromCookie = (): string => {
   }
 };
 
+const getInitialBody = (): CelestialBody => {
+  if (typeof window === "undefined") return "earth";
+  return parseCelestialBody(
+    new URLSearchParams(window.location.search).get("body")
+  );
+};
+
+const getInitialPlanetaryLayerId = (body: CelestialBody) => {
+  if (body === "earth") return getDefaultPlanetaryLayerId("moon");
+
+  const layerId =
+    typeof window === "undefined"
+      ? null
+      : new URLSearchParams(window.location.search).get("layer");
+  return parsePlanetaryLayerId(body, layerId);
+};
+
+const getInitialCenter = (body: CelestialBody): google.maps.LatLngLiteral => {
+  const defaultView = getDefaultViewForBody(body);
+  if (typeof window === "undefined") return defaultView.center;
+
+  const params = new URLSearchParams(window.location.search);
+  const lat = Number(params.get("lat"));
+  const lng = Number(params.get("lng"));
+  if (Number.isFinite(lat) && Number.isFinite(lng)) return { lat, lng };
+
+  return defaultView.center;
+};
+
+const getInitialZoom = (body: CelestialBody): number => {
+  const defaultView = getDefaultViewForBody(body);
+  if (typeof window === "undefined") return defaultView.zoom;
+
+  const zoom = Number(new URLSearchParams(window.location.search).get("zoom"));
+  return Number.isFinite(zoom) ? zoom : defaultView.zoom;
+};
+
 export const useMapContainer = () => {
   const { getUserLanguage } = useLanguage();
   const { isChangingLanguage } = useI18n();
+  const [body, setBody] = useState<CelestialBody>(getInitialBody);
+  const isEarth = body === "earth";
+  const [planetaryLayerId, setPlanetaryLayerId] = useState(() =>
+    getInitialPlanetaryLayerId(body)
+  );
 
   // Get language from cookie for Google Maps API
   const mapLanguage = isChangingLanguage ? "en" : getUserLanguage();
@@ -61,10 +109,10 @@ export const useMapContainer = () => {
 
   // Map state
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [center, setCenter] = useState(defaultCenter);
+  const [center, setCenter] = useState(() => getInitialCenter(body));
   const [mapType, setMapType] = useState<string>(getMapTypeFromCookie());
-  const [zoom, setZoom] = useState(18);
-  const userZoomRef = useRef<number>(18);
+  const [zoom, setZoom] = useState(() => getInitialZoom(body));
+  const userZoomRef = useRef<number>(getInitialZoom(body));
   const [mapHeading, setMapHeading] = useState(0);
   const [mapTilt, setMapTilt] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -146,8 +194,8 @@ export const useMapContainer = () => {
     cancelGeolocationRequest,
     requestOrientationPermission,
   } = useGeolocation(map, setCenter, setSelectedArea, {
-    autoGetLocation: true,
-    initialFetch: true,
+    autoGetLocation: isEarth,
+    initialFetch: isEarth,
   });
 
   // Location tracking start function
@@ -162,6 +210,13 @@ export const useMapContainer = () => {
 
   // Location mode change update tracking state
   useEffect(() => {
+    if (!isEarth) {
+      setLocationMode(LocationMode.OFF);
+      cancelGeolocationRequest();
+      stopWatchingPosition();
+      return;
+    }
+
     // Perform different actions based on location mode
     if (locationMode === LocationMode.OFF) {
       // OFF mode: stop location tracking
@@ -198,6 +253,7 @@ export const useMapContainer = () => {
     userLocationLoaded,
     userLocation,
     getGeoLocation,
+    isEarth,
   ]);
 
   // Toggle map type between roadmap and satellite
@@ -300,6 +356,8 @@ export const useMapContainer = () => {
 
   // Get user location function
   const getUserLocation = useCallback(() => {
+    if (!isEarth) return;
+
     // Toggle location mode (OFF -> LOCATE -> TRACKING -> OFF)
     if (locationMode === LocationMode.OFF) {
       setLocationMode(LocationMode.LOCATE);
@@ -308,7 +366,7 @@ export const useMapContainer = () => {
     } else {
       setLocationMode(LocationMode.OFF);
     }
-  }, [locationMode, setLocationMode]);
+  }, [locationMode, setLocationMode, isEarth]);
 
   // Toggle fullscreen function
   const toggleFullscreen = useCallback(() => {
@@ -342,7 +400,7 @@ export const useMapContainer = () => {
 
   // Get encoded coordinates using the hook
   const { encodedCoordinates, isEncoding, encodeSelectedAreaCoordinates } =
-    useMapCoordinates(selectedArea);
+    useMapCoordinates(selectedArea, body);
 
   // Get grid system functions using the hook
   const {
@@ -358,14 +416,108 @@ export const useMapContainer = () => {
     setSelectedPlaceId,
     setSelectedLocation,
     setShowInfoWindow,
+    metersPerDegree: METERS_PER_DEGREE_BY_BODY[body],
   });
 
   // Handle map interaction (e.g., click) to disable location tracking
   const handleMapInteraction = useCallback(() => {
+    if (!isEarth) return;
+
     if (locationMode === LocationMode.TRACKING) {
       setLocationMode(LocationMode.OFF);
     }
-  }, [locationMode, setLocationMode]);
+  }, [locationMode, setLocationMode, isEarth]);
+
+  const selectBody = useCallback(
+    (nextBody: CelestialBody) => {
+      if (nextBody === body) return;
+
+      const nextView = getDefaultViewForBody(nextBody);
+      setBody(nextBody);
+      if (nextBody !== "earth") {
+        setPlanetaryLayerId(getDefaultPlanetaryLayerId(nextBody));
+      }
+      setCenter(nextView.center);
+      setZoom(nextView.zoom);
+      userZoomRef.current = nextView.zoom;
+      setSelectedArea(null);
+      setShowInfoWindow(false);
+
+      if (map) {
+        map.setCenter(nextView.center);
+        map.setZoom(nextView.zoom);
+      }
+    },
+    [body, map]
+  );
+
+  const selectPlanetaryLayer = useCallback(
+    (layerId: string) => {
+      if (body === "earth") return;
+      const nextLayerId = parsePlanetaryLayerId(body, layerId);
+      setPlanetaryLayerId(nextLayerId);
+    },
+    [body]
+  );
+
+  useEffect(() => {
+    if (!map) return;
+
+    if (body === "earth") {
+      map.setOptions({ clickableIcons: true });
+      if (mapType === "roadmap") {
+        map.setOptions({
+          styles:
+            process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID !== undefined
+              ? null
+              : googleMapDarkTheme,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID,
+        });
+      } else {
+        map.setOptions({
+          styles: [],
+          mapTypeControlOptions: {
+            mapTypeIds: [google.maps.MapTypeId.HYBRID],
+          },
+          mapId: null,
+        });
+        map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+      }
+      return;
+    }
+
+    const planetaryMapType = createPlanetaryMapType(body, planetaryLayerId);
+    map.mapTypes.set(body, planetaryMapType);
+    map.setOptions({
+      clickableIcons: false,
+      styles: [],
+      backgroundColor: "#050505",
+      mapTypeControlOptions: { mapTypeIds: [body] },
+      mapId: null,
+    });
+    map.setMapTypeId(body);
+  }, [body, map, mapType, planetaryLayerId]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const params = new URLSearchParams(window.location.search);
+    if (body === "earth") {
+      params.delete("body");
+      params.delete("layer");
+    } else {
+      params.set("body", body);
+      params.set("layer", planetaryLayerId);
+    }
+    params.set("lat", center.lat.toFixed(5));
+    params.set("lng", center.lng.toFixed(5));
+    params.set("zoom", String(zoom));
+
+    const query = params.toString();
+    const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
+    window.history.replaceState(null, "", nextUrl);
+  }, [body, center, zoom, planetaryLayerId]);
 
   // Close place details
   const closePlaceDetails = useCallback(() => {
@@ -505,7 +657,18 @@ export const useMapContainer = () => {
       });
 
       // Apply styles based on initial map type
-      if (mapType === "roadmap") {
+      if (body !== "earth") {
+        const planetaryMapType = createPlanetaryMapType(body, planetaryLayerId);
+        mapInstance.mapTypes.set(body, planetaryMapType);
+        mapInstance.setOptions({
+          clickableIcons: false,
+          styles: [],
+          backgroundColor: "#050505",
+          mapTypeControlOptions: { mapTypeIds: [body] },
+          mapId: null,
+        });
+        mapInstance.setMapTypeId(body);
+      } else if (mapType === "roadmap") {
         mapInstance.setOptions({
           styles:
             process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID !== undefined
@@ -517,12 +680,12 @@ export const useMapContainer = () => {
       } else {
         mapInstance.setOptions({
           styles: [],
-          mapTypeId: google.maps.MapTypeId.HYBRID, // Use HYBRID instead of SATELLITE to show labels
           mapTypeControlOptions: {
             mapTypeIds: [google.maps.MapTypeId.HYBRID],
           },
           mapId: null,
         });
+        mapInstance.setMapTypeId(google.maps.MapTypeId.HYBRID);
       }
 
       // Set up grid and event handlers
@@ -547,7 +710,15 @@ export const useMapContainer = () => {
         onTiltChanged();
       });
     },
-    [drawGrid, setupMapEventHandlers, mapType, onHeadingChanged, onTiltChanged]
+    [
+      drawGrid,
+      setupMapEventHandlers,
+      mapType,
+      onHeadingChanged,
+      onTiltChanged,
+      body,
+      planetaryLayerId,
+    ]
   );
 
   // Map unload handler
@@ -592,6 +763,17 @@ export const useMapContainer = () => {
     }
   }, [map]);
 
+  const onCenterChanged = useCallback(() => {
+    if (!map) return;
+
+    const nextCenter = map.getCenter();
+    if (!nextCenter) return;
+    setCenter(nextCenter.toJSON());
+  }, [map]);
+
+  const activePlanetaryLayer =
+    body === "earth" ? null : getPlanetaryLayerConfig(body, planetaryLayerId);
+
   return {
     // Map state
     isLoaded,
@@ -600,6 +782,14 @@ export const useMapContainer = () => {
     zoom,
     mapType,
     toggleMapType,
+    body,
+    isEarth,
+    selectBody,
+    planetaryLayerId,
+    planetaryLayers:
+      body === "earth" ? [] : PLANETARY_BODY_CONFIGS[body].layers,
+    selectPlanetaryLayer,
+    planetaryAttribution: activePlanetaryLayer?.attribution ?? null,
     mapHeading,
     mapTilt,
     resetMapHeading,
@@ -655,5 +845,6 @@ export const useMapContainer = () => {
     onLoad,
     onUnmount,
     onZoomChanged,
+    onCenterChanged,
   };
 };

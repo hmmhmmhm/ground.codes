@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { encode } from "@/lib/code/ground-codes";
+import { CelestialBody } from "@/lib/map/celestial-bodies";
 
 /**
  * Generates (and caches) a ground code for the given lat/lng location.
@@ -8,7 +9,8 @@ import { encode } from "@/lib/code/ground-codes";
  */
 export const useGroundCode = (
   location: google.maps.LatLng | null,
-  visible: boolean
+  visible: boolean,
+  body: CelestialBody = "earth"
 ) => {
   const { locale } = useI18n();
   const [groundCode, setGroundCode] = useState<string>("");
@@ -23,6 +25,7 @@ export const useGroundCode = (
         lng: location.lng(),
         language:
           locale === "ko" ? "korean" : locale === "cn" ? "chinese" : "english",
+        body,
       });
       setGroundCode(code);
     } catch (err) {
@@ -31,7 +34,7 @@ export const useGroundCode = (
     } finally {
       setIsLoadingGroundCode(false);
     }
-  }, [location, locale]);
+  }, [location, locale, body]);
 
   useEffect(() => {
     if (location && visible) {

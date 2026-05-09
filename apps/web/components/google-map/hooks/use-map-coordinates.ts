@@ -1,13 +1,17 @@
 import { useState, useCallback } from "react";
 import { encode } from "@/lib/code/ground-codes";
 import { useI18n } from "@/lib/i18n/i18n-context";
+import { CelestialBody } from "@/lib/map/celestial-bodies";
 
 interface Coordinates {
   lat: number;
   lng: number;
 }
 
-export const useMapCoordinates = (selectedArea: Coordinates | null) => {
+export const useMapCoordinates = (
+  selectedArea: Coordinates | null,
+  body: CelestialBody = "earth"
+) => {
   const { locale } = useI18n();
   const [encodedCoordinates, setEncodedCoordinates] = useState<string>("");
   const [isEncoding, setIsEncoding] = useState(false);
@@ -32,6 +36,7 @@ export const useMapCoordinates = (selectedArea: Coordinates | null) => {
         lat: selectedArea.lat,
         lng: selectedArea.lng,
         language,
+        body,
       });
       setEncodedCoordinates(encoded);
     } catch (error) {
@@ -40,7 +45,7 @@ export const useMapCoordinates = (selectedArea: Coordinates | null) => {
     } finally {
       setIsEncoding(false);
     }
-  }, [selectedArea]); // Locale dependency removed
+  }, [selectedArea, body]); // Locale dependency removed
 
   return {
     encodedCoordinates,

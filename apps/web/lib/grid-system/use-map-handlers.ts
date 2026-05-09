@@ -99,7 +99,8 @@ export function useGridCellClickHandler(
   isGridVisibleAtZoom: (zoom: number | undefined) => boolean,
   mapInstanceRef: React.MutableRefObject<google.maps.Map | null>,
   setSelectedArea: React.Dispatch<React.SetStateAction<Coordinates | null>>,
-  drawGrid: (mapInstance: google.maps.Map) => void
+  drawGrid: (mapInstance: google.maps.Map) => void,
+  metersPerDegree?: number
 ) {
   return useCallback(
     (e: google.maps.MapMouseEvent) => {
@@ -134,7 +135,12 @@ export function useGridCellClickHandler(
       const centerLat = (ne.lat() + sw.lat()) / 2;
 
       // Get the center of the grid cell that was clicked
-      const cellCenter = getGridCellCenter(clickedLat, clickedLng, centerLat);
+      const cellCenter = getGridCellCenter(
+        clickedLat,
+        clickedLng,
+        centerLat,
+        metersPerDegree
+      );
 
       // Update selected area state
       setSelectedArea(cellCenter);
@@ -142,7 +148,14 @@ export function useGridCellClickHandler(
       // Redraw grid to show selected area
       drawGrid(mapInstance);
     },
-    [showGrid, isGridVisibleAtZoom, mapInstanceRef, setSelectedArea, drawGrid]
+    [
+      showGrid,
+      isGridVisibleAtZoom,
+      mapInstanceRef,
+      setSelectedArea,
+      drawGrid,
+      metersPerDegree,
+    ]
   );
 }
 

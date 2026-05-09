@@ -30,6 +30,13 @@ function GoogleMapComponent() {
     handlePlaceSelect,
     mapType,
     toggleMapType,
+    body,
+    isEarth,
+    selectBody,
+    planetaryLayerId,
+    planetaryLayers,
+    selectPlanetaryLayer,
+    planetaryAttribution,
     mapHeading,
     resetMapHeading,
     setMapHeading,
@@ -42,6 +49,7 @@ function GoogleMapComponent() {
     // InfoWindow state
     showInfoWindow,
     setShowInfoWindow,
+    onCenterChanged,
   } = useMapContainer();
 
   // Language change in progress, do not render map component
@@ -63,17 +71,18 @@ function GoogleMapComponent() {
         }}
         zoom={zoom}
         onZoomChanged={onZoomChanged}
+        onCenterChanged={onCenterChanged}
         options={{
           disableDefaultUI: true, // Disables all default UI controls
           zoomControl: false,
           mapTypeControl: false,
           streetViewControl: false,
           fullscreenControl: false,
-          clickableIcons: true,
+          clickableIcons: isEarth,
         }}
       >
         <MapMarkers
-          userLocation={userLocation}
+          userLocation={isEarth ? userLocation : null}
           selectedArea={selectedArea}
           zoom={zoom}
           encodedCoordinates={encodedCoordinates}
@@ -84,7 +93,7 @@ function GoogleMapComponent() {
         />
       </GoogleMap>
 
-      <MapSearch map={map} onPlaceSelect={handlePlaceSelect} />
+      {isEarth && <MapSearch map={map} onPlaceSelect={handlePlaceSelect} />}
 
       <MapControls
         {...{
@@ -93,6 +102,12 @@ function GoogleMapComponent() {
           getUserLocation,
           mapType,
           toggleMapType,
+          body,
+          selectBody,
+          isEarth,
+          planetaryLayerId,
+          planetaryLayers,
+          selectPlanetaryLayer,
           mapHeading,
           resetMapHeading,
           setMapHeading,
@@ -102,17 +117,25 @@ function GoogleMapComponent() {
         }}
       />
 
+      {planetaryAttribution && (
+        <div className="absolute left-[10px] bottom-[10px] z-10 bg-black/40 backdrop-blur-md border border-white/20 rounded-md px-2 py-1 text-[11px] text-white/80">
+          {planetaryAttribution}
+        </div>
+      )}
+
       {/* Weather Information */}
-      <WeatherInfo map={map} />
+      {isEarth && <WeatherInfo map={map} />}
 
       {/* Place Details UI */}
-      <PlaceDetails
-        map={map}
-        visible={placeDetailsVisible}
-        placeId={selectedPlaceId}
-        location={selectedLocation}
-        onClose={closePlaceDetails}
-      />
+      {isEarth && (
+        <PlaceDetails
+          map={map}
+          visible={placeDetailsVisible}
+          placeId={selectedPlaceId}
+          location={selectedLocation}
+          onClose={closePlaceDetails}
+        />
+      )}
     </div>
   ) : (
     <div>{t("map.loading")}</div>
