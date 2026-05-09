@@ -12,21 +12,23 @@ export default async () => {
   };
 
   console.log(
-    chalk.green("Starting to import region data into the embedded database...")
+    chalk.green("Starting to import region data into the embedded database..."),
   );
 
   if (!fs.existsSync(filePaths.regionDist)) {
     console.log(
       chalk.yellow(
-        `The region-dist directory does not exist. Please run "region-2-build" first.`
-      )
+        `The region-dist directory does not exist. Please run "region-2-build" first.`,
+      ),
     );
     return;
   }
 
-  const regionFiles = fs.readdirSync(filePaths.regionDist);
+  const regionFiles = fs
+    .readdirSync(filePaths.regionDist)
+    .filter((file) => file.endsWith(".json"));
   console.log(
-    chalk.green(`Founded ${regionFiles.length} region files for database.`)
+    chalk.green(`Founded ${regionFiles.length} region files for database.`),
   );
 
   fs.mkdirSync(filePaths.regionDb, { recursive: true });
@@ -34,8 +36,8 @@ export default async () => {
   for (const regionFile of regionFiles) {
     console.log(
       chalk.green(
-        `Processing ${regionFile}...(${regionFiles.indexOf(regionFile) + 1}/${regionFiles.length})`
-      )
+        `Processing ${regionFile}...(${regionFiles.indexOf(regionFile) + 1}/${regionFiles.length})`,
+      ),
     );
     const regionPath = path.join(filePaths.regionDist, regionFile);
     const regionFileName = regionFile.split(".")[0];
@@ -44,14 +46,16 @@ export default async () => {
       regionLevelDbPath: path.join(filePaths.regionDb, `${regionFileName}`),
       regionKDBushPath: path.join(
         filePaths.regionDb,
-        `${regionFileName}.index`
+        `${regionFileName}.index`,
       ),
       regionLevel: parseInt(regionFileName.split("-")[1]),
     });
   }
 
   console.log(
-    chalk.green("Successfully imported region data into the embedded database.")
+    chalk.green(
+      "Successfully imported region data into the embedded database.",
+    ),
   );
 };
 
@@ -66,8 +70,11 @@ const createEmbeddedDatabase = async ({
   regionKDBushPath: string;
   regionLevel: number;
 }) => {
+  fs.rmSync(regionLevelDbPath, { recursive: true, force: true });
+  fs.rmSync(regionKDBushPath, { force: true });
+
   const regions = JSON.parse(
-    fs.readFileSync(regionJsonPath, "utf-8")
+    fs.readFileSync(regionJsonPath, "utf-8"),
   ) as RegionData[];
 
   const kdbush = new KDBush(regions.length);
@@ -79,7 +86,7 @@ const createEmbeddedDatabase = async ({
     await db.put(`I-${index.toString()}`, JSON.stringify(region));
     await db.put(
       `N-${regionLevel === 1 ? region.code : region.name}`,
-      `I-${index.toString()}`
+      `I-${index.toString()}`,
     );
     kdbush.add(region.long, region.lat);
   }
