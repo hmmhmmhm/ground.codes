@@ -506,13 +506,16 @@ export const useMapContainer = () => {
     if (body === "earth") {
       params.delete("body");
       params.delete("layer");
+      params.delete("lat");
+      params.delete("lng");
+      params.delete("zoom");
     } else {
       params.set("body", body);
       params.set("layer", planetaryLayerId);
+      params.set("lat", center.lat.toFixed(5));
+      params.set("lng", center.lng.toFixed(5));
+      params.set("zoom", String(zoom));
     }
-    params.set("lat", center.lat.toFixed(5));
-    params.set("lng", center.lng.toFixed(5));
-    params.set("zoom", String(zoom));
 
     const query = params.toString();
     const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
@@ -763,12 +766,16 @@ export const useMapContainer = () => {
     }
   }, [map]);
 
-  const onCenterChanged = useCallback(() => {
+  const onIdle = useCallback(() => {
     if (!map) return;
 
     const nextCenter = map.getCenter();
-    if (!nextCenter) return;
+    const nextZoom = map.getZoom();
+    if (!nextCenter || nextZoom === undefined) return;
+
     setCenter(nextCenter.toJSON());
+    setZoom(nextZoom);
+    userZoomRef.current = nextZoom;
   }, [map]);
 
   const activePlanetaryLayer =
@@ -845,6 +852,6 @@ export const useMapContainer = () => {
     onLoad,
     onUnmount,
     onZoomChanged,
-    onCenterChanged,
+    onIdle,
   };
 };
