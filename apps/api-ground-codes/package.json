@@ -1,6 +1,7 @@
 {
   "name": "api-ground-codes",
   "version": "1.0.50",
+  "packageManager": "pnpm@9.0.0",
   "private": true,
   "scripts": {
     "dev": "bun run --watch src/index.ts",
@@ -10,6 +11,7 @@
     "@elysiajs/cors": "^1.2.0",
     "@elysiajs/static": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
+    "@sinclair/typebox": "^0.34.30",
     "elysia": "latest",
     "ground-codes": "workspace:*",
     "@ground-codes/geoint": "workspace:*"
