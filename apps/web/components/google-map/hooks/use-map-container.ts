@@ -72,6 +72,8 @@ const getInitialCenter = (body: CelestialBody): google.maps.LatLngLiteral => {
   if (typeof window === "undefined") return defaultView.center;
 
   const params = new URLSearchParams(window.location.search);
+  if (!params.has("lat") || !params.has("lng")) return defaultView.center;
+
   const lat = Number(params.get("lat"));
   const lng = Number(params.get("lng"));
   if (Number.isFinite(lat) && Number.isFinite(lng)) return { lat, lng };
@@ -83,7 +85,10 @@ const getInitialZoom = (body: CelestialBody): number => {
   const defaultView = getDefaultViewForBody(body);
   if (typeof window === "undefined") return defaultView.zoom;
 
-  const zoom = Number(new URLSearchParams(window.location.search).get("zoom"));
+  const params = new URLSearchParams(window.location.search);
+  if (!params.has("zoom")) return defaultView.zoom;
+
+  const zoom = Number(params.get("zoom"));
   return Number.isFinite(zoom) ? zoom : defaultView.zoom;
 };
 
