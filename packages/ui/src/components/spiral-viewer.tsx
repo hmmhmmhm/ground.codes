@@ -11,7 +11,7 @@ const getLayerColor = (layer: number) => {
 
 export interface SpiralViewerProps {
   getCoordinates?: (n: number) => { x: number; y: number };
-  getNFromCoordinates?: (x: number, y: number) => number;
+  getNFromCoordinates?: (x: number, y: number) => number | bigint;
 }
 
 export default function SpiralViewer({

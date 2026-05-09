@@ -120,6 +120,34 @@ Finds the closest region to the given coordinates.
 
 **Returns:** `Promise<{ name: string, code: string, lat: number, lng: number }>` - The closest region
 
+### 🌀 Spiral Index APIs
+
+The package also exports the low-level spiral conversion functions used by
+`encode` and `decode`.
+
+```typescript
+import {
+  getCoordinates,
+  getNFromCoordinates,
+  setSpiralCacheEnabled,
+  clearSpiralCache,
+} from "ground-codes";
+
+const n = getNFromCoordinates(123, -456);
+const point = getCoordinates(n);
+
+setSpiralCacheEnabled(true);
+clearSpiralCache();
+```
+
+- `getNFromCoordinates(x, y)` converts spiral coordinates to an index.
+- `getCoordinates(n)` converts a spiral index back to coordinates.
+- `number` inputs are used while the calculation is safe for JavaScript numbers.
+- Large coordinate/index inputs can use `bigint` and return exact `bigint` results.
+- If number coordinates would overflow safe integer math internally, the function automatically routes to the BigInt path and may return a `bigint` index.
+- Spiral caches are disabled by default. Enable them explicitly with `setSpiralCacheEnabled(true)` when repeated calls are expected.
+- `encode()` still targets the word-set range. If the calculated index exceeds that range, it throws instead of silently truncating a BigInt result.
+
 ## 📏 Precision Levels
 
 Ground Codes offers different precision levels through simple syntax changes:
@@ -130,7 +158,56 @@ Ground Codes offers different precision levels through simple syntax changes:
 
 ## ⚙️ Technical Details
 
-Ground Codes uses a custom GIS algorithm called "Grok Spiral" that determines coordinates by moving in a clockwise spiral from a central point. This implementation leverages the "Gauss Circle Problem" formula to achieve O(sqrt N) efficiency in coordinate generation. The spiral pattern maintains a circular shape regardless of distance from the center point, resulting in excellent coordinate indexing efficiency.
+Ground Codes uses a custom GIS algorithm called "Grok Spiral" that orders
+integer coordinate offsets by squared distance from a center point, then by
+angle. This preserves a circular expansion pattern around the center.
+
+The implementation in this shared `ground-codes` package includes several
+exact optimizations for large ranges:
+
+- convex-hull based lattice-point counting for large circles
+- BigInt-safe coordinate/index conversion
+- number-guided BigInt lattice counting with exact BigInt boundary correction
+- Pollard-Rho, Cornacchia, and Gaussian integer based shell generation
+- small `p ≡ 3 (mod 4)` odd-exponent prefiltering for shells with no sum-of-two-squares representation
+- per-call local count memoization for BigInt `n -> xy` search
+- optional spiral caches, disabled by default
+
+These optimizations preserve the same input/output ordering as the original
+Grok Spiral algorithm. They are intended to keep the common Earth-scale range
+usable even when precision is increased into BigInt territory.
+
+### Current Large-Range Benchmarks
+
+Benchmarks below were measured with cache disabled:
+
+```bash
+CASES=10 MAX_DIGITS=21 RUN_SLOW_BIGINT=1 SPIRAL_CACHE=0 SEED=424242 \
+  pnpm --filter ground-codes exec tsx scripts/benchmark-spiral-scale.ts
+```
+
+`n -> xy`:
+
+| n digits | avg | median | p95 |
+|---:|---:|---:|---:|
+| 17 | 45.449ms | 44.509ms | 58.040ms |
+| 18 | 194.446ms | 198.617ms | 284.583ms |
+| 19 | 316.517ms | 333.190ms | 407.028ms |
+| 20 | 1444.556ms | 981.099ms | 3511.057ms |
+| 21 | 3765.861ms | 2970.587ms | 14544.587ms |
+
+`xy -> n`:
+
+| coordinate digits | avg | median | p95 |
+|---:|---:|---:|---:|
+| 8 | 52.343ms | 48.880ms | 77.558ms |
+| 9 | 130.253ms | 142.473ms | 168.166ms |
+| 10 | 681.954ms | 782.683ms | 908.628ms |
+| 11 | 3188.709ms | 3449.567ms | 4466.203ms |
+
+For a single Earth-wide center at about 3mm precision, expected maximum values
+are around 10 coordinate digits and 21 index digits. Higher precision or larger
+single-center coverage can move more work into the slower BigInt path.
 
 ## 🔗 Integration with Other Packages
 
