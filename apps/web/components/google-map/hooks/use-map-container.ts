@@ -467,12 +467,8 @@ export const useMapContainer = () => {
       map.setOptions({ clickableIcons: true });
       if (mapType === "roadmap") {
         map.setOptions({
-          styles:
-            process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID !== undefined
-              ? null
-              : googleMapDarkTheme,
+          styles: googleMapDarkTheme,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
-          mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID,
         });
       } else {
         map.setOptions({
@@ -480,7 +476,6 @@ export const useMapContainer = () => {
           mapTypeControlOptions: {
             mapTypeIds: [google.maps.MapTypeId.HYBRID],
           },
-          mapId: null,
         });
         map.setMapTypeId(google.maps.MapTypeId.HYBRID);
       }
@@ -494,7 +489,6 @@ export const useMapContainer = () => {
       styles: [],
       backgroundColor: "#050505",
       mapTypeControlOptions: { mapTypeIds: [body] },
-      mapId: null,
     });
     map.setMapTypeId(body);
   }, [body, map, mapType, planetaryLayerId]);
@@ -668,17 +662,12 @@ export const useMapContainer = () => {
           styles: [],
           backgroundColor: "#050505",
           mapTypeControlOptions: { mapTypeIds: [body] },
-          mapId: null,
         });
         mapInstance.setMapTypeId(body);
       } else if (mapType === "roadmap") {
         mapInstance.setOptions({
-          styles:
-            process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID !== undefined
-              ? null
-              : googleMapDarkTheme,
+          styles: googleMapDarkTheme,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
-          mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID,
         });
       } else {
         mapInstance.setOptions({
@@ -686,7 +675,6 @@ export const useMapContainer = () => {
           mapTypeControlOptions: {
             mapTypeIds: [google.maps.MapTypeId.HYBRID],
           },
-          mapId: null,
         });
         mapInstance.setMapTypeId(google.maps.MapTypeId.HYBRID);
       }
