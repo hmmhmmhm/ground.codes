@@ -17,12 +17,14 @@ Ground.codes web application is an interactive map service utilizing the Google 
   - 🌓 Custom dark/light theme support
   - 📍 POI (Point of Interest) markers and place details display
   - 📱 User location tracking and display
+  - 🌕 Moon and Mars basemap display using USGS Astrogeology WMS layers
   - 🎮 Map controls (zoom, rotation, type change, etc.)
   - 🔍 Place search functionality
 
 - **📏 Grid System**
 
   - 🧩 Grid display on the map
+  - 🌐 Body-aware grid sizing for Earth, Moon, and Mars
   - 👆 Grid cell click event handling
   - 👁️ Grid visibility management
 
@@ -38,7 +40,7 @@ Ground.codes web application is an interactive map service utilizing the Google 
 
 ## 🛠️ Tech Stack
 
-- **🔄 Framework**: Next.js 15.2.1
+- **🔄 Framework**: Next.js 15.5.18
 - **📝 Language**: TypeScript
 - **🧩 UI Library**: React 19
 - **🎨 Styling**: Tailwind CSS 4
@@ -61,6 +63,31 @@ Ground.codes web application is an interactive map service utilizing the Google 
 - ➕ Added Place Details feature to display place information when POI is clicked
 - 🌓 Improved theme to fix visibility issues of buildings in dark theme
 - 🌐 Implemented multilingual display of place types
+- 🌕 Added Earth/Moon/Mars map switching with direct URL support
+- 🗺️ Added Moon/Mars planetary layer selection
+
+### 🪐 Planetary Map Mode
+
+The web map supports three bodies through the `body` query parameter:
+
+- Earth: `/`
+- Moon: `/?body=moon`
+- Mars: `/?body=mars`
+
+Optional `lat`, `lng`, `zoom`, and `layer` query parameters can be used with
+any planetary body, for example
+`/?body=mars&layer=MOLA_THEMIS_blend&lat=18.65280&lng=-133.80250&zoom=5`.
+
+Moon and Mars basemaps are loaded from official USGS Astrogeology WMS services:
+
+- Moon layers: `LROC_WAC`, `LOLA_color`, `LOLA_bw`, `LOLA_Kaguya_Shade`,
+  `KaguyaTC_Ortho`
+- Mars layers: `MDIM21_color`, `MOLA_THEMIS_blend`, `THEMIS`, `MOLA_color`,
+  `MOLA_bw`, `HRSC_MOLA_Blend_Hillshade`
+
+Google Places search, POI details, weather, and user geolocation controls are
+Earth-only. Ground code encoding and the 3m grid remain available on Moon and
+Mars, with grid degree spacing adjusted for each body's radius.
 
 ### 🌩️ Deployment and Internationalization
 

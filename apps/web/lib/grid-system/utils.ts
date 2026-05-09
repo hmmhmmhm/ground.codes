@@ -5,14 +5,18 @@ import { DEG_PER_METER, GRID_SIZE_METERS } from "./constants";
  */
 export function calculateGridCellSize(
   latitude: number,
-  precisionMeters: number = GRID_SIZE_METERS
+  precisionMeters: number = GRID_SIZE_METERS,
+  metersPerDegree: number = DEG_PER_METER
 ) {
   // Grid size in latitude direction (north-south)
-  const latDegreePerCell = precisionMeters / DEG_PER_METER;
+  const latDegreePerCell = precisionMeters / metersPerDegree;
+  const latitudeScale = Math.max(
+    0.000001,
+    Math.abs(Math.cos((latitude * Math.PI) / 180))
+  );
 
   // Grid size in longitude direction (east-west) (adjusted according to latitude)
-  const lngDegreePerCell =
-    precisionMeters / (DEG_PER_METER * Math.cos((latitude * Math.PI) / 180));
+  const lngDegreePerCell = precisionMeters / (metersPerDegree * latitudeScale);
 
   return { latDegreePerCell, lngDegreePerCell };
 }
@@ -23,10 +27,11 @@ export function calculateGridCellSize(
 export function getGridCellCenter(
   lat: number,
   lng: number,
-  centerLat: number
+  centerLat: number,
+  metersPerDegree: number = DEG_PER_METER
 ): { lat: number; lng: number } {
   const { latDegreePerCell, lngDegreePerCell } =
-    calculateGridCellSize(centerLat);
+    calculateGridCellSize(centerLat, GRID_SIZE_METERS, metersPerDegree);
 
   // Calculate the grid cell indices
   const latIndex = Math.floor(lat / latDegreePerCell);

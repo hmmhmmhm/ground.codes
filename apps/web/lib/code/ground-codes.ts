@@ -6,11 +6,13 @@ export const encode = async ({
   lng,
   language = "english",
   precisionMeters = 3,
+  body = "earth",
 }: {
   lat: number;
   lng: number;
   language?: string;
   precisionMeters?: number;
+  body?: "earth" | "moon" | "mars";
 }) => {
   const response = await fetch("https://api.ground.codes/encode", {
     method: "POST",
@@ -23,6 +25,7 @@ export const encode = async ({
       regionLevel: 2,
       language,
       precisionMeters,
+      body,
     }),
   });
 

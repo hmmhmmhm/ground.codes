@@ -25,6 +25,7 @@ export function useGridSystem(
     setSelectedPlaceId?: (placeId: string | null) => void;
     setSelectedLocation?: (location: google.maps.LatLng | null) => void;
     setShowInfoWindow?: (show: boolean) => void;
+    metersPerDegree?: number;
   }
 ): GridSystemHookResult {
   const {
@@ -81,7 +82,11 @@ export function useGridSystem(
 
         // Calculate grid cell size (in degrees)
         const { latDegreePerCell, lngDegreePerCell } =
-          calculateGridCellSize(centerLat);
+          calculateGridCellSize(
+            centerLat,
+            undefined,
+            mapOptions?.metersPerDegree
+          );
 
         // Calculate grid start and end points (aligned precisely to grid size)
         const startLat =
@@ -161,6 +166,7 @@ export function useGridSystem(
       selectedArea,
       drawSelectedAreaRectangle,
       isGridVisibleAtZoom,
+      mapOptions?.metersPerDegree,
     ]
   );
 
@@ -170,7 +176,8 @@ export function useGridSystem(
     isGridVisibleAtZoom,
     mapInstanceRef,
     setSelectedArea,
-    drawGrid
+    drawGrid,
+    mapOptions?.metersPerDegree
   );
 
   // Create the map event handlers setup function with enhanced options
