@@ -1,18 +1,27 @@
 import Elysia, { t } from "elysia";
-import { encode, SupportedLanguage } from "ground-codes";
+import { CelestialBody, encode, SupportedLanguage } from "ground-codes";
 
 export const v1Encode = new Elysia().post(
   "/encode",
   async ({
-    body: { lat, lng, regionLevel = 2, language = "english", precisionMeters },
+    body: {
+      lat,
+      lng,
+      regionLevel = 2,
+      language = "english",
+      precisionMeters,
+      body: celestialBody = "earth",
+    },
   }) => {
     const encodeOptions: {
       regionLevel: number;
       language: SupportedLanguage;
       precisionMeters?: number;
+      body: CelestialBody;
     } = {
       regionLevel,
       language: language as SupportedLanguage,
+      body: celestialBody as CelestialBody,
     };
 
     if (precisionMeters !== undefined) {
@@ -57,6 +66,14 @@ export const v1Encode = new Elysia().post(
           default: 3,
           example: 3,
           description: "Precision in meters for encoding",
+        }),
+      ),
+      body: t.Optional(
+        t.String({
+          default: "earth",
+          example: "moon",
+          description: "Celestial body for coordinate conversion and labels",
+          enum: ["earth", "moon", "mars"],
         }),
       ),
     }),

@@ -11,15 +11,30 @@ export const v1RegionAround = new Elysia().post(
       language = "english",
       maxResults = 5,
       maxDistance,
+      body = "earth",
     },
   }) => {
+    const normalizedBody = body.toLowerCase();
+    const languageSuffix =
+      language.toLowerCase() === "korean"
+        ? "-korean"
+        : language.toLowerCase() === "chinese"
+          ? "-chinese"
+          : language.toLowerCase() === "english"
+            ? ""
+            : "";
+    const regionName =
+      normalizedBody === "earth"
+        ? `region-${regionLevel}${
+            language.toLowerCase() === "english"
+              ? ""
+              : `-${language.toLowerCase()}`
+          }`
+        : `region-${regionLevel}-${normalizedBody}${languageSuffix}`;
+
     return (
       await around({
-        regionName: `region-${regionLevel}${
-          language.toLowerCase() === "english"
-            ? ""
-            : `-${language.toLowerCase()}`
-        }`,
+        regionName,
         lat,
         lng,
         maxResults,
@@ -56,7 +71,7 @@ export const v1RegionAround = new Elysia().post(
             example: 2,
             description:
               "Region level for encoding (2: City Name, 1: Airport Code)",
-          })
+          }),
         ),
         language: t.Optional(
           t.String({
@@ -64,7 +79,7 @@ export const v1RegionAround = new Elysia().post(
             example: "english",
             description: "Language for word set encoding",
             enum: ["english", "korean", "chinese"],
-          })
+          }),
         ),
         maxResults: t.Optional(
           t.Number({
@@ -72,12 +87,20 @@ export const v1RegionAround = new Elysia().post(
             example: 5,
             maximum: 100,
             description: "Maximum number of results",
-          })
+          }),
         ),
         maxDistance: t.Optional(
           t.Number({
             description: "Maximum distance in meters",
-          })
+          }),
+        ),
+        body: t.Optional(
+          t.String({
+            default: "earth",
+            example: "mars",
+            description: "Celestial body for region lookup",
+            enum: ["earth", "moon", "mars"],
+          }),
         ),
       },
       {
@@ -90,7 +113,7 @@ export const v1RegionAround = new Elysia().post(
             maxResults: 5,
           },
         ],
-      }
+      },
     ),
     response: t.Array(
       t.Object({
@@ -114,15 +137,15 @@ export const v1RegionAround = new Elysia().post(
           t.Number({
             example: 1000000,
             description: "Population of the region",
-          })
+          }),
         ),
         countryCode: t.Optional(
           t.String({
             example: "KR",
             description: "Country code of the region",
-          })
+          }),
         ),
-      })
+      }),
     ),
-  }
+  },
 );

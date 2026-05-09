@@ -11,6 +11,10 @@ export interface RegionData {
   long: number;
   population?: number;
   countryCode?: string;
+  body?: "earth" | "moon" | "mars";
+  featureType?: string;
+  diameterKm?: number;
+  source?: string;
 }
 
 export const regionIndexes: Record<string, any> = {};
@@ -73,7 +77,7 @@ export const around = async ({
     lng,
     lat,
     maxResults,
-    maxDistance
+    maxDistance,
   );
 
   const results: RegionData[] = [];

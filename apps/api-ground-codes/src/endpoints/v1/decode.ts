@@ -1,12 +1,20 @@
 import Elysia, { t } from "elysia";
-import { decode, SupportedLanguage } from "ground-codes";
+import { CelestialBody, decode, SupportedLanguage } from "ground-codes";
 
 export const v1Decode = new Elysia().post(
   "/decode",
-  async ({ body: { code, regionLevel = 2, language = "english" } }) => {
+  async ({
+    body: {
+      code,
+      regionLevel = 2,
+      language = "english",
+      body: celestialBody = "earth",
+    },
+  }) => {
     return await decode(code, {
       regionLevel,
       language: language as SupportedLanguage,
+      body: celestialBody as CelestialBody,
     });
   },
   {
@@ -34,6 +42,14 @@ export const v1Decode = new Elysia().post(
           example: "english",
           description: "Language for word set decoding",
           enum: ["english", "korean", "chinese"],
+        }),
+      ),
+      body: t.Optional(
+        t.String({
+          default: "earth",
+          example: "moon",
+          description: "Celestial body for coordinate conversion and labels",
+          enum: ["earth", "moon", "mars"],
         }),
       ),
     }),

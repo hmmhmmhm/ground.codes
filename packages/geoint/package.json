@@ -12,6 +12,7 @@
     "publish-package": "turbo run build lint test && changeset version && changeset publish"
   },
   "files": [
+    "region-dist",
     "region-db",
     "dist"
   ],
