@@ -49,7 +49,6 @@ function GoogleMapComponent() {
     // InfoWindow state
     showInfoWindow,
     setShowInfoWindow,
-    onIdle,
   } = useMapContainer();
 
   // Language change in progress, do not render map component
@@ -71,7 +70,6 @@ function GoogleMapComponent() {
         }}
         zoom={zoom}
         onZoomChanged={onZoomChanged}
-        onIdle={onIdle}
         options={{
           disableDefaultUI: true, // Disables all default UI controls
           zoomControl: false,

@@ -754,18 +754,6 @@ export const useMapContainer = () => {
     }
   }, [map]);
 
-  const onIdle = useCallback(() => {
-    if (!map) return;
-
-    const nextCenter = map.getCenter();
-    const nextZoom = map.getZoom();
-    if (!nextCenter || nextZoom === undefined) return;
-
-    setCenter(nextCenter.toJSON());
-    setZoom(nextZoom);
-    userZoomRef.current = nextZoom;
-  }, [map]);
-
   const activePlanetaryLayer =
     body === "earth" ? null : getPlanetaryLayerConfig(body, planetaryLayerId);
 
@@ -840,6 +828,5 @@ export const useMapContainer = () => {
     onLoad,
     onUnmount,
     onZoomChanged,
-    onIdle,
   };
 };
