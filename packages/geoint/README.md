@@ -30,6 +30,30 @@ Region Level 2 uses city names from the GeoNames World Cities database:
 - 🇬🇧 Unique cities in English: 173,528
 - 🇰🇷 Unique cities in Korean: 167,814
 
+### 🌕 Planetary Region Level 2
+
+Moon and Mars use body-specific `region-2` datasets generated from the
+USGS/IAU Gazetteer of Planetary Nomenclature center-point KML downloads:
+
+- `region-2-moon.json`: 9,085 approved lunar feature center points
+- `region-2-moon-korean.json`: 9,085 Korean-localized lunar feature labels
+- `region-2-moon-chinese.json`: 9,085 Chinese-localized lunar feature labels
+- `region-2-mars.json`: 2,047 approved martian feature center points
+- `region-2-mars-korean.json`: 2,047 Korean-localized martian feature labels
+- `region-2-mars-chinese.json`: 2,047 Chinese-localized martian feature labels
+- `region-3-mars.json`: 24,380 Mars crater fallback labels derived from
+  Robbins V1 craters with diameter >= 10 km
+- `region-3-mars-korean.json`: 24,380 Korean-localized Mars crater fallback labels
+- `region-3-mars-chinese.json`: 24,380 Chinese-localized Mars crater fallback labels
+
+The `region-2` datasets store official English feature names, descriptor codes,
+latitude, east-positive longitude normalized to `[-180, 180]`, feature type,
+diameter in kilometers, and the source Gazetteer feature URL.
+
+The Mars `region-3` fallback keeps the Robbins crater ID in `code` as
+`MCR-xx-yyyyyy` and exposes a readable name based on the nearest official Mars
+feature anchor, such as `Abalos Crater 1`.
+
 ## ✨ Features
 
 - 🌐 Processes global geographical data from GeoNames
@@ -50,6 +74,22 @@ The package processes and outputs data in the following structure:
   "long": 1.56654,
   "population": 1418,
   "countryCode": "AD"
+}
+```
+
+Planetary region records use the same required coordinate fields and add
+optional feature metadata:
+
+```json
+{
+  "name": "Olympus Mons",
+  "code": "MO",
+  "lat": 18.6528,
+  "long": -133.8025,
+  "body": "mars",
+  "featureType": "Mons, montes",
+  "diameterKm": 610.13,
+  "source": "http://planetarynames.wr.usgs.gov/Feature/4453"
 }
 ```
 
@@ -90,6 +130,7 @@ The optimization process works as follows:
 5. The `info()` function retrieves detailed information about specific regions
 
 This approach provides significant performance benefits:
+
 - ⚡ Sub-millisecond response times for location queries
 - 🧠 Efficient memory usage through binary spatial indexes
 - 📈 Scalable to handle large datasets with minimal performance impact
@@ -99,6 +140,15 @@ This approach provides significant performance benefits:
 - 🏳️ `region-1.json`: Contains region data with 4 or fewer digits (including airport codes)
 - 🏙️ `region-2.json`: Contains city data from GeoNames cities500 dataset
 - 🌐 `region-2-[language].json`: Contains translated city names for specific languages
+- 🌕 `region-2-moon.json`: Contains Moon feature names from the USGS/IAU Gazetteer
+- 🌕 `region-2-moon-korean.json`: Contains Korean-localized Moon feature labels
+- 🌕 `region-2-moon-chinese.json`: Contains Chinese-localized Moon feature labels
+- 🪐 `region-2-mars.json`: Contains Mars feature names from the USGS/IAU Gazetteer
+- 🪐 `region-2-mars-korean.json`: Contains Korean-localized Mars feature labels
+- 🪐 `region-2-mars-chinese.json`: Contains Chinese-localized Mars feature labels
+- 🪐 `region-3-mars.json`: Contains Mars crater fallback labels derived from Robbins V1
+- 🪐 `region-3-mars-korean.json`: Contains Korean-localized Mars crater fallback labels
+- 🪐 `region-3-mars-chinese.json`: Contains Chinese-localized Mars crater fallback labels
 - 🌊 `region-3.json`: Contains sparse global coverage labels for oceans, polar regions, deserts, and remote interiors
 - 🌐 `region-3-[language].json`: Contains localized region-3 names where translations are available
 
@@ -123,15 +173,55 @@ await load(["region-1", "region-2"]);
 const nearbyRegions = await around({
   regionName: "region-2",
   lat: 37.5665,
-  lng: 126.9780,
+  lng: 126.978,
   maxResults: 5,
-  maxDistance: 10000 // meters
+  maxDistance: 10000, // meters
 });
 
 // Get information about a specific region
 const regionInfo = await info({
   regionName: "region-2",
-  name: "Seoul"
+  name: "Seoul",
+});
+```
+
+Planetary datasets can be loaded by name:
+
+```typescript
+await load([
+  "region-2-moon",
+  "region-2-moon-korean",
+  "region-2-moon-chinese",
+  "region-2-mars",
+]);
+
+const lunarRegions = await around({
+  regionName: "region-2-moon",
+  lat: 8.35,
+  lng: 30.84,
+  maxResults: 3,
+});
+
+const olympusMons = await info({
+  regionName: "region-2-mars",
+  name: "Olympus Mons",
+});
+
+const olympusMonsKo = await info({
+  regionName: "region-2-mars-korean",
+  name: "올림푸스 산",
+});
+
+const olympusMonsZh = await info({
+  regionName: "region-2-mars-chinese",
+  name: "奥林帕斯山",
+});
+
+await load(["region-3-mars"]);
+
+const marsFallback = await info({
+  regionName: "region-3-mars",
+  name: "Abalos Crater 1",
 });
 ```
 
@@ -156,12 +246,12 @@ descriptive suffix cannot produce a unique label.
 
 Validation with the current fallback selection on a 0.25 degree global sample:
 
-| metric | distance |
-|---:|---:|
-| average | 63.9 km |
-| p95 | 118.6 km |
-| p99 | 137.6 km |
-| max | 199.7 km |
+|  metric | distance |
+| ------: | -------: |
+| average |  63.9 km |
+|     p95 | 118.6 km |
+|     p99 | 137.6 km |
+|     max | 199.7 km |
 
 The same validation found zero sampled points above 200 km from the selected
 center.
@@ -217,6 +307,14 @@ Additional data sources used in this package include:
 
 - **✈️ IATA & ICAO Airport Code JSON**
   (MIT License) https://github.com/mwgg/Airports
+
+- **🌕🪐 USGS/IAU Gazetteer of Planetary Nomenclature**
+  Moon and Mars KML center-point downloads generated nightly by USGS:
+  https://planetarynames.wr.usgs.gov/GIS_Downloads
+
+- **🪐 USGS Astrogeology Robbins V1 Crater Database**
+  Mars crater points used for `region-3-mars` fallback labels:
+  https://astrogeology.usgs.gov/pygeoapi/collections/mars/robbinsv1
 
 ## 🌐 Translation Process
 

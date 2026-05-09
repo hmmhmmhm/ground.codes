@@ -15,6 +15,10 @@ Ground Codes is a coordinate-based addressing system that allows you to pinpoint
 > [!WARNING]
 > ground-codes is an ongoing project and has not yet reached completion.
 
+Ground Codes supports Earth by default and can also encode Moon and Mars
+coordinates by passing `body: "moon"` or `body: "mars"`. Existing calls without
+`body` continue to use Earth and preserve the previous output format.
+
 ## 📦 Installation
 
 ```bash
@@ -41,7 +45,8 @@ const address = await encode(
     regionLevel: 2, // Use region name (default)
     precisionMeters: 3, // 3-meter precision (default)
     language: "English", // English output (default)
-  }
+    body: "earth", // earth (default), moon, or mars
+  },
 );
 
 // Result: "Yongsan-Happiness-Smile" (example)
@@ -58,7 +63,7 @@ import { decode, findClosestRegion } from "ground-codes";
 // First, get the region center point
 const region = await findClosestRegion(
   { lat: 37.5326, lng: 127.0246 }, // Approximate location
-  { regionLevel: 2 } // Use region name (default)
+  { regionLevel: 2 }, // Use region name (default)
 );
 
 // Then decode the encoded part
@@ -70,6 +75,29 @@ const coordinates = decode({
 // Result: { lat: 37.5326, lng: 127.0246 } (approximate)
 console.log(coordinates);
 ```
+
+### 🌕 Moon and Mars Coordinates
+
+Moon and Mars use the same encoding API with a body-specific distance model and
+USGS/IAU planetary nomenclature labels:
+
+```typescript
+const lunarCode = await encode(
+  { lat: 8.35, lng: 30.84 },
+  { body: "moon", regionLevel: 2 },
+);
+// "Mare Tranquillitatis-..."
+
+const marsCode = await encode(
+  { lat: 18.6528, lng: -133.8025 },
+  { body: "mars", regionLevel: 2 },
+);
+// "Olympus Mons-..."
+```
+
+The internal coordinate convention is latitude `[-90, 90]` and east-positive
+longitude `[-180, 180]`. The Moon and Mars datasets are generated from the
+USGS/IAU Gazetteer of Planetary Nomenclature KML center-point downloads.
 
 ## ✨ Key Features
 
@@ -93,6 +121,7 @@ Encodes geographic coordinates into a Ground Codes address.
   - `regionLevel`: `number` - Region level (1 = code format, 2+ = name format)
   - `precisionMeters`: `number` - Precision in meters (default: 3)
   - `language`: `SupportedLanguage` - Output language (default: 'en')
+  - `body`: `"earth" | "moon" | "mars"` - Celestial body (default: `"earth"`)
 
 **Returns:** `Promise<string>` - The encoded Ground Codes address
 
@@ -117,8 +146,50 @@ Finds the closest region to the given coordinates.
 - `options` (optional):
   - `regionLevel`: `number` - Region level to search for
   - `language`: `SupportedLanguage` - Language for region names
+  - `body`: `"earth" | "moon" | "mars"` - Celestial body (default: `"earth"`)
 
 **Returns:** `Promise<{ name: string, code: string, lat: number, lng: number }>` - The closest region
+
+### 🪐 Celestial Body Model
+
+The spherical coordinate diff model uses meters per latitude degree:
+
+| body  | meters per degree | label dataset                                             |
+| ----- | ----------------: | --------------------------------------------------------- |
+| earth |            111000 | GeoNames, airport/country codes, sparse region-3 fallback |
+| moon  |            ~30323 | USGS/IAU Moon nomenclature center points                  |
+| mars  |            ~59158 | USGS/IAU Mars nomenclature plus Robbins crater fallback   |
+
+Earth intentionally keeps the historical `111000` meters-per-degree
+approximation so existing encoded strings remain stable. Moon currently uses
+`regionLevel: 2` official feature names. Mars uses official
+`regionLevel: 2` names first, then falls back to `regionLevel: 3` crater labels
+derived from the USGS Astrogeology Robbins V1 Crater Database when official
+names are sparse. English, Korean, and Chinese planetary prefixes are available.
+
+Mars crater fallback names are intentionally human-readable. The raw Robbins
+crater ID is stored in `code` as `MCR-xx-yyyyyy`, while the visible name is based
+on the nearest official Mars feature anchor:
+
+```typescript
+await encode({ lat: 64.3, lng: -86.4 }, { body: "mars" });
+// "Bohar Crater 2-..."
+
+await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "korean" });
+// "Bohar 크레이터 2-..."
+
+await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "chinese" });
+// "Bohar撞击坑2-..."
+```
+
+Current Mars 0.25 degree sampling with official names plus crater fallback:
+
+|  metric | distance |
+| ------: | -------: |
+| average |  59.2 km |
+|     p95 | 156.1 km |
+|     p99 | 216.9 km |
+|     max | 368.6 km |
 
 ### 🌐 Global Region Fallback Coverage
 
@@ -147,12 +218,12 @@ await encode({ lat: 67.25, lng: -105.25 }, { regionLevel: 1 });
 
 Current 0.25 degree global sampling with `regionLevel: 2` fallback enabled:
 
-| metric | distance |
-|---:|---:|
-| average | 63.9 km |
-| p95 | 118.6 km |
-| p99 | 137.6 km |
-| max | 199.7 km |
+|  metric | distance |
+| ------: | -------: |
+| average |  63.9 km |
+|     p95 | 118.6 km |
+|     p99 | 137.6 km |
+|     max | 199.7 km |
 
 The current dataset has no sampled point above 200 km from its selected center
 in the 0.25 degree global grid used for validation.
@@ -225,45 +296,45 @@ CASES=10 MAX_DIGITS=21 RUN_SLOW_BIGINT=1 SPIRAL_CACHE=0 SEED=424242 \
 
 `n -> xy`:
 
-| n digits | avg | median | p95 |
-|---:|---:|---:|---:|
-| 1 | 26.29us | 10.12us | 174.92us |
-| 2 | 10.45us | 9.46us | 19.50us |
-| 3 | 20.05us | 20.17us | 31.87us |
-| 4 | 21.07us | 19.37us | 44.92us |
-| 5 | 17.19us | 17.04us | 28.83us |
-| 6 | 19.12us | 19.08us | 34.83us |
-| 7 | 39.41us | 41.21us | 58.04us |
-| 8 | 117.04us | 136.79us | 167.17us |
-| 9 | 453.66us | 479.04us | 710.87us |
-| 10 | 1.683ms | 1.232ms | 4.267ms |
-| 11 | 2.769ms | 3.116ms | 3.379ms |
-| 12 | 6.577ms | 6.807ms | 8.149ms |
-| 13 | 16.444ms | 18.653ms | 20.740ms |
-| 14 | 40.237ms | 41.738ms | 51.001ms |
-| 15 | 17.799ms | 13.889ms | 49.210ms |
-| 16 | 17.446ms | 19.914ms | 27.461ms |
-| 17 | 45.449ms | 44.509ms | 58.040ms |
-| 18 | 194.446ms | 198.617ms | 284.583ms |
-| 19 | 316.517ms | 333.190ms | 407.028ms |
-| 20 | 1444.556ms | 981.099ms | 3511.057ms |
-| 21 | 3765.861ms | 2970.587ms | 14544.587ms |
+| n digits |        avg |     median |         p95 |
+| -------: | ---------: | ---------: | ----------: |
+|        1 |    26.29us |    10.12us |    174.92us |
+|        2 |    10.45us |     9.46us |     19.50us |
+|        3 |    20.05us |    20.17us |     31.87us |
+|        4 |    21.07us |    19.37us |     44.92us |
+|        5 |    17.19us |    17.04us |     28.83us |
+|        6 |    19.12us |    19.08us |     34.83us |
+|        7 |    39.41us |    41.21us |     58.04us |
+|        8 |   117.04us |   136.79us |    167.17us |
+|        9 |   453.66us |   479.04us |    710.87us |
+|       10 |    1.683ms |    1.232ms |     4.267ms |
+|       11 |    2.769ms |    3.116ms |     3.379ms |
+|       12 |    6.577ms |    6.807ms |     8.149ms |
+|       13 |   16.444ms |   18.653ms |    20.740ms |
+|       14 |   40.237ms |   41.738ms |    51.001ms |
+|       15 |   17.799ms |   13.889ms |    49.210ms |
+|       16 |   17.446ms |   19.914ms |    27.461ms |
+|       17 |   45.449ms |   44.509ms |    58.040ms |
+|       18 |  194.446ms |  198.617ms |   284.583ms |
+|       19 |  316.517ms |  333.190ms |   407.028ms |
+|       20 | 1444.556ms |  981.099ms |  3511.057ms |
+|       21 | 3765.861ms | 2970.587ms | 14544.587ms |
 
 `xy -> n`:
 
-| coordinate digits | avg | median | p95 |
-|---:|---:|---:|---:|
-| 1 | 164.21us | 5.38us | 1.435ms |
-| 2 | 14.61us | 11.42us | 32.83us |
-| 3 | 26.65us | 17.71us | 72.83us |
-| 4 | 49.30us | 40.04us | 99.83us |
-| 5 | 213.17us | 205.63us | 293.17us |
-| 6 | 1.466ms | 1.546ms | 1.918ms |
-| 7 | 12.243ms | 12.488ms | 17.032ms |
-| 8 | 52.343ms | 48.880ms | 77.558ms |
-| 9 | 130.253ms | 142.473ms | 168.166ms |
-| 10 | 681.954ms | 782.683ms | 908.628ms |
-| 11 | 3188.709ms | 3449.567ms | 4466.203ms |
+| coordinate digits |        avg |     median |        p95 |
+| ----------------: | ---------: | ---------: | ---------: |
+|                 1 |   164.21us |     5.38us |    1.435ms |
+|                 2 |    14.61us |    11.42us |    32.83us |
+|                 3 |    26.65us |    17.71us |    72.83us |
+|                 4 |    49.30us |    40.04us |    99.83us |
+|                 5 |   213.17us |   205.63us |   293.17us |
+|                 6 |    1.466ms |    1.546ms |    1.918ms |
+|                 7 |   12.243ms |   12.488ms |   17.032ms |
+|                 8 |   52.343ms |   48.880ms |   77.558ms |
+|                 9 |  130.253ms |  142.473ms |  168.166ms |
+|                10 |  681.954ms |  782.683ms |  908.628ms |
+|                11 | 3188.709ms | 3449.567ms | 4466.203ms |
 
 For a single Earth-wide center at about 3mm precision, expected maximum values
 are around 10 coordinate digits and 21 index digits. Higher precision or larger
