@@ -11,8 +11,8 @@
     "@elysiajs/static": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
     "elysia": "latest",
-    "ground-codes": "^0.0.8",
-    "@ground-codes/geoint": "^0.0.3"
+    "ground-codes": "workspace:*",
+    "@ground-codes/geoint": "workspace:*"
   },
   "devDependencies": {
     "bun-types": "latest"

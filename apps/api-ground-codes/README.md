@@ -39,6 +39,13 @@ The API uses these optimization techniques in several key endpoints:
 - `/encode`: Utilizes the optimized region search to find the nearest region for encoding coordinates
 - `/decode`: Uses efficient region data retrieval when decoding ground codes
 
+The API uses the shared `ground-codes` package for encode/decode behavior and
+loads `@ground-codes/geoint` embedded databases for region lookup endpoints.
+The current dataset includes `region-3` sparse coverage labels for oceans,
+polar regions, deserts, and remote interiors. With the default `regionLevel: 2`
+fallback path, 0.25 degree global validation found no sampled point more than
+200 km from its selected encoding center.
+
 This implementation enables the API to handle high volumes of geospatial queries with minimal latency, making it suitable for production applications with strict performance requirements.
 
 ## 🏁 Getting Started

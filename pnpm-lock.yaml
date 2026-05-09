@@ -36,14 +36,14 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2(elysia@1.2.25(@sinclair/typebox@0.25.24)(openapi-types@12.1.3)(typescript@5.8.2))
       '@ground-codes/geoint':
-        specifier: ^0.0.3
-        version: 0.0.3
+        specifier: workspace:*
+        version: link:../../packages/geoint
       elysia:
         specifier: latest
         version: 1.2.25(@sinclair/typebox@0.25.24)(openapi-types@12.1.3)(typescript@5.8.2)
       ground-codes:
-        specifier: ^0.0.8
-        version: 0.0.8
+        specifier: workspace:*
+        version: link:../../packages/ground-codes
     devDependencies:
       bun-types:
         specifier: latest
@@ -953,9 +953,6 @@ packages:
 
   '@googlemaps/markerclusterer@2.5.3':
     resolution: {integrity: sha512-x7lX0R5yYOoiNectr10wLgCBasNcXFHiADIBdmn7jQllF2B5ENQw5XtZK+hIw4xnV0Df0xhN4LN98XqA5jaiOw==}
-
-  '@ground-codes/geoint@0.0.3':
-    resolution: {integrity: sha512-IcafYhfvaL7xxg1gghzqPGkrIWyWEtIFJ/jLx75GWWHbbK6+SlcFZAIXXOrUbacd0BYAh89vz6ehqTKcDxvb5A==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -3258,9 +3255,6 @@ packages:
 
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
-
-  ground-codes@0.0.8:
-    resolution: {integrity: sha512-Z1S9Kqmyb/tnIa//9bltX0tkwK0JcesD/1SmCwk2kSZ+hqE7VXDRC2Cp8jGFm769jrIyNgOWM+8Mrrd3TaYMTw==}
 
   handlebars@4.7.8:
     resolution: {integrity: sha512-vafaFqs8MZkRrSX7sFVUdo3ap/eNiLnb4IakshzvP56X5Nr1iGKAIqdX6tMlm6HcNRIkr6AxO5jFEoJzzpT8aQ==}
@@ -5801,12 +5795,6 @@ snapshots:
       fast-deep-equal: 3.1.3
       supercluster: 8.0.1
 
-  '@ground-codes/geoint@0.0.3':
-    dependencies:
-      geokdbush: 2.0.1
-      kdbush: 4.0.2
-      level: 9.0.0
-
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -8258,8 +8246,6 @@ snapshots:
       tinygradient: 1.1.5
 
   graphemer@1.4.0: {}
-
-  ground-codes@0.0.8: {}
 
   handlebars@4.7.8:
     dependencies:

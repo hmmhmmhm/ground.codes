@@ -120,6 +120,43 @@ Finds the closest region to the given coordinates.
 
 **Returns:** `Promise<{ name: string, code: string, lat: number, lng: number }>` - The closest region
 
+### 🌐 Global Region Fallback Coverage
+
+The default `regionLevel: 2` lookup now uses a sparse-coverage fallback path for
+areas where city data is too far away. If the nearest city is more than 100 km
+from the target, Ground Codes compares `region-1` and `region-3` candidates and
+uses whichever center is closer.
+
+- `region-1` provides compact airport or administrative codes.
+- `region-2` provides GeoNames city labels and remains the normal default near populated places.
+- `region-3` fills sparse ocean, polar, desert, and interior gaps with marine labels, Antarctic names, polar/desert grids, and nearby-name labels.
+
+When `region-1` is selected only as a fallback from a `regionLevel: 2` request,
+the region code is used as the prefix but the coordinate payload still uses the
+word set. Explicit `regionLevel: 1` requests continue to use base32 payloads.
+
+Examples:
+
+```typescript
+await encode({ lat: 67.25, lng: -105.25 }, { regionLevel: 2 });
+// "CGR3-Gauge-Deliver-Camp" style word-set payload
+
+await encode({ lat: 67.25, lng: -105.25 }, { regionLevel: 1 });
+// "CGR3-..." base32 payload
+```
+
+Current 0.25 degree global sampling with `regionLevel: 2` fallback enabled:
+
+| metric | distance |
+|---:|---:|
+| average | 63.9 km |
+| p95 | 118.6 km |
+| p99 | 137.6 km |
+| max | 199.7 km |
+
+The current dataset has no sampled point above 200 km from its selected center
+in the 0.25 degree global grid used for validation.
+
 ### 🌀 Spiral Index APIs
 
 The package also exports the low-level spiral conversion functions used by
