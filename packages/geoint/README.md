@@ -99,6 +99,8 @@ This approach provides significant performance benefits:
 - 🏳️ `region-1.json`: Contains region data with 4 or fewer digits (including airport codes)
 - 🏙️ `region-2.json`: Contains city data from GeoNames cities500 dataset
 - 🌐 `region-2-[language].json`: Contains translated city names for specific languages
+- 🌊 `region-3.json`: Contains sparse global coverage labels for oceans, polar regions, deserts, and remote interiors
+- 🌐 `region-3-[language].json`: Contains localized region-3 names where translations are available
 
 ## 🛠️ Usage
 
@@ -132,6 +134,37 @@ const regionInfo = await info({
   name: "Seoul"
 });
 ```
+
+### 🌐 Region 3 Coverage Dataset
+
+`region-3` is a supplemental sparse-coverage dataset used by Ground Codes when
+city labels are too far from the target. It is designed to keep Earth-wide
+default encoding centers within a practical distance while avoiding huge,
+uniform global grids.
+
+Current `region-3` contents:
+
+- Natural Earth marine labels plus a 2 degree ocean grid.
+- SCAR Composite Gazetteer Antarctic names.
+- Synthetic Antarctic interior, Arctic, and Sahara labels.
+- 150 nearby-name gap labels generated from the remaining sparse areas.
+
+The named gap labels use nearby real place names where possible and are checked
+against the complete lookup key set to avoid collisions with `region-1`,
+`region-2`, and existing `region-3` names. Numeric suffixes are only used when a
+descriptive suffix cannot produce a unique label.
+
+Validation with the current fallback selection on a 0.25 degree global sample:
+
+| metric | distance |
+|---:|---:|
+| average | 63.9 km |
+| p95 | 118.6 km |
+| p99 | 137.6 km |
+| max | 199.7 km |
+
+The same validation found zero sampled points above 200 km from the selected
+center.
 
 ### 🏃‍♂️ Running Scripts
 
