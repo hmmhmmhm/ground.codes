@@ -36,7 +36,8 @@ type LocationClickEventLike = Event & {
 
 const GRID_ALTITUDE_METERS = 1200;
 const INITIAL_CAMERA_RANGE_METERS = 32000000;
-const USER_LOCATION_CAMERA_RANGE_METERS = 3;
+const USER_LOCATION_CAMERA_RANGE_METERS = 25;
+const METER_GRID_STEP_DEGREES = 0.000027;
 const GRID_AXIS_COLOR = "rgba(32, 214, 255, 0.58)";
 const GRID_LINE_COLOR = "rgba(255, 255, 255, 0.42)";
 const GRID_OUTER_COLOR = "rgba(16, 24, 32, 0.38)";
@@ -59,10 +60,11 @@ const getGridStepDegrees = (range: number) => {
   if (range > 180000) return 0.05;
   if (range > 60000) return 0.01;
   if (range > 20000) return 0.0025;
-  if (range > 5000) return 0.0005;
-  if (range > 1000) return 0.0001;
-  if (range > 200) return 0.00005;
-  return 0.000025;
+  if (range > 5000) return 0.001;
+  if (range > 1000) return 0.0005;
+  if (range > 250) return 0.0001;
+  if (range > 75) return 0.00005;
+  return METER_GRID_STEP_DEGREES;
 };
 
 const getGridSpanDegrees = (range: number) => {
@@ -74,10 +76,10 @@ const getGridSpanDegrees = (range: number) => {
   if (range > 60000) return 0.5;
   if (range > 20000) return 0.12;
   if (range > 5000) return 0.04;
-  if (range > 1000) return 0.01;
-  if (range > 200) return 0.003;
-  if (range > 50) return 0.001;
-  return 0.00025;
+  if (range > 1000) return 0.02;
+  if (range > 250) return 0.005;
+  if (range > 75) return 0.002;
+  return 0.0003;
 };
 
 const getLocationValue = (
