@@ -39,17 +39,49 @@ const region2ByLanguage: Record<string, Region3Row[]> = {
   japanese: region2Japanese,
 };
 
+const findRegionNameByCode = (rows: Region3Row[], code: string) =>
+  rows.find((row) => row.code === code)?.name;
+
 describe("region-3 dataset", () => {
+  test("keeps reviewed localized earth region names translated", () => {
+    assert.equal(findRegionNameByCode(region2Korean, "1847050"), "애월");
+    assert.equal(
+      findRegionNameByCode(region2Korean, "1546102"),
+      "포르토프랑세",
+    );
+    assert.equal(
+      findRegionNameByCode(region2Chinese, "3018060"),
+      "方丹弗朗塞斯",
+    );
+
+    assert.deepEqual(
+      region2Korean
+        .filter((row) => ["개그투리", "Portaux-Francais"].includes(row.name))
+        .map((row) => row.name),
+      [],
+    );
+    assert.deepEqual(
+      region2Chinese
+        .filter((row) => row.name === "FontaineFrancaise")
+        .map((row) => row.name),
+      [],
+    );
+  });
+
+  test("keeps Japanese earth region names free of Latin fallback fragments", () => {
+    assert.deepEqual(
+      region2Japanese.filter((row) => /[A-Za-z]/.test(row.name)),
+      [],
+    );
+  });
+
   for (const [language, rows] of datasets) {
     test(`${language} names are short, URL-safe, and unique`, () => {
       const names = rows.map((row) => row.name);
       const normalizedNames = names.map((name) => name.toLowerCase());
 
       assert.equal(new Set(normalizedNames).size, rows.length);
-      assert.equal(
-        names.filter((name) => [...name].length > 20).length,
-        0,
-      );
+      assert.equal(names.filter((name) => [...name].length > 20).length, 0);
       assert.equal(names.filter((name) => /[-/#?]/.test(name)).length, 0);
     });
 
@@ -125,9 +157,8 @@ describe("region-3 dataset", () => {
       }
 
       assert.equal(
-        namedGapRows.filter((row) =>
-          existingKeys.has(row.name.toLowerCase()),
-        ).length,
+        namedGapRows.filter((row) => existingKeys.has(row.name.toLowerCase()))
+          .length,
         0,
       );
     });
