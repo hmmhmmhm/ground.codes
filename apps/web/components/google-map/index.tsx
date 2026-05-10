@@ -47,6 +47,7 @@ function GoogleMapComponent() {
     // InfoWindow state
     showInfoWindow,
     setShowInfoWindow,
+    setSelectedArea,
   } = useMapContainer();
   const isEarth3D = isEarth && mapType === "earth3d";
   const showGoogleMap = !isEarth3D;
@@ -92,7 +93,14 @@ function GoogleMapComponent() {
           />
         </GoogleMap>
       ) : (
-        <Earth3DMap center={center} />
+        <Earth3DMap
+          center={center}
+          encodedCoordinates={encodedCoordinates}
+          isEncoding={isEncoding}
+          selectedArea={selectedArea}
+          showGrid={showGrid}
+          setSelectedArea={setSelectedArea}
+        />
       )}
 
       {isEarth && !isEarth3D && (
