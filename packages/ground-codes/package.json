@@ -1,6 +1,6 @@
 {
   "name": "ground-codes",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Ground codes",
   "type": "module",
   "main": "./dist/index.js",
@@ -10,6 +10,7 @@
     "dev": "tsup --config tsup.config.ts --watch",
     "build": "tsup --config tsup.config.ts",
     "test": "tsx --test test/*.test.ts",
+    "test:standalone": "pnpm build && node scripts/check-standalone-package.mjs",
     "generate-spiral-fixture": "tsx scripts/generate-spiral-fixture.ts",
     "benchmark:spiral": "tsx scripts/benchmark-spiral.ts",
     "benchmark:spiral-scale": "tsx scripts/benchmark-spiral-scale.ts",
@@ -18,7 +19,7 @@
     "explore:spiral-math": "tsx scripts/explore-spiral-math.ts",
     "explore:spiral-index": "tsx scripts/explore-spiral-index.ts",
     "stress:spiral-edge-cases": "tsx scripts/stress-spiral-edge-cases.ts",
-    "publish-package": "turbo run build lint test && changeset version && changeset publish"
+    "publish-package": "turbo run build lint test && pnpm test:standalone && changeset version && changeset publish"
   },
   "files": [
     "dist"

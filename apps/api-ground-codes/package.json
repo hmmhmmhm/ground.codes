@@ -14,8 +14,8 @@
     "@elysiajs/swagger": "^1.2.2",
     "@sinclair/typebox": "^0.34.30",
     "elysia": "latest",
-    "ground-codes": "^0.0.8",
-    "@ground-codes/geoint": "^0.0.3"
+    "ground-codes": "^0.0.9",
+    "@ground-codes/geoint": "^0.0.4"
   },
   "devDependencies": {
     "bun-types": "latest"
