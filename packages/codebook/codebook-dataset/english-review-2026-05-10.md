@@ -118,6 +118,14 @@ Replacement rules:
 | Korea | Rosemary | watchlist: abbreviation, place, brand, adult, negative, or technical term |
 | Malta | Seagrass | watchlist: abbreviation, place, brand, adult, negative, or technical term |
 | Miami | Seashell | watchlist: abbreviation, place, brand, adult, negative, or technical term |
+
+## Sub-Agent Re-Review Addendum
+
+An additional review pass checked the current distributed English codebook for
+sexual, gambling, violent, military, drug, medical, political, religious,
+negative, name-like, place-like, and awkward generated terms. The pass removed
+the reported urgent/high findings, then repeated review until no urgent, high,
+medium, or low findings were reported for the current file.
 | Paris | Snowdrop | watchlist: abbreviation, place, brand, adult, negative, or technical term |
 | Spain | Sorrel | watchlist: abbreviation, place, brand, adult, negative, or technical term |
 | Sudan | Sparrow | watchlist: abbreviation, place, brand, adult, negative, or technical term |

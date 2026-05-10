@@ -104,7 +104,11 @@ const loadRegions = async (
   }
 
   if (regionLevel === 2) {
-    if (!language || normalizedLanguage === "english") {
+    if (
+      !language ||
+      normalizedLanguage === "english" ||
+      normalizedLanguage === "japanese"
+    ) {
       const module =
         // @ts-ignore
         await import("@ground-codes/geoint/region-dist/region-2.json");
@@ -126,7 +130,11 @@ const loadRegions = async (
   }
 
   if (regionLevel === 3) {
-    if (!language || normalizedLanguage === "english") {
+    if (
+      !language ||
+      normalizedLanguage === "english" ||
+      normalizedLanguage === "japanese"
+    ) {
       const module =
         // @ts-ignore
         await import("@ground-codes/geoint/region-dist/region-3.json");

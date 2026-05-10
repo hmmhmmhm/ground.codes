@@ -19,6 +19,7 @@ The primary purpose of the Codebook is to provide a dictionary of words that can
 - 🇬🇧 **English Codebook**: Contains 6,000 curated words
 - 🇰🇷 **Korean Codebook**: Contains 5,630 curated words
 - 🇨🇳 **Chinese Codebook**: Contains 5,140 curated words
+- 🇯🇵 **Japanese Codebook**: Contains 5,000 frequency-guided hiragana words
 
 ## 🤖 Word Generation Process
 
@@ -44,6 +45,13 @@ While not strictly enforced, the following guidelines are recommended for words 
 ## 🛠️ Usage
 
 The codebook can be used programmatically to convert between numerical values and word representations, enabling more human-friendly data encoding and decoding.
+
+Current distributed word sets:
+
+- English: 6,000 words
+- Korean: 5,630 words
+- Chinese: 5,140 words
+- Japanese: 5,000 frequency-guided hiragana words filtered to avoid generated compounds and sensitive terms
 
 ## ⚙️ Generation Commands
 

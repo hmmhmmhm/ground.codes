@@ -162,6 +162,11 @@ export const decode = async (
     // Hangul Jamo range: U+1100-U+11FF
     const koreanPattern = /[\u1100-\u11FF\uAC00-\uD7A3]/;
 
+    // Check if the text contains Japanese kana.
+    // Hiragana range: U+3040-U+309F
+    // Katakana range: U+30A0-U+30FF
+    const japanesePattern = /[\u3040-\u309F\u30A0-\u30FF]/;
+
     // Check if the text contains Chinese characters
     // CJK Unified Ideographs range: U+4E00-U+9FFF
     // CJK Unified Ideographs Extension A: U+3400-U+4DBF
@@ -173,6 +178,8 @@ export const decode = async (
     // Test if the text contains Korean or Chinese characters
     if (koreanPattern.test(actualEncoded)) {
       language = "korean";
+    } else if (japanesePattern.test(actualEncoded)) {
+      language = "japanese";
     } else if (chinesePattern.test(actualEncoded)) {
       language = "chinese";
     } else {
