@@ -486,3 +486,108 @@ This addendum records additional user-requested cleanup words found after the fi
 | 탑스핀 | 단정한꽃길 | user-requested cleanup word |
 | 빙상상 | 단정한나루 | user-requested cleanup word |
 | 빙상팬 | 단정한물결 | user-requested cleanup word |
+
+## Pattern Cleanup Addendum
+
+This addendum removes generated repetition patterns and over-composed compounds such as repeated ball-game prefixes, vacuum-cleaner product terms, and repeated swimming-experience phrases. Source generated files were updated so rebuilt collected codebooks do not reintroduce them.
+
+| Original | Replacement | Reason |
+| --- | --- | --- |
+| 구기구기 | 바른책장 | generated repetition or over-composed compound |
+| 물속체험 | 바른글밭 | generated repetition or over-composed compound |
+| 구기구기공 | 바른마당 | generated repetition or over-composed compound |
+| 구기구기구 | 바른뜰안 | generated repetition or over-composed compound |
+| 구기구기알 | 바른처마 | generated repetition or over-composed compound |
+| 구기구기장 | 바른길섶 | generated repetition or over-composed compound |
+| 물속체험관 | 바른돌길 | generated repetition or over-composed compound |
+| 물속체험장 | 바른흙담 | generated repetition or over-composed compound |
+| 수영장체험 | 바른꽃길 | generated repetition or over-composed compound |
+| 청소기가격 | 바른나루 | generated repetition or over-composed compound |
+| 청소기구매 | 바른물결 | generated repetition or over-composed compound |
+| 청소기기능 | 바른냇물 | generated repetition or over-composed compound |
+| 청소기기술 | 바른강물 | generated repetition or over-composed compound |
+| 청소기모델 | 바른바닷길 | generated repetition or over-composed compound |
+| 청소기모터 | 바른산길 | generated repetition or over-composed compound |
+| 청소기봉투 | 바른들길 | generated repetition or over-composed compound |
+| 청소기부속 | 바른솔길 | generated repetition or over-composed compound |
+| 청소기부품 | 바른숲길 | generated repetition or over-composed compound |
+| 청소기사양 | 바른햇살 | generated repetition or over-composed compound |
+| 청소기색상 | 바른달빛 | generated repetition or over-composed compound |
+| 청소기설치 | 바른별빛 | generated repetition or over-composed compound |
+| 청소기성능 | 바른물빛 | generated repetition or over-composed compound |
+| 청소기소비 | 바른바람 | generated repetition or over-composed compound |
+| 청소기소음 | 바른구름 | generated repetition or over-composed compound |
+| 청소기수리 | 바른연못 | generated repetition or over-composed compound |
+| 청소기술자 | 바른샘물 | generated repetition or over-composed compound |
+| 청소기작동 | 바른모래 | generated repetition or over-composed compound |
+| 청소기전선 | 바른자갈 | generated repetition or over-composed compound |
+| 청소기전원 | 바른풀잎 | generated repetition or over-composed compound |
+| 청소기점검 | 바른잎새 | generated repetition or over-composed compound |
+| 청소기조작 | 바른새싹 | generated repetition or over-composed compound |
+| 청소기종류 | 바른종이 | generated repetition or over-composed compound |
+| 청소기청소 | 바른붓끝 | generated repetition or over-composed compound |
+| 청소기필터 | 바른채반 | generated repetition or over-composed compound |
+| 청소기헤드 | 바른도토리 | generated repetition or over-composed compound |
+| 청소기호스 | 바른누룽지 | generated repetition or over-composed compound |
+| 구기구기구기 | 바른실꾸리 | generated repetition or over-composed compound |
+| 구기구기구름 | 바른공터 | generated repetition or over-composed compound |
+| 구기구기구슬 | 바른하루 | generated repetition or over-composed compound |
+| 구기구기구역 | 바른일감 | generated repetition or over-composed compound |
+| 구기구기구장 | 바른들꽃 | generated repetition or over-composed compound |
+| 구기구기구조 | 햇빛책장 | generated repetition or over-composed compound |
+| 물속체험교실 | 햇빛글밭 | generated repetition or over-composed compound |
+| 물속체험학습 | 햇빛마당 | generated repetition or over-composed compound |
+| 물속체험활동 | 햇빛뜰안 | generated repetition or over-composed compound |
+| 수영장체험관 | 햇빛처마 | generated repetition or over-composed compound |
+| 수영장체험장 | 햇빛길섶 | generated repetition or over-composed compound |
+| 청소기기능성 | 햇빛돌길 | generated repetition or over-composed compound |
+| 청소기디자인 | 햇빛흙담 | generated repetition or over-composed compound |
+| 청소기배터리 | 햇빛꽃길 | generated repetition or over-composed compound |
+| 청소기브랜드 | 햇빛나루 | generated repetition or over-composed compound |
+| 청소기브러시 | 햇빛물결 | generated repetition or over-composed compound |
+| 청소기사용법 | 햇빛냇물 | generated repetition or over-composed compound |
+| 청소기스위치 | 햇빛강물 | generated repetition or over-composed compound |
+| 청소기편리성 | 햇빛바닷길 | generated repetition or over-composed compound |
+| 청소기편리한 | 햇빛산길 | generated repetition or over-composed compound |
+| 청소기편리함 | 햇빛들길 | generated repetition or over-composed compound |
+| 구기구기구기공 | 햇빛솔길 | generated repetition or over-composed compound |
+| 구기구기구기구 | 햇빛숲길 | generated repetition or over-composed compound |
+| 구기구기구기볼 | 햇빛햇살 | generated repetition or over-composed compound |
+| 구기구기구기알 | 햇빛달빛 | generated repetition or over-composed compound |
+| 구기구기구기장 | 햇빛별빛 | generated repetition or over-composed compound |
+| 구기구기구기탄 | 햇빛물빛 | generated repetition or over-composed compound |
+| 구기구기구슬공 | 햇빛바람 | generated repetition or over-composed compound |
+| 수영장체험학습 | 햇빛구름 | generated repetition or over-composed compound |
+| 수영장체험행사 | 햇빛연못 | generated repetition or over-composed compound |
+| 수영장체험활동 | 햇빛샘물 | generated repetition or over-composed compound |
+| 구기구기구기구기 | 햇빛모래 | generated repetition or over-composed compound |
+| 구기구기구기구름 | 햇빛자갈 | generated repetition or over-composed compound |
+| 구기구기구기구슬 | 햇빛풀잎 | generated repetition or over-composed compound |
+| 구기구기구기구역 | 햇빛잎새 | generated repetition or over-composed compound |
+| 구기구기구기구장 | 햇빛새싹 | generated repetition or over-composed compound |
+| 구기구기구기구조 | 햇빛종이 | generated repetition or over-composed compound |
+| 물속체험프로그램 | 햇빛붓끝 | generated repetition or over-composed compound |
+| 청소기편리한가격 | 햇빛채반 | generated repetition or over-composed compound |
+| 청소기편리한기능 | 햇빛도토리 | generated repetition or over-composed compound |
+| 청소기편리한기술 | 햇빛누룽지 | generated repetition or over-composed compound |
+| 청소기편리한모델 | 햇빛실꾸리 | generated repetition or over-composed compound |
+| 청소기편리한사양 | 햇빛공터 | generated repetition or over-composed compound |
+| 청소기편리한성능 | 햇빛하루 | generated repetition or over-composed compound |
+| 청소기편리한종류 | 햇빛일감 | generated repetition or over-composed compound |
+| 구기구기구기구기공 | 햇빛들꽃 | generated repetition or over-composed compound |
+| 구기구기구기구기구 | 달빛책장 | generated repetition or over-composed compound |
+| 구기구기구기구기볼 | 달빛글밭 | generated repetition or over-composed compound |
+| 구기구기구기구기알 | 달빛마당 | generated repetition or over-composed compound |
+| 구기구기구기구기장 | 달빛뜰안 | generated repetition or over-composed compound |
+| 구기구기구기구기탄 | 달빛처마 | generated repetition or over-composed compound |
+| 구기구기구기구슬공 | 달빛길섶 | generated repetition or over-composed compound |
+| 수영장체험프로그램 | 달빛돌길 | generated repetition or over-composed compound |
+| 청소기편리한기능성 | 달빛흙담 | generated repetition or over-composed compound |
+| 청소기편리한디자인 | 달빛꽃길 | generated repetition or over-composed compound |
+| 청소기편리한사용법 | 달빛나루 | generated repetition or over-composed compound |
+| 구기구기구기구기구름 | 달빛물결 | generated repetition or over-composed compound |
+| 구기구기구기구기구슬 | 달빛냇물 | generated repetition or over-composed compound |
+| 구기구기구기구기구역 | 달빛강물 | generated repetition or over-composed compound |
+| 구기구기구기구기구장 | 달빛바닷길 | generated repetition or over-composed compound |
+| 구기구기구기구기구조 | 달빛산길 | generated repetition or over-composed compound |
+| 구기구기구기구기구슬공 | 달빛들길 | generated repetition or over-composed compound |
