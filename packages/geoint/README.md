@@ -29,6 +29,7 @@ Region Level 2 uses city names from the GeoNames World Cities database:
 - 📊 Total GeoNames entries: 215,659
 - 🇬🇧 Unique cities in English: 173,528
 - 🇰🇷 Unique cities in Korean: 167,814
+- 🇯🇵 Unique cities in Japanese: 173,528
 
 ### 🌕 Planetary Region Level 2
 
@@ -38,13 +39,16 @@ USGS/IAU Gazetteer of Planetary Nomenclature center-point KML downloads:
 - `region-2-moon.json`: 9,085 approved lunar feature center points
 - `region-2-moon-korean.json`: 9,085 Korean-localized lunar feature labels
 - `region-2-moon-chinese.json`: 9,085 Chinese-localized lunar feature labels
+- `region-2-moon-japanese.json`: 9,085 Japanese-localized lunar feature labels
 - `region-2-mars.json`: 2,047 approved martian feature center points
 - `region-2-mars-korean.json`: 2,047 Korean-localized martian feature labels
 - `region-2-mars-chinese.json`: 2,047 Chinese-localized martian feature labels
+- `region-2-mars-japanese.json`: 2,047 Japanese-localized martian feature labels
 - `region-3-mars.json`: 24,380 Mars crater fallback labels derived from
   Robbins V1 craters with diameter >= 10 km
 - `region-3-mars-korean.json`: 24,380 Korean-localized Mars crater fallback labels
 - `region-3-mars-chinese.json`: 24,380 Chinese-localized Mars crater fallback labels
+- `region-3-mars-japanese.json`: 24,380 Japanese-localized Mars crater fallback labels
 
 The `region-2` datasets store official English feature names, descriptor codes,
 latitude, east-positive longitude normalized to `[-180, 180]`, feature type,
@@ -140,17 +144,22 @@ This approach provides significant performance benefits:
 - 🏳️ `region-1.json`: Contains region data with 4 or fewer digits (including airport codes)
 - 🏙️ `region-2.json`: Contains city data from GeoNames cities500 dataset
 - 🌐 `region-2-[language].json`: Contains translated city names for specific languages
+- 🌐 `region-2-japanese.json`: Contains Japanese-localized Earth city labels
 - 🌕 `region-2-moon.json`: Contains Moon feature names from the USGS/IAU Gazetteer
 - 🌕 `region-2-moon-korean.json`: Contains Korean-localized Moon feature labels
 - 🌕 `region-2-moon-chinese.json`: Contains Chinese-localized Moon feature labels
+- 🌕 `region-2-moon-japanese.json`: Contains Japanese-localized Moon feature labels
 - 🪐 `region-2-mars.json`: Contains Mars feature names from the USGS/IAU Gazetteer
 - 🪐 `region-2-mars-korean.json`: Contains Korean-localized Mars feature labels
 - 🪐 `region-2-mars-chinese.json`: Contains Chinese-localized Mars feature labels
+- 🪐 `region-2-mars-japanese.json`: Contains Japanese-localized Mars feature labels
 - 🪐 `region-3-mars.json`: Contains Mars crater fallback labels derived from Robbins V1
 - 🪐 `region-3-mars-korean.json`: Contains Korean-localized Mars crater fallback labels
 - 🪐 `region-3-mars-chinese.json`: Contains Chinese-localized Mars crater fallback labels
+- 🪐 `region-3-mars-japanese.json`: Contains Japanese-localized Mars crater fallback labels
 - 🌊 `region-3.json`: Contains sparse global coverage labels for oceans, polar regions, deserts, and remote interiors
 - 🌐 `region-3-[language].json`: Contains localized region-3 names where translations are available
+- 🌐 `region-3-japanese.json`: Contains Japanese-localized sparse global coverage labels
 
 ## 🛠️ Usage
 
@@ -192,6 +201,7 @@ await load([
   "region-2-moon",
   "region-2-moon-korean",
   "region-2-moon-chinese",
+  "region-2-moon-japanese",
   "region-2-mars",
 ]);
 
@@ -215,6 +225,11 @@ const olympusMonsKo = await info({
 const olympusMonsZh = await info({
   regionName: "region-2-mars-chinese",
   name: "奥林帕斯山",
+});
+
+const olympusMonsJa = await info({
+  regionName: "region-2-mars-japanese",
+  name: "オリンポス山",
 });
 
 await load(["region-3-mars"]);

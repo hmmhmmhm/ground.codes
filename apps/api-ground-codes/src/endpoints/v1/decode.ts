@@ -1,5 +1,6 @@
 import Elysia, { t } from "elysia";
 import { CelestialBody, decode, SupportedLanguage } from "ground-codes";
+import { supportedLanguages } from "./language.js";
 
 export const v1Decode = new Elysia().post(
   "/decode",
@@ -41,7 +42,7 @@ export const v1Decode = new Elysia().post(
           default: "english",
           example: "english",
           description: "Language for word set decoding",
-          enum: ["english", "korean", "chinese"],
+          enum: supportedLanguages,
         }),
       ),
       body: t.Optional(

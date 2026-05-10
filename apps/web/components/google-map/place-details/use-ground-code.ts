@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { encode } from "@/lib/code/ground-codes";
+import { getGroundCodeLanguage } from "@/lib/i18n/ground-code-language";
 import { CelestialBody } from "@/lib/map/celestial-bodies";
 
 /**
@@ -23,8 +24,7 @@ export const useGroundCode = (
       const code = await encode({
         lat: location.lat(),
         lng: location.lng(),
-        language:
-          locale === "ko" ? "korean" : locale === "cn" ? "chinese" : "english",
+        language: getGroundCodeLanguage(locale),
         body,
       });
       setGroundCode(code);

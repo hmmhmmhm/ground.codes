@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { encode } from "@/lib/code/ground-codes";
 import { useI18n } from "@/lib/i18n/i18n-context";
+import { getGroundCodeLanguage } from "@/lib/i18n/ground-code-language";
 import { CelestialBody } from "@/lib/map/celestial-bodies";
 
 interface Coordinates {
@@ -24,13 +25,7 @@ export const useMapCoordinates = (
       setIsEncoding(true);
       // Locale to be captured in a closure
       const currentLocale = locale;
-      // Map locale to language for the API
-      let language = "english"; // Default value
-      if (currentLocale === "ko") {
-        language = "korean";
-      } else if (currentLocale === "cn") {
-        language = "chinese";
-      }
+      const language = getGroundCodeLanguage(currentLocale);
 
       const encoded = await encode({
         lat: selectedArea.lat,

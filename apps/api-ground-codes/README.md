@@ -14,7 +14,7 @@ API Ground.codes is a RESTful API service built with Elysia.js and Bun that prov
 - 🔄 **Encode Coordinates**: Convert latitude and longitude to memorable ground codes
 - 🔍 **Decode Ground Codes**: Convert ground codes back to geographic coordinates
 - 🌎 **Region Information**: Get information about specific regions
-- 🌐 **Multilingual Support**: Support for multiple languages (English, Korean, Chinese)
+- 🌐 **Multilingual Support**: Support for multiple languages (English, Korean, Chinese, Japanese)
 - 🌕 **Planetary Bodies**: Encode Earth, Moon, and Mars coordinates with body-specific labels
 - 🎯 **Customizable Precision**: Adjust the precision of encoded locations
 - 📝 **Swagger Documentation**: Interactive API documentation
@@ -52,10 +52,11 @@ requests use USGS/IAU Gazetteer planetary feature names and body-specific meter
 conversion while keeping Earth as the default for backward compatibility. Mars
 uses official feature names first, then falls back to readable Robbins crater
 labels such as `Abalos Crater 1` when official names are sparse.
-Korean and Chinese planetary labels are supported with `language: "korean"` and
-`language: "chinese"`; proper names are generally preserved while terrain
-descriptors are localized. For example, `Olympus Mons` becomes `올림푸스 산` in
-Korean and `奥林帕斯山` in Chinese.
+Korean, Chinese, and Japanese planetary labels are supported with
+`language: "korean"`, `language: "chinese"`, and `language: "japanese"`;
+proper names are generally preserved while terrain descriptors are localized.
+For example, `Olympus Mons` becomes `올림푸스 산` in Korean, `奥林帕斯山` in
+Chinese, and `オリンポス山` in Japanese.
 
 This implementation enables the API to handle high volumes of geospatial queries with minimal latency, making it suitable for production applications with strict performance requirements.
 
@@ -153,6 +154,20 @@ Response:
 "Mare Tranquillitatis-..."
 ```
 
+Japanese labels are also available:
+
+```bash
+curl -X POST http://localhost:3000/encode \
+  -H "Content-Type: application/json" \
+  -d '{"lat": 18.6528, "lng": 226.1975, "body": "mars", "regionLevel": 2, "language": "japanese"}'
+```
+
+Response:
+
+```
+"オリンポス山-..."
+```
+
 ```bash
 curl -X POST http://localhost:3000/decode \
   -H "Content-Type: application/json" \
@@ -170,7 +185,7 @@ Mars sparse fallback labels use official nearby anchors with crater numbering:
 The API supports various configuration options:
 
 - 🏙️ **Region Level**: Choose between city names (level 2) or airport codes (level 1)
-- 🌐 **Language**: Select from supported languages (English, Korean, Chinese)
+- 🌐 **Language**: Select from supported languages (English, Korean, Chinese, Japanese)
 - 📏 **Precision**: Adjust the precision of encoded locations in meters
 - 🪐 **Body**: Select `earth`, `moon`, or `mars` for coordinate conversion and labels
 

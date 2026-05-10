@@ -32,7 +32,7 @@ And Ground Codes is a **multi-planetary addressing system** 🪐 that aims to pr
 - 🧠 **Simple and Memorable**: Just three words to identify any location precisely
 - 🌎 **Global Coverage**: Works anywhere in the world with a unique address
 - 🔓 **Open Source**: MIT licensed and fully transparent implementation
-- 🌐 **Multilingual Support**: Currently available in Korean and English, with plans to expand to 60 languages
+- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, and Japanese, with plans to expand to 60 languages
 - 🎯 **Variable Precision**: Offers three levels of precision (3m, 30cm, and 3cm) to suit different use cases
 
 ## 📊 Comparison with Similar Services
@@ -78,6 +78,7 @@ API usage is limited to 600 requests per minute per IP. For higher volume needs,
 - 🇰🇷 Korean word set: 5,630 words (AI-generated dataset)
 - 🇨🇳 Chinese word set: 5,140 words (AI-generated dataset)
 - 🇯🇵 Japanese word set: 5,000 words (frequency-guided hiragana dataset)
+- 🌐 Region labels: English, Korean, Chinese, and Japanese labels are available for Earth, Moon, and Mars datasets
 - 🌎 Region names: 210,000 unique global locations with populations of 500+ (GeoNames data, commercially usable)
 - 🔐 Special solutions:
   - **Region 1**: ✈️ Optimized for airports/logistics with country codes and airport codes (e.g., NYC-491AD, SSN-TA14C)
