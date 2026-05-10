@@ -699,3 +699,12 @@ This addendum records residual high-confidence cleanup words found by a full Kor
 | 수영장장비 | 포근한햇살 | residual brand, platform, or jargon word |
 | 수영장장소 | 포근한달빛 | residual brand, platform, or jargon word |
 | 수영장장애 | 포근한별빛 | residual brand, platform, or jargon word |
+
+## Sub-Agent Re-Review Addendum
+
+An additional review pass checked the current distributed Korean codebook for
+sexual, violent, military, crime, gambling, medical, political, religious,
+negative, foreign, place-like, fragment-like, and awkward generated terms. The
+pass removed the reported high, medium, and low findings, then repeated review
+until no urgent, high, medium, or low findings were reported for the current
+file.

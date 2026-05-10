@@ -111,6 +111,14 @@ Replacement rules:
 | 恐怖 | 林岸 | adult, risky, violent, or negative term |
 | 犯罪 | 春风 | adult, risky, violent, or negative term |
 
+## Sub-Agent Re-Review Addendum
+
+An additional review pass checked the current distributed Chinese codebook for
+sexual, violent, military, crime, gambling, medical, political, religious,
+negative, fragment-like, place-like, and awkward generated terms. The pass
+removed the reported high, medium, and low findings, then repeated review until
+no urgent, high, medium, or low findings were reported for the current file.
+
 ## Source-Only Removals
 
 | Original | Action | Reason |
