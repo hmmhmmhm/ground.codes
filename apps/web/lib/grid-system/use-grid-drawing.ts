@@ -51,7 +51,7 @@ export function useGridDrawing(metersPerDegree?: number) {
         const sw = bounds.getSouthWest();
         const centerLat = (ne.lat() + sw.lat()) / 2;
 
-        // Calculate grid cell size
+        // Keep selection rectangles tied to the exact ground-code cell size.
         const { latDegreePerCell, lngDegreePerCell } = calculateGridCellSize(
           centerLat,
           undefined,
