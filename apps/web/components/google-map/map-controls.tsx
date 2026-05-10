@@ -62,6 +62,18 @@ const MapControls: React.FC<MapControlsProps> = ({
 }) => {
   const { t, locale, setLocale } = useI18n();
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
+  const localeLabels: Record<Locale, string> = {
+    en: "English",
+    ko: "한국어",
+    cn: "中文",
+    ja: "日本語",
+  };
+  const localeShortLabels: Record<Locale, string> = {
+    en: "EN",
+    ko: "KO",
+    cn: "CN",
+    ja: "JA",
+  };
 
   const handleLanguageChange = (newLocale: Locale) => {
     setLocale(newLocale);
@@ -212,7 +224,7 @@ const MapControls: React.FC<MapControlsProps> = ({
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
             <span className="text-white hidden md:inline">
-              {locale === "en" ? "EN" : locale === "cn" ? "CN" : "KO"}
+              {localeShortLabels[locale]}
             </span>
           </button>
 
@@ -229,11 +241,7 @@ const MapControls: React.FC<MapControlsProps> = ({
                     }`}
                   >
                     <span className="text-white">
-                      {localeOption === "en"
-                        ? "English"
-                        : localeOption === "cn"
-                          ? "中文"
-                          : "한국어"}
+                      {localeLabels[localeOption]}
                     </span>
                     {locale === localeOption && (
                       <span className="text-green-400">✓</span>

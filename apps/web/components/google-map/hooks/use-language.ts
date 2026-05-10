@@ -62,6 +62,9 @@ export const useLanguage = () => {
         if (langCode === "cn") {
           return "zh-CN";
         }
+        if (langCode === "ja") {
+          return "ja";
+        }
         return langCode;
       }
 

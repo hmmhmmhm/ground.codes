@@ -1,28 +1,17 @@
 import Elysia, { t } from "elysia";
 import { info } from "@ground-codes/geoint";
+import { getRegionDatasetName, supportedLanguages } from "../language.js";
 
 export const v1RegionInfo = new Elysia().post(
   "/region/info",
   async ({
     body: { name, language = "english", regionLevel = 2, body = "earth" },
   }) => {
-    const normalizedBody = body.toLowerCase();
-    const languageSuffix =
-      language.toLowerCase() === "korean"
-        ? "-korean"
-        : language.toLowerCase() === "chinese"
-          ? "-chinese"
-          : language.toLowerCase() === "english"
-            ? ""
-            : "";
-    const regionName =
-      normalizedBody === "earth"
-        ? `region-${regionLevel}${
-            language.toLowerCase() === "english"
-              ? ""
-              : `-${language.toLowerCase()}`
-          }`
-        : `region-${regionLevel}-${normalizedBody}${languageSuffix}`;
+    const regionName = getRegionDatasetName({
+      body,
+      language,
+      regionLevel,
+    });
 
     const data = await info({
       name,
@@ -58,7 +47,7 @@ export const v1RegionInfo = new Elysia().post(
           default: "english",
           example: "english",
           description: "Language for word set encoding",
-          enum: ["english", "korean", "chinese"],
+          enum: supportedLanguages,
         }),
       ),
       regionLevel: t.Optional(

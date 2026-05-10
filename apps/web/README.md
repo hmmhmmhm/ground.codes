@@ -30,7 +30,7 @@ Ground.codes web application is an interactive map service utilizing the Google 
 
 - **🌐 Multilingual Support**
 
-  - 🇬🇧 English (default), 🇰🇷 Korean, 🇨🇳 Chinese
+  - 🇬🇧 English (default), 🇰🇷 Korean, 🇨🇳 Chinese, 🇯🇵 Japanese
   - 🍪 Cookie-based language settings without URL locale prefixes
   - 🏷️ Multilingual display of place types
 
@@ -87,7 +87,9 @@ Moon and Mars basemaps are loaded from official USGS Astrogeology WMS services:
 
 Google Places search, POI details, weather, and user geolocation controls are
 Earth-only. Ground code encoding and the 3m grid remain available on Moon and
-Mars, with grid degree spacing adjusted for each body's radius.
+Mars, with grid degree spacing adjusted for each body's radius. Ground code
+region prefixes and word payloads are available in English, Korean, Chinese,
+and Japanese.
 
 ### 🌩️ Deployment and Internationalization
 
