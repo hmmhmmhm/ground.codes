@@ -8,6 +8,7 @@ type Earth3DMapProps = {
   selectedArea: Coordinates | null;
   showGrid: boolean;
   setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>;
+  userLocation: Coordinates | null;
 };
 
 type Map3DElementInstance = HTMLElement & {
@@ -32,34 +33,35 @@ type LocationClickEventLike = Event & {
 };
 
 const GRID_STEP_DEGREES = 15;
+const GRID_ALTITUDE_METERS = 1200;
 
 const createLatitudePath = (lat: number) =>
   Array.from({ length: 73 }, (_, index) => ({
     lat,
     lng: -180 + index * 5,
+    altitude: GRID_ALTITUDE_METERS,
   }));
 
 const createLongitudePath = (lng: number) =>
   Array.from({ length: 37 }, (_, index) => ({
     lat: -90 + index * 5,
     lng,
+    altitude: GRID_ALTITUDE_METERS,
   }));
 
 const appendGrid = (map3d: Map3DElementInstance, maps3d: Maps3DLibrary) => {
   const overlays: HTMLElement[] = [];
-  const altitudeMode =
-    maps3d.AltitudeMode.CLAMP_TO_GROUND ??
-    maps3d.AltitudeMode.RELATIVE_TO_GROUND;
+  const altitudeMode = maps3d.AltitudeMode.RELATIVE_TO_GROUND;
 
   for (let lat = -75; lat <= 75; lat += GRID_STEP_DEGREES) {
     const line = new maps3d.Polyline3DElement({
       path: createLatitudePath(lat),
-      strokeColor: lat === 0 ? "#8FD3FF" : "#EAF2FF",
-      strokeWidth: lat === 0 ? 3 : 2,
+      strokeColor: lat === 0 ? "#20D6FF" : "#FFFFFF",
+      strokeWidth: lat === 0 ? 5 : 3,
       outerColor: "#101820",
-      outerWidth: 0.25,
+      outerWidth: 1,
       altitudeMode,
-      drawsOccludedSegments: false,
+      drawsOccludedSegments: true,
     });
     map3d.append(line);
     overlays.push(line);
@@ -68,12 +70,12 @@ const appendGrid = (map3d: Map3DElementInstance, maps3d: Maps3DLibrary) => {
   for (let lng = -180; lng < 180; lng += GRID_STEP_DEGREES) {
     const line = new maps3d.Polyline3DElement({
       path: createLongitudePath(lng),
-      strokeColor: lng === 0 ? "#8FD3FF" : "#EAF2FF",
-      strokeWidth: lng === 0 ? 3 : 2,
+      strokeColor: lng === 0 ? "#20D6FF" : "#FFFFFF",
+      strokeWidth: lng === 0 ? 5 : 3,
       outerColor: "#101820",
-      outerWidth: 0.25,
+      outerWidth: 1,
       altitudeMode,
-      drawsOccludedSegments: false,
+      drawsOccludedSegments: true,
     });
     map3d.append(line);
     overlays.push(line);
@@ -89,12 +91,14 @@ const Earth3DMap = ({
   selectedArea,
   showGrid,
   setSelectedArea,
+  userLocation,
 }: Earth3DMapProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const maps3dRef = useRef<Maps3DLibrary | null>(null);
   const mapRef = useRef<Map3DElementInstance | null>(null);
   const gridRef = useRef<HTMLElement[]>([]);
   const markerRef = useRef<HTMLElement | null>(null);
+  const userLocationMarkerRef = useRef<HTMLElement | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
 
@@ -158,6 +162,8 @@ const Earth3DMap = ({
       gridRef.current = [];
       markerRef.current?.remove();
       markerRef.current = null;
+      userLocationMarkerRef.current?.remove();
+      userLocationMarkerRef.current = null;
       maps3dRef.current = null;
       mapRef.current = null;
       setMapReady(false);
@@ -188,10 +194,41 @@ const Earth3DMap = ({
       "position",
       `${selectedArea.lat},${selectedArea.lng},0`,
     );
-    marker.setAttribute("label", "Ground Code");
+    marker.setAttribute(
+      "label",
+      isEncoding || !encodedCoordinates ? "Encoding..." : encodedCoordinates,
+    );
     map3d.append(marker);
     markerRef.current = marker;
-  }, [mapReady, selectedArea]);
+  }, [encodedCoordinates, isEncoding, mapReady, selectedArea]);
+
+  useEffect(() => {
+    const map3d = mapRef.current;
+    if (!map3d) return;
+
+    userLocationMarkerRef.current?.remove();
+    userLocationMarkerRef.current = null;
+    if (!userLocation) return;
+
+    const marker = document.createElement("gmp-marker-3d");
+    marker.setAttribute(
+      "position",
+      `${userLocation.lat},${userLocation.lng},0`,
+    );
+    marker.setAttribute("label", "My Location");
+    map3d.append(marker);
+    userLocationMarkerRef.current = marker;
+
+    map3d.center = {
+      lat: userLocation.lat,
+      lng: userLocation.lng,
+      altitude: 0,
+    };
+    setSelectedArea({
+      lat: userLocation.lat,
+      lng: userLocation.lng,
+    });
+  }, [mapReady, setSelectedArea, userLocation]);
 
   return (
     <div className="absolute inset-0 bg-black" ref={containerRef}>
