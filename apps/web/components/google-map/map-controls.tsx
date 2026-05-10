@@ -52,13 +52,12 @@ const MapControls: React.FC<MapControlsProps> = ({
   const { t, locale, setLocale } = useI18n();
   const [showBodyOptions, setShowBodyOptions] = useState(false);
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
-  const activeBodyLabel =
-    BODY_OPTIONS.find((option) => option.body === body)?.label ?? "Earth";
   const bodyLabels: Record<CelestialBody, string> = {
-    earth: "Earth",
-    moon: "Moon",
-    mars: "Mars",
+    earth: t("map.bodies.earth"),
+    moon: t("map.bodies.moon"),
+    mars: t("map.bodies.mars"),
   };
+  const activeBodyLabel = bodyLabels[body];
   const localeLabels: Record<Locale, string> = {
     en: "English",
     ko: "한국어",
@@ -202,8 +201,8 @@ const MapControls: React.FC<MapControlsProps> = ({
               setShowLanguageOptions(false);
             }}
             className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[44px]"
-            title="Map body"
-            aria-label="Map body"
+            title={t("map.controls.body")}
+            aria-label={t("map.controls.body")}
             aria-expanded={showBodyOptions}
           >
             <BodyIcon body={body} />
@@ -233,8 +232,8 @@ const MapControls: React.FC<MapControlsProps> = ({
                     className={`px-3 py-2 text-sm hover:bg-white/10 flex items-center justify-between gap-3 ${
                       body === option.body ? "bg-white/10 font-bold" : ""
                     }`}
-                    title={option.label}
-                    aria-label={option.label}
+                    title={bodyLabels[option.body]}
+                    aria-label={bodyLabels[option.body]}
                   >
                     <span className="text-white flex items-center gap-2">
                       <BodyIcon body={option.body} />

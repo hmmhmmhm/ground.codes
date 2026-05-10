@@ -5,7 +5,7 @@ import { Coordinates } from "./types";
 /**
  * Hook for grid drawing functionality
  */
-export function useGridDrawing() {
+export function useGridDrawing(metersPerDegree?: number) {
   // Grid lines management - managed by reference for direct manipulation without state changes
   const gridLinesRef = useRef<google.maps.Polyline[]>([]);
   const selectedRectangleRef = useRef<google.maps.Rectangle | null>(null);
@@ -52,8 +52,11 @@ export function useGridDrawing() {
         const centerLat = (ne.lat() + sw.lat()) / 2;
 
         // Calculate grid cell size
-        const { latDegreePerCell, lngDegreePerCell } =
-          calculateGridCellSize(centerLat);
+        const { latDegreePerCell, lngDegreePerCell } = calculateGridCellSize(
+          centerLat,
+          undefined,
+          metersPerDegree,
+        );
 
         // Calculate grid cell indices
         const latIndex = Math.floor(selectedArea.lat / latDegreePerCell);
@@ -85,7 +88,7 @@ export function useGridDrawing() {
         console.error("Error drawing rectangle:", error);
       }
     },
-    []
+    [metersPerDegree],
   );
 
   return {

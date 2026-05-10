@@ -51,7 +51,7 @@ const getMapTypeFromCookie = (): string => {
 const getInitialBody = (): CelestialBody => {
   if (typeof window === "undefined") return "earth";
   return parseCelestialBody(
-    new URLSearchParams(window.location.search).get("body")
+    new URLSearchParams(window.location.search).get("body"),
   );
 };
 
@@ -92,7 +92,7 @@ export const useMapContainer = () => {
   const [body, setBody] = useState<CelestialBody>(getInitialBody);
   const isEarth = body === "earth";
   const [planetaryLayerId, setPlanetaryLayerId] = useState(() =>
-    getInitialPlanetaryLayerId(body)
+    getInitialPlanetaryLayerId(body),
   );
 
   // Get language from cookie for Google Maps API
@@ -141,10 +141,10 @@ export const useMapContainer = () => {
   const [searchedPlace, setSearchedPlace] =
     useState<google.maps.places.PlaceResult | null>(null);
   const [searchMarker, setSearchMarker] = useState<google.maps.Marker | null>(
-    null
+    null,
   );
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(
-    null
+    null,
   );
 
   // Show info window state
@@ -298,7 +298,7 @@ export const useMapContainer = () => {
         console.warn("Map is not initialized yet");
       }
     },
-    [map]
+    [map],
   );
 
   // Map heading change handler
@@ -447,7 +447,7 @@ export const useMapContainer = () => {
         map.setZoom(nextView.zoom);
       }
     },
-    [body, map]
+    [body, map],
   );
 
   useEffect(() => {
@@ -481,7 +481,11 @@ export const useMapContainer = () => {
       mapTypeControlOptions: { mapTypeIds: [body] },
     });
     map.setMapTypeId(body);
-  }, [body, map, mapType, planetaryLayerId]);
+
+    if (showGrid) {
+      window.requestAnimationFrame(() => drawGrid(map));
+    }
+  }, [body, map, mapType, planetaryLayerId, showGrid, drawGrid]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -629,7 +633,7 @@ export const useMapContainer = () => {
       const location = place.geometry.location.toJSON();
       setSelectedArea(location);
     },
-    [map, searchMarker, infoWindow, locationMode, setLocationMode]
+    [map, searchMarker, infoWindow, locationMode, setLocationMode],
   );
 
   // Map load handler
@@ -699,7 +703,7 @@ export const useMapContainer = () => {
       onTiltChanged,
       body,
       planetaryLayerId,
-    ]
+    ],
   );
 
   // Map unload handler
@@ -730,7 +734,7 @@ export const useMapContainer = () => {
       searchMarker,
       infoWindow,
       stopLocationTracking,
-    ]
+    ],
   );
 
   // Map zoom change handler
