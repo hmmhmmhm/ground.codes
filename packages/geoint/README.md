@@ -161,6 +161,9 @@ This approach provides significant performance benefits:
 - 🌐 `region-3-[language].json`: Contains localized region-3 names where translations are available
 - 🌐 `region-3-japanese.json`: Contains Japanese-localized sparse global coverage labels
 
+Localized Earth region language audits are recorded under
+`region-dataset/region-language-audit-2026-05-10.md`.
+
 ## 🛠️ Usage
 
 ### 📥 Installation
