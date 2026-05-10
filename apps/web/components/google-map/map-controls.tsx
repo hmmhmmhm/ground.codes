@@ -87,8 +87,12 @@ const MapControls: React.FC<MapControlsProps> = ({
     roadmap: t("map.controls.normalMapLabel"),
     satellite: t("map.controls.satelliteMapLabel"),
     earth3d: t("map.controls.earth3DLabel"),
+    planetary3d: t("map.controls.planetary3DLabel"),
   };
   const activeMapTypeLabel = mapTypeLabels[mapType];
+  const mapTypeOptions: EarthMapType[] = isEarth
+    ? ["roadmap", "satellite", "earth3d"]
+    : ["roadmap", "planetary3d"];
 
   const handleMapTypeChange = (newMapType: EarthMapType) => {
     selectMapType(newMapType);
@@ -211,7 +215,7 @@ const MapControls: React.FC<MapControlsProps> = ({
     type: EarthMapType;
     size?: number;
   }) => {
-    if (type === "earth3d") {
+    if (type === "earth3d" || type === "planetary3d") {
       return (
         <svg
           aria-hidden="true"
@@ -332,65 +336,61 @@ const MapControls: React.FC<MapControlsProps> = ({
           )}
         </div>
 
-        {isEarth && (
-          <div className="relative">
-            <button
-              onClick={() => {
-                setShowMapTypeOptions(!showMapTypeOptions);
-                setShowBodyOptions(false);
-                setShowLanguageOptions(false);
-              }}
-              className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[44px]"
-              title={t("map.controls.mapType")}
-              aria-label={t("map.controls.mapType")}
-              aria-expanded={showMapTypeOptions}
+        <div className="relative">
+          <button
+            onClick={() => {
+              setShowMapTypeOptions(!showMapTypeOptions);
+              setShowBodyOptions(false);
+              setShowLanguageOptions(false);
+            }}
+            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[44px]"
+            title={t("map.controls.mapType")}
+            aria-label={t("map.controls.mapType")}
+            aria-expanded={showMapTypeOptions}
+          >
+            <MapTypeIcon type={mapType} />
+            <span className="hidden md:inline">{activeMapTypeLabel}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <MapTypeIcon type={mapType} />
-              <span className="hidden md:inline">{activeMapTypeLabel}</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </button>
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
 
-            {showMapTypeOptions && (
-              <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer min-w-[144px] overflow-hidden">
-                <div className="flex flex-col">
-                  {(["roadmap", "satellite", "earth3d"] as EarthMapType[]).map(
-                    (option) => (
-                      <button
-                        key={option}
-                        onClick={() => handleMapTypeChange(option)}
-                        className={`px-3 py-2 text-sm hover:bg-white/10 flex items-center justify-between gap-3 ${
-                          mapType === option ? "bg-white/10 font-bold" : ""
-                        }`}
-                        title={mapTypeLabels[option]}
-                        aria-label={mapTypeLabels[option]}
-                      >
-                        <span className="text-white flex items-center gap-2">
-                          <MapTypeIcon type={option} />
-                          <span>{mapTypeLabels[option]}</span>
-                        </span>
-                        {mapType === option && (
-                          <span className="text-green-400">✓</span>
-                        )}
-                      </button>
-                    ),
-                  )}
-                </div>
+          {showMapTypeOptions && (
+            <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer min-w-[144px] overflow-hidden">
+              <div className="flex flex-col">
+                {mapTypeOptions.map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => handleMapTypeChange(option)}
+                    className={`px-3 py-2 text-sm hover:bg-white/10 flex items-center justify-between gap-3 ${
+                      mapType === option ? "bg-white/10 font-bold" : ""
+                    }`}
+                    title={mapTypeLabels[option]}
+                    aria-label={mapTypeLabels[option]}
+                  >
+                    <span className="text-white flex items-center gap-2">
+                      <MapTypeIcon type={option} />
+                      <span>{mapTypeLabels[option]}</span>
+                    </span>
+                    {mapType === option && (
+                      <span className="text-green-400">✓</span>
+                    )}
+                  </button>
+                ))}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
 
         {/* Language Selector Button */}
         <div className="relative">

@@ -12,6 +12,7 @@
       "normalMapLabel": "地图",
       "satelliteMapLabel": "卫星地图",
       "earth3DLabel": "3D地球",
+      "planetary3DLabel": "3D星球",
       "switchToSatelliteWithRefresh": "切换到卫星地图（页面将刷新）",
       "switchToRoadmapWithRefresh": "切换到普通地图（页面将刷新）",
       "body": "选择天体",
