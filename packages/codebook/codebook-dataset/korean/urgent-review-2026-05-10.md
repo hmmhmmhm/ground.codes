@@ -591,3 +591,111 @@ This addendum removes generated repetition patterns and over-composed compounds 
 | 구기구기구기구기구장 | 달빛바닷길 | generated repetition or over-composed compound |
 | 구기구기구기구기구조 | 달빛산길 | generated repetition or over-composed compound |
 | 구기구기구기구기구슬공 | 달빛들길 | generated repetition or over-composed compound |
+
+## Latin Mixed Word Addendum
+
+This addendum removes Korean codebook source entries containing Latin letters or Roman brand-style text. These entries are not suitable for a Korean-only address word set and were removed from generated/refined sources rather than replaced, so rebuilt collected codebooks do not gain new words from previously filtered entries.
+
+| Original | Action | Reason |
+| --- | --- | --- |
+| AI | removed from source | contains Latin letters or brand-style Roman text |
+| API | removed from source | contains Latin letters or brand-style Roman text |
+| BBQ | removed from source | contains Latin letters or brand-style Roman text |
+| BHC | removed from source | contains Latin letters or brand-style Roman text |
+| CJ | removed from source | contains Latin letters or brand-style Roman text |
+| CJ몰 | removed from source | contains Latin letters or brand-style Roman text |
+| CPU | removed from source | contains Latin letters or brand-style Roman text |
+| CU | removed from source | contains Latin letters or brand-style Roman text |
+| DJ | removed from source | contains Latin letters or brand-style Roman text |
+| DNA | removed from source | contains Latin letters or brand-style Roman text |
+| GS | removed from source | contains Latin letters or brand-style Roman text |
+| GS25 | removed from source | contains Latin letters or brand-style Roman text |
+| GS샵 | removed from source | contains Latin letters or brand-style Roman text |
+| G마켓 | removed from source | contains Latin letters or brand-style Roman text |
+| KB | removed from source | contains Latin letters or brand-style Roman text |
+| KFC | removed from source | contains Latin letters or brand-style Roman text |
+| KT | removed from source | contains Latin letters or brand-style Roman text |
+| LED | removed from source | contains Latin letters or brand-style Roman text |
+| LG | removed from source | contains Latin letters or brand-style Roman text |
+| LGU | removed from source | contains Latin letters or brand-style Roman text |
+| LG유플러스 | removed from source | contains Latin letters or brand-style Roman text |
+| MC | removed from source | contains Latin letters or brand-style Roman text |
+| QR코드 | removed from source | contains Latin letters or brand-style Roman text |
+| R&B | removed from source | contains Latin letters or brand-style Roman text |
+| RAM | removed from source | contains Latin letters or brand-style Roman text |
+| RNA | removed from source | contains Latin letters or brand-style Roman text |
+| RPG | removed from source | contains Latin letters or brand-style Roman text |
+| SF | removed from source | contains Latin letters or brand-style Roman text |
+| SF영화 | removed from source | contains Latin letters or brand-style Roman text |
+| SK | removed from source | contains Latin letters or brand-style Roman text |
+| SKT | removed from source | contains Latin letters or brand-style Roman text |
+| SK텔레콤 | removed from source | contains Latin letters or brand-style Roman text |
+| SUV | removed from source | contains Latin letters or brand-style Roman text |
+| UI | removed from source | contains Latin letters or brand-style Roman text |
+| US오픈 | removed from source | contains Latin letters or brand-style Roman text |
+| UX | removed from source | contains Latin letters or brand-style Roman text |
+| 흑berries | removed from source | contains Latin letters or brand-style Roman text |
+
+## Residual High Confidence Review
+
+This addendum records residual high-confidence cleanup words found by a full Korean set audit after the earlier passes.
+
+| Original | Replacement | Reason |
+| --- | --- | --- |
+| 양양 | 차분한책장 | residual place-name watchlist |
+| 남양주 | 차분한글밭 | residual place-name watchlist |
+| 의정부 | 차분한마당 | residual place-name watchlist |
+| 경산 | 차분한뜰안 | residual place-name watchlist |
+| 고창 | 차분한처마 | residual place-name watchlist |
+| 고흥 | 차분한길섶 | residual place-name watchlist |
+| 무안 | 차분한돌길 | residual place-name watchlist |
+| 무주 | 차분한흙담 | residual place-name watchlist |
+| 산청 | 차분한꽃길 | residual place-name watchlist |
+| 양구 | 차분한나루 | residual place-name watchlist |
+| 완도 | 차분한물결 | residual place-name watchlist |
+| 울릉 | 차분한냇물 | residual place-name watchlist |
+| 울진 | 차분한강물 | residual place-name watchlist |
+| 인제 | 차분한산길 | residual place-name watchlist |
+| 장수 | 차분한들길 | residual place-name watchlist |
+| 정선 | 차분한솔길 | residual place-name watchlist |
+| 진도 | 차분한숲길 | residual place-name watchlist |
+| 청송 | 차분한햇살 | residual place-name watchlist |
+| 청양 | 차분한달빛 | residual place-name watchlist |
+| 칠곡 | 차분한별빛 | residual place-name watchlist |
+| 감염 | 차분한물빛 | residual negative, adult, medical, or risk word |
+| 공격 | 차분한바람 | residual negative, adult, medical, or risk word |
+| 담배 | 차분한구름 | residual negative, adult, medical, or risk word |
+| 분노 | 차분한연못 | residual negative, adult, medical, or risk word |
+| 사고 | 차분한샘물 | residual negative, adult, medical, or risk word |
+| 사망 | 차분한모래 | residual negative, adult, medical, or risk word |
+| 상처 | 차분한자갈 | residual negative, adult, medical, or risk word |
+| 수술 | 차분한풀잎 | residual negative, adult, medical, or risk word |
+| 술집 | 차분한잎새 | residual negative, adult, medical, or risk word |
+| 오염 | 차분한새싹 | residual negative, adult, medical, or risk word |
+| 위험 | 차분한종이 | residual negative, adult, medical, or risk word |
+| 장애 | 차분한붓끝 | residual negative, adult, medical, or risk word |
+| 죽음 | 차분한채반 | residual negative, adult, medical, or risk word |
+| 질병 | 차분한공터 | residual negative, adult, medical, or risk word |
+| 피해 | 차분한하루 | residual negative, adult, medical, or risk word |
+| 혐오 | 차분한일감 | residual negative, adult, medical, or risk word |
+| 카카오 | 차분한들꽃 | residual brand, platform, or jargon word |
+| 파파존스 | 포근한책장 | residual brand, platform, or jargon word |
+| 세이코 | 포근한글밭 | residual brand, platform, or jargon word |
+| 시티즌 | 포근한마당 | residual brand, platform, or jargon word |
+| 위메프 | 포근한뜰안 | residual brand, platform, or jargon word |
+| 이마트 | 포근한처마 | residual brand, platform, or jargon word |
+| 코오롱 | 포근한길섶 | residual brand, platform, or jargon word |
+| 피자헛 | 포근한돌길 | residual brand, platform, or jargon word |
+| 쿠팡 | 포근한흙담 | residual brand, platform, or jargon word |
+| 티몬 | 포근한꽃길 | residual brand, platform, or jargon word |
+| 빙상트로피 | 포근한나루 | residual brand, platform, or jargon word |
+| 빙상상대 | 포근한물결 | residual brand, platform, or jargon word |
+| 스포츠리그 | 포근한냇물 | residual brand, platform, or jargon word |
+| 스포츠클럽 | 포근한강물 | residual brand, platform, or jargon word |
+| 정리그래프 | 포근한산길 | residual brand, platform, or jargon word |
+| 마스터즈 | 포근한들길 | residual brand, platform, or jargon word |
+| 챔피언십 | 포근한솔길 | residual brand, platform, or jargon word |
+| 수영장장면 | 포근한숲길 | residual brand, platform, or jargon word |
+| 수영장장비 | 포근한햇살 | residual brand, platform, or jargon word |
+| 수영장장소 | 포근한달빛 | residual brand, platform, or jargon word |
+| 수영장장애 | 포근한별빛 | residual brand, platform, or jargon word |
