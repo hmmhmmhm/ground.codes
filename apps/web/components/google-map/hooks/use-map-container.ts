@@ -20,9 +20,10 @@ import {
 
 // Define libraries array as a constant to prevent recreation on each render
 const libraries: "places"[] = ["places"];
+export type EarthMapType = "roadmap" | "satellite" | "earth3d";
 
 // Get map type from cookie
-const getMapTypeFromCookie = (): string => {
+const getMapTypeFromCookie = (): EarthMapType => {
   try {
     if (typeof window === "undefined") return "roadmap";
 
@@ -36,7 +37,9 @@ const getMapTypeFromCookie = (): string => {
 
     if (
       cookieMapType &&
-      (cookieMapType === "roadmap" || cookieMapType === "satellite")
+      (cookieMapType === "roadmap" ||
+        cookieMapType === "satellite" ||
+        cookieMapType === "earth3d")
     ) {
       return cookieMapType;
     }
@@ -109,7 +112,7 @@ export const useMapContainer = () => {
   // Map state
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [center, setCenter] = useState(() => getInitialCenter(body));
-  const [mapType, setMapType] = useState<string>(getMapTypeFromCookie());
+  const [mapType, setMapType] = useState<EarthMapType>(getMapTypeFromCookie());
   const [zoom, setZoom] = useState(() => getInitialZoom(body));
   const userZoomRef = useRef<number>(getInitialZoom(body));
   const [mapHeading, setMapHeading] = useState(0);
@@ -255,28 +258,37 @@ export const useMapContainer = () => {
     isEarth,
   ]);
 
-  // Toggle map type between roadmap and satellite
-  const toggleMapType = useCallback(() => {
-    const newType = mapType === "roadmap" ? "satellite" : "roadmap";
+  const selectMapType = useCallback(
+    (newType: EarthMapType) => {
+      if (newType === mapType) return;
 
-    // Display refresh warning to user
-    const confirmMessage = "Map type change will refresh the page. Continue?";
-    const userConfirmed = window.confirm(confirmMessage);
+      try {
+        // Store map type in cookie (1 year validity)
+        document.cookie = `MAP_TYPE=${newType};path=/;max-age=31536000`;
+        setMapType(newType);
 
-    if (!userConfirmed) return;
+        if (!map || newType === "earth3d") return;
 
-    try {
-      // Store map type in cookie (1 year validity)
-      document.cookie = `MAP_TYPE=${newType};path=/;max-age=31536000`;
-
-      // Refresh page after a short delay
-      setTimeout(() => {
-        window.location.reload();
-      }, 10);
-    } catch (error) {
-      console.error("Failed to change map type:", error);
-    }
-  }, [mapType]);
+        if (newType === "roadmap") {
+          map.setOptions({
+            styles: googleMapDarkTheme,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+          });
+        } else {
+          map.setOptions({
+            styles: [],
+            mapTypeControlOptions: {
+              mapTypeIds: [google.maps.MapTypeId.HYBRID],
+            },
+          });
+          map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+        }
+      } catch (error) {
+        console.error("Failed to change map type:", error);
+      }
+    },
+    [map, mapType],
+  );
 
   // Reset map heading to 0 (north)
   const resetMapHeading = useCallback(() => {
@@ -454,6 +466,11 @@ export const useMapContainer = () => {
     if (!map) return;
 
     if (body === "earth") {
+      if (mapType === "earth3d") {
+        clearAllGridLines();
+        return;
+      }
+
       map.setOptions({ clickableIcons: true });
       if (mapType === "roadmap") {
         map.setOptions({
@@ -485,7 +502,15 @@ export const useMapContainer = () => {
     if (showGrid) {
       window.requestAnimationFrame(() => drawGrid(map));
     }
-  }, [body, map, mapType, planetaryLayerId, showGrid, drawGrid]);
+  }, [
+    body,
+    map,
+    mapType,
+    planetaryLayerId,
+    showGrid,
+    drawGrid,
+    clearAllGridLines,
+  ]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -758,7 +783,7 @@ export const useMapContainer = () => {
     center,
     zoom,
     mapType,
-    toggleMapType,
+    selectMapType,
     body,
     isEarth,
     selectBody,

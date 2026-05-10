@@ -7,6 +7,7 @@ import MapSearch from "./map-search";
 import PlaceDetails from "./place-details";
 import WeatherInfo from "./weather-info";
 import { useI18n } from "@/lib/i18n/i18n-context";
+import Earth3DMap from "./earth-3d-map";
 
 function GoogleMapComponent() {
   const { t, isChangingLanguage } = useI18n();
@@ -29,7 +30,7 @@ function GoogleMapComponent() {
     isEncoding,
     handlePlaceSelect,
     mapType,
-    toggleMapType,
+    selectMapType,
     body,
     isEarth,
     selectBody,
@@ -47,6 +48,8 @@ function GoogleMapComponent() {
     showInfoWindow,
     setShowInfoWindow,
   } = useMapContainer();
+  const isEarth3D = isEarth && mapType === "earth3d";
+  const showGoogleMap = !isEarth3D;
 
   // Language change in progress, do not render map component
   if (isChangingLanguage) {
@@ -55,40 +58,46 @@ function GoogleMapComponent() {
 
   return isLoaded ? (
     <div className="relative w-full h-full map-container">
-      <GoogleMap
-        {...{
-          center,
-          onLoad,
-          onUnmount,
-          mapContainerStyle: {
-            width: "100%",
-            height: "100%",
-          },
-        }}
-        zoom={zoom}
-        onZoomChanged={onZoomChanged}
-        options={{
-          disableDefaultUI: true, // Disables all default UI controls
-          zoomControl: false,
-          mapTypeControl: false,
-          streetViewControl: false,
-          fullscreenControl: false,
-          clickableIcons: isEarth,
-        }}
-      >
-        <MapMarkers
-          userLocation={isEarth ? userLocation : null}
-          selectedArea={selectedArea}
+      {showGoogleMap ? (
+        <GoogleMap
+          {...{
+            center,
+            onLoad,
+            onUnmount,
+            mapContainerStyle: {
+              width: "100%",
+              height: "100%",
+            },
+          }}
           zoom={zoom}
-          encodedCoordinates={encodedCoordinates}
-          isEncoding={isEncoding}
-          isTrackingMode={locationMode === "TRACKING"}
-          showInfoWindow={showInfoWindow}
-          setShowInfoWindow={setShowInfoWindow}
-        />
-      </GoogleMap>
+          onZoomChanged={onZoomChanged}
+          options={{
+            disableDefaultUI: true, // Disables all default UI controls
+            zoomControl: false,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: false,
+            clickableIcons: isEarth,
+          }}
+        >
+          <MapMarkers
+            userLocation={isEarth ? userLocation : null}
+            selectedArea={selectedArea}
+            zoom={zoom}
+            encodedCoordinates={encodedCoordinates}
+            isEncoding={isEncoding}
+            isTrackingMode={locationMode === "TRACKING"}
+            showInfoWindow={showInfoWindow}
+            setShowInfoWindow={setShowInfoWindow}
+          />
+        </GoogleMap>
+      ) : (
+        <Earth3DMap center={center} />
+      )}
 
-      {isEarth && <MapSearch map={map} onPlaceSelect={handlePlaceSelect} />}
+      {isEarth && !isEarth3D && (
+        <MapSearch map={map} onPlaceSelect={handlePlaceSelect} />
+      )}
 
       <MapControls
         {...{
@@ -96,7 +105,7 @@ function GoogleMapComponent() {
           toggleGrid,
           getUserLocation,
           mapType,
-          toggleMapType,
+          selectMapType,
           body,
           selectBody,
           isEarth,
@@ -116,10 +125,10 @@ function GoogleMapComponent() {
       )}
 
       {/* Weather Information */}
-      {isEarth && <WeatherInfo map={map} />}
+      {isEarth && !isEarth3D && <WeatherInfo map={map} />}
 
       {/* Place Details UI */}
-      {isEarth && (
+      {isEarth && !isEarth3D && (
         <PlaceDetails
           map={map}
           visible={placeDetailsVisible}
