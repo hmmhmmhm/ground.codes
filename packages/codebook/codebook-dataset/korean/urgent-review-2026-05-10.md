@@ -470,3 +470,19 @@ This pass removes very short standalone words that are too terse, noisy, ambiguo
 | 팔 | 정겨운보따리 | very short or awkward standalone word |
 | 탄 | 정겨운도토리 | very short or awkward standalone word |
 | 포 | 정겨운채반 | very short or awkward standalone word |
+
+## User Requested Addendum
+
+This addendum records additional user-requested cleanup words found after the first review passes. Source generated/refined files were updated as well where the words appeared so rebuilt collected codebooks do not reintroduce them.
+
+| Original | Replacement | Reason |
+| --- | --- | --- |
+| 구기구기탄 | 단정한마당 | user-requested cleanup word |
+| 구기구기볼 | 단정한뜰안 | user-requested cleanup word |
+| 물속스포츠 | 단정한처마 | user-requested cleanup word |
+| 청소기효율 | 단정한길섶 | user-requested cleanup word |
+| 카지노 | 단정한돌길 | user-requested cleanup word |
+| 좋아요 | 단정한흙담 | user-requested cleanup word |
+| 탑스핀 | 단정한꽃길 | user-requested cleanup word |
+| 빙상상 | 단정한나루 | user-requested cleanup word |
+| 빙상팬 | 단정한물결 | user-requested cleanup word |
