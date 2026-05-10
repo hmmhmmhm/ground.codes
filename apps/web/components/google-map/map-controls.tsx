@@ -54,6 +54,11 @@ const MapControls: React.FC<MapControlsProps> = ({
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
   const activeBodyLabel =
     BODY_OPTIONS.find((option) => option.body === body)?.label ?? "Earth";
+  const bodyLabels: Record<CelestialBody, string> = {
+    earth: "Earth",
+    moon: "Moon",
+    mars: "Mars",
+  };
   const localeLabels: Record<Locale, string> = {
     en: "English",
     ko: "한국어",
@@ -99,6 +104,93 @@ const MapControls: React.FC<MapControlsProps> = ({
     }
   };
 
+  const BodyIcon = ({
+    body,
+    size = 16,
+  }: {
+    body: CelestialBody;
+    size?: number;
+  }) => {
+    if (body === "moon") {
+      return (
+        <svg
+          aria-hidden="true"
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#FFFFFF"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.7 6.7 0 0 0 9.8 9.8Z" />
+        </svg>
+      );
+    }
+
+    if (body === "mars") {
+      return (
+        <svg
+          aria-hidden="true"
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#FFFFFF"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="9" cy="15" r="5" />
+          <path d="M13 11 21 3" />
+          <path d="M16 3h5v5" />
+        </svg>
+      );
+    }
+
+    return (
+      <svg
+        aria-hidden="true"
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#FFFFFF"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3.6 9h16.8" />
+        <path d="M3.6 15h16.8" />
+        <path d="M12 3a13.5 13.5 0 0 1 0 18" />
+        <path d="M12 3a13.5 13.5 0 0 0 0 18" />
+      </svg>
+    );
+  };
+
+  const LanguageIcon = ({ size = 16 }: { size?: number }) => (
+    <svg
+      aria-hidden="true"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#FFFFFF"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M4 5h8" />
+      <path d="M8 3v2" />
+      <path d="M6 5c.6 3.2 2.8 5.8 6 7" />
+      <path d="M11 5c-.6 2.8-2.4 5.2-5.5 7.5" />
+      <path d="M14 19h6" />
+      <path d="m15 19 3-7 3 7" />
+    </svg>
+  );
+
   return (
     <>
       {/* Map Type Control and Language Selector (Top Right) */}
@@ -109,16 +201,17 @@ const MapControls: React.FC<MapControlsProps> = ({
               setShowBodyOptions(!showBodyOptions);
               setShowLanguageOptions(false);
             }}
-            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm text-white"
+            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[44px]"
             title="Map body"
             aria-label="Map body"
             aria-expanded={showBodyOptions}
           >
-            <span>{activeBodyLabel}</span>
+            <BodyIcon body={body} />
+            <span className="hidden md:inline">{activeBodyLabel}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
+              width="13"
+              height="13"
               viewBox="0 0 24 24"
               fill="none"
               stroke="#FFFFFF"
@@ -131,7 +224,7 @@ const MapControls: React.FC<MapControlsProps> = ({
           </button>
 
           {showBodyOptions && (
-            <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer min-w-[120px] overflow-hidden">
+            <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer min-w-[132px] overflow-hidden">
               <div className="flex flex-col">
                 {BODY_OPTIONS.map((option) => (
                   <button
@@ -143,7 +236,10 @@ const MapControls: React.FC<MapControlsProps> = ({
                     title={option.label}
                     aria-label={option.label}
                   >
-                    <span className="text-white">{option.label}</span>
+                    <span className="text-white flex items-center gap-2">
+                      <BodyIcon body={option.body} />
+                      <span>{bodyLabels[option.body]}</span>
+                    </span>
                     {body === option.body && (
                       <span className="text-green-400">✓</span>
                     )}
@@ -228,21 +324,7 @@ const MapControls: React.FC<MapControlsProps> = ({
             aria-label={t("map.controls.language")}
             aria-expanded={showLanguageOptions}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
+            <LanguageIcon />
             <span className="text-white hidden md:inline">
               {localeShortLabels[locale]}
             </span>
@@ -256,11 +338,14 @@ const MapControls: React.FC<MapControlsProps> = ({
                   <button
                     key={localeOption}
                     onClick={() => handleLanguageChange(localeOption)}
-                    className={`px-3 py-2 text-sm hover:bg-white/10 flex items-center gap-2 ${
+                    className={`px-3 py-2 text-sm hover:bg-white/10 flex items-center justify-between gap-3 ${
                       locale === localeOption ? "bg-white/10 font-bold" : ""
                     }`}
                   >
-                    <span className="text-white">
+                    <span className="text-white flex items-center gap-2">
+                      <span className="text-xs text-white/70 min-w-5">
+                        {localeShortLabels[localeOption]}
+                      </span>
                       {localeLabels[localeOption]}
                     </span>
                     {locale === localeOption && (
@@ -313,66 +398,66 @@ const MapControls: React.FC<MapControlsProps> = ({
           aria-label={getLocationButtonTitle()}
           style={getLocationButtonStyle()}
         >
-        {isLoadingLocation ? (
-          <svg
-            className="animate-spin"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
-          </svg>
-        ) : locationMode === LocationMode.TRACKING ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-          </svg>
-        ) : locationMode === LocationMode.LOCATE ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
-            <circle cx="12" cy="9" r="3"></circle>
-          </svg>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#FFFFFF"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
-            <circle cx="12" cy="9" r="3"></circle>
-          </svg>
-        )}
+          {isLoadingLocation ? (
+            <svg
+              className="animate-spin"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+            </svg>
+          ) : locationMode === LocationMode.TRACKING ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+            </svg>
+          ) : locationMode === LocationMode.LOCATE ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+              <circle cx="12" cy="9" r="3"></circle>
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+              <circle cx="12" cy="9" r="3"></circle>
+            </svg>
+          )}
         </button>
       )}
 
