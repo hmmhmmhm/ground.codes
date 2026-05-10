@@ -100,6 +100,7 @@ function GoogleMapComponent() {
           selectedArea={selectedArea}
           showGrid={showGrid}
           setSelectedArea={setSelectedArea}
+          userLocation={userLocation}
         />
       )}
 

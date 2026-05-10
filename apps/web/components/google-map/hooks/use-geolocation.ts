@@ -32,7 +32,7 @@ export const useGeolocation = (
   setSelectedArea?: (location: Location) => void,
   options: UseGeolocationOptions = {},
   isTrackingMode: boolean = false,
-  onPositionUpdate?: (location: Location) => void
+  onPositionUpdate?: (location: Location) => void,
 ): UseGeolocationReturn => {
   const {
     enableHighAccuracy = true,
@@ -144,7 +144,7 @@ export const useGeolocation = (
           enableHighAccuracy: true,
           timeout: 10000,
           maximumAge: 1000,
-        }
+        },
       );
 
       geolocationRequestIdRef.current = watchId;
@@ -171,7 +171,7 @@ export const useGeolocation = (
       setUserLocation(newLocation);
       return newLocation;
     },
-    [userLocation]
+    [userLocation],
   );
 
   const getUserLocation = useCallback(() => {
@@ -200,11 +200,17 @@ export const useGeolocation = (
           isLoadingRef.current = false;
 
           // Update center if needed
-          if (shouldUpdateCenter && map) {
-            map.panTo({
+          if (shouldUpdateCenter) {
+            const location = {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
-            });
+            };
+            setCenter?.(location);
+            setSelectedArea?.(location);
+
+            if (map) {
+              map.panTo(location);
+            }
           }
 
           // Call the callback with the new location
@@ -219,7 +225,7 @@ export const useGeolocation = (
           enableHighAccuracy: true,
           timeout: 5000,
           maximumAge: 0,
-        }
+        },
       );
     }
   }, [
@@ -228,6 +234,7 @@ export const useGeolocation = (
     map,
     onPositionUpdate,
     setCenter,
+    setSelectedArea,
     updateUserLocation,
     userLocationLoaded,
   ]);
