@@ -36,7 +36,10 @@ type LocationClickEventLike = Event & {
 
 const GRID_ALTITUDE_METERS = 1200;
 const INITIAL_CAMERA_RANGE_METERS = 32000000;
-const USER_LOCATION_CAMERA_RANGE_METERS = 250000;
+const USER_LOCATION_CAMERA_RANGE_METERS = 80000;
+const GRID_AXIS_COLOR = "rgba(32, 214, 255, 0.58)";
+const GRID_LINE_COLOR = "rgba(255, 255, 255, 0.42)";
+const GRID_OUTER_COLOR = "rgba(16, 24, 32, 0.38)";
 
 type GridViewport = {
   east: number;
@@ -54,7 +57,9 @@ const getGridStepDegrees = (range: number) => {
   if (range > 2000000) return 1;
   if (range > 600000) return 0.25;
   if (range > 180000) return 0.05;
-  return 0.01;
+  if (range > 60000) return 0.01;
+  if (range > 20000) return 0.0025;
+  return 0.001;
 };
 
 const getGridSpanDegrees = (range: number) => {
@@ -63,7 +68,9 @@ const getGridSpanDegrees = (range: number) => {
   if (range > 2000000) return 24;
   if (range > 600000) return 8;
   if (range > 180000) return 2;
-  return 0.5;
+  if (range > 60000) return 0.5;
+  if (range > 20000) return 0.12;
+  return 0.04;
 };
 
 const getLocationValue = (
@@ -122,7 +129,7 @@ const getGridSignature = ({
   step,
   west,
 }: GridViewport) =>
-  [step, Math.round(range / 25000), south, north, west, east].join(":");
+  [step, Math.round(range / 5000), south, north, west, east].join(":");
 
 const createLatitudePath = (lat: number, west: number, east: number) => {
   const segmentCount = Math.max(4, Math.min(96, Math.ceil((east - west) / 2)));
@@ -164,12 +171,12 @@ const createGridLine = ({
 }) => {
   const line = document.createElement("gmp-polyline-3d");
   line.setAttribute("path", serializeGridPath(path));
-  line.setAttribute("stroke-color", isAxis ? "#20D6FF" : "#FFFFFF");
+  line.setAttribute("stroke-color", isAxis ? GRID_AXIS_COLOR : GRID_LINE_COLOR);
   line.setAttribute(
     "stroke-width",
     String(isAxis ? strokeWidth + 2 : strokeWidth),
   );
-  line.setAttribute("outer-color", "#101820");
+  line.setAttribute("outer-color", GRID_OUTER_COLOR);
   line.setAttribute("outer-width", "1");
   line.setAttribute("altitude-mode", "relative-to-ground");
   line.setAttribute("draws-occluded-segments", "");
@@ -179,7 +186,7 @@ const createGridLine = ({
 const appendGrid = (map3d: Map3DElementInstance) => {
   const overlays: HTMLElement[] = [];
   const { east, north, range, south, step, west } = getGridViewport(map3d);
-  const strokeWidth = range > 2000000 ? 3 : 4;
+  const strokeWidth = range > 2000000 ? 2 : 3;
 
   for (const lat of createGridValues(south, north, step)) {
     const line = createGridLine({
