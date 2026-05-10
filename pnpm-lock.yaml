@@ -36,7 +36,7 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2(elysia@1.2.25(@sinclair/typebox@0.34.49)(openapi-types@12.1.3)(typescript@5.8.2))
       '@ground-codes/geoint':
-        specifier: ^0.0.3
+        specifier: ^0.0.4
         version: link:../../packages/geoint
       '@sinclair/typebox':
         specifier: ^0.34.30
@@ -45,7 +45,7 @@ importers:
         specifier: latest
         version: 1.2.25(@sinclair/typebox@0.34.49)(openapi-types@12.1.3)(typescript@5.8.2)
       ground-codes:
-        specifier: ^0.0.8
+        specifier: ^0.0.9
         version: link:../../packages/ground-codes
     devDependencies:
       bun-types:
