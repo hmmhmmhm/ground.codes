@@ -42,6 +42,11 @@ While not strictly enforced, the following guidelines are recommended for words 
 - 🌐 Words should not contain specific country names
 - 🗣️ Foreign words not commonly used in the target language should be avoided
 
+For manual and sub-agent review passes, use
+`codebook-dataset/subagent-review-checklist.md`. The checklist covers recurring
+misses such as one-syllable fragments, foreign abbreviations, place names,
+brands, medical/religious/gambling terms, and other domain-specific words.
+
 ## 🛠️ Usage
 
 The codebook can be used programmatically to convert between numerical values and word representations, enabling more human-friendly data encoding and decoding.
