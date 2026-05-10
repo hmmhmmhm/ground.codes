@@ -10,11 +10,17 @@
       "satelliteLabel": "일반지도",
       "switchToSatelliteWithRefresh": "위성지도로 전환 (페이지가 새로고침됩니다)",
       "switchToRoadmapWithRefresh": "일반지도로 전환 (페이지가 새로고침됩니다)",
+      "body": "천체 선택",
       "language": "언어",
       "fullscreen": "전체화면 전환",
       "enterFullscreen": "전체화면으로 보기",
       "exitFullscreen": "전체화면 종료",
       "resetRotation": "지도 회전 초기화"
+    },
+    "bodies": {
+      "earth": "지구",
+      "moon": "달",
+      "mars": "화성"
     },
     "loading": "로딩 중...",
     "coordinates": {

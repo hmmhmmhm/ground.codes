@@ -18,23 +18,26 @@ export function useGridSystem(
   selectedArea: Coordinates | null,
   setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>,
   mapOptions?: {
-    locationMode?: any; 
-    setLocationMode?: (mode: any) => void; 
+    locationMode?: any;
+    setLocationMode?: (mode: any) => void;
     placeDetailsVisible?: boolean;
     setPlaceDetailsVisible?: (visible: boolean) => void;
     setSelectedPlaceId?: (placeId: string | null) => void;
     setSelectedLocation?: (location: google.maps.LatLng | null) => void;
     setShowInfoWindow?: (show: boolean) => void;
     metersPerDegree?: number;
-  }
+  },
 ): GridSystemHookResult {
+  const metersPerDegree = mapOptions?.metersPerDegree;
+  const isPlanetaryGrid =
+    metersPerDegree !== undefined && metersPerDegree < 100000;
   const {
     gridLinesRef,
     selectedRectangleRef,
     mapInstanceRef,
     clearAllGridLines,
     drawSelectedAreaRectangle,
-  } = useGridDrawing();
+  } = useGridDrawing(metersPerDegree);
 
   const { currentZoomRef, gridVisibleRef, isGridVisibleAtZoom } =
     useGridVisibility();
@@ -81,12 +84,11 @@ export function useGridSystem(
         const centerLat = (ne.lat() + sw.lat()) / 2;
 
         // Calculate grid cell size (in degrees)
-        const { latDegreePerCell, lngDegreePerCell } =
-          calculateGridCellSize(
-            centerLat,
-            undefined,
-            mapOptions?.metersPerDegree
-          );
+        const { latDegreePerCell, lngDegreePerCell } = calculateGridCellSize(
+          centerLat,
+          undefined,
+          metersPerDegree,
+        );
 
         // Calculate grid start and end points (aligned precisely to grid size)
         const startLat =
@@ -122,8 +124,8 @@ export function useGridSystem(
               { lat, lng: startLng },
               { lat, lng: endLng },
             ],
-            strokeColor: "#808080",
-            strokeOpacity: 0.05,
+            strokeColor: isPlanetaryGrid ? "#FFFFFF" : "#808080",
+            strokeOpacity: isPlanetaryGrid ? 0.16 : 0.05,
             strokeWeight: 1.5,
             map: mapInstance,
             clickable: false,
@@ -139,8 +141,8 @@ export function useGridSystem(
               { lat: startLat, lng },
               { lat: endLat, lng },
             ],
-            strokeColor: "#808080",
-            strokeOpacity: 0.05,
+            strokeColor: isPlanetaryGrid ? "#FFFFFF" : "#808080",
+            strokeOpacity: isPlanetaryGrid ? 0.16 : 0.05,
             strokeWeight: 1.5,
             map: mapInstance,
             clickable: false,
@@ -166,8 +168,9 @@ export function useGridSystem(
       selectedArea,
       drawSelectedAreaRectangle,
       isGridVisibleAtZoom,
-      mapOptions?.metersPerDegree,
-    ]
+      metersPerDegree,
+      isPlanetaryGrid,
+    ],
   );
 
   // Create the grid cell click handler
@@ -177,7 +180,7 @@ export function useGridSystem(
     mapInstanceRef,
     setSelectedArea,
     drawGrid,
-    mapOptions?.metersPerDegree
+    metersPerDegree,
   );
 
   // Create the map event handlers setup function with enhanced options
@@ -188,7 +191,7 @@ export function useGridSystem(
     {
       ...mapOptions,
       setSelectedArea,
-    }
+    },
   );
 
   return {

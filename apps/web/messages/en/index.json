@@ -10,11 +10,17 @@
       "satelliteLabel": "Normal Map",
       "switchToSatelliteWithRefresh": "Switch to satellite map (page will refresh)",
       "switchToRoadmapWithRefresh": "Switch to normal map (page will refresh)",
+      "body": "Celestial body",
       "language": "Language",
       "fullscreen": "Toggle fullscreen",
       "enterFullscreen": "Enter fullscreen",
       "exitFullscreen": "Exit fullscreen",
       "resetRotation": "Reset map rotation"
+    },
+    "bodies": {
+      "earth": "Earth",
+      "moon": "Moon",
+      "mars": "Mars"
     },
     "loading": "Loading...",
     "coordinates": {
