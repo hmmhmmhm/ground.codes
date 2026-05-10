@@ -104,7 +104,7 @@ USGS/IAU Gazetteer of Planetary Nomenclature KML center-point downloads.
 - 🔤 **Simple and Memorable**: Just three words to identify any location precisely
 - 🌎 **Global Coverage**: Works anywhere in the world with a unique address
 - 📖 **Open Source**: MIT licensed and fully transparent implementation
-- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, and Japanese word sets, with plans to expand to 60 languages
+- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, and Japanese word sets and region labels, with plans to expand to 60 languages
 - 📏 **Variable Precision**: Offers three levels of precision (3m, 30cm, and 3cm) to suit different use cases
 
 ## 📚 API Reference
@@ -165,7 +165,8 @@ approximation so existing encoded strings remain stable. Moon currently uses
 `regionLevel: 2` official feature names. Mars uses official
 `regionLevel: 2` names first, then falls back to `regionLevel: 3` crater labels
 derived from the USGS Astrogeology Robbins V1 Crater Database when official
-names are sparse. English, Korean, and Chinese planetary prefixes are available.
+names are sparse. English, Korean, Chinese, and Japanese planetary prefixes are
+available.
 
 Mars crater fallback names are intentionally human-readable. The raw Robbins
 crater ID is stored in `code` as `MCR-xx-yyyyyy`, while the visible name is based
@@ -180,11 +181,14 @@ await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "korean" });
 
 await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "chinese" });
 // "Bohar撞击坑2-..."
+
+await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "japanese" });
+// "ボハルクレーター 2-..."
 ```
 
-Japanese is currently supported for the coordinate word-set payload through a
-5,000-word frequency-guided hiragana set. Region prefix labels fall back to the
-English region datasets until Japanese region label datasets are added.
+Japanese is supported for both region prefix labels and the coordinate word-set
+payload. Earth, Moon, and Mars labels use localized Japanese datasets, while the
+payload uses a 5,000-word frequency-guided hiragana set.
 
 Current Mars 0.25 degree sampling with official names plus crater fallback:
 

@@ -10,11 +10,15 @@ import region2English from "@ground-codes/geoint/region-dist/region-2.json";
 // @ts-ignore
 import region2Korean from "@ground-codes/geoint/region-dist/region-2-korean.json";
 // @ts-ignore
+import region2Japanese from "@ground-codes/geoint/region-dist/region-2-japanese.json";
+// @ts-ignore
 import region3Chinese from "@ground-codes/geoint/region-dist/region-3-chinese.json";
 // @ts-ignore
 import region3English from "@ground-codes/geoint/region-dist/region-3.json";
 // @ts-ignore
 import region3Korean from "@ground-codes/geoint/region-dist/region-3-korean.json";
+// @ts-ignore
+import region3Japanese from "@ground-codes/geoint/region-dist/region-3-japanese.json";
 
 type Region3Row = {
   name: string;
@@ -26,11 +30,13 @@ const datasets: Array<[string, Region3Row[]]> = [
   ["english", region3English],
   ["korean", region3Korean],
   ["chinese", region3Chinese],
+  ["japanese", region3Japanese],
 ];
 const region2ByLanguage: Record<string, Region3Row[]> = {
   english: region2English,
   korean: region2Korean,
   chinese: region2Chinese,
+  japanese: region2Japanese,
 };
 
 describe("region-3 dataset", () => {

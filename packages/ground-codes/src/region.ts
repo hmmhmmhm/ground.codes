@@ -43,6 +43,14 @@ const loadRegions = async (
         );
       return module.default as Region[];
     }
+    if (normalizedLanguage === "japanese") {
+      const module =
+        // @ts-ignore
+        await import(
+          "@ground-codes/geoint/region-dist/region-2-moon-japanese.json"
+        );
+      return module.default as Region[];
+    }
     const module =
       // @ts-ignore
       await import("@ground-codes/geoint/region-dist/region-2-moon.json");
@@ -64,6 +72,14 @@ const loadRegions = async (
           // @ts-ignore
           await import(
             "@ground-codes/geoint/region-dist/region-3-mars-chinese.json"
+          );
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "japanese") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-3-mars-japanese.json"
           );
         return module.default as Region[];
       }
@@ -90,6 +106,14 @@ const loadRegions = async (
         );
       return module.default as Region[];
     }
+    if (normalizedLanguage === "japanese") {
+      const module =
+        // @ts-ignore
+        await import(
+          "@ground-codes/geoint/region-dist/region-2-mars-japanese.json"
+        );
+      return module.default as Region[];
+    }
     const module =
       // @ts-ignore
       await import("@ground-codes/geoint/region-dist/region-2-mars.json");
@@ -104,11 +128,7 @@ const loadRegions = async (
   }
 
   if (regionLevel === 2) {
-    if (
-      !language ||
-      normalizedLanguage === "english" ||
-      normalizedLanguage === "japanese"
-    ) {
+    if (!language || normalizedLanguage === "english") {
       const module =
         // @ts-ignore
         await import("@ground-codes/geoint/region-dist/region-2.json");
@@ -126,15 +146,19 @@ const loadRegions = async (
         await import("@ground-codes/geoint/region-dist/region-2-chinese.json");
       return module.default as Region[];
     }
+    if (normalizedLanguage === "japanese") {
+      const module =
+        // @ts-ignore
+        await import(
+          "@ground-codes/geoint/region-dist/region-2-japanese.json"
+        );
+      return module.default as Region[];
+    }
     throw new Error(`Invalid language: ${language}`);
   }
 
   if (regionLevel === 3) {
-    if (
-      !language ||
-      normalizedLanguage === "english" ||
-      normalizedLanguage === "japanese"
-    ) {
+    if (!language || normalizedLanguage === "english") {
       const module =
         // @ts-ignore
         await import("@ground-codes/geoint/region-dist/region-3.json");
@@ -150,6 +174,14 @@ const loadRegions = async (
       const module =
         // @ts-ignore
         await import("@ground-codes/geoint/region-dist/region-3-chinese.json");
+      return module.default as Region[];
+    }
+    if (normalizedLanguage === "japanese") {
+      const module =
+        // @ts-ignore
+        await import(
+          "@ground-codes/geoint/region-dist/region-3-japanese.json"
+        );
       return module.default as Region[];
     }
     throw new Error(`Invalid language: ${language}`);
