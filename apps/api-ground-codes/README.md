@@ -92,6 +92,27 @@ This starts the server in development mode with hot reloading.
 bun run start
 ```
 
+### 🚄 Railway Deployment
+
+This service is part of a pnpm monorepo. The preferred Railway setup is to keep
+the service root directory at the repository root and use the root
+`railway.json` commands:
+
+```bash
+pnpm --filter api-ground-codes build
+pnpm --filter api-ground-codes start
+```
+
+If Railway is configured with `apps/api-ground-codes` as the root directory,
+only this app directory is available during install. In that standalone mode the
+app installs the published `ground-codes` and `@ground-codes/geoint` packages
+from npm instead of workspace links. The app build script detects this and skips
+local package builds so install/build does not fail with
+`ERR_PNPM_WORKSPACE_PKG_NOT_FOUND`.
+
+Use repository-root deployment when the API must deploy unreleased local package
+changes from the same commit.
+
 ## 🔌 API Endpoints
 
 ### 🧩 Core Endpoints
