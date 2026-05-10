@@ -1,5 +1,5 @@
 import { useCallback, Dispatch, SetStateAction } from "react";
-import { calculateGridCellSize } from "./utils";
+import { chooseVisibleGridMetrics } from "./utils";
 import { useGridDrawing } from "./use-grid-drawing";
 import { useGridVisibility } from "./use-grid-visibility";
 import { Coordinates, GridSystemHookResult } from "./types";
@@ -40,7 +40,7 @@ export function useGridSystem(
   } = useGridDrawing(metersPerDegree);
 
   const { currentZoomRef, gridVisibleRef, isGridVisibleAtZoom } =
-    useGridVisibility();
+    useGridVisibility(isPlanetaryGrid ? 5 : 16);
 
   // Draw grid lines
   const drawGrid = useCallback(
@@ -83,33 +83,16 @@ export function useGridSystem(
         // Calculate map center
         const centerLat = (ne.lat() + sw.lat()) / 2;
 
-        // Calculate grid cell size (in degrees)
-        const { latDegreePerCell, lngDegreePerCell } = calculateGridCellSize(
-          centerLat,
-          undefined,
-          metersPerDegree,
-        );
-
-        // Calculate grid start and end points (aligned precisely to grid size)
-        const startLat =
-          Math.floor(sw.lat() / latDegreePerCell) * latDegreePerCell;
-        const endLat =
-          Math.ceil(ne.lat() / latDegreePerCell) * latDegreePerCell;
-        const startLng =
-          Math.floor(sw.lng() / lngDegreePerCell) * lngDegreePerCell;
-        const endLng =
-          Math.ceil(ne.lng() / lngDegreePerCell) * lngDegreePerCell;
-
-        // Calculate number of grid cells
-        const latLines = Math.round((endLat - startLat) / latDegreePerCell) + 1;
-        const lngLines = Math.round((endLng - startLng) / lngDegreePerCell) + 1;
-
-        // Limit the number of grid cells (to prevent performance issues)
-        const maxLines = 150;
-        if (latLines > maxLines || lngLines > maxLines) {
-          gridVisibleRef.current = false;
-          return;
-        }
+        const {
+          latDegreePerCell,
+          lngDegreePerCell,
+          startLat,
+          endLat,
+          startLng,
+          endLng,
+          latLines,
+          lngLines,
+        } = chooseVisibleGridMetrics(bounds, centerLat, metersPerDegree);
 
         // Update grid visibility state
         gridVisibleRef.current = true;
@@ -124,11 +107,12 @@ export function useGridSystem(
               { lat, lng: startLng },
               { lat, lng: endLng },
             ],
-            strokeColor: isPlanetaryGrid ? "#FFFFFF" : "#808080",
-            strokeOpacity: isPlanetaryGrid ? 0.16 : 0.05,
-            strokeWeight: 1.5,
+            strokeColor: isPlanetaryGrid ? "#EAF2FF" : "#808080",
+            strokeOpacity: isPlanetaryGrid ? 0.34 : 0.05,
+            strokeWeight: isPlanetaryGrid ? 1 : 1.5,
             map: mapInstance,
             clickable: false,
+            zIndex: isPlanetaryGrid ? 10 : undefined,
           });
           newLines.push(line);
         }
@@ -141,11 +125,12 @@ export function useGridSystem(
               { lat: startLat, lng },
               { lat: endLat, lng },
             ],
-            strokeColor: isPlanetaryGrid ? "#FFFFFF" : "#808080",
-            strokeOpacity: isPlanetaryGrid ? 0.16 : 0.05,
-            strokeWeight: 1.5,
+            strokeColor: isPlanetaryGrid ? "#EAF2FF" : "#808080",
+            strokeOpacity: isPlanetaryGrid ? 0.34 : 0.05,
+            strokeWeight: isPlanetaryGrid ? 1 : 1.5,
             map: mapInstance,
             clickable: false,
+            zIndex: isPlanetaryGrid ? 10 : undefined,
           });
           newLines.push(line);
         }
