@@ -64,7 +64,7 @@ Ground.codes web application is an interactive map service utilizing the Google 
 - 🌓 Improved theme to fix visibility issues of buildings in dark theme
 - 🌐 Implemented multilingual display of place types
 - 🌕 Added Earth/Moon/Mars map switching with direct URL support
-- 🗺️ Added Moon/Mars planetary layer selection
+- 🗺️ Added Moon/Mars default planetary basemaps
 
 ### 🪐 Planetary Map Mode
 
@@ -74,16 +74,14 @@ The web map supports three bodies through the `body` query parameter:
 - Moon: `/?body=moon`
 - Mars: `/?body=mars`
 
-Optional `lat`, `lng`, `zoom`, and `layer` query parameters can be used with
-any planetary body, for example
-`/?body=mars&layer=MOLA_THEMIS_blend&lat=18.65280&lng=-133.80250&zoom=5`.
+Optional `lat`, `lng`, and `zoom` query parameters can be used with any
+planetary body, for example
+`/?body=mars&lat=18.65280&lng=-133.80250&zoom=5`.
 
 Moon and Mars basemaps are loaded from official USGS Astrogeology WMS services:
 
-- Moon layers: `LROC_WAC`, `LOLA_color`, `LOLA_bw`, `LOLA_Kaguya_Shade`,
-  `KaguyaTC_Ortho`
-- Mars layers: `MDIM21_color`, `MOLA_THEMIS_blend`, `THEMIS`, `MOLA_color`,
-  `MOLA_bw`, `HRSC_MOLA_Blend_Hillshade`
+- Moon default basemap: `LROC_WAC`
+- Mars default basemap: `MDIM21_color`
 
 Google Places search, POI details, weather, and user geolocation controls are
 Earth-only. Ground code encoding and the 3m grid remain available on Moon and

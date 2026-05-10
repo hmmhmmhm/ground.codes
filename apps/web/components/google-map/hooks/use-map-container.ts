@@ -16,8 +16,6 @@ import {
   getPlanetaryLayerConfig,
   METERS_PER_DEGREE_BY_BODY,
   parseCelestialBody,
-  parsePlanetaryLayerId,
-  PLANETARY_BODY_CONFIGS,
 } from "@/lib/map/celestial-bodies";
 
 // Define libraries array as a constant to prevent recreation on each render
@@ -60,11 +58,7 @@ const getInitialBody = (): CelestialBody => {
 const getInitialPlanetaryLayerId = (body: CelestialBody) => {
   if (body === "earth") return getDefaultPlanetaryLayerId("moon");
 
-  const layerId =
-    typeof window === "undefined"
-      ? null
-      : new URLSearchParams(window.location.search).get("layer");
-  return parsePlanetaryLayerId(body, layerId);
+  return getDefaultPlanetaryLayerId(body);
 };
 
 const getInitialCenter = (body: CelestialBody): google.maps.LatLngLiteral => {
@@ -456,15 +450,6 @@ export const useMapContainer = () => {
     [body, map]
   );
 
-  const selectPlanetaryLayer = useCallback(
-    (layerId: string) => {
-      if (body === "earth") return;
-      const nextLayerId = parsePlanetaryLayerId(body, layerId);
-      setPlanetaryLayerId(nextLayerId);
-    },
-    [body]
-  );
-
   useEffect(() => {
     if (!map) return;
 
@@ -510,7 +495,7 @@ export const useMapContainer = () => {
       params.delete("zoom");
     } else {
       params.set("body", body);
-      params.set("layer", planetaryLayerId);
+      params.delete("layer");
       params.set("lat", center.lat.toFixed(5));
       params.set("lng", center.lng.toFixed(5));
       params.set("zoom", String(zoom));
@@ -519,7 +504,7 @@ export const useMapContainer = () => {
     const query = params.toString();
     const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
     window.history.replaceState(null, "", nextUrl);
-  }, [body, center, zoom, planetaryLayerId]);
+  }, [body, center, zoom]);
 
   // Close place details
   const closePlaceDetails = useCallback(() => {
@@ -773,10 +758,6 @@ export const useMapContainer = () => {
     body,
     isEarth,
     selectBody,
-    planetaryLayerId,
-    planetaryLayers:
-      body === "earth" ? [] : PLANETARY_BODY_CONFIGS[body].layers,
-    selectPlanetaryLayer,
     planetaryAttribution: activePlanetaryLayer?.attribution ?? null,
     mapHeading,
     mapTilt,
