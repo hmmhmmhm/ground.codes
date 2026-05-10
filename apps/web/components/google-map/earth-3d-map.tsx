@@ -13,6 +13,9 @@ type Earth3DMapProps = {
 
 type Map3DElementInstance = HTMLElement & {
   center?: { lat: number; lng: number; altitude?: number };
+  flyCameraTo?: (options: Record<string, unknown>) => void;
+  range?: number;
+  tilt?: number;
 };
 
 type Maps3DLibrary = {
@@ -25,57 +28,174 @@ type Maps3DLibrary = {
     HYBRID: string;
     SATELLITE: string;
   };
-  Polyline3DElement: new (options: Record<string, unknown>) => HTMLElement;
 };
 
 type LocationClickEventLike = Event & {
   position?: { lat?: number; lng?: number; altitude?: number };
 };
 
-const GRID_STEP_DEGREES = 15;
 const GRID_ALTITUDE_METERS = 1200;
+const INITIAL_CAMERA_RANGE_METERS = 32000000;
+const USER_LOCATION_CAMERA_RANGE_METERS = 250000;
 
-const createLatitudePath = (lat: number) =>
-  Array.from({ length: 73 }, (_, index) => ({
+type GridViewport = {
+  east: number;
+  north: number;
+  range: number;
+  south: number;
+  span: number;
+  step: number;
+  west: number;
+};
+
+const getGridStepDegrees = (range: number) => {
+  if (range > 18000000) return 15;
+  if (range > 6000000) return 5;
+  if (range > 2000000) return 1;
+  if (range > 600000) return 0.25;
+  if (range > 180000) return 0.05;
+  return 0.01;
+};
+
+const getGridSpanDegrees = (range: number) => {
+  if (range > 18000000) return 180;
+  if (range > 6000000) return 70;
+  if (range > 2000000) return 24;
+  if (range > 600000) return 8;
+  if (range > 180000) return 2;
+  return 0.5;
+};
+
+const getLocationValue = (
+  value: unknown,
+  fallback: number,
+  names: string[],
+) => {
+  if (!value || typeof value !== "object") return fallback;
+
+  for (const name of names) {
+    const maybeValue = (value as Record<string, unknown>)[name];
+    if (typeof maybeValue === "number") return maybeValue;
+  }
+
+  return fallback;
+};
+
+const snapDown = (value: number, step: number) =>
+  Math.floor(value / step) * step;
+
+const snapUp = (value: number, step: number) => Math.ceil(value / step) * step;
+
+const formatGridCoordinate = (value: number) =>
+  Number(value.toFixed(6)).toString();
+
+const createGridValues = (start: number, end: number, step: number) => {
+  const count = Math.max(0, Math.round((end - start) / step));
+  return Array.from({ length: count + 1 }, (_, index) =>
+    Number((start + index * step).toFixed(6)),
+  );
+};
+
+const getGridViewport = (map3d: Map3DElementInstance): GridViewport => {
+  const range = map3d.range ?? INITIAL_CAMERA_RANGE_METERS;
+  const step = getGridStepDegrees(range);
+  const span = getGridSpanDegrees(range);
+  const centerLat = getLocationValue(map3d.center, 0, ["lat", "kC", "pC"]);
+  const centerLng = getLocationValue(map3d.center, 0, ["lng", "lC", "qC"]);
+
+  return {
+    east: Math.min(180, snapUp(centerLng + span / 2, step)),
+    north: Math.min(85, snapUp(centerLat + span / 2, step)),
+    range,
+    south: Math.max(-85, snapDown(centerLat - span / 2, step)),
+    span,
+    step,
+    west: Math.max(-180, snapDown(centerLng - span / 2, step)),
+  };
+};
+
+const getGridSignature = ({
+  east,
+  north,
+  range,
+  south,
+  step,
+  west,
+}: GridViewport) =>
+  [step, Math.round(range / 25000), south, north, west, east].join(":");
+
+const createLatitudePath = (lat: number, west: number, east: number) => {
+  const segmentCount = Math.max(4, Math.min(96, Math.ceil((east - west) / 2)));
+  return Array.from({ length: segmentCount + 1 }, (_, index) => ({
     lat,
-    lng: -180 + index * 5,
+    lng: west + ((east - west) * index) / segmentCount,
     altitude: GRID_ALTITUDE_METERS,
   }));
+};
 
-const createLongitudePath = (lng: number) =>
-  Array.from({ length: 37 }, (_, index) => ({
-    lat: -90 + index * 5,
+const createLongitudePath = (lng: number, south: number, north: number) => {
+  const segmentCount = Math.max(
+    4,
+    Math.min(96, Math.ceil((north - south) / 2)),
+  );
+  return Array.from({ length: segmentCount + 1 }, (_, index) => ({
+    lat: south + ((north - south) * index) / segmentCount,
     lng,
     altitude: GRID_ALTITUDE_METERS,
   }));
+};
 
-const appendGrid = (map3d: Map3DElementInstance, maps3d: Maps3DLibrary) => {
+const serializeGridPath = (path: ReturnType<typeof createLatitudePath>) =>
+  path
+    .map(
+      ({ altitude, lat, lng }) =>
+        `${formatGridCoordinate(lat)},${formatGridCoordinate(lng)},${formatGridCoordinate(altitude)}`,
+    )
+    .join(" ");
+
+const createGridLine = ({
+  isAxis,
+  path,
+  strokeWidth,
+}: {
+  isAxis: boolean;
+  path: ReturnType<typeof createLatitudePath>;
+  strokeWidth: number;
+}) => {
+  const line = document.createElement("gmp-polyline-3d");
+  line.setAttribute("path", serializeGridPath(path));
+  line.setAttribute("stroke-color", isAxis ? "#20D6FF" : "#FFFFFF");
+  line.setAttribute(
+    "stroke-width",
+    String(isAxis ? strokeWidth + 2 : strokeWidth),
+  );
+  line.setAttribute("outer-color", "#101820");
+  line.setAttribute("outer-width", "1");
+  line.setAttribute("altitude-mode", "relative-to-ground");
+  line.setAttribute("draws-occluded-segments", "");
+  return line;
+};
+
+const appendGrid = (map3d: Map3DElementInstance) => {
   const overlays: HTMLElement[] = [];
-  const altitudeMode = maps3d.AltitudeMode.RELATIVE_TO_GROUND;
+  const { east, north, range, south, step, west } = getGridViewport(map3d);
+  const strokeWidth = range > 2000000 ? 3 : 4;
 
-  for (let lat = -75; lat <= 75; lat += GRID_STEP_DEGREES) {
-    const line = new maps3d.Polyline3DElement({
-      path: createLatitudePath(lat),
-      strokeColor: lat === 0 ? "#20D6FF" : "#FFFFFF",
-      strokeWidth: lat === 0 ? 5 : 3,
-      outerColor: "#101820",
-      outerWidth: 1,
-      altitudeMode,
-      drawsOccludedSegments: true,
+  for (const lat of createGridValues(south, north, step)) {
+    const line = createGridLine({
+      isAxis: Math.abs(lat) < step / 2,
+      path: createLatitudePath(lat, west, east),
+      strokeWidth,
     });
     map3d.append(line);
     overlays.push(line);
   }
 
-  for (let lng = -180; lng < 180; lng += GRID_STEP_DEGREES) {
-    const line = new maps3d.Polyline3DElement({
-      path: createLongitudePath(lng),
-      strokeColor: lng === 0 ? "#20D6FF" : "#FFFFFF",
-      strokeWidth: lng === 0 ? 5 : 3,
-      outerColor: "#101820",
-      outerWidth: 1,
-      altitudeMode,
-      drawsOccludedSegments: true,
+  for (const lng of createGridValues(west, east, step)) {
+    const line = createGridLine({
+      isAxis: Math.abs(lng) < step / 2,
+      path: createLongitudePath(lng, south, north),
+      strokeWidth,
     });
     map3d.append(line);
     overlays.push(line);
@@ -99,8 +219,34 @@ const Earth3DMap = ({
   const gridRef = useRef<HTMLElement[]>([]);
   const markerRef = useRef<HTMLElement | null>(null);
   const userLocationMarkerRef = useRef<HTMLElement | null>(null);
+  const showGridRef = useRef(showGrid);
+  const gridSignatureRef = useRef<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
+
+  const redrawGrid = (force = false) => {
+    const map3d = mapRef.current;
+    if (!map3d) return;
+
+    if (!showGridRef.current) {
+      gridRef.current.forEach((overlay) => overlay.remove());
+      gridRef.current = [];
+      gridSignatureRef.current = null;
+      return;
+    }
+
+    const viewport = getGridViewport(map3d);
+    const signature = getGridSignature(viewport);
+    if (!force && signature === gridSignatureRef.current) return;
+
+    gridRef.current.forEach((overlay) => overlay.remove());
+    gridRef.current = appendGrid(map3d);
+    gridSignatureRef.current = signature;
+  };
+
+  useEffect(() => {
+    showGridRef.current = showGrid;
+  }, [showGrid]);
 
   useEffect(() => {
     let cancelled = false;
@@ -122,7 +268,7 @@ const Earth3DMap = ({
             lng: center.lng,
             altitude: 0,
           },
-          range: 32000000,
+          range: INITIAL_CAMERA_RANGE_METERS,
           tilt: 0,
           heading: 0,
           mode: MapMode.HYBRID,
@@ -143,6 +289,11 @@ const Earth3DMap = ({
 
           setSelectedArea({ lat: position.lat, lng: position.lng });
         });
+        map3d.addEventListener("steadychange", () => {
+          if (!map3d.isConnected) return;
+
+          redrawGrid();
+        });
 
         containerRef.current.replaceChildren(map3d);
         maps3dRef.current = maps3d;
@@ -160,6 +311,7 @@ const Earth3DMap = ({
       cancelled = true;
       gridRef.current.forEach((overlay) => overlay.remove());
       gridRef.current = [];
+      gridSignatureRef.current = null;
       markerRef.current?.remove();
       markerRef.current = null;
       userLocationMarkerRef.current?.remove();
@@ -172,12 +324,14 @@ const Earth3DMap = ({
   }, [center.lat, center.lng, setSelectedArea]);
 
   useEffect(() => {
-    const map3d = mapRef.current;
-    const maps3d = maps3dRef.current;
-    if (!map3d || !maps3d) return;
+    redrawGrid(true);
+  }, [mapReady, showGrid]);
 
-    gridRef.current.forEach((overlay) => overlay.remove());
-    gridRef.current = showGrid ? appendGrid(map3d, maps3d) : [];
+  useEffect(() => {
+    if (!mapReady || !showGrid) return;
+
+    const interval = window.setInterval(() => redrawGrid(), 600);
+    return () => window.clearInterval(interval);
   }, [mapReady, showGrid]);
 
   useEffect(() => {
@@ -219,11 +373,26 @@ const Earth3DMap = ({
     map3d.append(marker);
     userLocationMarkerRef.current = marker;
 
-    map3d.center = {
-      lat: userLocation.lat,
-      lng: userLocation.lng,
-      altitude: 0,
+    const endCamera = {
+      center: {
+        lat: userLocation.lat,
+        lng: userLocation.lng,
+        altitude: 0,
+      },
+      range: USER_LOCATION_CAMERA_RANGE_METERS,
+      tilt: 45,
+      heading: 0,
     };
+    if (map3d.flyCameraTo) {
+      map3d.flyCameraTo({
+        endCamera,
+        durationMillis: 1800,
+      });
+    } else {
+      map3d.center = endCamera.center;
+      map3d.range = endCamera.range;
+      map3d.tilt = endCamera.tilt;
+    }
     setSelectedArea({
       lat: userLocation.lat,
       lng: userLocation.lng,
