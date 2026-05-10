@@ -9,6 +9,7 @@
       "/packages/geoint/**",
       "/pnpm-lock.yaml",
       "/pnpm-workspace.yaml",
+      "/.npmrc",
       "/package.json",
       "/railway.json"
     ]

@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "bun run --watch src/index.ts",
-    "build": "pnpm --filter @ground-codes/geoint build && pnpm --filter ground-codes build",
+    "build": "node scripts/build.mjs",
     "start": "bun run src/index.ts"
   },
   "dependencies": {
@@ -14,8 +14,8 @@
     "@elysiajs/swagger": "^1.2.2",
     "@sinclair/typebox": "^0.34.30",
     "elysia": "latest",
-    "ground-codes": "workspace:*",
-    "@ground-codes/geoint": "workspace:*"
+    "ground-codes": "^0.0.8",
+    "@ground-codes/geoint": "^0.0.3"
   },
   "devDependencies": {
     "bun-types": "latest"
