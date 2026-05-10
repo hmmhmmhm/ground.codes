@@ -116,9 +116,11 @@ export function useGridCellClickHandler(
         }
       }
 
-      // Check if grid should be visible at current zoom level
+      // Grid drawing is zoom-gated for performance, but address selection should
+      // still work at low zoom levels. Low-zoom clicks use the same snapped cell
+      // center and simply skip the visible grid overlay.
       const zoom = mapInstance.getZoom();
-      if (!isGridVisibleAtZoom(zoom)) return;
+      const shouldDrawGrid = isGridVisibleAtZoom(zoom);
 
       const clickedLat = e.latLng.lat();
       const clickedLng = e.latLng.lng();
@@ -145,8 +147,10 @@ export function useGridCellClickHandler(
       // Update selected area state
       setSelectedArea(cellCenter);
 
-      // Redraw grid to show selected area
-      drawGrid(mapInstance);
+      // Redraw only when the grid is actually visible at this zoom.
+      if (shouldDrawGrid) {
+        drawGrid(mapInstance);
+      }
     },
     [
       showGrid,
