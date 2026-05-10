@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
 import { locales, Locale } from "@/i18n";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { LocationMode } from "./types";
 import Compass from "./compass";
-import {
-  BODY_OPTIONS,
-  CelestialBody,
-  PlanetaryLayerConfig,
-} from "@/lib/map/celestial-bodies";
+import { BODY_OPTIONS, CelestialBody } from "@/lib/map/celestial-bodies";
 
 // Define location mode enum (same as use-map-container.ts)
 // enum LocationMode {
@@ -34,9 +29,6 @@ interface MapControlsProps {
   body?: CelestialBody;
   selectBody?: (body: CelestialBody) => void;
   isEarth?: boolean;
-  planetaryLayerId?: string;
-  planetaryLayers?: PlanetaryLayerConfig[];
-  selectPlanetaryLayer?: (layerId: string) => void;
 }
 
 const MapControls: React.FC<MapControlsProps> = ({
@@ -56,12 +48,12 @@ const MapControls: React.FC<MapControlsProps> = ({
   body = "earth",
   selectBody = () => {},
   isEarth = true,
-  planetaryLayerId = "",
-  planetaryLayers = [],
-  selectPlanetaryLayer = () => {},
 }) => {
   const { t, locale, setLocale } = useI18n();
+  const [showBodyOptions, setShowBodyOptions] = useState(false);
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
+  const activeBodyLabel =
+    BODY_OPTIONS.find((option) => option.body === body)?.label ?? "Earth";
   const localeLabels: Record<Locale, string> = {
     en: "English",
     ko: "한국어",
@@ -78,6 +70,11 @@ const MapControls: React.FC<MapControlsProps> = ({
   const handleLanguageChange = (newLocale: Locale) => {
     setLocale(newLocale);
     setShowLanguageOptions(false);
+  };
+
+  const handleBodyChange = (newBody: CelestialBody) => {
+    selectBody(newBody);
+    setShowBodyOptions(false);
   };
 
   // Get location button style based on location mode
@@ -106,37 +103,56 @@ const MapControls: React.FC<MapControlsProps> = ({
     <>
       {/* Map Type Control and Language Selector (Top Right) */}
       <div className="absolute top-[10px] right-[10px] flex flex-row gap-2 z-10">
-        <div className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg overflow-hidden flex">
-          {BODY_OPTIONS.map((option) => (
-            <button
-              key={option.body}
-              onClick={() => selectBody(option.body)}
-              className={`px-3 py-2 text-sm text-white ${
-                body === option.body ? "bg-blue-500/70" : "hover:bg-white/10"
-              }`}
-              title={option.label}
-              aria-label={option.label}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-
-        {!isEarth && planetaryLayers.length > 0 && (
-          <select
-            value={planetaryLayerId}
-            onChange={(event) => selectPlanetaryLayer(event.target.value)}
-            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 text-sm text-white max-w-[210px]"
-            title="Planetary layer"
-            aria-label="Planetary layer"
+        <div className="relative">
+          <button
+            onClick={() => {
+              setShowBodyOptions(!showBodyOptions);
+              setShowLanguageOptions(false);
+            }}
+            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm text-white"
+            title="Map body"
+            aria-label="Map body"
+            aria-expanded={showBodyOptions}
           >
-            {planetaryLayers.map((layer) => (
-              <option key={layer.id} value={layer.id} className="text-black">
-                {layer.label}
-              </option>
-            ))}
-          </select>
-        )}
+            <span>{activeBodyLabel}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+          {showBodyOptions && (
+            <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer min-w-[120px] overflow-hidden">
+              <div className="flex flex-col">
+                {BODY_OPTIONS.map((option) => (
+                  <button
+                    key={option.body}
+                    onClick={() => handleBodyChange(option.body)}
+                    className={`px-3 py-2 text-sm hover:bg-white/10 flex items-center justify-between gap-3 ${
+                      body === option.body ? "bg-white/10 font-bold" : ""
+                    }`}
+                    title={option.label}
+                    aria-label={option.label}
+                  >
+                    <span className="text-white">{option.label}</span>
+                    {body === option.body && (
+                      <span className="text-green-400">✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
 
         {isEarth && (
           <button
@@ -203,10 +219,14 @@ const MapControls: React.FC<MapControlsProps> = ({
         {/* Language Selector Button */}
         <div className="relative">
           <button
-            onClick={() => setShowLanguageOptions(!showLanguageOptions)}
+            onClick={() => {
+              setShowLanguageOptions(!showLanguageOptions);
+              setShowBodyOptions(false);
+            }}
             className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm"
             title={t("map.controls.language")}
             aria-label={t("map.controls.language")}
+            aria-expanded={showLanguageOptions}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
