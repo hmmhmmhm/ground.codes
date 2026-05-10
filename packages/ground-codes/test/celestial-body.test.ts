@@ -26,6 +26,14 @@ const assertClose = (actual: number, expected: number, tolerance: number) => {
   );
 };
 
+const assertNoLatinNames = (rows: { name: string }[]) => {
+  const latinNames = rows.filter((row) => /[A-Za-z]/.test(row.name));
+  assert.deepEqual(
+    latinNames.slice(0, 10).map((row) => row.name),
+    [],
+  );
+};
+
 describe("celestial bodies", () => {
   test("keeps planetary localized datasets unique", () => {
     const assertUniqueNames = (rows: { name: string }[]) => {
@@ -48,6 +56,12 @@ describe("celestial bodies", () => {
     assertUniqueNames(marsFallbackKoreanRegions);
     assertUniqueNames(marsFallbackChineseRegions);
     assertUniqueNames(marsFallbackJapaneseRegions);
+    assertNoLatinNames(moonKoreanRegions);
+    assertNoLatinNames(marsKoreanRegions);
+    assertNoLatinNames(marsFallbackKoreanRegions);
+    assertNoLatinNames(moonChineseRegions);
+    assertNoLatinNames(marsChineseRegions);
+    assertNoLatinNames(marsFallbackChineseRegions);
   });
 
   test("keeps earth as the default body", async () => {
@@ -126,7 +140,8 @@ describe("celestial bodies", () => {
       { lat: 64.3, lng: -86.4 },
       { body: "mars", regionLevel: 2, language: "korean" },
     );
-    assert.match(marsFallback, /^[A-Za-z]+ 크레이터 \d+-/);
+    assert.match(marsFallback, /^[가-힣\s\d]+-/);
+    assert.doesNotMatch(marsFallback.split("-")[0] ?? "", /[A-Za-z]/);
 
     const decoded = await decode(moonCode, { body: "moon" });
     assertClose(decoded.lat, 8.35, 0.0002);
@@ -150,7 +165,8 @@ describe("celestial bodies", () => {
       { lat: 64.3, lng: -86.4 },
       { body: "mars", regionLevel: 2, language: "chinese" },
     );
-    assert.match(marsFallback, /^[A-Za-z]+撞击坑\d+-/);
+    assert.match(marsFallback, /^[\p{Script=Han}\d]+-/u);
+    assert.doesNotMatch(marsFallback.split("-")[0] ?? "", /[A-Za-z]/);
 
     const decoded = await decode(moonCode, { body: "moon" });
     assertClose(decoded.lat, 8.35, 0.0002);
@@ -162,7 +178,10 @@ describe("celestial bodies", () => {
       { lat: 37.566, lng: 126.978 },
       { regionLevel: 2, language: "japanese" },
     );
-    assert.match(earthCode, /^[\p{Script=Katakana}\p{Script=Hiragana}\p{Script=Han}ー\s]+-/u);
+    assert.match(
+      earthCode,
+      /^[\p{Script=Katakana}\p{Script=Hiragana}\p{Script=Han}ー\s]+-/u,
+    );
 
     const moonCode = await encode(
       { lat: 8.35, lng: 30.84 },

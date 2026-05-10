@@ -1,6 +1,6 @@
 {
   "name": "ground-codes",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Ground codes",
   "type": "module",
   "main": "./dist/index.js",
