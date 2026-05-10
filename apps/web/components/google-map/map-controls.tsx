@@ -4,6 +4,7 @@ import { useI18n } from "@/lib/i18n/i18n-context";
 import { LocationMode } from "./types";
 import Compass from "./compass";
 import { BODY_OPTIONS, CelestialBody } from "@/lib/map/celestial-bodies";
+import { EarthMapType } from "./hooks/use-map-container";
 
 // Define location mode enum (same as use-map-container.ts)
 // enum LocationMode {
@@ -16,8 +17,8 @@ interface MapControlsProps {
   showGrid: boolean;
   toggleGrid: () => void;
   getUserLocation: () => void;
-  mapType: string;
-  toggleMapType: () => void;
+  mapType: EarthMapType;
+  selectMapType: (mapType: EarthMapType) => void;
   mapHeading: number;
   resetMapHeading: () => void;
   setMapHeading?: (heading: number) => void;
@@ -36,7 +37,7 @@ const MapControls: React.FC<MapControlsProps> = ({
   toggleGrid,
   getUserLocation,
   mapType,
-  toggleMapType,
+  selectMapType,
   mapHeading,
   resetMapHeading,
   setMapHeading,
@@ -51,6 +52,7 @@ const MapControls: React.FC<MapControlsProps> = ({
 }) => {
   const { t, locale, setLocale } = useI18n();
   const [showBodyOptions, setShowBodyOptions] = useState(false);
+  const [showMapTypeOptions, setShowMapTypeOptions] = useState(false);
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
   const bodyLabels: Record<CelestialBody, string> = {
     earth: t("map.bodies.earth"),
@@ -79,6 +81,18 @@ const MapControls: React.FC<MapControlsProps> = ({
   const handleBodyChange = (newBody: CelestialBody) => {
     selectBody(newBody);
     setShowBodyOptions(false);
+  };
+
+  const mapTypeLabels: Record<EarthMapType, string> = {
+    roadmap: t("map.controls.normalMapLabel"),
+    satellite: t("map.controls.satelliteMapLabel"),
+    earth3d: t("map.controls.earth3DLabel"),
+  };
+  const activeMapTypeLabel = mapTypeLabels[mapType];
+
+  const handleMapTypeChange = (newMapType: EarthMapType) => {
+    selectMapType(newMapType);
+    setShowMapTypeOptions(false);
   };
 
   // Get location button style based on location mode
@@ -190,6 +204,74 @@ const MapControls: React.FC<MapControlsProps> = ({
     </svg>
   );
 
+  const MapTypeIcon = ({
+    type,
+    size = 16,
+  }: {
+    type: EarthMapType;
+    size?: number;
+  }) => {
+    if (type === "earth3d") {
+      return (
+        <svg
+          aria-hidden="true"
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#FFFFFF"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="12" r="9" />
+          <path d="M3.6 9h16.8" />
+          <path d="M3.6 15h16.8" />
+          <path d="M12 3a13.5 13.5 0 0 1 0 18" />
+          <path d="M12 3a13.5 13.5 0 0 0 0 18" />
+        </svg>
+      );
+    }
+
+    if (type === "satellite") {
+      return (
+        <svg
+          aria-hidden="true"
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#FFFFFF"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+          <path d="M3 15 8 10l4 4 2-2 7 7" />
+          <path d="M14 8h.01" />
+        </svg>
+      );
+    }
+
+    return (
+      <svg
+        aria-hidden="true"
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#FFFFFF"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+        <line x1="8" y1="2" x2="8" y2="18" />
+        <line x1="16" y1="6" x2="16" y2="22" />
+      </svg>
+    );
+  };
+
   return (
     <>
       {/* Map Type Control and Language Selector (Top Right) */}
@@ -198,6 +280,7 @@ const MapControls: React.FC<MapControlsProps> = ({
           <button
             onClick={() => {
               setShowBodyOptions(!showBodyOptions);
+              setShowMapTypeOptions(false);
               setShowLanguageOptions(false);
             }}
             className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[44px]"
@@ -250,65 +333,63 @@ const MapControls: React.FC<MapControlsProps> = ({
         </div>
 
         {isEarth && (
-          <button
-            onClick={toggleMapType}
-            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm"
-            title={
-              mapType === "roadmap"
-                ? t("map.controls.switchToSatelliteWithRefresh")
-                : t("map.controls.switchToRoadmapWithRefresh")
-            }
-            aria-label={
-              mapType === "roadmap"
-                ? t("map.controls.switchToSatelliteWithRefresh")
-                : t("map.controls.switchToRoadmapWithRefresh")
-            }
-          >
-            {mapType === "roadmap" ? (
-              <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#FFFFFF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-                  <line x1="8" y1="2" x2="8" y2="18"></line>
-                  <line x1="16" y1="6" x2="16" y2="22"></line>
-                </svg>
-                <span className="text-white hidden md:inline">
-                  {t("map.controls.roadmapLabel")}
-                </span>
-              </>
-            ) : (
-              <>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="#FFFFFF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                  <line x1="3" y1="9" x2="21" y2="9"></line>
-                  <line x1="9" y1="3" x2="9" y2="21"></line>
-                  <line x1="15" y1="3" x2="15" y2="21"></line>
-                </svg>
-                <span className="text-white hidden md:inline">
-                  {t("map.controls.satelliteLabel")}
-                </span>
-              </>
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowMapTypeOptions(!showMapTypeOptions);
+                setShowBodyOptions(false);
+                setShowLanguageOptions(false);
+              }}
+              className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[44px]"
+              title={t("map.controls.mapType")}
+              aria-label={t("map.controls.mapType")}
+              aria-expanded={showMapTypeOptions}
+            >
+              <MapTypeIcon type={mapType} />
+              <span className="hidden md:inline">{activeMapTypeLabel}</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            {showMapTypeOptions && (
+              <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer min-w-[144px] overflow-hidden">
+                <div className="flex flex-col">
+                  {(["roadmap", "satellite", "earth3d"] as EarthMapType[]).map(
+                    (option) => (
+                      <button
+                        key={option}
+                        onClick={() => handleMapTypeChange(option)}
+                        className={`px-3 py-2 text-sm hover:bg-white/10 flex items-center justify-between gap-3 ${
+                          mapType === option ? "bg-white/10 font-bold" : ""
+                        }`}
+                        title={mapTypeLabels[option]}
+                        aria-label={mapTypeLabels[option]}
+                      >
+                        <span className="text-white flex items-center gap-2">
+                          <MapTypeIcon type={option} />
+                          <span>{mapTypeLabels[option]}</span>
+                        </span>
+                        {mapType === option && (
+                          <span className="text-green-400">✓</span>
+                        )}
+                      </button>
+                    ),
+                  )}
+                </div>
+              </div>
             )}
-          </button>
+          </div>
         )}
 
         {/* Language Selector Button */}
@@ -317,6 +398,7 @@ const MapControls: React.FC<MapControlsProps> = ({
             onClick={() => {
               setShowLanguageOptions(!showLanguageOptions);
               setShowBodyOptions(false);
+              setShowMapTypeOptions(false);
             }}
             className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm"
             title={t("map.controls.language")}
