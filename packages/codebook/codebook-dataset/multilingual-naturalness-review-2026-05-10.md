@@ -11,12 +11,12 @@ classes for later review so the codebooks stay stable and testable.
 
 ## Summary
 
-| Language | Replaced | Main issues found | Deferred cleanup |
-| --- | ---: | --- | --- |
-| English | 68 | `Elmcrest`-style generated compounds, places, names, technology proper nouns | Long abstract words and abbreviation fragments |
-| Korean | 38 | Generated emotional compounds, one-syllable fragments, places, brands, loanwords | Large-scale generated prefix cleanup and one-syllable cleanup |
-| Chinese | 58 | Brands/apps, real places and landmarks, poetic/generated compounds, rare characters | Large one-character fragment cleanup |
-| Japanese | 67 | Brand/place-like terms, short fragments, awkward or literary compounds | Medium/low naturalness review for long-tail entries |
+| Language | Replaced | Main issues found                                                                   | Deferred cleanup                                              |
+| -------- | -------: | ----------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| English  |       68 | `Elmcrest`-style generated compounds, places, names, technology proper nouns        | Long abstract words and abbreviation fragments                |
+| Korean   |       38 | Generated emotional compounds, one-syllable fragments, places, brands, loanwords    | Large-scale generated prefix cleanup and one-syllable cleanup |
+| Chinese  |       58 | Brands/apps, real places and landmarks, poetic/generated compounds, rare characters | Large one-character fragment cleanup                          |
+| Japanese |       67 | Brand/place-like terms, short fragments, awkward or literary compounds              | Medium/low naturalness review for long-tail entries           |
 
 ## Replacement Rules
 
@@ -35,3 +35,13 @@ classes for later review so the codebooks stay stable and testable.
   they reduce code-word distinctiveness and need a dedicated replacement pool.
 - English still has a long tail of long abstract or administrative words.
   These are lower risk than generated place-like compounds.
+
+## Sub-Agent Checklist Addendum
+
+The follow-up review found that exact blocklists did not catch new words from
+the same risky classes. The shared checklist now lives at
+`codebook-dataset/subagent-review-checklist.md` and should be used before adding
+or regenerating any distributed codebook.
+
+This pass replaced the reported high-confidence Korean, English, Chinese, and
+Japanese findings while preserving each codebook's length and uniqueness.
