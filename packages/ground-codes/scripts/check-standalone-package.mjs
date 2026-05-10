@@ -105,9 +105,32 @@ try {
           { lat: -14.568, lng: 175.472 },
           { regionLevel: 2, body: "mars", language: "english" },
         );
+        const koreanMoon = await encode(
+          { lat: 8.35, lng: 30.84 },
+          { regionLevel: 2, body: "moon", language: "korean" },
+        );
+        const koreanMars = await encode(
+          { lat: 64.3, lng: -86.4 },
+          { regionLevel: 2, body: "mars", language: "korean" },
+        );
+        const chineseMoon = await encode(
+          { lat: 8.35, lng: 30.84 },
+          { regionLevel: 2, body: "moon", language: "chinese" },
+        );
+        const chineseMars = await encode(
+          { lat: 64.3, lng: -86.4 },
+          { regionLevel: 2, body: "mars", language: "chinese" },
+        );
 
-        if (!earth || !korean || !moon || !mars) {
+        if (!earth || !korean || !moon || !mars || !koreanMoon || !koreanMars || !chineseMoon || !chineseMars) {
           throw new Error("Standalone package returned an empty code");
+        }
+
+        for (const code of [koreanMoon, koreanMars, chineseMoon, chineseMars]) {
+          const regionLabel = code.split("-")[0] ?? "";
+          if (/[A-Za-z]/.test(regionLabel)) {
+            throw new Error(\`Localized planetary label contains Latin text: \${regionLabel}\`);
+          }
         }
 
         await decode(earth, { regionLevel: 2, language: "english" });
