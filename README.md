@@ -39,7 +39,7 @@ And Ground Codes is a **multi-planetary addressing system** 🪐 that aims to pr
 
 | Service | Format | License | Precision | Global Usage | Multilingual Support |
 |---------|--------|---------|-----------|--------------|----------------------|
-| 🌍 **Ground Codes** | Yongsan-Happiness-Smile | ✅ MIT License (Free) | 1. 3 meters (standard)<br>2. 30cm<br>3. 3cm | ✅ Yes | 🌐 English, Korean, Chinese (expanding to 60 languages) |
+| 🌍 **Ground Codes** | Yongsan-Happiness-Smile | ✅ MIT License (Free) | 1. 3 meters (standard)<br>2. 30cm<br>3. 3cm | ✅ Yes | 🌐 English, Korean, Chinese, Japanese (expanding to 60 languages) |
 | 🔍 **Google Plus Code** | HX2F+J8 | ⚠️ No License (Free) | 3.5 meters | ⚠️ Limited (requires 4 additional characters for global use, e.g., **8Q94HX2F+J8**) | 🇬🇧 English only |
 | 🔤 **What 3 Words** | ///teacher.awaken.days | 💰 Proprietary (Paid) | 3 meters | ✅ Yes | 🌐 60 languages |
 
@@ -76,6 +76,8 @@ API usage is limited to 600 requests per minute per IP. For higher volume needs,
 
 - 🇬🇧 English word set: 6,000 words (AI-generated dataset)
 - 🇰🇷 Korean word set: 5,630 words (AI-generated dataset)
+- 🇨🇳 Chinese word set: 5,140 words (AI-generated dataset)
+- 🇯🇵 Japanese word set: 5,000 words (frequency-guided hiragana dataset)
 - 🌎 Region names: 210,000 unique global locations with populations of 500+ (GeoNames data, commercially usable)
 - 🔐 Special solutions:
   - **Region 1**: ✈️ Optimized for airports/logistics with country codes and airport codes (e.g., NYC-491AD, SSN-TA14C)

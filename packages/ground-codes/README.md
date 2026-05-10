@@ -104,7 +104,7 @@ USGS/IAU Gazetteer of Planetary Nomenclature KML center-point downloads.
 - 🔤 **Simple and Memorable**: Just three words to identify any location precisely
 - 🌎 **Global Coverage**: Works anywhere in the world with a unique address
 - 📖 **Open Source**: MIT licensed and fully transparent implementation
-- 🌐 **Multilingual Support**: Currently available in Korean and English, with plans to expand to 60 languages
+- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, and Japanese word sets, with plans to expand to 60 languages
 - 📏 **Variable Precision**: Offers three levels of precision (3m, 30cm, and 3cm) to suit different use cases
 
 ## 📚 API Reference
@@ -181,6 +181,10 @@ await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "korean" });
 await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "chinese" });
 // "Bohar撞击坑2-..."
 ```
+
+Japanese is currently supported for the coordinate word-set payload through a
+5,000-word frequency-guided hiragana set. Region prefix labels fall back to the
+English region datasets until Japanese region label datasets are added.
 
 Current Mars 0.25 degree sampling with official names plus crater fallback:
 

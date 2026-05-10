@@ -1,11 +1,12 @@
 import { toBaseN } from "./base-n.js";
 
-export type SupportedLanguage = "english" | "korean" | "chinese";
+export type SupportedLanguage = "english" | "korean" | "chinese" | "japanese";
 
 export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   english: 6000,
   korean: 5630,
   chinese: 5140,
+  japanese: 5000,
 };
 
 export const encodeByWordSet = async ({
@@ -28,6 +29,10 @@ export const encodeByWordSet = async ({
   } else if (language.toLowerCase() === "chinese") {
     // @ts-ignore
     wordSet = (await import("@repo/codebook/codebook-dist/chinese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "japanese") {
+    // @ts-ignore
+    wordSet = (await import("@repo/codebook/codebook-dist/japanese.json"))
       .default as string[];
   } else {
     throw new Error(`Invalid language: ${language}`);
@@ -68,6 +73,10 @@ export const decodeByWordSet = async ({
   } else if (language.toLowerCase() === "chinese") {
     // @ts-ignore
     wordSet = (await import("@repo/codebook/codebook-dist/chinese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "japanese") {
+    // @ts-ignore
+    wordSet = (await import("@repo/codebook/codebook-dist/japanese.json"))
       .default as string[];
   } else {
     throw new Error(`Invalid language: ${language}`);
