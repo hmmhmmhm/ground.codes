@@ -820,6 +820,7 @@ export const useMapContainer = () => {
 
     // Selected area state
     selectedArea,
+    setSelectedArea,
 
     // Search state
     searchedPlace,
