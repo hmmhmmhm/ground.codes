@@ -28,6 +28,8 @@ const CLOSE_CAMERA_HEIGHT_METERS = 25;
 const GRID_COLOR_ALPHA = 0.38;
 const GRID_AXIS_ALPHA = 0.58;
 const GRID_ALTITUDE_METERS = 1200;
+const getErrorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : String(error);
 
 const getAssetId = (body: Exclude<CelestialBody, "earth">) => {
   const value =
@@ -183,11 +185,20 @@ const Planetary3DMap = ({
         const ionToken = process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN;
         const assetId = getAssetId(body);
         if (ionToken && assetId) {
-          Cesium.Ion.defaultAccessToken = ionToken;
-          const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(assetId);
-          if (!cancelled) {
-            viewer.scene.primitives.add(tileset);
-            setUsesFallback(false);
+          try {
+            Cesium.Ion.defaultAccessToken = ionToken;
+            const tileset =
+              await Cesium.Cesium3DTileset.fromIonAssetId(assetId);
+            if (!cancelled) {
+              viewer.scene.primitives.add(tileset);
+              setUsesFallback(false);
+            }
+          } catch (error) {
+            console.warn(
+              `Failed to load Cesium ${body} asset ${assetId}; falling back to USGS imagery ellipsoid:`,
+              getErrorMessage(error),
+            );
+            if (!cancelled) setUsesFallback(true);
           }
         } else {
           setUsesFallback(true);
