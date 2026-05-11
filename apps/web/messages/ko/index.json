@@ -12,6 +12,7 @@
       "normalMapLabel": "지도",
       "satelliteMapLabel": "위성지도",
       "earth3DLabel": "3D 지구",
+      "planetary3DLabel": "3D 행성",
       "switchToSatelliteWithRefresh": "위성지도로 전환 (페이지가 새로고침됩니다)",
       "switchToRoadmapWithRefresh": "일반지도로 전환 (페이지가 새로고침됩니다)",
       "body": "천체 선택",

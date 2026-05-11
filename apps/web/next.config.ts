@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
       process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
     NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID:
       process.env.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID,
+    NEXT_PUBLIC_CESIUM_ION_TOKEN: process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN,
+    NEXT_PUBLIC_CESIUM_MOON_ASSET_ID:
+      process.env.NEXT_PUBLIC_CESIUM_MOON_ASSET_ID,
+    NEXT_PUBLIC_CESIUM_MARS_ASSET_ID:
+      process.env.NEXT_PUBLIC_CESIUM_MARS_ASSET_ID,
   },
   eslint: {
     ignoreDuringBuilds: true,

@@ -8,6 +8,7 @@ import PlaceDetails from "./place-details";
 import WeatherInfo from "./weather-info";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import Earth3DMap from "./earth-3d-map";
+import Planetary3DMap from "./planetary-3d-map";
 
 function GoogleMapComponent() {
   const { t, isChangingLanguage } = useI18n();
@@ -50,7 +51,8 @@ function GoogleMapComponent() {
     setSelectedArea,
   } = useMapContainer();
   const isEarth3D = isEarth && mapType === "earth3d";
-  const showGoogleMap = !isEarth3D;
+  const isPlanetary3D = !isEarth && mapType === "planetary3d";
+  const showGoogleMap = !isEarth3D && !isPlanetary3D;
 
   // Language change in progress, do not render map component
   if (isChangingLanguage) {
@@ -92,7 +94,7 @@ function GoogleMapComponent() {
             setShowInfoWindow={setShowInfoWindow}
           />
         </GoogleMap>
-      ) : (
+      ) : isEarth3D ? (
         <Earth3DMap
           center={center}
           encodedCoordinates={encodedCoordinates}
@@ -101,6 +103,16 @@ function GoogleMapComponent() {
           showGrid={showGrid}
           setSelectedArea={setSelectedArea}
           userLocation={userLocation}
+        />
+      ) : (
+        <Planetary3DMap
+          body={body === "earth" ? "moon" : body}
+          center={center}
+          encodedCoordinates={encodedCoordinates}
+          isEncoding={isEncoding}
+          selectedArea={selectedArea}
+          showGrid={showGrid}
+          setSelectedArea={setSelectedArea}
         />
       )}
 
@@ -127,7 +139,7 @@ function GoogleMapComponent() {
         }}
       />
 
-      {planetaryAttribution && (
+      {planetaryAttribution && !isPlanetary3D && (
         <div className="absolute left-[10px] bottom-[10px] z-10 bg-black/40 backdrop-blur-md border border-white/20 rounded-md px-2 py-1 text-[11px] text-white/80">
           {planetaryAttribution}
         </div>

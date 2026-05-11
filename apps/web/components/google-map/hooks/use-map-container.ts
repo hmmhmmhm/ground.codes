@@ -20,12 +20,30 @@ import {
 
 // Define libraries array as a constant to prevent recreation on each render
 const libraries: "places"[] = ["places"];
-export type EarthMapType = "roadmap" | "satellite" | "earth3d";
+export type EarthMapType = "roadmap" | "satellite" | "earth3d" | "planetary3d";
 
 // Get map type from cookie
 const getMapTypeFromCookie = (): EarthMapType => {
   try {
     if (typeof window === "undefined") return "roadmap";
+
+    const params = new URLSearchParams(window.location.search);
+    const queryBody = parseCelestialBody(params.get("body"));
+    const queryMapType = params.get("map") ?? params.get("view");
+    if (
+      queryMapType === "planetary3d" ||
+      (queryMapType === "3d" && queryBody !== "earth")
+    ) {
+      return "planetary3d";
+    }
+    if (
+      queryMapType === "earth3d" ||
+      (queryMapType === "3d" && queryBody === "earth")
+    ) {
+      return "earth3d";
+    }
+    if (queryMapType === "satellite") return "satellite";
+    if (queryMapType === "roadmap" || queryMapType === "2d") return "roadmap";
 
     const cookieMapTypeMatch = document.cookie
       .split("; ")
@@ -39,7 +57,8 @@ const getMapTypeFromCookie = (): EarthMapType => {
       cookieMapType &&
       (cookieMapType === "roadmap" ||
         cookieMapType === "satellite" ||
-        cookieMapType === "earth3d")
+        cookieMapType === "earth3d" ||
+        cookieMapType === "planetary3d")
     ) {
       return cookieMapType;
     }
@@ -267,7 +286,7 @@ export const useMapContainer = () => {
         document.cookie = `MAP_TYPE=${newType};path=/;max-age=31536000`;
         setMapType(newType);
 
-        if (!map || newType === "earth3d") return;
+        if (!map || newType === "earth3d" || newType === "planetary3d") return;
 
         if (newType === "roadmap") {
           map.setOptions({
@@ -447,6 +466,13 @@ export const useMapContainer = () => {
       setBody(nextBody);
       if (nextBody !== "earth") {
         setPlanetaryLayerId(getDefaultPlanetaryLayerId(nextBody));
+        if (mapType === "earth3d") {
+          setMapType("roadmap");
+          document.cookie = "MAP_TYPE=roadmap;path=/;max-age=31536000";
+        }
+      } else if (mapType === "planetary3d") {
+        setMapType("roadmap");
+        document.cookie = "MAP_TYPE=roadmap;path=/;max-age=31536000";
       }
       setCenter(nextView.center);
       setZoom(nextView.zoom);
@@ -459,14 +485,14 @@ export const useMapContainer = () => {
         map.setZoom(nextView.zoom);
       }
     },
-    [body, map],
+    [body, map, mapType],
   );
 
   useEffect(() => {
     if (!map) return;
 
     if (body === "earth") {
-      if (mapType === "earth3d") {
+      if (mapType === "earth3d" || mapType === "planetary3d") {
         clearAllGridLines();
         return;
       }
@@ -486,6 +512,11 @@ export const useMapContainer = () => {
         });
         map.setMapTypeId(google.maps.MapTypeId.HYBRID);
       }
+      return;
+    }
+
+    if (mapType === "planetary3d") {
+      clearAllGridLines();
       return;
     }
 
@@ -522,18 +553,24 @@ export const useMapContainer = () => {
       params.delete("lat");
       params.delete("lng");
       params.delete("zoom");
+      params.delete("view");
     } else {
       params.set("body", body);
       params.delete("layer");
       params.set("lat", center.lat.toFixed(5));
       params.set("lng", center.lng.toFixed(5));
       params.set("zoom", String(zoom));
+      if (mapType === "planetary3d") {
+        params.set("view", "3d");
+      } else {
+        params.delete("view");
+      }
     }
 
     const query = params.toString();
     const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
     window.history.replaceState(null, "", nextUrl);
-  }, [body, center, zoom]);
+  }, [body, center, zoom, mapType]);
 
   // Close place details
   const closePlaceDetails = useCallback(() => {

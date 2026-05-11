@@ -73,12 +73,14 @@ The web map supports three bodies through the `body` query parameter:
 - Earth: `/`
 - Moon: `/?body=moon`
 - Mars: `/?body=mars`
+- Moon 3D: `/?body=moon&view=3d`
+- Mars 3D: `/?body=mars&view=3d`
 
 Optional `lat`, `lng`, and `zoom` query parameters can be used with any
 planetary body, for example
 `/?body=mars&lat=18.65280&lng=-133.80250&zoom=5`.
 
-Moon and Mars basemaps are loaded from official USGS Astrogeology WMS services:
+Moon and Mars 2D basemaps are loaded from official USGS Astrogeology WMS services:
 
 - Moon default basemap: `LROC_WAC`
 - Mars default basemap: `MDIM21_color`
@@ -88,6 +90,11 @@ Earth-only. Ground code encoding and the 3m grid remain available on Moon and
 Mars, with grid degree spacing adjusted for each body's radius. Ground code
 region prefixes and word payloads are available in English, Korean, Chinese,
 and Japanese.
+
+Moon and Mars also include an experimental Cesium 3D globe mode. Without Cesium
+ion configuration it falls back to a 3D ellipsoid with the current USGS imagery.
+For real Moon/Mars terrain tiles, configure a Cesium ion token and the relevant
+Moon/Mars asset IDs in the environment.
 
 ### 🌩️ Deployment and Internationalization
 
@@ -105,6 +112,9 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
 
 # Optional
 NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID=
+NEXT_PUBLIC_CESIUM_ION_TOKEN=
+NEXT_PUBLIC_CESIUM_MOON_ASSET_ID=
+NEXT_PUBLIC_CESIUM_MARS_ASSET_ID=
 GOOGLE_MAPS_NODEJS_API_KEY=
 OPENWEATHER_API_KEY=
 ```
@@ -122,6 +132,16 @@ OPENWEATHER_API_KEY=
 
   - 🎨 Create a custom map style in the [Google Cloud Console Map Management](https://console.cloud.google.com/google/maps-apis/studio/maps)
   - 🆔 Use the generated Map ID for this variable
+
+- **NEXT_PUBLIC_CESIUM_ION_TOKEN** (Optional):
+
+  - 🌕 Enables Cesium ion Moon/Mars 3D Tiles in experimental planetary 3D mode
+  - 🔑 Create a token in [Cesium ion](https://ion.cesium.com/tokens)
+
+- **NEXT_PUBLIC_CESIUM_MOON_ASSET_ID / NEXT_PUBLIC_CESIUM_MARS_ASSET_ID** (Optional):
+
+  - 🪐 Add Cesium Moon or Cesium Mars from the Cesium ion Asset Depot to your assets
+  - 🆔 Use the corresponding asset IDs with the Cesium ion token
 
 - **GOOGLE_MAPS_NODEJS_API_KEY** (Optional):
 
