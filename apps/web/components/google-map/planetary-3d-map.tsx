@@ -22,7 +22,8 @@ type CesiumViewer = import("cesium").Viewer;
 type CesiumEntity = import("cesium").Entity;
 type CesiumEventHandler = import("cesium").ScreenSpaceEventHandler;
 
-const CESIUM_BASE_URL = "https://unpkg.com/cesium/Build/Cesium/";
+const CESIUM_BASE_URL = "https://unpkg.com/cesium@1.141.0/Build/Cesium/";
+const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
 const INITIAL_CAMERA_HEIGHT_METERS = 6500000;
 const CLOSE_CAMERA_HEIGHT_METERS = 25;
 const GRID_COLOR_ALPHA = 0.38;
@@ -30,6 +31,49 @@ const GRID_AXIS_ALPHA = 0.58;
 const GRID_ALTITUDE_METERS = 1200;
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
+
+declare global {
+  interface Window {
+    Cesium?: CesiumModule;
+    CESIUM_BASE_URL?: string;
+  }
+}
+
+let cesiumLoadPromise: Promise<CesiumModule> | null = null;
+
+const loadCesium = () => {
+  if (window.Cesium) return Promise.resolve(window.Cesium);
+  if (cesiumLoadPromise) return cesiumLoadPromise;
+
+  window.CESIUM_BASE_URL = CESIUM_BASE_URL;
+  cesiumLoadPromise = new Promise<CesiumModule>((resolve, reject) => {
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      `script[src="${CESIUM_SCRIPT_URL}"]`,
+    );
+    if (existingScript) {
+      existingScript.addEventListener("load", () => {
+        if (window.Cesium) resolve(window.Cesium);
+        else reject(new Error("Cesium script loaded without window.Cesium"));
+      });
+      existingScript.addEventListener("error", () =>
+        reject(new Error("Failed to load Cesium script")),
+      );
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = CESIUM_SCRIPT_URL;
+    script.onload = () => {
+      if (window.Cesium) resolve(window.Cesium);
+      else reject(new Error("Cesium script loaded without window.Cesium"));
+    };
+    script.onerror = () => reject(new Error("Failed to load Cesium script"));
+    document.head.append(script);
+  });
+
+  return cesiumLoadPromise;
+};
 
 const getAssetId = (body: Exclude<CelestialBody, "earth">) => {
   const value =
@@ -133,9 +177,7 @@ const Planetary3DMap = ({
 
     const initialize = async () => {
       try {
-        (window as Window & { CESIUM_BASE_URL?: string }).CESIUM_BASE_URL =
-          CESIUM_BASE_URL;
-        const Cesium = await import("cesium");
+        const Cesium = await loadCesium();
         cesiumRef.current = Cesium;
         const ellipsoid = getEllipsoid(Cesium, body);
         Cesium.Ellipsoid.default = ellipsoid;
