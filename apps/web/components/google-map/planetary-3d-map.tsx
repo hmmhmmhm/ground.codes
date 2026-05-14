@@ -26,7 +26,7 @@ const CESIUM_BASE_URL = "https://unpkg.com/cesium@1.141.0/Build/Cesium/";
 const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
 const INITIAL_CAMERA_HEIGHT_METERS = 6500000;
 const MIN_CAMERA_HEIGHT_METERS = 2000;
-const GRID_COLOR_ALPHA = 0.32;
+const GRID_COLOR_ALPHA = 0.12;
 const GRID_ALTITUDE_METERS = 1200;
 const MARKER_ALTITUDE_METERS = 120;
 const MAX_GRID_LINE_COUNT = 96;
@@ -241,6 +241,8 @@ const Planetary3DMap = ({
               transparent: false,
               styles: "",
             },
+            tileHeight: 512,
+            tileWidth: 512,
             tilingScheme: new Cesium.GeographicTilingScheme({ ellipsoid }),
           }),
         );
