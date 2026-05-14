@@ -25,10 +25,13 @@ type CesiumEventHandler = import("cesium").ScreenSpaceEventHandler;
 const CESIUM_BASE_URL = "https://unpkg.com/cesium@1.141.0/Build/Cesium/";
 const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
 const INITIAL_CAMERA_HEIGHT_METERS = 6500000;
-const CLOSE_CAMERA_HEIGHT_METERS = 25;
+const CLICK_CAMERA_HEIGHT_METERS = 2000;
+const MIN_CAMERA_HEIGHT_METERS = 2000;
 const GRID_COLOR_ALPHA = 0.38;
 const GRID_AXIS_ALPHA = 0.58;
 const GRID_ALTITUDE_METERS = 1200;
+const MARKER_ALTITUDE_METERS = 120;
+const MAX_GRID_LINE_COUNT = 28;
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
 
@@ -121,6 +124,15 @@ const getGridSpanDegrees = (cameraHeight: number) => {
   return 0.0003;
 };
 
+const normalizeGridStep = (step: number, span: number) => {
+  let normalizedStep = step;
+  while (span / normalizedStep > MAX_GRID_LINE_COUNT) {
+    normalizedStep *= 2;
+  }
+
+  return normalizedStep;
+};
+
 const snapDown = (value: number, step: number) =>
   Math.floor(value / step) * step;
 
@@ -138,8 +150,8 @@ const getGridBounds = (
   center: Coordinates,
   cameraHeight: number,
 ) => {
-  const step = getGridStepDegrees(body, cameraHeight);
   const span = getGridSpanDegrees(cameraHeight);
+  const step = normalizeGridStep(getGridStepDegrees(body, cameraHeight), span);
 
   return {
     east: Math.min(180, snapUp(center.lng + span / 2, step)),
@@ -165,6 +177,7 @@ const Planetary3DMap = ({
   const cameraListenerRef = useRef<(() => void) | null>(null);
   const gridEntitiesRef = useRef<CesiumEntity[]>([]);
   const markerRef = useRef<CesiumEntity | null>(null);
+  const lastFlownSelectionRef = useRef<string | null>(null);
   const cesiumRef = useRef<CesiumModule | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [usesFallback, setUsesFallback] = useState(false);
@@ -204,7 +217,8 @@ const Planetary3DMap = ({
           viewer.scene.skyAtmosphere.show = false;
         }
         viewer.scene.fog.enabled = false;
-        viewer.scene.screenSpaceCameraController.minimumZoomDistance = 3;
+        viewer.scene.screenSpaceCameraController.minimumZoomDistance =
+          MIN_CAMERA_HEIGHT_METERS;
         viewer.scene.screenSpaceCameraController.maximumZoomDistance =
           INITIAL_CAMERA_HEIGHT_METERS * 3;
 
@@ -311,6 +325,7 @@ const Planetary3DMap = ({
       cesiumRef.current = null;
       gridEntitiesRef.current = [];
       markerRef.current = null;
+      lastFlownSelectionRef.current = null;
       container.replaceChildren();
     };
   }, [body, center.lat, center.lng, setSelectedArea]);
@@ -401,11 +416,12 @@ const Planetary3DMap = ({
       position: Cesium.Cartesian3.fromDegrees(
         selectedArea.lng,
         selectedArea.lat,
-        GRID_ALTITUDE_METERS,
+        MARKER_ALTITUDE_METERS,
         ellipsoid,
       ),
       point: {
         color: Cesium.Color.CYAN.withAlpha(0.9),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
         pixelSize: 10,
         outlineColor: Cesium.Color.BLACK.withAlpha(0.75),
         outlineWidth: 2,
@@ -421,18 +437,23 @@ const Planetary3DMap = ({
         outlineWidth: 3,
         pixelOffset: new Cesium.Cartesian2(0, -24),
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
     });
 
-    viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(
-        selectedArea.lng,
-        selectedArea.lat,
-        CLOSE_CAMERA_HEIGHT_METERS,
-        ellipsoid,
-      ),
-      duration: 0.8,
-    });
+    const selectionKey = `${selectedArea.lat.toFixed(8)},${selectedArea.lng.toFixed(8)}`;
+    if (selectionKey !== lastFlownSelectionRef.current) {
+      lastFlownSelectionRef.current = selectionKey;
+      viewer.camera.flyTo({
+        destination: Cesium.Cartesian3.fromDegrees(
+          selectedArea.lng,
+          selectedArea.lat,
+          CLICK_CAMERA_HEIGHT_METERS,
+          ellipsoid,
+        ),
+        duration: 0.8,
+      });
+    }
   }, [body, encodedCoordinates, isEncoding, selectedArea]);
 
   return (
