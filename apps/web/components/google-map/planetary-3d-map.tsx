@@ -25,13 +25,11 @@ type CesiumEventHandler = import("cesium").ScreenSpaceEventHandler;
 const CESIUM_BASE_URL = "https://unpkg.com/cesium@1.141.0/Build/Cesium/";
 const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
 const INITIAL_CAMERA_HEIGHT_METERS = 6500000;
-const CLICK_CAMERA_HEIGHT_METERS = 2000;
 const MIN_CAMERA_HEIGHT_METERS = 2000;
-const GRID_COLOR_ALPHA = 0.38;
-const GRID_AXIS_ALPHA = 0.58;
+const GRID_COLOR_ALPHA = 0.32;
 const GRID_ALTITUDE_METERS = 1200;
 const MARKER_ALTITUDE_METERS = 120;
-const MAX_GRID_LINE_COUNT = 28;
+const MAX_GRID_LINE_COUNT = 96;
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
 
@@ -96,14 +94,14 @@ const getGridStepDegrees = (
   body: Exclude<CelestialBody, "earth">,
   cameraHeight: number,
 ) => {
-  if (cameraHeight > 6000000) return 15;
-  if (cameraHeight > 2000000) return 5;
-  if (cameraHeight > 600000) return 1;
-  if (cameraHeight > 180000) return 0.25;
-  if (cameraHeight > 60000) return 0.05;
-  if (cameraHeight > 20000) return 0.01;
-  if (cameraHeight > 5000) return 0.0025;
-  if (cameraHeight > 1000) return 0.0005;
+  if (cameraHeight > 6000000) return 5;
+  if (cameraHeight > 2000000) return 2.5;
+  if (cameraHeight > 600000) return 0.5;
+  if (cameraHeight > 180000) return 0.1;
+  if (cameraHeight > 60000) return 0.025;
+  if (cameraHeight > 20000) return 0.005;
+  if (cameraHeight > 5000) return 0.001;
+  if (cameraHeight > 1000) return 0.00025;
   if (cameraHeight > 250) return 0.0001;
   if (cameraHeight > 75) return 0.00005;
 
@@ -111,8 +109,8 @@ const getGridStepDegrees = (
 };
 
 const getGridSpanDegrees = (cameraHeight: number) => {
-  if (cameraHeight > 6000000) return 180;
-  if (cameraHeight > 2000000) return 70;
+  if (cameraHeight > 6000000) return 360;
+  if (cameraHeight > 2000000) return 140;
   if (cameraHeight > 600000) return 24;
   if (cameraHeight > 180000) return 8;
   if (cameraHeight > 60000) return 2;
@@ -153,6 +151,16 @@ const getGridBounds = (
   const span = getGridSpanDegrees(cameraHeight);
   const step = normalizeGridStep(getGridStepDegrees(body, cameraHeight), span);
 
+  if (span >= 360) {
+    return {
+      east: 180,
+      north: 85,
+      south: -85,
+      step,
+      west: -180,
+    };
+  }
+
   return {
     east: Math.min(180, snapUp(center.lng + span / 2, step)),
     north: Math.min(85, snapUp(center.lat + span / 2, step)),
@@ -177,7 +185,6 @@ const Planetary3DMap = ({
   const cameraListenerRef = useRef<(() => void) | null>(null);
   const gridEntitiesRef = useRef<CesiumEntity[]>([]);
   const markerRef = useRef<CesiumEntity | null>(null);
-  const lastFlownSelectionRef = useRef<string | null>(null);
   const cesiumRef = useRef<CesiumModule | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [usesFallback, setUsesFallback] = useState(false);
@@ -296,6 +303,7 @@ const Planetary3DMap = ({
 
         viewerRef.current = viewer;
         handlerRef.current = handler;
+        setGridRevision((revision) => revision + 1);
         let lastGridRefresh = 0;
         cameraListenerRef.current = viewer.camera.changed.addEventListener(
           () => {
@@ -325,7 +333,6 @@ const Planetary3DMap = ({
       cesiumRef.current = null;
       gridEntitiesRef.current = [];
       markerRef.current = null;
-      lastFlownSelectionRef.current = null;
       container.replaceChildren();
     };
   }, [body, center.lat, center.lng, setSelectedArea]);
@@ -347,28 +354,29 @@ const Planetary3DMap = ({
     };
     const bounds = getGridBounds(body, cameraCenter, cartographic.height);
     const color = Cesium.Color.WHITE.withAlpha(GRID_COLOR_ALPHA);
-    const axisColor = Cesium.Color.CYAN.withAlpha(GRID_AXIS_ALPHA);
 
     for (const lat of createGridValues(
       bounds.south,
       bounds.north,
       bounds.step,
     )) {
-      const positions = createGridValues(bounds.west, bounds.east, bounds.step)
-        .filter((_, index) => index % 4 === 0)
-        .map((lng) =>
-          Cesium.Cartesian3.fromDegrees(
-            lng,
-            lat,
-            GRID_ALTITUDE_METERS,
-            ellipsoid,
-          ),
-        );
+      const positions = createGridValues(
+        bounds.west,
+        bounds.east,
+        bounds.step,
+      ).map((lng) =>
+        Cesium.Cartesian3.fromDegrees(
+          lng,
+          lat,
+          GRID_ALTITUDE_METERS,
+          ellipsoid,
+        ),
+      );
       const entity = viewer.entities.add({
         polyline: {
           positions,
-          width: Math.abs(lat) < bounds.step / 2 ? 2 : 1,
-          material: Math.abs(lat) < bounds.step / 2 ? axisColor : color,
+          width: 1,
+          material: color,
         },
       });
       gridEntitiesRef.current.push(entity);
@@ -379,21 +387,19 @@ const Planetary3DMap = ({
         bounds.south,
         bounds.north,
         bounds.step,
-      )
-        .filter((_, index) => index % 4 === 0)
-        .map((lat) =>
-          Cesium.Cartesian3.fromDegrees(
-            lng,
-            lat,
-            GRID_ALTITUDE_METERS,
-            ellipsoid,
-          ),
-        );
+      ).map((lat) =>
+        Cesium.Cartesian3.fromDegrees(
+          lng,
+          lat,
+          GRID_ALTITUDE_METERS,
+          ellipsoid,
+        ),
+      );
       const entity = viewer.entities.add({
         polyline: {
           positions,
-          width: Math.abs(lng) < bounds.step / 2 ? 2 : 1,
-          material: Math.abs(lng) < bounds.step / 2 ? axisColor : color,
+          width: 1,
+          material: color,
         },
       });
       gridEntitiesRef.current.push(entity);
@@ -420,11 +426,12 @@ const Planetary3DMap = ({
         ellipsoid,
       ),
       point: {
-        color: Cesium.Color.CYAN.withAlpha(0.9),
+        color: Cesium.Color.fromCssColorString("#f97316").withAlpha(0.96),
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
-        pixelSize: 10,
-        outlineColor: Cesium.Color.BLACK.withAlpha(0.75),
-        outlineWidth: 2,
+        pixelSize: 15,
+        outlineColor: Cesium.Color.WHITE.withAlpha(0.95),
+        outlineWidth: 3,
+        scaleByDistance: new Cesium.NearFarScalar(2000, 1.15, 6500000, 0.72),
       },
       label: {
         text:
@@ -432,28 +439,17 @@ const Planetary3DMap = ({
             ? "Encoding..."
             : encodedCoordinates,
         fillColor: Cesium.Color.WHITE,
-        font: "13px sans-serif",
+        font: "600 13px sans-serif",
+        showBackground: true,
+        backgroundColor: Cesium.Color.BLACK.withAlpha(0.58),
+        backgroundPadding: new Cesium.Cartesian2(8, 5),
         outlineColor: Cesium.Color.BLACK,
-        outlineWidth: 3,
-        pixelOffset: new Cesium.Cartesian2(0, -24),
+        outlineWidth: 2,
+        pixelOffset: new Cesium.Cartesian2(0, -52),
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
     });
-
-    const selectionKey = `${selectedArea.lat.toFixed(8)},${selectedArea.lng.toFixed(8)}`;
-    if (selectionKey !== lastFlownSelectionRef.current) {
-      lastFlownSelectionRef.current = selectionKey;
-      viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(
-          selectedArea.lng,
-          selectedArea.lat,
-          CLICK_CAMERA_HEIGHT_METERS,
-          ellipsoid,
-        ),
-        duration: 0.8,
-      });
-    }
   }, [body, encodedCoordinates, isEncoding, selectedArea]);
 
   return (
