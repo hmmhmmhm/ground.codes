@@ -46,8 +46,10 @@ export const METERS_PER_DEGREE_BY_BODY: Record<CelestialBody, number> = {
   mars: 59158,
 };
 
-export const PLANETARY_BODY_CONFIGS: Record<PlanetaryBody, PlanetaryBodyConfig> =
-{
+export const PLANETARY_BODY_CONFIGS: Record<
+  PlanetaryBody,
+  PlanetaryBodyConfig
+> = {
   moon: {
     body: "moon",
     label: "Moon",
@@ -55,7 +57,7 @@ export const PLANETARY_BODY_CONFIGS: Record<PlanetaryBody, PlanetaryBodyConfig> 
     zoom: 5,
     wmsBaseUrl:
       "https://planetarymaps.usgs.gov/cgi-bin/mapserv?map=/maps/earth/moon_simp_cyl.map",
-    defaultLayerId: "LROC_WAC",
+    defaultLayerId: "KaguyaTC_Ortho",
     layers: [
       {
         id: "LROC_WAC",
@@ -96,7 +98,7 @@ export const PLANETARY_BODY_CONFIGS: Record<PlanetaryBody, PlanetaryBodyConfig> 
     zoom: 5,
     wmsBaseUrl:
       "https://planetarymaps.usgs.gov/cgi-bin/mapserv?map=/maps/mars/mars_simp_cyl.map",
-    defaultLayerId: "MDIM21_color",
+    defaultLayerId: "MOLA_THEMIS_blend",
     layers: [
       {
         id: "MDIM21_color",
@@ -155,7 +157,7 @@ export const PLANETARY_LAYER_CONFIGS: Record<
 };
 
 export const parseCelestialBody = (
-  value: string | null | undefined
+  value: string | null | undefined,
 ): CelestialBody => {
   if (value === "moon" || value === "mars" || value === "earth") {
     return value;
@@ -179,7 +181,7 @@ export const getDefaultPlanetaryLayerId = (body: PlanetaryBody) =>
 
 export const getPlanetaryLayerConfig = (
   body: PlanetaryBody,
-  layerId: string | null | undefined
+  layerId: string | null | undefined,
 ) => {
   const bodyConfig = PLANETARY_BODY_CONFIGS[body];
   return (
@@ -191,7 +193,7 @@ export const getPlanetaryLayerConfig = (
 
 export const parsePlanetaryLayerId = (
   body: PlanetaryBody,
-  layerId: string | null | undefined
+  layerId: string | null | undefined,
 ) => getPlanetaryLayerConfig(body, layerId).id;
 
 const clampLatitude = (lat: number) =>
@@ -207,7 +209,7 @@ const tileYToLatitude = (y: number, zoom: number) => {
 
 export const createPlanetaryMapType = (
   body: PlanetaryBody,
-  layerId?: string
+  layerId?: string,
 ) => {
   const bodyConfig = PLANETARY_BODY_CONFIGS[body];
   const layerConfig = getPlanetaryLayerConfig(body, layerId);
