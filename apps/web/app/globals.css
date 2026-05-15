@@ -42,3 +42,9 @@ button.gm-ui-hover-effect,
 .gm-style .gm-style-iw-d::-webkit-scrollbar-track-piece {
   background-color: transparent;
 }
+
+@media (max-width: 640px) {
+  .planetary-3d-map.has-selected-area .cesium-viewer-bottom {
+    bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}

@@ -462,7 +462,10 @@ const Planetary3DMap = ({
   }, [body, encodedCoordinates, isEncoding, selectedArea]);
 
   return (
-    <div className="absolute inset-0 bg-black" ref={containerRef}>
+    <div
+      className={`planetary-3d-map absolute inset-0 bg-black ${selectedArea ? "has-selected-area" : ""}`}
+      ref={containerRef}
+    >
       {loadFailed && (
         <div className="absolute inset-0 flex items-center justify-center text-sm text-white/80">
           3D planetary map unavailable
