@@ -18,8 +18,14 @@ type Map3DElementInstance = HTMLElement & {
   tilt?: number;
 };
 
+type PopoverElementInstance = HTMLElement & {
+  open?: boolean;
+  positionAnchor?: unknown;
+};
+
 type Maps3DLibrary = {
   AltitudeMode: {
+    ABSOLUTE?: string;
     CLAMP_TO_GROUND?: string;
     RELATIVE_TO_GROUND?: string;
   };
@@ -104,6 +110,9 @@ const snapUp = (value: number, step: number) => Math.ceil(value / step) * step;
 
 const formatGridCoordinate = (value: number) =>
   Number(value.toFixed(6)).toString();
+
+const getMarkerLabel = (isEncoding: boolean, encodedCoordinates: string) =>
+  isEncoding || !encodedCoordinates ? "Encoding..." : encodedCoordinates;
 
 const createGridValues = (start: number, end: number, step: number) => {
   const count = Math.max(0, Math.round((end - start) / step));
@@ -234,6 +243,7 @@ const Earth3DMap = ({
   const mapRef = useRef<Map3DElementInstance | null>(null);
   const gridRef = useRef<HTMLElement[]>([]);
   const markerRef = useRef<HTMLElement | null>(null);
+  const markerPopoverRef = useRef<PopoverElementInstance | null>(null);
   const userLocationMarkerRef = useRef<HTMLElement | null>(null);
   const showGridRef = useRef(showGrid);
   const gridSignatureRef = useRef<string | null>(null);
@@ -330,6 +340,8 @@ const Earth3DMap = ({
       gridSignatureRef.current = null;
       markerRef.current?.remove();
       markerRef.current = null;
+      markerPopoverRef.current?.remove();
+      markerPopoverRef.current = null;
       userLocationMarkerRef.current?.remove();
       userLocationMarkerRef.current = null;
       maps3dRef.current = null;
@@ -357,20 +369,61 @@ const Earth3DMap = ({
 
     markerRef.current?.remove();
     markerRef.current = null;
+    markerPopoverRef.current?.remove();
+    markerPopoverRef.current = null;
     if (!selectedArea) return;
 
-    const marker = document.createElement("gmp-marker-3d");
+    const markerPosition = {
+      lat: selectedArea.lat,
+      lng: selectedArea.lng,
+      altitude: 0,
+    };
+    const marker = document.createElement("gmp-marker-3d-interactive");
+    const markerLabel = getMarkerLabel(isEncoding, encodedCoordinates);
     marker.setAttribute(
       "position",
-      `${selectedArea.lat},${selectedArea.lng},0`,
+      `${markerPosition.lat},${markerPosition.lng},${markerPosition.altitude}`,
     );
-    marker.setAttribute(
-      "label",
-      isEncoding || !encodedCoordinates ? "Encoding..." : encodedCoordinates,
-    );
+    marker.setAttribute("altitude-mode", "clamp-to-ground");
+    marker.setAttribute("label", markerLabel);
+    marker.setAttribute("title", markerLabel);
     map3d.append(marker);
     markerRef.current = marker;
+
+    const popover = document.createElement(
+      "gmp-popover",
+    ) as PopoverElementInstance;
+    popover.setAttribute("altitude-mode", "clamp-to-ground");
+    popover.setAttribute("light-dismiss-disabled", "");
+    popover.setAttribute("open", "");
+    popover.open = true;
+    popover.positionAnchor = marker;
+    const content = document.createElement("div");
+    content.style.maxWidth = "280px";
+    content.style.wordBreak = "break-word";
+    content.style.fontSize = "13px";
+    content.style.fontWeight = "600";
+    content.style.lineHeight = "1.35";
+    content.textContent = markerLabel;
+    popover.append(content);
+    map3d.append(popover);
+    markerPopoverRef.current = popover;
   }, [encodedCoordinates, isEncoding, mapReady, selectedArea]);
+
+  useEffect(() => {
+    if (!markerRef.current || !markerPopoverRef.current) return;
+
+    const markerLabel = getMarkerLabel(isEncoding, encodedCoordinates);
+    markerRef.current.setAttribute("label", markerLabel);
+    markerRef.current.setAttribute("title", markerLabel);
+    const content = markerPopoverRef.current.firstElementChild;
+    if (content) {
+      content.textContent = markerLabel;
+    } else {
+      markerPopoverRef.current.textContent = markerLabel;
+    }
+    markerPopoverRef.current.open = true;
+  }, [encodedCoordinates, isEncoding]);
 
   useEffect(() => {
     const map3d = mapRef.current;

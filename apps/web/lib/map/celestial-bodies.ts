@@ -98,7 +98,7 @@ export const PLANETARY_BODY_CONFIGS: Record<
     zoom: 5,
     wmsBaseUrl:
       "https://planetarymaps.usgs.gov/cgi-bin/mapserv?map=/maps/mars/mars_simp_cyl.map",
-    defaultLayerId: "MOLA_THEMIS_blend",
+    defaultLayerId: "MDIM21_color",
     layers: [
       {
         id: "MDIM21_color",

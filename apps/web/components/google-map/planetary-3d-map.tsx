@@ -26,10 +26,17 @@ const CESIUM_BASE_URL = "https://unpkg.com/cesium@1.141.0/Build/Cesium/";
 const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
 const INITIAL_CAMERA_HEIGHT_METERS = 6500000;
 const MIN_CAMERA_HEIGHT_METERS = 2000;
-const GRID_COLOR_ALPHA = 0.12;
+const GRID_COLOR_ALPHA = 0.06;
 const GRID_ALTITUDE_METERS = 1200;
 const MARKER_ALTITUDE_METERS = 120;
 const MAX_GRID_LINE_COUNT = 96;
+const PLANETARY_FALLBACK_LABELS: Record<
+  Exclude<CelestialBody, "earth">,
+  string
+> = {
+  moon: "USGS Moon imagery",
+  mars: "USGS Mars imagery",
+};
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
 
@@ -462,9 +469,8 @@ const Planetary3DMap = ({
         </div>
       )}
       {usesFallback && (
-        <div className="absolute left-3 top-3 z-10 max-w-[320px] rounded-md border border-white/15 bg-black/50 px-3 py-2 text-xs text-white/75 backdrop-blur-md">
-          Cesium ion Moon/Mars terrain is not configured. Showing 3D ellipsoid
-          fallback with 2D imagery.
+        <div className="absolute left-3 top-3 z-10 rounded-md border border-white/15 bg-black/45 px-2 py-1 text-[11px] text-white/70 backdrop-blur-md">
+          {PLANETARY_FALLBACK_LABELS[body]}
         </div>
       )}
       {selectedArea && (
