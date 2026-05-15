@@ -222,6 +222,8 @@ const Planetary3DMap = ({
           sceneModePicker: false,
           selectionIndicator: false,
           timeline: false,
+          // Render at native device pixel ratio so mobile 3D planets and grid lines stay crisp.
+          useBrowserRecommendedResolution: false,
           globe: new Cesium.Globe(ellipsoid),
           mapProjection: new Cesium.GeographicProjection(ellipsoid),
           terrainProvider: new Cesium.EllipsoidTerrainProvider({ ellipsoid }),
