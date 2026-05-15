@@ -26,6 +26,7 @@ const CESIUM_BASE_URL = "https://unpkg.com/cesium@1.141.0/Build/Cesium/";
 const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
 const INITIAL_CAMERA_HEIGHT_METERS = 6500000;
 const MIN_CAMERA_HEIGHT_METERS = 2000;
+const PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR = 1;
 const GRID_COLOR_ALPHA = 0.06;
 const GRID_ALTITUDE_METERS = 1200;
 const MARKER_ALTITUDE_METERS = 120;
@@ -229,6 +230,8 @@ const Planetary3DMap = ({
           terrainProvider: new Cesium.EllipsoidTerrainProvider({ ellipsoid }),
         });
         viewer.scene.globe.enableLighting = true;
+        viewer.scene.globe.maximumScreenSpaceError =
+          PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR;
         if (viewer.scene.skyAtmosphere) {
           viewer.scene.skyAtmosphere.show = false;
         }
