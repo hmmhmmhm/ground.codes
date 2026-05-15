@@ -205,3 +205,71 @@ medium, or low findings were reported for the current file.
 | Netherlands | Greenway | watchlist: abbreviation, place, brand, adult, negative, or technical term |
 | Philippines | Grovelet | watchlist: abbreviation, place, brand, adult, negative, or technical term |
 | Switzerland | Hayshed | watchlist: abbreviation, place, brand, adult, negative, or technical term |
+
+## Pronunciation and Familiarity Review Addendum
+
+This pass removed English entries that looked code-like, technical, brand-like,
+name-like, place-like, or likely to be unfamiliar or hard to pronounce for a
+general user. Replacements were selected from simple household, object, and
+everyday words that were not already present in the distributed English
+codebook.
+
+| Original | Replacement | Reason |
+| --- | --- | --- |
+| Bio | Blanket | terse abbreviation-like term |
+| Dvd | Carton | code-like abbreviation |
+| Eur | Doorknob | code-like abbreviation |
+| Faq | Footstool | code-like abbreviation |
+| Rss | Mailbox | code-like abbreviation |
+| Tel | Muffin | terse abbreviation-like term |
+| Blog | Pancake | web-specific term |
+| Byte | Planter | technical term |
+| Euro | Postbox | currency or region-like term |
+| Expo | Shoelace | event/brand-like term |
+| Info | Sidewalk | terse technical term |
+| Mega | Slipper | prefix-like term |
+| Nano | Stool | prefix-like term |
+| Stat | Wallet | terse technical term |
+| Const | Duster | code-like technical term |
+| Cyber | Fountain | technical/dated term |
+| Debug | Lunchbag | code-specific term |
+| Email | Pencil | web-specific term |
+| Indie | Rucksack | niche/ambiguous term |
+| Intro | Sunshade | terse media-like term |
+| Modem | Workbench | technical term |
+| Multi | Yardstick | prefix-like term |
+| Pixel | Breadbin | technical term |
+| Utils | Coaster | code-like technical term |
+| Avatar | Broomstick | platform/game-like term |
+| Config | Doorstep | code-specific term |
+| Cookie | Fireplace | web-specific term |
+| Debian | Handrail | software name |
+| Pubmed | Jarful | platform/database name |
+| Signup | Lampshade | web-specific term |
+| Struct | Lunchroom | code-like technical term |
+| Techno | Paintbrush | genre/niche term |
+| Weblog | Parkbench | dated web-specific term |
+| Arizona | Peppermint | place name |
+| Bizrate | Placemat | brand/service-like term |
+| Verizon | Rainboot | brand name |
+| Zealand | Schoolbag | place-like term |
+| Expansys | Seatbelt | brand/service-like term |
+| Alexander | Soapdish | personal name |
+| Elizabeth | Sundial | personal name |
+| Louisville | Toothbrush | place name |
+| Nascar | Washbasin | brand/sports organization |
+| Eminem | Woodpile | performer name |
+| Hilton | Wristwatch | brand/family/place-like term |
+| Hudson | Bedspread | personal/place name |
+| Marcus | Birdhouse | personal name |
+| Monroe | Brushpot | personal/place name |
+| Nicole | Clipboard | personal name |
+| Norton | Coatstand | brand/name-like term |
+| Rogers | Dishpan | surname/brand-like term |
+| Spears | Fryingpan | surname/ambiguous term |
+| Watson | Gardenbed | personal name |
+| Barnes | Milkshake | surname/brand-like term |
+| Evans | Rugmat | personal name |
+| Darwin | Sewingbox | personal/place name |
+| Dublin | Soupbowl | place name |
+| Latina | Tinbox | identity/place-like term |
