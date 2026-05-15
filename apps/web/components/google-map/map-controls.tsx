@@ -121,72 +121,6 @@ const MapControls: React.FC<MapControlsProps> = ({
     }
   };
 
-  const BodyIcon = ({
-    body,
-    size = 16,
-  }: {
-    body: CelestialBody;
-    size?: number;
-  }) => {
-    if (body === "moon") {
-      return (
-        <svg
-          aria-hidden="true"
-          width={size}
-          height={size}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.7 6.7 0 0 0 9.8 9.8Z" />
-        </svg>
-      );
-    }
-
-    if (body === "mars") {
-      return (
-        <svg
-          aria-hidden="true"
-          width={size}
-          height={size}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <circle cx="9" cy="15" r="5" />
-          <path d="M13 11 21 3" />
-          <path d="M16 3h5v5" />
-        </svg>
-      );
-    }
-
-    return (
-      <svg
-        aria-hidden="true"
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#FFFFFF"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="12" cy="12" r="9" />
-        <path d="M3.6 9h16.8" />
-        <path d="M3.6 15h16.8" />
-        <path d="M12 3a13.5 13.5 0 0 1 0 18" />
-        <path d="M12 3a13.5 13.5 0 0 0 0 18" />
-      </svg>
-    );
-  };
-
   const LanguageIcon = ({ size = 16 }: { size?: number }) => (
     <svg
       aria-hidden="true"
@@ -287,13 +221,12 @@ const MapControls: React.FC<MapControlsProps> = ({
               setShowMapTypeOptions(false);
               setShowLanguageOptions(false);
             }}
-            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[44px]"
+            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[64px]"
             title={t("map.controls.body")}
             aria-label={t("map.controls.body")}
             aria-expanded={showBodyOptions}
           >
-            <BodyIcon body={body} />
-            <span className="hidden md:inline">{activeBodyLabel}</span>
+            <span>{activeBodyLabel}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="13"
@@ -323,7 +256,6 @@ const MapControls: React.FC<MapControlsProps> = ({
                     aria-label={bodyLabels[option.body]}
                   >
                     <span className="text-white flex items-center gap-2">
-                      <BodyIcon body={option.body} />
                       <span>{bodyLabels[option.body]}</span>
                     </span>
                     {body === option.body && (

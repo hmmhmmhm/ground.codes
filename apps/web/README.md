@@ -68,13 +68,15 @@ Ground.codes web application is an interactive map service utilizing the Google 
 
 ### 🪐 Planetary Map Mode
 
-The web map supports three bodies through the `body` query parameter:
+The web map supports three bodies through the `body` query parameter. Earth,
+Moon, and Mars open in their 3D globe views by default:
 
-- Earth: `/`
-- Moon: `/?body=moon`
-- Mars: `/?body=mars`
-- Moon 3D: `/?body=moon&view=3d`
-- Mars 3D: `/?body=mars&view=3d`
+- Earth 3D: `/`
+- Moon 3D: `/?body=moon`
+- Mars 3D: `/?body=mars`
+- Earth 2D map: `/?map=roadmap`
+- Moon 2D map: `/?body=moon&view=2d`
+- Mars 2D map: `/?body=mars&view=2d`
 
 Optional `lat`, `lng`, and `zoom` query parameters can be used with any
 planetary body, for example
