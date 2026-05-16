@@ -27,6 +27,7 @@ const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
 const INITIAL_CAMERA_HEIGHT_METERS = 6500000;
 const MIN_CAMERA_HEIGHT_METERS = 2000;
 const PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR = 1;
+const PLANETARY_IMAGERY_TILE_SIZE = 1024;
 const GRID_COLOR_ALPHA = 0.06;
 const GRID_ALTITUDE_METERS = 1200;
 const MARKER_ALTITUDE_METERS = 120;
@@ -253,8 +254,8 @@ const Planetary3DMap = ({
               transparent: false,
               styles: "",
             },
-            tileHeight: 512,
-            tileWidth: 512,
+            tileHeight: PLANETARY_IMAGERY_TILE_SIZE,
+            tileWidth: PLANETARY_IMAGERY_TILE_SIZE,
             tilingScheme: new Cesium.GeographicTilingScheme({ ellipsoid }),
           }),
         );
