@@ -229,7 +229,7 @@ const Planetary3DMap = ({
           mapProjection: new Cesium.GeographicProjection(ellipsoid),
           terrainProvider: new Cesium.EllipsoidTerrainProvider({ ellipsoid }),
         });
-        viewer.scene.globe.enableLighting = true;
+        viewer.scene.globe.enableLighting = false;
         viewer.scene.globe.maximumScreenSpaceError =
           PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR;
         if (viewer.scene.skyAtmosphere) {
