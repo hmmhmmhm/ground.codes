@@ -33,8 +33,7 @@ const INITIAL_CAMERA_HEIGHT_METERS_BY_BODY: Record<
 };
 const MIN_CAMERA_HEIGHT_METERS = 2000;
 const PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR = 1;
-const PLANETARY_IMAGERY_TILE_SIZE = 1024;
-const MARS_DETAIL_LAYER_ALPHA = 0.28;
+const PLANETARY_IMAGERY_TILE_SIZE = 2048;
 const GRID_COLOR_ALPHA = 0.06;
 const GRID_ALTITUDE_METERS = 1200;
 const MARKER_ALTITUDE_METERS = 120;
@@ -270,13 +269,6 @@ const Planetary3DMap = ({
         viewer.imageryLayers.addImageryProvider(
           createWmsProvider(layerConfig.layer),
         );
-        if (body === "mars") {
-          const detailLayer = viewer.imageryLayers.addImageryProvider(
-            createWmsProvider("THEMIS"),
-          );
-          detailLayer.alpha = MARS_DETAIL_LAYER_ALPHA;
-          detailLayer.saturation = 0;
-        }
 
         const ionToken = process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN;
         const assetId = getAssetId(body);
