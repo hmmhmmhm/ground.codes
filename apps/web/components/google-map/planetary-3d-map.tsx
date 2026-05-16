@@ -204,7 +204,7 @@ const Planetary3DMap = ({
   const markerRef = useRef<CesiumEntity | null>(null);
   const cesiumRef = useRef<CesiumModule | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
-  const [usesFallback, setUsesFallback] = useState(false);
+  const [usesIonAsset, setUsesIonAsset] = useState(false);
   const [gridRevision, setGridRevision] = useState(0);
 
   useEffect(() => {
@@ -214,6 +214,7 @@ const Planetary3DMap = ({
 
     const initialize = async () => {
       try {
+        setUsesIonAsset(false);
         const Cesium = await loadCesium();
         cesiumRef.current = Cesium;
         const ellipsoid = getEllipsoid(Cesium, body);
@@ -285,17 +286,14 @@ const Planetary3DMap = ({
               await Cesium.Cesium3DTileset.fromIonAssetId(assetId);
             if (!cancelled) {
               viewer.scene.primitives.add(tileset);
-              setUsesFallback(false);
+              setUsesIonAsset(true);
             }
           } catch (error) {
             console.warn(
               `Failed to load Cesium ${body} asset ${assetId}; falling back to USGS imagery ellipsoid:`,
               getErrorMessage(error),
             );
-            if (!cancelled) setUsesFallback(true);
           }
-        } else {
-          setUsesFallback(true);
         }
 
         viewer.camera.setView({
@@ -485,7 +483,7 @@ const Planetary3DMap = ({
 
   return (
     <div
-      className={`planetary-3d-map absolute inset-0 bg-black ${selectedArea ? "has-selected-area" : ""}`}
+      className={`planetary-3d-map absolute inset-0 bg-black ${selectedArea ? "has-selected-area" : ""} ${usesIonAsset ? "" : "hide-cesium-ion-credit"}`}
       ref={containerRef}
     >
       {loadFailed && (
@@ -493,11 +491,9 @@ const Planetary3DMap = ({
           3D planetary map unavailable
         </div>
       )}
-      {usesFallback && (
-        <div className="absolute left-3 top-3 z-10 rounded-md border border-white/15 bg-black/45 px-2 py-1 text-[11px] text-white/70 backdrop-blur-md">
-          {PLANETARY_FALLBACK_LABELS[body]}
-        </div>
-      )}
+      <div className="absolute left-3 top-3 z-10 rounded-md border border-white/15 bg-black/45 px-2 py-1 text-[11px] text-white/70 backdrop-blur-md">
+        {PLANETARY_FALLBACK_LABELS[body]}
+      </div>
       {selectedArea && (
         <div className="absolute left-1/2 bottom-[18px] z-10 w-[min(460px,calc(100%-24px))] -translate-x-1/2 rounded-lg border border-white/20 bg-black/50 px-3 py-2 text-sm text-white shadow-lg backdrop-blur-md">
           <div className="text-xs text-white/70">
