@@ -24,7 +24,13 @@ type CesiumEventHandler = import("cesium").ScreenSpaceEventHandler;
 
 const CESIUM_BASE_URL = "https://unpkg.com/cesium@1.141.0/Build/Cesium/";
 const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
-const INITIAL_CAMERA_HEIGHT_METERS = 6500000;
+const INITIAL_CAMERA_HEIGHT_METERS_BY_BODY: Record<
+  Exclude<CelestialBody, "earth">,
+  number
+> = {
+  moon: 6500000,
+  mars: 9500000,
+};
 const MIN_CAMERA_HEIGHT_METERS = 2000;
 const PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR = 1;
 const PLANETARY_IMAGERY_TILE_SIZE = 1024;
@@ -213,6 +219,7 @@ const Planetary3DMap = ({
 
         if (cancelled || !containerRef.current) return;
 
+        const initialCameraHeight = INITIAL_CAMERA_HEIGHT_METERS_BY_BODY[body];
         const viewer = new Cesium.Viewer(containerRef.current, {
           animation: false,
           baseLayerPicker: false,
@@ -240,7 +247,7 @@ const Planetary3DMap = ({
         viewer.scene.screenSpaceCameraController.minimumZoomDistance =
           MIN_CAMERA_HEIGHT_METERS;
         viewer.scene.screenSpaceCameraController.maximumZoomDistance =
-          INITIAL_CAMERA_HEIGHT_METERS * 3;
+          initialCameraHeight * 3;
 
         const bodyConfig = PLANETARY_BODY_CONFIGS[body];
         const layerConfig = getPlanetaryLayerConfig(body, undefined);
@@ -286,7 +293,7 @@ const Planetary3DMap = ({
           destination: Cesium.Cartesian3.fromDegrees(
             center.lng,
             center.lat,
-            INITIAL_CAMERA_HEIGHT_METERS,
+            initialCameraHeight,
             ellipsoid,
           ),
         });
