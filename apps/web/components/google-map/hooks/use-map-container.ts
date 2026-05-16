@@ -333,8 +333,8 @@ export const useMapContainer = () => {
   const resetMapHeading = useCallback(() => {
     if (map) {
       map.setHeading(0);
-      setMapHeading(0);
     }
+    setMapHeading(0);
   }, [map]);
 
   // Set map heading to a specific value
@@ -344,10 +344,8 @@ export const useMapContainer = () => {
         // Set map to be rotatable
         map.setOptions({ rotateControl: true });
         map.setHeading(heading);
-        setMapHeading(heading);
-      } else {
-        console.warn("Map is not initialized yet");
       }
+      setMapHeading(heading);
     },
     [map],
   );

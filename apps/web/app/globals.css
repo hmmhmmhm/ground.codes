@@ -42,7 +42,9 @@ button.gm-ui-hover-effect,
 .gm-style .gm-style-iw-d::-webkit-scrollbar-track-piece {
   background-color: transparent;
 }
-.planetary-3d-map.hide-cesium-ion-credit .cesium-credit-logoContainer {
+.planetary-3d-map.hide-cesium-ion-credit .cesium-credit-logoContainer,
+.planetary-3d-map.hide-cesium-ion-credit .cesium-credit-textContainer,
+.planetary-3d-map.hide-cesium-ion-credit .cesium-widget-credits {
   display: none !important;
 }
 
