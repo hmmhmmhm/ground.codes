@@ -82,10 +82,11 @@ Optional `lat`, `lng`, and `zoom` query parameters can be used with any
 planetary body, for example
 `/?body=mars&lat=18.65280&lng=-133.80250&zoom=5`.
 
-Moon and Mars 2D basemaps are loaded from official USGS Astrogeology WMS services:
+Moon and Mars basemaps are loaded from official USGS Astrogeology WMS services:
 
-- Moon default basemap: `LROC_WAC`
-- Mars default basemap: `MDIM21_color`
+- Moon default basemap: `KaguyaTC_Ortho`
+- Mars default basemap: `MDIM21_color` with a low-alpha grayscale `THEMIS`
+  detail overlay in 3D mode
 
 Google Places search, POI details, weather, and user geolocation controls are
 Earth-only. Ground code encoding and the 3m grid remain available on Moon and
@@ -97,6 +98,14 @@ Moon and Mars also include an experimental Cesium 3D globe mode. Without Cesium
 ion configuration it falls back to a 3D ellipsoid with the current USGS imagery.
 For real Moon/Mars terrain tiles, configure a Cesium ion token and the relevant
 Moon/Mars asset IDs in the environment.
+
+Planetary map changes must be verified on the deployed production URL with
+actual screenshots or rendered-image inspection for Earth, Moon, and Mars as
+applicable. Network success, canvas creation, and type checks are not enough by
+themselves. Default planetary views should prefer high-resolution imagery and
+natural colors close to each body's real appearance; infrared, elevation, or
+relief layers should only be used in a way that does not dominate the expected
+planet color.
 
 ### 🌩️ Deployment and Internationalization
 
