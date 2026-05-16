@@ -5,6 +5,8 @@ type Earth3DMapProps = {
   center: Coordinates;
   encodedCoordinates: string;
   isEncoding: boolean;
+  mapHeading: number;
+  onCameraHeadingChange: (heading: number) => void;
   selectedArea: Coordinates | null;
   showGrid: boolean;
   setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>;
@@ -14,6 +16,7 @@ type Earth3DMapProps = {
 type Map3DElementInstance = HTMLElement & {
   center?: { lat: number; lng: number; altitude?: number };
   flyCameraTo?: (options: Record<string, unknown>) => void;
+  heading?: number;
   range?: number;
   tilt?: number;
 };
@@ -113,6 +116,13 @@ const formatGridCoordinate = (value: number) =>
 
 const getMarkerLabel = (isEncoding: boolean, encodedCoordinates: string) =>
   isEncoding || !encodedCoordinates ? "Encoding..." : encodedCoordinates;
+
+const normalizeHeading = (heading: number) => ((heading % 360) + 360) % 360;
+
+const getHeadingDelta = (a: number, b: number) => {
+  const delta = Math.abs(normalizeHeading(a) - normalizeHeading(b));
+  return Math.min(delta, 360 - delta);
+};
 
 const createGridValues = (start: number, end: number, step: number) => {
   const count = Math.max(0, Math.round((end - start) / step));
@@ -233,6 +243,8 @@ const Earth3DMap = ({
   center,
   encodedCoordinates,
   isEncoding,
+  mapHeading,
+  onCameraHeadingChange,
   selectedArea,
   showGrid,
   setSelectedArea,
@@ -245,6 +257,7 @@ const Earth3DMap = ({
   const markerRef = useRef<HTMLElement | null>(null);
   const markerPopoverRef = useRef<PopoverElementInstance | null>(null);
   const userLocationMarkerRef = useRef<HTMLElement | null>(null);
+  const appliedHeadingRef = useRef(mapHeading);
   const showGridRef = useRef(showGrid);
   const gridSignatureRef = useRef<string | null>(null);
   const [mapReady, setMapReady] = useState(false);
@@ -273,6 +286,19 @@ const Earth3DMap = ({
   useEffect(() => {
     showGridRef.current = showGrid;
   }, [showGrid]);
+
+  useEffect(() => {
+    const map3d = mapRef.current;
+    if (!map3d) return;
+
+    const normalizedHeading = normalizeHeading(mapHeading);
+    if (getHeadingDelta(appliedHeadingRef.current, normalizedHeading) < 0.5) {
+      return;
+    }
+
+    map3d.heading = normalizedHeading;
+    appliedHeadingRef.current = normalizedHeading;
+  }, [mapHeading]);
 
   useEffect(() => {
     let cancelled = false;
@@ -319,6 +345,11 @@ const Earth3DMap = ({
           if (!map3d.isConnected) return;
 
           redrawGrid();
+          const heading = normalizeHeading(map3d.heading ?? 0);
+          if (getHeadingDelta(appliedHeadingRef.current, heading) >= 0.5) {
+            appliedHeadingRef.current = heading;
+            onCameraHeadingChange(heading);
+          }
         });
 
         containerRef.current.replaceChildren(map3d);
@@ -349,7 +380,24 @@ const Earth3DMap = ({
       setMapReady(false);
       container.replaceChildren();
     };
-  }, [center.lat, center.lng, setSelectedArea]);
+  }, [center.lat, center.lng, onCameraHeadingChange, setSelectedArea]);
+
+  useEffect(() => {
+    if (!mapReady) return;
+
+    const interval = window.setInterval(() => {
+      const map3d = mapRef.current;
+      if (!map3d) return;
+
+      const heading = normalizeHeading(map3d.heading ?? 0);
+      if (getHeadingDelta(appliedHeadingRef.current, heading) < 0.5) return;
+
+      appliedHeadingRef.current = heading;
+      onCameraHeadingChange(heading);
+    }, 120);
+
+    return () => window.clearInterval(interval);
+  }, [mapReady, onCameraHeadingChange]);
 
   useEffect(() => {
     redrawGrid(true);
