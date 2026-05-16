@@ -26,6 +26,8 @@ const CESIUM_BASE_URL = "https://unpkg.com/cesium@1.141.0/Build/Cesium/";
 const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
 const INITIAL_CAMERA_HEIGHT_METERS = 6500000;
 const MIN_CAMERA_HEIGHT_METERS = 2000;
+const PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR = 1;
+const PLANETARY_IMAGERY_TILE_SIZE = 1024;
 const GRID_COLOR_ALPHA = 0.06;
 const GRID_ALTITUDE_METERS = 1200;
 const MARKER_ALTITUDE_METERS = 120;
@@ -222,11 +224,15 @@ const Planetary3DMap = ({
           sceneModePicker: false,
           selectionIndicator: false,
           timeline: false,
+          // Render at native device pixel ratio so mobile 3D planets and grid lines stay crisp.
+          useBrowserRecommendedResolution: false,
           globe: new Cesium.Globe(ellipsoid),
           mapProjection: new Cesium.GeographicProjection(ellipsoid),
           terrainProvider: new Cesium.EllipsoidTerrainProvider({ ellipsoid }),
         });
-        viewer.scene.globe.enableLighting = true;
+        viewer.scene.globe.enableLighting = false;
+        viewer.scene.globe.maximumScreenSpaceError =
+          PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR;
         if (viewer.scene.skyAtmosphere) {
           viewer.scene.skyAtmosphere.show = false;
         }
@@ -248,8 +254,8 @@ const Planetary3DMap = ({
               transparent: false,
               styles: "",
             },
-            tileHeight: 512,
-            tileWidth: 512,
+            tileHeight: PLANETARY_IMAGERY_TILE_SIZE,
+            tileWidth: PLANETARY_IMAGERY_TILE_SIZE,
             tilingScheme: new Cesium.GeographicTilingScheme({ ellipsoid }),
           }),
         );
