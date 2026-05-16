@@ -34,6 +34,8 @@ const INITIAL_CAMERA_HEIGHT_METERS_BY_BODY: Record<
 const MIN_CAMERA_HEIGHT_METERS = 2000;
 const PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR = 1;
 const PLANETARY_IMAGERY_TILE_SIZE = 2048;
+const MARS_IMAGERY_CONTRAST = 1.05;
+const MARS_IMAGERY_SATURATION = 1.08;
 const GRID_COLOR_ALPHA = 0.06;
 const GRID_ALTITUDE_METERS = 1200;
 const MARKER_ALTITUDE_METERS = 120;
@@ -266,9 +268,13 @@ const Planetary3DMap = ({
             tilingScheme: new Cesium.GeographicTilingScheme({ ellipsoid }),
           });
 
-        viewer.imageryLayers.addImageryProvider(
+        const baseImageryLayer = viewer.imageryLayers.addImageryProvider(
           createWmsProvider(layerConfig.layer),
         );
+        if (body === "mars") {
+          baseImageryLayer.contrast = MARS_IMAGERY_CONTRAST;
+          baseImageryLayer.saturation = MARS_IMAGERY_SATURATION;
+        }
 
         const ionToken = process.env.NEXT_PUBLIC_CESIUM_ION_TOKEN;
         const assetId = getAssetId(body);
