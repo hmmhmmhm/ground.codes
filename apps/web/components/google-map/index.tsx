@@ -110,6 +110,7 @@ function GoogleMapComponent() {
           center={center}
           encodedCoordinates={encodedCoordinates}
           isEncoding={isEncoding}
+          mapHeading={mapHeading}
           selectedArea={selectedArea}
           showGrid={showGrid}
           setSelectedArea={setSelectedArea}

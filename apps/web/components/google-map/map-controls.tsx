@@ -372,115 +372,118 @@ const MapControls: React.FC<MapControlsProps> = ({
         </div>
       </div>
 
-      {/* Grid and Location Controls (Bottom Right) */}
-      <button
-        onClick={toggleGrid}
-        className="absolute bottom-[200px] right-[10px] bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center z-10"
-        title={t("map.controls.toggleGrid")}
-        aria-label={t("map.controls.toggleGrid")}
-        style={{
-          backgroundColor: showGrid
-            ? "rgba(66, 133, 244, 0.7)"
-            : "rgba(0, 0, 0, 0.3)",
-        }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="3" y1="9" x2="21" y2="9"></line>
-          <line x1="3" y1="15" x2="21" y2="15"></line>
-          <line x1="9" y1="3" x2="9" y2="21"></line>
-          <line x1="15" y1="3" x2="15" y2="21"></line>
-        </svg>
-      </button>
+      {/* Grid, Location, and Compass Controls (Bottom Right) */}
+      <div className="absolute bottom-[100px] right-[10px] z-10 flex flex-col-reverse gap-[10px]">
+        <Compass
+          mapHeading={mapHeading}
+          resetMapHeading={resetMapHeading}
+          setMapHeading={setMapHeading}
+          className="relative"
+          title={t("map.controls.resetRotation")}
+          ariaLabel={t("map.controls.resetRotation")}
+        />
 
-      {isEarth && (
+        {isEarth && (
+          <button
+            onClick={getUserLocation}
+            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center"
+            title={getLocationButtonTitle()}
+            aria-label={getLocationButtonTitle()}
+            style={getLocationButtonStyle()}
+          >
+            {isLoadingLocation ? (
+              <svg
+                className="animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+              </svg>
+            ) : locationMode === LocationMode.TRACKING ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+              </svg>
+            ) : locationMode === LocationMode.LOCATE ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+                <circle cx="12" cy="9" r="3"></circle>
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+                <circle cx="12" cy="9" r="3"></circle>
+              </svg>
+            )}
+          </button>
+        )}
+
         <button
-          onClick={getUserLocation}
-          className="absolute bottom-[150px] right-[10px] bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center z-10"
-          title={getLocationButtonTitle()}
-          aria-label={getLocationButtonTitle()}
-          style={getLocationButtonStyle()}
+          onClick={toggleGrid}
+          className="bg-black/30 backdrop-blur-md border border-white/20 rounded-full w-[40px] h-[40px] cursor-pointer flex justify-center items-center"
+          title={t("map.controls.toggleGrid")}
+          aria-label={t("map.controls.toggleGrid")}
+          style={{
+            backgroundColor: showGrid
+              ? "rgba(66, 133, 244, 0.7)"
+              : "rgba(0, 0, 0, 0.3)",
+          }}
         >
-          {isLoadingLocation ? (
-            <svg
-              className="animate-spin"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
-            </svg>
-          ) : locationMode === LocationMode.TRACKING ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
-            </svg>
-          ) : locationMode === LocationMode.LOCATE ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
-              <circle cx="12" cy="9" r="3"></circle>
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
-              <circle cx="12" cy="9" r="3"></circle>
-            </svg>
-          )}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="3" y1="15" x2="21" y2="15"></line>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+            <line x1="15" y1="3" x2="15" y2="21"></line>
+          </svg>
         </button>
-      )}
-
-      <Compass
-        mapHeading={mapHeading}
-        resetMapHeading={resetMapHeading}
-        setMapHeading={setMapHeading}
-        title={t("map.controls.resetRotation")}
-        ariaLabel={t("map.controls.resetRotation")}
-      />
+      </div>
     </>
   );
 };

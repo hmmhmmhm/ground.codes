@@ -12,6 +12,7 @@ type Planetary3DMapProps = {
   center: Coordinates;
   encodedCoordinates: string;
   isEncoding: boolean;
+  mapHeading: number;
   selectedArea: Coordinates | null;
   showGrid: boolean;
   setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>;
@@ -192,6 +193,7 @@ const Planetary3DMap = ({
   center,
   encodedCoordinates,
   isEncoding,
+  mapHeading,
   selectedArea,
   showGrid,
   setSelectedArea,
@@ -203,9 +205,14 @@ const Planetary3DMap = ({
   const gridEntitiesRef = useRef<CesiumEntity[]>([]);
   const markerRef = useRef<CesiumEntity | null>(null);
   const cesiumRef = useRef<CesiumModule | null>(null);
+  const mapHeadingRef = useRef(mapHeading);
   const [loadFailed, setLoadFailed] = useState(false);
   const [usesIonAsset, setUsesIonAsset] = useState(false);
   const [gridRevision, setGridRevision] = useState(0);
+
+  useEffect(() => {
+    mapHeadingRef.current = mapHeading;
+  }, [mapHeading]);
 
   useEffect(() => {
     let cancelled = false;
@@ -303,6 +310,11 @@ const Planetary3DMap = ({
             initialCameraHeight,
             ellipsoid,
           ),
+          orientation: {
+            heading: Cesium.Math.toRadians(mapHeadingRef.current),
+            pitch: Cesium.Math.toRadians(-90),
+            roll: 0,
+          },
         });
 
         const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
@@ -365,6 +377,22 @@ const Planetary3DMap = ({
       container.replaceChildren();
     };
   }, [body, center.lat, center.lng, setSelectedArea]);
+
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    const Cesium = cesiumRef.current;
+    if (!viewer || !Cesium) return;
+
+    const position = Cesium.Cartesian3.clone(viewer.camera.positionWC);
+    viewer.camera.setView({
+      destination: position,
+      orientation: {
+        heading: Cesium.Math.toRadians(mapHeading),
+        pitch: viewer.camera.pitch,
+        roll: viewer.camera.roll,
+      },
+    });
+  }, [mapHeading]);
 
   useEffect(() => {
     const viewer = viewerRef.current;
@@ -484,14 +512,20 @@ const Planetary3DMap = ({
   return (
     <div
       className={`planetary-3d-map absolute inset-0 bg-black ${selectedArea ? "has-selected-area" : ""} ${usesIonAsset ? "" : "hide-cesium-ion-credit"}`}
-      ref={containerRef}
     >
+      <div className="absolute inset-0" ref={containerRef} />
       {loadFailed && (
         <div className="absolute inset-0 flex items-center justify-center text-sm text-white/80">
           3D planetary map unavailable
         </div>
       )}
-      <div className="absolute left-3 top-3 z-10 rounded-md border border-white/15 bg-black/45 px-2 py-1 text-[11px] text-white/70 backdrop-blur-md">
+      <div
+        className={`absolute left-3 z-10 rounded-md border border-white/15 bg-black/45 px-2 py-1 text-[11px] text-white/70 backdrop-blur-md ${
+          selectedArea
+            ? "bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
+            : "bottom-3"
+        }`}
+      >
         {PLANETARY_FALLBACK_LABELS[body]}
       </div>
       {selectedArea && (
