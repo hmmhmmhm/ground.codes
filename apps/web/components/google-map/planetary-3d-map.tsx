@@ -206,6 +206,7 @@ const Planetary3DMap = ({
   const markerRef = useRef<CesiumEntity | null>(null);
   const cesiumRef = useRef<CesiumModule | null>(null);
   const mapHeadingRef = useRef(mapHeading);
+  const appliedCompassHeadingRef = useRef(0);
   const [loadFailed, setLoadFailed] = useState(false);
   const [usesIonAsset, setUsesIonAsset] = useState(false);
   const [gridRevision, setGridRevision] = useState(0);
@@ -316,6 +317,13 @@ const Planetary3DMap = ({
             roll: 0,
           },
         });
+        appliedCompassHeadingRef.current = 0;
+        if (mapHeadingRef.current !== 0) {
+          viewer.camera.twistRight(
+            Cesium.Math.toRadians(mapHeadingRef.current),
+          );
+          appliedCompassHeadingRef.current = mapHeadingRef.current;
+        }
 
         const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
         handler.setInputAction(
@@ -383,15 +391,11 @@ const Planetary3DMap = ({
     const Cesium = cesiumRef.current;
     if (!viewer || !Cesium) return;
 
-    const position = Cesium.Cartesian3.clone(viewer.camera.positionWC);
-    viewer.camera.setView({
-      destination: position,
-      orientation: {
-        heading: Cesium.Math.toRadians(mapHeading),
-        pitch: viewer.camera.pitch,
-        roll: viewer.camera.roll,
-      },
-    });
+    const delta = mapHeading - appliedCompassHeadingRef.current;
+    if (Math.abs(delta) < 0.01) return;
+
+    viewer.camera.twistRight(Cesium.Math.toRadians(delta));
+    appliedCompassHeadingRef.current = mapHeading;
   }, [mapHeading]);
 
   useEffect(() => {
