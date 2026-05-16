@@ -137,6 +137,7 @@ PR 제출 전 위 4개를 모두 통과시킵니다.
 - `packages/ground-codes` 의 인코딩·디코딩 함수는 known-pair 테이블 기반 단위 테스트 필수.
 - `packages/geoint` 데이터 갱신 시 sample 검증.
 - Web 앱의 시각 회귀는 수동을 우선합니다.
+- 지구·달·화성 등 행성 지도 렌더링을 변경한 경우, 배포 후 실제 production URL 에서 이미지 스크린샷을 반드시 확인합니다. 네트워크 요청 성공, canvas 생성 여부, 타입 체크만으로 완료 처리하지 않습니다.
 
 ---
 
@@ -145,3 +146,4 @@ PR 제출 전 위 4개를 모두 통과시킵니다.
 - **다행성 주소**: 지구 외 행성(화성·달) 지원이 도입되면 `packages/ground-codes` 의 인코딩이 행성 식별자를 받도록 시그니처가 확장됩니다. breaking change 면 major.
 - **좌표 정확도**: GCS(Geographic Coordinate System) 기반이므로 부동소수 정밀도 손실에 주의 — high-zoom 영역의 인코딩은 fixed-point 또는 BigInt 처리.
 - **외부 의존**: Google Maps SDK 변경에 추적이 필요합니다 (Maps Platform 의 deprecation 알림 모니터링).
+- **행성 지도 품질**: 행성 기본 뷰는 고화질을 우선하며, 각 행성의 실제색에 가까운 자연스러운 색감을 선호합니다. 화질 향상을 위해 적외선·고도·relief 레이어를 사용할 때도 기본 색상이 과도하게 알록달록하거나 실제 행성색에서 벗어나지 않도록 합니다.
