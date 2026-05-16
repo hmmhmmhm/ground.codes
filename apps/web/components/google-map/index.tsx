@@ -99,6 +99,8 @@ function GoogleMapComponent() {
           center={center}
           encodedCoordinates={encodedCoordinates}
           isEncoding={isEncoding}
+          mapHeading={mapHeading}
+          onCameraHeadingChange={setMapHeading}
           selectedArea={selectedArea}
           showGrid={showGrid}
           setSelectedArea={setSelectedArea}
@@ -111,6 +113,7 @@ function GoogleMapComponent() {
           encodedCoordinates={encodedCoordinates}
           isEncoding={isEncoding}
           mapHeading={mapHeading}
+          onCameraHeadingChange={setMapHeading}
           selectedArea={selectedArea}
           showGrid={showGrid}
           setSelectedArea={setSelectedArea}

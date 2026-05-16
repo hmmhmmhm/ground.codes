@@ -13,6 +13,7 @@ type Planetary3DMapProps = {
   encodedCoordinates: string;
   isEncoding: boolean;
   mapHeading: number;
+  onCameraHeadingChange: (heading: number) => void;
   selectedArea: Coordinates | null;
   showGrid: boolean;
   setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>;
@@ -50,6 +51,20 @@ const PLANETARY_FALLBACK_LABELS: Record<
 };
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : String(error);
+
+const normalizeHeading = (heading: number) => ((heading % 360) + 360) % 360;
+
+const getHeadingDelta = (a: number, b: number) => {
+  const delta = Math.abs(normalizeHeading(a) - normalizeHeading(b));
+  return Math.min(delta, 360 - delta);
+};
+
+const getSignedHeadingDelta = (from: number, to: number) => {
+  const delta = normalizeHeading(to) - normalizeHeading(from);
+  if (delta > 180) return delta - 360;
+  if (delta < -180) return delta + 360;
+  return delta;
+};
 
 declare global {
   interface Window {
@@ -107,6 +122,53 @@ const getEllipsoid = (
   Cesium: CesiumModule,
   body: Exclude<CelestialBody, "earth">,
 ) => (body === "moon" ? Cesium.Ellipsoid.MOON : Cesium.Ellipsoid.MARS);
+
+const getScreenNorthHeading = (
+  viewer: CesiumViewer,
+  Cesium: CesiumModule,
+  body: Exclude<CelestialBody, "earth">,
+) => {
+  const canvas = viewer.scene.canvas;
+  const screenCenter = new Cesium.Cartesian2(
+    canvas.clientWidth / 2,
+    canvas.clientHeight / 2,
+  );
+  const ellipsoid = getEllipsoid(Cesium, body);
+  const centerCartesian = viewer.camera.pickEllipsoid(screenCenter, ellipsoid);
+  if (!centerCartesian) return null;
+
+  const centerCartographic = Cesium.Cartographic.fromCartesian(
+    centerCartesian,
+    ellipsoid,
+  );
+  const northCartographic = new Cesium.Cartographic(
+    centerCartographic.longitude,
+    Math.min(
+      Cesium.Math.toRadians(89.5),
+      centerCartographic.latitude + Cesium.Math.toRadians(0.25),
+    ),
+    0,
+  );
+  const northCartesian = Cesium.Cartographic.toCartesian(
+    northCartographic,
+    ellipsoid,
+  );
+  const centerWindow = Cesium.SceneTransforms.worldToWindowCoordinates(
+    viewer.scene,
+    centerCartesian,
+  );
+  const northWindow = Cesium.SceneTransforms.worldToWindowCoordinates(
+    viewer.scene,
+    northCartesian,
+  );
+  if (!centerWindow || !northWindow) return null;
+
+  const dx = northWindow.x - centerWindow.x;
+  const dy = northWindow.y - centerWindow.y;
+  if (Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001) return null;
+
+  return normalizeHeading((Math.atan2(dx, -dy) * 180) / Math.PI);
+};
 
 const getGridStepDegrees = (
   body: Exclude<CelestialBody, "earth">,
@@ -194,6 +256,7 @@ const Planetary3DMap = ({
   encodedCoordinates,
   isEncoding,
   mapHeading,
+  onCameraHeadingChange,
   selectedArea,
   showGrid,
   setSelectedArea,
@@ -207,6 +270,7 @@ const Planetary3DMap = ({
   const cesiumRef = useRef<CesiumModule | null>(null);
   const mapHeadingRef = useRef(mapHeading);
   const appliedCompassHeadingRef = useRef(0);
+  const headingSyncIntervalRef = useRef<number | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [usesIonAsset, setUsesIonAsset] = useState(false);
   const [gridRevision, setGridRevision] = useState(0);
@@ -248,6 +312,7 @@ const Planetary3DMap = ({
           mapProjection: new Cesium.GeographicProjection(ellipsoid),
           terrainProvider: new Cesium.EllipsoidTerrainProvider({ ellipsoid }),
         });
+        viewer.camera.percentageChanged = 0.001;
         viewer.scene.globe.enableLighting = false;
         viewer.scene.globe.maximumScreenSpaceError =
           PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR;
@@ -312,7 +377,7 @@ const Planetary3DMap = ({
             ellipsoid,
           ),
           orientation: {
-            heading: Cesium.Math.toRadians(mapHeadingRef.current),
+            heading: 0,
             pitch: Cesium.Math.toRadians(-90),
             roll: 0,
           },
@@ -354,15 +419,46 @@ const Planetary3DMap = ({
         handlerRef.current = handler;
         setGridRevision((revision) => revision + 1);
         let lastGridRefresh = 0;
+        let lastHeadingRefresh = 0;
         cameraListenerRef.current = viewer.camera.changed.addEventListener(
           () => {
             const now = performance.now();
+            if (now - lastHeadingRefresh >= 80) {
+              lastHeadingRefresh = now;
+              const nextHeading = getScreenNorthHeading(viewer, Cesium, body);
+              if (
+                nextHeading !== null &&
+                getHeadingDelta(
+                  appliedCompassHeadingRef.current,
+                  nextHeading,
+                ) >= 0.5
+              ) {
+                appliedCompassHeadingRef.current = nextHeading;
+                mapHeadingRef.current = nextHeading;
+                onCameraHeadingChange(nextHeading);
+              }
+            }
+
             if (now - lastGridRefresh < 500) return;
 
             lastGridRefresh = now;
             setGridRevision((revision) => revision + 1);
           },
         );
+        headingSyncIntervalRef.current = window.setInterval(() => {
+          if (!viewer.isDestroyed()) {
+            const nextHeading = getScreenNorthHeading(viewer, Cesium, body);
+            if (
+              nextHeading !== null &&
+              getHeadingDelta(appliedCompassHeadingRef.current, nextHeading) >=
+                0.5
+            ) {
+              appliedCompassHeadingRef.current = nextHeading;
+              mapHeadingRef.current = nextHeading;
+              onCameraHeadingChange(nextHeading);
+            }
+          }
+        }, 160);
       } catch (error) {
         console.error("Failed to initialize planetary 3D map:", error);
         if (!cancelled) setLoadFailed(true);
@@ -377,6 +473,10 @@ const Planetary3DMap = ({
       handlerRef.current = null;
       cameraListenerRef.current?.();
       cameraListenerRef.current = null;
+      if (headingSyncIntervalRef.current !== null) {
+        window.clearInterval(headingSyncIntervalRef.current);
+        headingSyncIntervalRef.current = null;
+      }
       viewerRef.current?.destroy();
       viewerRef.current = null;
       cesiumRef.current = null;
@@ -384,18 +484,23 @@ const Planetary3DMap = ({
       markerRef.current = null;
       container.replaceChildren();
     };
-  }, [body, center.lat, center.lng, setSelectedArea]);
+  }, [body, center.lat, center.lng, onCameraHeadingChange, setSelectedArea]);
 
   useEffect(() => {
     const viewer = viewerRef.current;
     const Cesium = cesiumRef.current;
     if (!viewer || !Cesium) return;
 
-    const delta = mapHeading - appliedCompassHeadingRef.current;
+    const delta = getSignedHeadingDelta(
+      appliedCompassHeadingRef.current,
+      mapHeading,
+    );
     if (Math.abs(delta) < 0.01) return;
 
     viewer.camera.twistRight(Cesium.Math.toRadians(delta));
-    appliedCompassHeadingRef.current = mapHeading;
+    const nextHeading = normalizeHeading(mapHeading);
+    appliedCompassHeadingRef.current = nextHeading;
+    mapHeadingRef.current = nextHeading;
   }, [mapHeading]);
 
   useEffect(() => {
