@@ -708,3 +708,107 @@ negative, foreign, place-like, fragment-like, and awkward generated terms. The
 pass removed the reported high, medium, and low findings, then repeated review
 until no urgent, high, medium, or low findings were reported for the current
 file.
+
+## Familiarity Review Addendum
+
+This pass removes remaining Korean entries that still read too technical,
+web/app-like, game/sports-specific, brand-like, or strongly foreign as stable
+address words. Common settled everyday loanwords were left for later review; the
+focus here is on terms that visibly stand out in generated codes.
+
+| Original | Replacement | Reason |
+| --- | --- | --- |
+| 트릭 | 물동이 | game/media-like loanword |
+| 게임 | 댓돌 | game/media-like loanword |
+| 시트 | 댓잎 | technical or product-like loanword |
+| 코스 | 댓가지 | domain-specific loanword |
+| 카드 | 밀짚끈 | game/payment/product-like loanword |
+| 모델 | 나무빗 | technical/media-like loanword |
+| 뉴스 | 돌절구 | media-specific loanword |
+| 테마 | 꽃삽 | technical/media-like loanword |
+| 차트 | 흙삽 | technical/media-like loanword |
+| 히트 | 모래톱 | media/sports-like loanword |
+| 멤버 | 자갈밭 | social/platform-like loanword |
+| 클럽 | 풀포기 | nightlife/group-like loanword |
+| 캠프 | 물무늬 | event/domain-specific loanword |
+| 트랙 | 돌무늬 | music/sports/technical loanword |
+| 비트 | 숲그늘 | music/technical loanword |
+| 커버 | 들바람 | media/technical loanword |
+| 믹스 | 강바람 | media/technical loanword |
+| 트램 | 산바람 | transport-specific loanword |
+| 빌딩 | 마루판 | building category loanword |
+| 버그 | 문고리 | software-specific loanword |
+| 노트 | 문살 | product/app-like loanword |
+| 아트 | 창살 | media/domain-specific loanword |
+| 타일 | 지붕돌 | product/design loanword |
+| 헬스 | 흙계단 | fitness/domain-specific loanword |
+| 코치 | 종이상자 | sports/domain-specific loanword |
+| 코어 | 바늘쌈 | technical/fitness loanword |
+| 스릴 | 빨랫줄 | genre-specific loanword |
+| 펌프 | 빨래판 | mechanical/product loanword |
+| 라인 | 다듬잇돌 | platform/technical loanword |
+| 빌라 | 나무절구 | housing category loanword |
+| 모터 | 옹기그릇 | technical/mechanical loanword |
+| 쿠페 | 질그릇 | vehicle-specific loanword |
+| 트럭 | 사기그릇 | vehicle-specific loanword |
+| 옵션 | 대나무통 | technical/product loanword |
+| 모텔 | 버들바구니 | lodging-specific loanword |
+| 로비 | 갈대숲 | building-specific loanword |
+| 피트 | 메밀밭 | sports/technical loanword |
+| 카트 | 조밭 | product/game-like loanword |
+| 코너 | 기장밭 | sports/product loanword |
+| 로고 | 수숫대 | brand/design loanword |
+| 스프 | 볏단 | foreign food loanword |
+| 버전 | 나락단 | software-specific loanword |
+| 스텝 | 콩단 | domain-specific loanword |
+| 체스 | 팥단 | game-specific loanword |
+| 채팅 | 깨단 | app-specific loanword |
+| 포트 | 마늘단 | technical loanword |
+| 모드 | 파단 | technical/game loanword |
+| 데모 | 호박잎 | technical/media loanword |
+| 버튼 | 배춧잎 | interface-specific loanword |
+| 메일 | 고사리순 | web/app-specific loanword |
+| 스팸 | 두릅순 | web abuse term |
+| 라켓 | 돌나물 | sports-specific loanword |
+| 스틱 | 미나리밭 | product/sports loanword |
+| 뷔페 | 민들레잎 | foreign food/service loanword |
+| 메뉴 | 제비꽃잎 | service/interface loanword |
+| 카펫 | 봉숭아꽃 | product loanword |
+| 코트 | 채송화꽃 | clothing/sports/place loanword |
+| 타이 | 복사꽃 | clothing/foreign loanword |
+| 벨트 | 감나무잎 | product loanword |
+| 모던 | 밤나무잎 | style/domain loanword |
+| 코디 | 대추나무 | fashion/domain loanword |
+| 데님 | 모과나무 | textile/fashion loanword |
+| 니트 | 배나무꽃 | textile/fashion loanword |
+| 도트 | 팽나무 | design/technical loanword |
+| 모듈 | 떡갈나무 | technical loanword |
+| 로그 | 참나무숲 | technical loanword |
+| 페달 | 솔숲길 | product/mechanical loanword |
+| 미팅 | 가랑잎길 | business/domain loanword |
+| 보스 | 노을마루 | game/workplace-like loanword |
+| 스냅 | 새벽이슬 | app/technical loanword |
+| 디스 | 아침마루 | slang/domain loanword |
+| 큐브 | 저녁노을 | game/product loanword |
+| 서브 | 봄나루 | technical/game loanword |
+| 모션 | 여름들 | technical/media loanword |
+| 웹툰 | 가을들 | platform/media-specific loanword |
+| 액션 | 겨울숲 | genre-specific loanword |
+| 필라 | 바람마루 | clipped foreign fragment |
+| 세팅 | 구름마루 | technical/process loanword |
+| 퓨전 | 햇살마루 | domain/style loanword |
+| 박스 | 달빛마루 | product/interface loanword |
+| 마커 | 별빛마루 | technical/interface loanword |
+| 회로 | 솔잎마루 | technical electronics term |
+| 로프 | 꽃잎마루 | product/sports loanword |
+| 로드 | 모래마루 | technical/foreign fragment |
+| 슈팅 | 자갈마루 | game/sports-specific loanword |
+| 타워 | 흙빛마루 | game/building-specific loanword |
+| 마작 | 물빛마루 | gambling/game term |
+| 마블 | 들꽃마루 | brand/game-like loanword |
+| 루미 | 산길마루 | game/brand-like fragment |
+| 매트 | 강물마루 | product/sports loanword |
+| 로잉 | 냇물마루 | sports-specific loanword |
+| 쿠션 | 연못마루 | product loanword |
+| 루어 | 숲길마루 | fishing-specific loanword |
+| 악마 | 돌담마루 | religious/negative term |
