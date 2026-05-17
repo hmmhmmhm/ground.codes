@@ -93,15 +93,6 @@ function GoogleMapComponent() {
       body,
     })}`;
 
-    if (navigator.share) {
-      await navigator.share({
-        title: encodedCoordinates,
-        text: encodedCoordinates,
-        url,
-      });
-      return;
-    }
-
     await navigator.clipboard?.writeText(url);
     setFeedbackMessage(t("map.coordinates.shareCopied"));
     window.setTimeout(() => setFeedbackMessage(null), 1800);
