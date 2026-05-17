@@ -1,5 +1,5 @@
 import Elysia, { t } from "elysia";
-import { around } from "@ground-codes/geoint";
+import { around } from "@ground-codes/geoint/src/index.ts";
 import { getRegionDatasetName, supportedLanguages } from "../language.js";
 import {
   validateBody,

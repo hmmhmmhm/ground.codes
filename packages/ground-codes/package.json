@@ -22,7 +22,8 @@
     "publish-package": "turbo run build lint test && pnpm test:standalone && changeset version && changeset publish"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "tasks": {
     "build": {

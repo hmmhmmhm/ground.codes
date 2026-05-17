@@ -1,4 +1,4 @@
-import { load } from "@ground-codes/geoint";
+import { load } from "@ground-codes/geoint/src/index.ts";
 
 const pendingLoads = new Map<string, Promise<void>>();
 const regionLoadMetrics = {

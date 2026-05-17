@@ -33,7 +33,12 @@ export const load = async (loadRegions: string[] = []) => {
     if (regionIndexes[regionName] && regionLevels[regionName]) continue;
 
     const filePath = path.join(dbPath, file);
-    const index = KDBush.from(fs.readFileSync(filePath).buffer);
+    const buffer = fs.readFileSync(filePath);
+    const arrayBuffer = buffer.buffer.slice(
+      buffer.byteOffset,
+      buffer.byteOffset + buffer.byteLength,
+    ) as ArrayBuffer;
+    const index = KDBush.from(arrayBuffer);
     regionIndexes[regionName] = index;
 
     const level = new Level(path.join(dbPath, regionName));

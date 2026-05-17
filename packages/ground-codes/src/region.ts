@@ -1,3 +1,5 @@
+/// <reference path="./region-json.d.ts" />
+
 import { SupportedLanguage } from "./wordset.js";
 import {
   CelestialBody,

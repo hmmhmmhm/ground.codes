@@ -14,7 +14,8 @@
   "files": [
     "region-dist",
     "region-db",
-    "dist"
+    "dist",
+    "src"
   ],
   "tasks": {
     "build": {

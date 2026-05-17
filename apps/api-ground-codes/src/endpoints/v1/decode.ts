@@ -1,5 +1,9 @@
 import Elysia, { t } from "elysia";
-import { CelestialBody, decode, SupportedLanguage } from "ground-codes";
+import {
+  type CelestialBody,
+  decode,
+  type SupportedLanguage,
+} from "ground-codes/src/index.ts";
 import { supportedLanguages } from "./language.js";
 import {
   validateBody,

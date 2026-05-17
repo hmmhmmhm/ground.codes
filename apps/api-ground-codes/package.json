@@ -8,16 +8,17 @@
     "build": "node scripts/build.mjs",
     "start": "bun run src/index.ts",
     "check-types": "tsc --noEmit",
-    "test": "pnpm --filter ground-codes build && bun test src/*.test.ts"
+    "test": "bun test src/*.test.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",
     "@elysiajs/static": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
+    "@ground-codes/geoint": "git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260518&path:packages/geoint",
+    "@repo/codebook": "git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260518&path:packages/codebook",
     "@sinclair/typebox": "^0.34.30",
     "elysia": "latest",
-    "ground-codes": "^0.0.10",
-    "@ground-codes/geoint": "^0.0.5"
+    "ground-codes": "git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260518&path:packages/ground-codes"
   },
   "devDependencies": {
     "bun-types": "latest"

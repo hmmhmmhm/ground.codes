@@ -1,5 +1,5 @@
 import Elysia, { redirect, t } from "elysia";
-import { decode, encode } from "ground-codes";
+import { decode, encode } from "ground-codes/src/index.ts";
 
 export const codeEndpoint = new Elysia().get(
   "/:path",
