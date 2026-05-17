@@ -19,4 +19,20 @@ describe("selected area summary", () => {
       }),
     ).toBe("정밀도 약 3m");
   });
+
+  test("removes a leading Google Plus Code from the resolved address", () => {
+    expect(
+      getSelectedAreaDetailText({
+        address: "QG2X+84 대한민국 서울특별시 용산구 용산동4가 7-3",
+        precisionLabel: "정밀도 약 3m",
+      }),
+    ).toBe("대한민국 서울특별시 용산구 용산동4가 7-3");
+
+    expect(
+      getSelectedAreaDetailText({
+        address: "849VCWC8+R9, Mountain View, CA, USA",
+        precisionLabel: "Approx. 3m precision",
+      }),
+    ).toBe("Mountain View, CA, USA");
+  });
 });
