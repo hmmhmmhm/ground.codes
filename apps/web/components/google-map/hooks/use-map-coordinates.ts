@@ -40,7 +40,7 @@ export const useMapCoordinates = (
     } finally {
       setIsEncoding(false);
     }
-  }, [selectedArea, body]); // Locale dependency removed
+  }, [selectedArea, body, locale]);
 
   return {
     encodedCoordinates,

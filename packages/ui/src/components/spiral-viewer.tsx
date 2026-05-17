@@ -187,7 +187,7 @@ export default function SpiralViewer({
                           : "text-gray-400"
                       }`}
                     >
-                      N'=
+                      N&apos;=
                       {getCoordinates && getNFromCoordinates
                         ? (() => {
                             const coord = getCoordinates(n);

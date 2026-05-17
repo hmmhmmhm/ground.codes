@@ -30,10 +30,16 @@
     "loading": "読み込み中...",
     "coordinates": {
       "title": "選択範囲の座標",
-      "copy": "コピー"
+      "copy": "コピー",
+      "share": "共有",
+      "copied": "Ground Codeをコピーしました",
+      "shareCopied": "共有URLをコピーしました"
     },
     "search": {
-      "placeholder": "場所を検索"
+      "placeholder": "Ground Code、地域、場所を検索",
+      "submit": "検索",
+      "noResults": "一致する Ground Code または地域が見つかりません",
+      "error": "検索に失敗しました"
     },
     "groundCode": "グラウンドコード",
     "encoding": "エンコード中",

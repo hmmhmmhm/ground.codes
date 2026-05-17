@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
       process.env.NEXT_PUBLIC_CESIUM_MOON_ASSET_ID,
     NEXT_PUBLIC_CESIUM_MARS_ASSET_ID:
       process.env.NEXT_PUBLIC_CESIUM_MARS_ASSET_ID,
+    NEXT_PUBLIC_GROUND_CODES_API_URL:
+      process.env.NEXT_PUBLIC_GROUND_CODES_API_URL,
   },
   eslint: {
     ignoreDuringBuilds: true,

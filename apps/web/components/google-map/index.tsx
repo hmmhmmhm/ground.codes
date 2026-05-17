@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { FaCopy, FaShareAlt } from "react-icons/fa";
 import { GoogleMap } from "@react-google-maps/api";
 import { useMapContainer } from "./hooks/use-map-container";
 import MapMarkers from "./map-markers";
@@ -9,11 +10,14 @@ import WeatherInfo from "./weather-info";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import Earth3DMap from "./earth-3d-map";
 import Planetary3DMap from "./planetary-3d-map";
+import { buildGroundCodeSharePath } from "@/lib/code/share-url";
 
 function GoogleMapComponent() {
   const { t, isChangingLanguage } = useI18n();
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const {
     isLoaded,
+    hasGoogleMapsApiKey,
     center,
     zoom,
     map,
@@ -26,10 +30,15 @@ function GoogleMapComponent() {
     toggleGrid,
     getUserLocation,
     isLoading,
-    isTrackingLocation,
     encodedCoordinates,
     isEncoding,
     handlePlaceSelect,
+    handleGroundSearch,
+    handleGroundSearchResultSelect,
+    isGroundSearchLoading,
+    groundSearchError,
+    groundSearchResults,
+    initialGroundSearchQuery,
     mapType,
     selectMapType,
     body,
@@ -52,14 +61,132 @@ function GoogleMapComponent() {
   } = useMapContainer();
   const isEarth3D = isEarth && mapType === "earth3d";
   const isPlanetary3D = !isEarth && mapType === "planetary3d";
-  const showGoogleMap = !isEarth3D && !isPlanetary3D;
+  const showGoogleMap = hasGoogleMapsApiKey && !isEarth3D && !isPlanetary3D;
+  const search = (
+    <MapSearch
+      map={isEarth && showGoogleMap ? map : null}
+      onPlaceSelect={isEarth && showGoogleMap ? handlePlaceSelect : undefined}
+      onGroundSearch={handleGroundSearch}
+      onGroundSearchResultSelect={handleGroundSearchResultSelect}
+      isGroundSearchLoading={isGroundSearchLoading}
+      groundSearchError={groundSearchError}
+      groundSearchResults={groundSearchResults}
+      initialQuery={initialGroundSearchQuery}
+    />
+  );
+  const copyGroundCode = async () => {
+    if (!encodedCoordinates) return;
+    await navigator.clipboard?.writeText(encodedCoordinates);
+    setFeedbackMessage(t("map.coordinates.copied"));
+    window.setTimeout(() => setFeedbackMessage(null), 1800);
+  };
+  const shareSelectedArea = async () => {
+    if (!selectedArea) return;
+
+    const url = `${window.location.origin}${buildGroundCodeSharePath({
+      code: encodedCoordinates,
+      body,
+    })}`;
+
+    if (navigator.share) {
+      await navigator.share({
+        title: encodedCoordinates,
+        text: encodedCoordinates,
+        url,
+      });
+      return;
+    }
+
+    await navigator.clipboard?.writeText(url);
+    setFeedbackMessage(t("map.coordinates.shareCopied"));
+    window.setTimeout(() => setFeedbackMessage(null), 1800);
+  };
+  const selectedAreaPanel = selectedArea ? (
+    <div
+      className="absolute bottom-[calc(env(safe-area-inset-bottom)+12px)] left-1/2 z-20 max-h-[38vh] w-[min(calc(100%-24px),28rem)] -translate-x-1/2 overflow-auto rounded-lg border border-white/20 bg-black/60 p-3 text-xs text-white shadow-lg backdrop-blur-md"
+      data-testid="selected-area-panel"
+    >
+      <div className="font-medium">{t("map.coordinates.title")}</div>
+      <div className="mt-1 font-mono">
+        {selectedArea.lat.toFixed(6)}, {selectedArea.lng.toFixed(6)}
+      </div>
+      <div className="mt-2 break-all text-white/80">
+        {isEncoding ? t("map.encoding") : encodedCoordinates}
+      </div>
+      {!isEncoding && encodedCoordinates && (
+        <div className="mt-3 flex gap-2">
+          <button
+            type="button"
+            className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-white/15 px-2 py-1 text-xs text-white/85 hover:bg-white/10"
+            onClick={copyGroundCode}
+            aria-label={t("map.coordinates.copy")}
+            title={t("map.coordinates.copy")}
+          >
+            <FaCopy aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-white/15 px-2 py-1 text-xs text-white/85 hover:bg-white/10"
+            onClick={shareSelectedArea}
+            aria-label={t("map.coordinates.share")}
+            title={t("map.coordinates.share")}
+          >
+            <FaShareAlt aria-hidden="true" />
+          </button>
+        </div>
+      )}
+      {feedbackMessage && (
+        <div className="mt-2 text-[11px] text-white/70">{feedbackMessage}</div>
+      )}
+    </div>
+  ) : null;
 
   // Language change in progress, do not render map component
   if (isChangingLanguage) {
     return <div className="relative w-full h-full bg-gray-200"></div>;
   }
 
-  return isLoaded ? (
+  if (!isLoaded) {
+    return (
+      <div className="relative flex h-full w-full items-center justify-center bg-black text-white">
+        {search}
+        <div className="px-4 text-sm text-white/75">{t("map.loading")}</div>
+        {selectedAreaPanel}
+      </div>
+    );
+  }
+
+  if (!hasGoogleMapsApiKey) {
+    return (
+      <div className="relative h-full w-full overflow-hidden bg-[#0a0f12] text-white">
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:42px_42px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.08),transparent_45%,rgba(255,255,255,0.04))]" />
+        <div className="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/70 bg-white/20" />
+        {search}
+        <MapControls
+          {...{
+            showGrid,
+            toggleGrid,
+            getUserLocation,
+            mapType,
+            selectMapType,
+            body,
+            selectBody,
+            isEarth,
+            mapHeading,
+            resetMapHeading,
+            setMapHeading,
+            isLoadingLocation: isLoading,
+            locationMode,
+            hasSelectedArea: Boolean(selectedArea),
+          }}
+        />
+        {selectedAreaPanel}
+      </div>
+    );
+  }
+
+  return (
     <div className="relative w-full h-full map-container">
       {showGoogleMap ? (
         <GoogleMap
@@ -120,9 +247,7 @@ function GoogleMapComponent() {
         />
       )}
 
-      {isEarth && !isEarth3D && (
-        <MapSearch map={map} onPlaceSelect={handlePlaceSelect} />
-      )}
+      {search}
 
       <MapControls
         {...{
@@ -138,8 +263,8 @@ function GoogleMapComponent() {
           resetMapHeading,
           setMapHeading,
           isLoadingLocation: isLoading,
-          isTrackingLocation,
           locationMode,
+          hasSelectedArea: Boolean(selectedArea),
         }}
       />
 
@@ -163,8 +288,6 @@ function GoogleMapComponent() {
         />
       )}
     </div>
-  ) : (
-    <div>{t("map.loading")}</div>
   );
 }
 

@@ -1,28 +1,59 @@
 import { Elysia } from "elysia";
-import { healthz } from "./endpoints/healthz.js";
-import { swaggerEndpoint } from "./endpoints/swagger.js";
-import { corsEndpoint } from "./endpoints/cors.js";
+import { healthz, readyz } from "./endpoints/healthz.js";
+import {
+  swaggerEndpoint,
+  swaggerRedirectEndpoint,
+} from "./endpoints/swagger.js";
+import { createCorsEndpoint } from "./endpoints/cors.js";
 import { staticPlugin } from "@elysiajs/static";
 import { codeEndpoint, rootRedirectEndpoint } from "./endpoints/code.js";
-import { v1Endpoints } from "./endpoints/v1/v1-endpoints.js";
+import { docsEndpoint } from "./endpoints/docs.js";
+import { legacyEndpoints, v1Endpoints } from "./endpoints/v1/v1-endpoints.js";
+import { formatApiError } from "./endpoints/v1/api-error.js";
+import { metricsEndpoint } from "./endpoints/metrics.js";
+import {
+  createRateLimitEndpoint,
+  getDefaultRateLimit,
+  RateLimitOptions,
+} from "./endpoints/rate-limit.js";
+
+interface AppOptions {
+  port?: string | number;
+  rateLimit?: RateLimitOptions | null;
+  corsOrigins?: string[];
+}
 
 /**
- * Create an Elysia application instance that listens on the specified port.
+ * Create an Elysia application instance.
  *
- * @param port The port to listen on.
+ * @param portOrOptions Optional port or app options. Omit this in tests to use `app.handle()`.
  * @returns An Elysia application instance.
  */
-export const createApp = (port: string | number) =>
-  new Elysia()
+export const createApp = (portOrOptions?: string | number | AppOptions) => {
+  const options =
+    typeof portOrOptions === "object" ? portOrOptions : { port: portOrOptions };
+  const rateLimit =
+    "rateLimit" in options ? options.rateLimit : getDefaultRateLimit();
+
+  const app = new Elysia()
+    .onError(({ error, code, set }) => formatApiError(error, code, set))
+    .use(createCorsEndpoint(options.corsOrigins))
+    .use(createRateLimitEndpoint(rateLimit))
+    .use(metricsEndpoint)
+    .use(swaggerRedirectEndpoint)
+    .use(docsEndpoint)
+    .use(swaggerEndpoint)
     .use(
       staticPlugin({
         prefix: "/",
       })
     )
-    .use(corsEndpoint)
-    .use(swaggerEndpoint)
     .use(healthz)
-    .use(codeEndpoint)
-    .use(rootRedirectEndpoint)
+    .use(readyz)
     .use(v1Endpoints)
-    .listen(port);
+    .use(legacyEndpoints)
+    .use(codeEndpoint)
+    .use(rootRedirectEndpoint);
+
+  return options.port === undefined ? app : app.listen(options.port);
+};

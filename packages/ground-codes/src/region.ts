@@ -13,10 +13,12 @@ export interface Region {
   body?: CelestialBody;
   regionLevel?: number;
   distanceKm?: number;
+  population?: number;
 }
 
 const DEFAULT_REGION_2_FALLBACK_DISTANCE_KM = 100;
 const DEFAULT_MARS_REGION_2_FALLBACK_DISTANCE_KM = 100;
+const regionDataCache = new Map<string, Promise<Region[]>>();
 
 const loadRegions = async (
   regionLevel: number,
@@ -24,46 +26,18 @@ const loadRegions = async (
   body: CelestialBody = "earth",
 ): Promise<Region[]> => {
   const normalizedLanguage = language?.toLowerCase();
+  const cacheKey = `${body}:${regionLevel}:${normalizedLanguage ?? "english"}`;
+  const cached = regionDataCache.get(cacheKey);
+  if (cached) return cached;
 
-  if (body === "moon") {
-    if (regionLevel !== 2) throw new Error("Moon supports region level 2");
-    if (normalizedLanguage === "korean") {
-      const module =
-        // @ts-ignore
-        await import(
-          "@ground-codes/geoint/region-dist/region-2-moon-korean.json"
-        );
-      return module.default as Region[];
-    }
-    if (normalizedLanguage === "chinese") {
-      const module =
-        // @ts-ignore
-        await import(
-          "@ground-codes/geoint/region-dist/region-2-moon-chinese.json"
-        );
-      return module.default as Region[];
-    }
-    if (normalizedLanguage === "japanese") {
-      const module =
-        // @ts-ignore
-        await import(
-          "@ground-codes/geoint/region-dist/region-2-moon-japanese.json"
-        );
-      return module.default as Region[];
-    }
-    const module =
-      // @ts-ignore
-      await import("@ground-codes/geoint/region-dist/region-2-moon.json");
-    return module.default as Region[];
-  }
-
-  if (body === "mars") {
-    if (regionLevel === 3) {
+  const load = async () => {
+    if (body === "moon") {
+      if (regionLevel !== 2) throw new Error("Moon supports region level 2");
       if (normalizedLanguage === "korean") {
         const module =
           // @ts-ignore
           await import(
-            "@ground-codes/geoint/region-dist/region-3-mars-korean.json"
+            "@ground-codes/geoint/region-dist/region-2-moon-korean.json"
           );
         return module.default as Region[];
       }
@@ -71,7 +45,7 @@ const loadRegions = async (
         const module =
           // @ts-ignore
           await import(
-            "@ground-codes/geoint/region-dist/region-3-mars-chinese.json"
+            "@ground-codes/geoint/region-dist/region-2-moon-chinese.json"
           );
         return module.default as Region[];
       }
@@ -79,115 +53,159 @@ const loadRegions = async (
         const module =
           // @ts-ignore
           await import(
-            "@ground-codes/geoint/region-dist/region-3-mars-japanese.json"
+            "@ground-codes/geoint/region-dist/region-2-moon-japanese.json"
           );
         return module.default as Region[];
       }
       const module =
         // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-3-mars.json");
+        await import("@ground-codes/geoint/region-dist/region-2-moon.json");
       return module.default as Region[];
     }
-    if (regionLevel !== 2)
-      throw new Error("Mars supports region levels 2 and 3");
-    if (normalizedLanguage === "korean") {
-      const module =
-        // @ts-ignore
-        await import(
-          "@ground-codes/geoint/region-dist/region-2-mars-korean.json"
-        );
-      return module.default as Region[];
-    }
-    if (normalizedLanguage === "chinese") {
-      const module =
-        // @ts-ignore
-        await import(
-          "@ground-codes/geoint/region-dist/region-2-mars-chinese.json"
-        );
-      return module.default as Region[];
-    }
-    if (normalizedLanguage === "japanese") {
-      const module =
-        // @ts-ignore
-        await import(
-          "@ground-codes/geoint/region-dist/region-2-mars-japanese.json"
-        );
-      return module.default as Region[];
-    }
-    const module =
-      // @ts-ignore
-      await import("@ground-codes/geoint/region-dist/region-2-mars.json");
-    return module.default as Region[];
-  }
 
-  if (regionLevel === 1) {
-    const module =
-      // @ts-ignore
-      await import("@ground-codes/geoint/region-dist/region-1.json");
-    return module.default as Region[];
-  }
+    if (body === "mars") {
+      if (regionLevel === 3) {
+        if (normalizedLanguage === "korean") {
+          const module =
+            // @ts-ignore
+            await import(
+              "@ground-codes/geoint/region-dist/region-3-mars-korean.json"
+            );
+          return module.default as Region[];
+        }
+        if (normalizedLanguage === "chinese") {
+          const module =
+            // @ts-ignore
+            await import(
+              "@ground-codes/geoint/region-dist/region-3-mars-chinese.json"
+            );
+          return module.default as Region[];
+        }
+        if (normalizedLanguage === "japanese") {
+          const module =
+            // @ts-ignore
+            await import(
+              "@ground-codes/geoint/region-dist/region-3-mars-japanese.json"
+            );
+          return module.default as Region[];
+        }
+        const module =
+          // @ts-ignore
+          await import("@ground-codes/geoint/region-dist/region-3-mars.json");
+        return module.default as Region[];
+      }
+      if (regionLevel !== 2)
+        throw new Error("Mars supports region levels 2 and 3");
+      if (normalizedLanguage === "korean") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-2-mars-korean.json"
+          );
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "chinese") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-2-mars-chinese.json"
+          );
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "japanese") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-2-mars-japanese.json"
+          );
+        return module.default as Region[];
+      }
+      const module =
+        // @ts-ignore
+        await import("@ground-codes/geoint/region-dist/region-2-mars.json");
+      return module.default as Region[];
+    }
 
-  if (regionLevel === 2) {
-    if (!language || normalizedLanguage === "english") {
+    if (regionLevel === 1) {
       const module =
         // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-2.json");
+        await import("@ground-codes/geoint/region-dist/region-1.json");
       return module.default as Region[];
     }
-    if (normalizedLanguage === "korean") {
-      const module =
-        // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-2-korean.json");
-      return module.default as Region[];
-    }
-    if (normalizedLanguage === "chinese") {
-      const module =
-        // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-2-chinese.json");
-      return module.default as Region[];
-    }
-    if (normalizedLanguage === "japanese") {
-      const module =
-        // @ts-ignore
-        await import(
-          "@ground-codes/geoint/region-dist/region-2-japanese.json"
-        );
-      return module.default as Region[];
-    }
-    throw new Error(`Invalid language: ${language}`);
-  }
 
-  if (regionLevel === 3) {
-    if (!language || normalizedLanguage === "english") {
-      const module =
-        // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-3.json");
-      return module.default as Region[];
+    if (regionLevel === 2) {
+      if (!language || normalizedLanguage === "english") {
+        const module =
+          // @ts-ignore
+          await import("@ground-codes/geoint/region-dist/region-2.json");
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "korean") {
+        const module =
+          // @ts-ignore
+          await import("@ground-codes/geoint/region-dist/region-2-korean.json");
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "chinese") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-2-chinese.json"
+          );
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "japanese") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-2-japanese.json"
+          );
+        return module.default as Region[];
+      }
+      throw new Error(`Invalid language: ${language}`);
     }
-    if (normalizedLanguage === "korean") {
-      const module =
-        // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-3-korean.json");
-      return module.default as Region[];
-    }
-    if (normalizedLanguage === "chinese") {
-      const module =
-        // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-3-chinese.json");
-      return module.default as Region[];
-    }
-    if (normalizedLanguage === "japanese") {
-      const module =
-        // @ts-ignore
-        await import(
-          "@ground-codes/geoint/region-dist/region-3-japanese.json"
-        );
-      return module.default as Region[];
-    }
-    throw new Error(`Invalid language: ${language}`);
-  }
 
-  throw new Error(`Invalid region level: ${regionLevel}`);
+    if (regionLevel === 3) {
+      if (!language || normalizedLanguage === "english") {
+        const module =
+          // @ts-ignore
+          await import("@ground-codes/geoint/region-dist/region-3.json");
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "korean") {
+        const module =
+          // @ts-ignore
+          await import("@ground-codes/geoint/region-dist/region-3-korean.json");
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "chinese") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-3-chinese.json"
+          );
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "japanese") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-3-japanese.json"
+          );
+        return module.default as Region[];
+      }
+      throw new Error(`Invalid language: ${language}`);
+    }
+
+    throw new Error(`Invalid region level: ${regionLevel}`);
+  };
+
+  const promise = load().catch((error) => {
+    regionDataCache.delete(cacheKey);
+    throw error;
+  });
+  regionDataCache.set(cacheKey, promise);
+  return promise;
 };
 
 const findClosestInRegions = (
@@ -343,80 +361,123 @@ export const findRegionByCodeOrName = async (
   name?: string;
   code?: string;
 } | null> => {
+  const matches = await findRegionsByQuery(codeOrName, {
+    ...options,
+    maxResults: 1,
+  });
+
+  return matches[0] ?? null;
+};
+
+export const findRegionsByQuery = async (
+  codeOrName: string,
+  options?: {
+    regionLevel?: number;
+    language?: SupportedLanguage;
+    body?: CelestialBody;
+    maxResults?: number;
+  },
+): Promise<
+  Array<{
+    lat: number;
+    lng: number;
+    regionLevel?: number;
+    body?: CelestialBody;
+    name?: string;
+    code?: string;
+  }>
+> => {
   if (!codeOrName || codeOrName.trim() === "") {
-    return null;
+    return [];
   }
 
   try {
-    const { regionLevel = 2, language, body = "earth" } = options ?? {};
+    const {
+      regionLevel = 2,
+      language,
+      body = "earth",
+      maxResults = 5,
+    } = options ?? {};
 
-    const regions = await loadRegions(regionLevel, language, body);
-
-    // Normalize the search term for case-insensitive comparison
     const normalizedSearch = codeOrName.toLowerCase().trim();
+    const results: Array<{
+      lat: number;
+      lng: number;
+      regionLevel?: number;
+      body?: CelestialBody;
+      name?: string;
+      code?: string;
+    }> = [];
+    const seen = new Set<string>();
 
-    // Find the region that matches the code or name
-    const matchedRegion = regions.find(
-      (region) =>
-        region.code.toLowerCase() === normalizedSearch ||
-        region.name.toLowerCase() === normalizedSearch,
-    );
+    const addMatches = async (candidateRegionLevel: number) => {
+      const regions = await loadRegions(candidateRegionLevel, language, body);
+      const exactMatches = regions.filter(
+        (region) =>
+          region.code.toLowerCase() === normalizedSearch ||
+          region.name.toLowerCase() === normalizedSearch,
+      );
+      const partialMatches = regions
+        .filter(
+          (region) =>
+            !exactMatches.includes(region) &&
+            (region.code.toLowerCase().includes(normalizedSearch) ||
+              region.name.toLowerCase().includes(normalizedSearch)),
+        )
+        .sort((a, b) => {
+          const aName = a.name.toLowerCase();
+          const bName = b.name.toLowerCase();
+          const aCode = a.code.toLowerCase();
+          const bCode = b.code.toLowerCase();
+          const aRank = aName.startsWith(normalizedSearch)
+            ? 0
+            : aCode.startsWith(normalizedSearch)
+              ? 1
+              : 2;
+          const bRank = bName.startsWith(normalizedSearch)
+            ? 0
+            : bCode.startsWith(normalizedSearch)
+              ? 1
+              : 2;
 
-    if (matchedRegion) {
-      return {
-        name: matchedRegion.name,
-        code: matchedRegion.code,
-        lat: matchedRegion.lat,
-        lng: matchedRegion.long,
-        body,
-        regionLevel,
-      };
-    }
+          return (
+            aRank - bRank ||
+            (b.population ?? 0) - (a.population ?? 0) ||
+            a.name.length - b.name.length
+          );
+        });
+
+      for (const region of [...exactMatches, ...partialMatches]) {
+        const key = `${body}:${candidateRegionLevel}:${region.code}:${region.name}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        results.push({
+          name: region.name,
+          code: region.code,
+          lat: region.lat,
+          lng: region.long,
+          body,
+          regionLevel: candidateRegionLevel,
+        });
+        if (results.length >= maxResults) return;
+      }
+    };
+
+    await addMatches(regionLevel);
+    if (results.length >= maxResults) return results;
 
     if ((body === "earth" || body === "mars") && regionLevel === 2) {
       const fallbackLevels = body === "mars" ? [3] : [1, 3];
       for (const fallbackLevel of fallbackLevels) {
-        const fallbackMatch = (
-          await loadRegions(fallbackLevel, language, body)
-        ).find(
-          (region) =>
-            region.code.toLowerCase() === normalizedSearch ||
-            region.name.toLowerCase() === normalizedSearch,
-        );
-
-        if (fallbackMatch) {
-          return {
-            name: fallbackMatch.name,
-            code: fallbackMatch.code,
-            lat: fallbackMatch.lat,
-            lng: fallbackMatch.long,
-            body,
-            regionLevel: fallbackLevel,
-          };
-        }
+        await addMatches(fallbackLevel);
+        if (results.length >= maxResults) return results;
       }
     }
 
-    // If no exact match is found, try to find a region whose name contains the search term
-    const partialMatch = regions.find((region) =>
-      region.name.toLowerCase().includes(normalizedSearch),
-    );
-
-    if (partialMatch) {
-      return {
-        name: partialMatch.name,
-        code: partialMatch.code,
-        lat: partialMatch.lat,
-        lng: partialMatch.long,
-        body,
-        regionLevel,
-      };
-    }
-
-    return null;
+    return results;
   } catch (e) {
     console.error("Error finding region by code or name:", e);
-    return null;
+    return [];
   }
 };
 

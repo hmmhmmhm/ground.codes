@@ -30,10 +30,16 @@
     "loading": "加载中...",
     "coordinates": {
       "title": "选定区域坐标",
-      "copy": "复制"
+      "copy": "复制",
+      "share": "分享",
+      "copied": "Ground Code 已复制",
+      "shareCopied": "分享 URL 已复制"
     },
     "search": {
-      "placeholder": "搜索位置"
+      "placeholder": "搜索 Ground Code、区域或地点",
+      "submit": "搜索",
+      "noResults": "未找到匹配的 Ground Code 或区域",
+      "error": "搜索失败"
     },
     "groundCode": "地面代码",
     "encoding": "编码中",

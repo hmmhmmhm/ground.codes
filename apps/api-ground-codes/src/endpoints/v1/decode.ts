@@ -1,6 +1,12 @@
 import Elysia, { t } from "elysia";
 import { CelestialBody, decode, SupportedLanguage } from "ground-codes";
 import { supportedLanguages } from "./language.js";
+import {
+  validateBody,
+  validateLanguage,
+  validateRegionLevel,
+  validateSearchQuery,
+} from "./validation.js";
 
 export const v1Decode = new Elysia().post(
   "/decode",
@@ -12,10 +18,15 @@ export const v1Decode = new Elysia().post(
       body: celestialBody = "earth",
     },
   }) => {
+    const query = validateSearchQuery(code);
+    const validatedLanguage = validateLanguage(language);
+    const validatedBody = validateBody(celestialBody);
+    validateRegionLevel({ body: validatedBody, regionLevel });
+
     return await decode(code, {
       regionLevel,
-      language: language as SupportedLanguage,
-      body: celestialBody as CelestialBody,
+      language: validatedLanguage as SupportedLanguage,
+      body: validatedBody as CelestialBody,
     });
   },
   {

@@ -94,7 +94,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
               <PhotoGallery
                 photos={placeDetails.photos}
                 photoErrors={photoErrors}
-                placeName={placeDetails.name}
+                placeName={placeDetails.name ?? ""}
                 onPhotoError={handleImageError}
                 onSelectPhoto={setSelectedPhoto}
               />
@@ -118,7 +118,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                   <div className="flex items-center">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span key={i} className="text-yellow-400 mr-1">
-                        {i < Math.floor(placeDetails.rating) ? (
+                        {i < Math.floor(placeDetails.rating ?? 0) ? (
                           <FaStar size={16} />
                         ) : (
                           <FaRegStar size={16} />

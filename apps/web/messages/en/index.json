@@ -30,10 +30,16 @@
     "loading": "Loading...",
     "coordinates": {
       "title": "Selected Area Coordinates",
-      "copy": "Copy"
+      "copy": "Copy",
+      "share": "Share",
+      "copied": "Ground Code copied",
+      "shareCopied": "Share URL copied"
     },
     "search": {
-      "placeholder": "Search for a location"
+      "placeholder": "Search Ground Code, region, or place",
+      "submit": "Search",
+      "noResults": "No matching Ground Code or region found",
+      "error": "Search failed"
     },
     "groundCode": "Ground Code",
     "encoding": "Encoding",

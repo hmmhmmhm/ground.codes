@@ -6,7 +6,11 @@ on:
       - main
     paths:
       - "apps/web/**"
+      - "packages/ui/**"
       - ".github/workflows/deploy-web.yml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
   workflow_dispatch:
 
 jobs:
@@ -56,6 +60,12 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
           NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID }}
+          NEXT_PUBLIC_GROUND_CODES_API_URL: ${{ secrets.NEXT_PUBLIC_GROUND_CODES_API_URL }}
+          NEXT_PUBLIC_CESIUM_ION_TOKEN: ${{ secrets.NEXT_PUBLIC_CESIUM_ION_TOKEN }}
+          NEXT_PUBLIC_CESIUM_MOON_ASSET_ID: ${{ secrets.NEXT_PUBLIC_CESIUM_MOON_ASSET_ID }}
+          NEXT_PUBLIC_CESIUM_MARS_ASSET_ID: ${{ secrets.NEXT_PUBLIC_CESIUM_MARS_ASSET_ID }}
+          GOOGLE_MAPS_NODEJS_API_KEY: ${{ secrets.GOOGLE_MAPS_NODEJS_API_KEY }}
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
         run: |
           cd apps/web
           pnpm run pages:build && wrangler pages deploy

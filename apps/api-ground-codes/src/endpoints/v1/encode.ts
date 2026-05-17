@@ -1,6 +1,13 @@
 import Elysia, { t } from "elysia";
 import { CelestialBody, encode, SupportedLanguage } from "ground-codes";
 import { supportedLanguages } from "./language.js";
+import {
+  validateBody,
+  validateCoordinates,
+  validateLanguage,
+  validatePrecisionMeters,
+  validateRegionLevel,
+} from "./validation.js";
 
 export const v1Encode = new Elysia().post(
   "/encode",
@@ -14,6 +21,12 @@ export const v1Encode = new Elysia().post(
       body: celestialBody = "earth",
     },
   }) => {
+    validateCoordinates({ lat, lng });
+    const validatedLanguage = validateLanguage(language);
+    const validatedBody = validateBody(celestialBody);
+    validateRegionLevel({ body: validatedBody, regionLevel });
+    validatePrecisionMeters(precisionMeters);
+
     const encodeOptions: {
       regionLevel: number;
       language: SupportedLanguage;
@@ -21,8 +34,8 @@ export const v1Encode = new Elysia().post(
       body: CelestialBody;
     } = {
       regionLevel,
-      language: language as SupportedLanguage,
-      body: celestialBody as CelestialBody,
+      language: validatedLanguage as SupportedLanguage,
+      body: validatedBody as CelestialBody,
     };
 
     if (precisionMeters !== undefined) {

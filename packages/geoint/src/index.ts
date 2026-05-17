@@ -30,6 +30,7 @@ export const load = async (loadRegions: string[] = []) => {
   for (const file of files) {
     const regionName = file.replace(".index", "");
     if (loadRegions.length > 0 && !loadRegions.includes(regionName)) continue;
+    if (regionIndexes[regionName] && regionLevels[regionName]) continue;
 
     const filePath = path.join(dbPath, file);
     const index = KDBush.from(fs.readFileSync(filePath).buffer);

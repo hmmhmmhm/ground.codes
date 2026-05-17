@@ -1,9 +1,10 @@
 import React from "react";
+import Image from "next/image";
 import { FaImages, FaExpand } from "react-icons/fa";
 import { useI18n } from "@/lib/i18n/i18n-context";
 
 interface PhotoGalleryProps {
-  photos: any[];
+  photos: google.maps.places.PlacePhoto[];
   photoErrors: Record<number, boolean>;
   placeName: string;
   onPhotoError: (index: number) => void;
@@ -32,7 +33,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
       </div>
 
       <div className="grid grid-cols-2 gap-3 mt-3">
-        {photos.slice(0, 4).map((photo: any, index: number) => {
+        {photos.slice(0, 4).map((photo, index) => {
           if (photoErrors[index]) return null;
 
           const photoUrl = photo.getUrl({ maxWidth: 300, maxHeight: 300 });
@@ -45,9 +46,12 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
               onClick={() => onSelectPhoto(fullPhotoUrl)}
               title={t("common.viewFullImage")}
             >
-              <img
+              <Image
+                unoptimized
                 src={photoUrl}
                 alt={`${placeName} ${index + 1}`}
+                width={300}
+                height={300}
                 className="w-full h-full object-cover"
                 onError={() => onPhotoError(index)}
               />

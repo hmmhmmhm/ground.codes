@@ -14,7 +14,8 @@ export const usePlaceDetails = (
   const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [placeDetails, setPlaceDetails] = useState<any>(null);
+  const [placeDetails, setPlaceDetails] =
+    useState<google.maps.places.PlaceResult | null>(null);
 
   // Reset everything when the panel is hidden
   useEffect(() => {
@@ -73,7 +74,7 @@ export const usePlaceDetails = (
     };
 
     fetchPlaceDetails();
-  }, [map, placeId, visible]);
+  }, [map, onResetPhotoState, placeId, t, visible]);
 
   return { isLoading, error, placeDetails };
 };

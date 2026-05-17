@@ -1,6 +1,14 @@
 import Elysia, { t } from "elysia";
 import { around } from "@ground-codes/geoint";
 import { getRegionDatasetName, supportedLanguages } from "../language.js";
+import {
+  validateBody,
+  validateCoordinates,
+  validateLanguage,
+  validateMaxResults,
+  validateRegionLevel,
+} from "../validation.js";
+import { loadRegionDataset } from "./load-region.js";
 
 export const v1RegionAround = new Elysia().post(
   "/region/around",
@@ -15,11 +23,18 @@ export const v1RegionAround = new Elysia().post(
       body = "earth",
     },
   }) => {
+    validateCoordinates({ lat, lng });
+    const validatedLanguage = validateLanguage(language);
+    const validatedBody = validateBody(body);
+    validateRegionLevel({ body: validatedBody, regionLevel });
+    validateMaxResults(maxResults);
+
     const regionName = getRegionDatasetName({
-      body,
-      language,
+      body: validatedBody,
+      language: validatedLanguage,
       regionLevel,
     });
+    await loadRegionDataset(regionName);
 
     return (
       await around({

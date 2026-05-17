@@ -15,7 +15,26 @@ const spaceMono = Space_Mono({
 
 export const metadata: Metadata = {
   title: "Ground Codes",
-  description: "Ground code come to exact earth (+mars) address",
+  description:
+    "Share precise Earth, Moon, and Mars locations with short memorable Ground Codes.",
+  metadataBase: new URL("https://ground.codes"),
+  openGraph: {
+    title: "Ground Codes",
+    description:
+      "Search, copy, and share precise locations as short memorable codes.",
+    url: "https://ground.codes",
+    siteName: "Ground Codes",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Ground Codes",
+    description:
+      "Search, copy, and share precise locations as short memorable codes.",
+  },
+  alternates: {
+    canonical: "https://ground.codes",
+  },
 };
 
 export const viewport: Viewport = {

@@ -64,7 +64,10 @@ Ground.codes web application is an interactive map service utilizing the Google 
 - 🌓 Improved theme to fix visibility issues of buildings in dark theme
 - 🌐 Implemented multilingual display of place types
 - 🌕 Added Earth/Moon/Mars map switching with direct URL support
-- 🗺️ Added Moon/Mars default planetary basemaps
+  - 🗺️ Added Moon/Mars default planetary basemaps
+  - 🔎 Added Ground Code and region-name search through the API
+  - 🔗 Added copy/share actions for selected Ground Codes
+  - 🧭 Added a no-key fallback surface so local/dev builds do not show Google Maps error modals
 
 ### 🪐 Planetary Map Mode
 
@@ -94,6 +97,15 @@ Mars, with grid degree spacing adjusted for each body's radius. Ground code
 region prefixes and word payloads are available in English, Korean, Chinese,
 and Japanese.
 
+Share URLs use encoded Ground Codes as the canonical address:
+
+- Earth: `/서울-안방`
+- Moon: `/moon/Mare%20Tranquillitatis-...`
+- Mars: `/mars/Olympus%20Mons-...`
+
+Query-string URLs remain useful for development and deep map state, but the app
+share action emits the canonical code-only URL.
+
 Moon and Mars also include an experimental Cesium 3D globe mode. Without Cesium
 ion configuration it falls back to a 3D ellipsoid with the current USGS imagery.
 For real Moon/Mars terrain tiles, configure a Cesium ion token and the relevant
@@ -119,6 +131,7 @@ The project requires the following environment variables to be set in a `.env.lo
 
 ```
 # Required
+NEXT_PUBLIC_GROUND_CODES_API_URL=https://api.ground.codes
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=
 
 # Optional
@@ -129,6 +142,11 @@ NEXT_PUBLIC_CESIUM_MARS_ASSET_ID=
 GOOGLE_MAPS_NODEJS_API_KEY=
 OPENWEATHER_API_KEY=
 ```
+
+The map still supports Ground Code search when Google Maps credentials are not
+configured. Weather and air-quality widgets are optional; if their server-side
+keys are missing, the widget is hidden instead of surfacing a user-facing API
+error.
 
 ### 🔐 How to obtain API keys:
 

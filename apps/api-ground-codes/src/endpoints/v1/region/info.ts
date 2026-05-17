@@ -1,20 +1,33 @@
 import Elysia, { t } from "elysia";
 import { info } from "@ground-codes/geoint";
 import { getRegionDatasetName, supportedLanguages } from "../language.js";
+import {
+  validateBody,
+  validateLanguage,
+  validateRegionLevel,
+  validateSearchQuery,
+} from "../validation.js";
+import { loadRegionDataset } from "./load-region.js";
 
 export const v1RegionInfo = new Elysia().post(
   "/region/info",
   async ({
     body: { name, language = "english", regionLevel = 2, body = "earth" },
   }) => {
+    const query = validateSearchQuery(name);
+    const validatedLanguage = validateLanguage(language);
+    const validatedBody = validateBody(body);
+    validateRegionLevel({ body: validatedBody, regionLevel });
+
     const regionName = getRegionDatasetName({
-      body,
-      language,
+      body: validatedBody,
+      language: validatedLanguage,
       regionLevel,
     });
+    await loadRegionDataset(regionName);
 
     const data = await info({
-      name,
+      name: query,
       regionName,
     });
 

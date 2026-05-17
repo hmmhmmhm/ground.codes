@@ -1,6 +1,12 @@
 "use client";
 import { useEffect, useRef } from "react";
 
+const COLORS = {
+  background: "#000000",
+  label: "#FFFFFF",
+  gridLine: "#FFFFFF",
+};
+
 export interface GridCanvasProps {
   gridSize?: number;
   canvasSize?: number;
@@ -32,13 +38,6 @@ export default function GridCanvas({
   );
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  // 색상 팔레트
-  const COLORS = {
-    background: "#000000",
-    label: "#FFFFFF",
-    gridLine: "#FFFFFF",
-  };
 
   const drawArrow = (
     ctx: CanvasRenderingContext2D,

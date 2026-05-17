@@ -9,6 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "check-types": "tsc --noEmit",
+    "test": "bun test ./lib ./app",
+    "test:e2e": "playwright test",
+    "test:e2e:prod": "playwright test --config=playwright.production.config.ts",
+    "qa:visual": "playwright test e2e/visual-qa.spec.ts --config=playwright.production.config.ts",
     "pages:build": "npx @cloudflare/next-on-pages",
     "preview": "pnpm run pages:build && wrangler pages dev",
     "deploy": "pnpm run pages:build && wrangler pages deploy"
@@ -27,6 +31,7 @@
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.9",
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.56.1",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4",

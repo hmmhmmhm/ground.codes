@@ -23,13 +23,11 @@ interface MapControlsProps {
   resetMapHeading: () => void;
   setMapHeading?: (heading: number) => void;
   isLoadingLocation?: boolean;
-  isTrackingLocation?: boolean;
   locationMode?: LocationMode;
-  isFullscreen?: boolean;
-  toggleFullscreen?: () => void;
   body?: CelestialBody;
   selectBody?: (body: CelestialBody) => void;
   isEarth?: boolean;
+  hasSelectedArea?: boolean;
 }
 
 const MapControls: React.FC<MapControlsProps> = ({
@@ -42,13 +40,11 @@ const MapControls: React.FC<MapControlsProps> = ({
   resetMapHeading,
   setMapHeading,
   isLoadingLocation = false,
-  isTrackingLocation = false,
   locationMode = 0,
-  isFullscreen = false,
-  toggleFullscreen = () => {},
   body = "earth",
   selectBody = () => {},
   isEarth = true,
+  hasSelectedArea = false,
 }) => {
   const { t, locale, setLocale } = useI18n();
   const [showBodyOptions, setShowBodyOptions] = useState(false);
@@ -213,7 +209,14 @@ const MapControls: React.FC<MapControlsProps> = ({
   return (
     <>
       {/* Map Type Control and Language Selector (Top Right) */}
-      <div className="absolute top-[10px] right-[10px] flex flex-row gap-2 z-10">
+      <div
+        className={`absolute left-3 top-auto z-10 flex flex-row gap-2 sm:left-auto sm:right-[10px] sm:top-[10px] ${
+          hasSelectedArea
+            ? "bottom-[calc(env(safe-area-inset-bottom)+168px)] sm:bottom-auto"
+            : "bottom-[100px] sm:bottom-auto"
+        }`}
+        data-testid="map-settings-controls"
+      >
         <div className="relative">
           <button
             onClick={() => {
@@ -221,7 +224,7 @@ const MapControls: React.FC<MapControlsProps> = ({
               setShowMapTypeOptions(false);
               setShowLanguageOptions(false);
             }}
-            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[64px]"
+            className="flex min-h-10 min-w-[64px] cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/20 bg-black/30 px-3 py-2 text-sm text-white backdrop-blur-md sm:justify-start"
             title={t("map.controls.body")}
             aria-label={t("map.controls.body")}
             aria-expanded={showBodyOptions}
@@ -275,13 +278,13 @@ const MapControls: React.FC<MapControlsProps> = ({
               setShowBodyOptions(false);
               setShowLanguageOptions(false);
             }}
-            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center justify-center md:justify-start gap-2 text-sm text-white min-w-[44px]"
+            className="flex min-h-10 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-white/20 bg-black/30 px-3 py-2 text-sm text-white backdrop-blur-md sm:justify-start"
             title={t("map.controls.mapType")}
             aria-label={t("map.controls.mapType")}
             aria-expanded={showMapTypeOptions}
           >
             <MapTypeIcon type={mapType} />
-            <span className="hidden md:inline">{activeMapTypeLabel}</span>
+            <span className="hidden sm:inline">{activeMapTypeLabel}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="13"
@@ -332,13 +335,13 @@ const MapControls: React.FC<MapControlsProps> = ({
               setShowBodyOptions(false);
               setShowMapTypeOptions(false);
             }}
-            className="bg-black/30 backdrop-blur-md border border-white/20 rounded-lg px-3 py-2 cursor-pointer flex items-center gap-2 text-sm"
+            className="flex min-h-10 min-w-11 cursor-pointer items-center gap-2 rounded-lg border border-white/20 bg-black/30 px-3 py-2 text-sm backdrop-blur-md"
             title={t("map.controls.language")}
             aria-label={t("map.controls.language")}
             aria-expanded={showLanguageOptions}
           >
             <LanguageIcon />
-            <span className="text-white hidden md:inline">
+            <span className="hidden text-white sm:inline">
               {localeShortLabels[locale]}
             </span>
           </button>
@@ -373,7 +376,14 @@ const MapControls: React.FC<MapControlsProps> = ({
       </div>
 
       {/* Grid, Location, and Compass Controls (Bottom Right) */}
-      <div className="absolute bottom-[100px] right-[10px] z-10 flex flex-col-reverse gap-[10px]">
+      <div
+        className={`absolute right-[10px] z-10 flex flex-col-reverse gap-[10px] ${
+          hasSelectedArea
+            ? "bottom-[calc(env(safe-area-inset-bottom)+168px)] sm:bottom-[100px]"
+            : "bottom-[100px]"
+        }`}
+        data-testid="map-action-controls"
+      >
         <Compass
           mapHeading={mapHeading}
           resetMapHeading={resetMapHeading}

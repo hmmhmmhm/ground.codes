@@ -1,0 +1,143 @@
+import Elysia from "elysia";
+
+const docsHtml = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ground Codes API</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #071013;
+        --panel: #0e1a1f;
+        --line: #243840;
+        --text: #f2f7f8;
+        --muted: #a8bbbf;
+        --accent: #4fd1b3;
+        --code: #d7fbe8;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top left, rgba(79, 209, 179, 0.16), transparent 34rem), var(--bg);
+        color: var(--text);
+        line-height: 1.55;
+      }
+      main { max-width: 1040px; margin: 0 auto; padding: 56px 20px 72px; }
+      header { margin-bottom: 36px; }
+      h1 { margin: 0 0 12px; font-size: clamp(2rem, 5vw, 4.4rem); line-height: 1; letter-spacing: 0; }
+      h2 { margin: 0 0 14px; font-size: 1.05rem; }
+      p { margin: 0; color: var(--muted); max-width: 760px; }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+      .actions a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 8px 12px;
+        background: rgba(14, 26, 31, 0.78);
+        color: var(--text);
+      }
+      .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+      section {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(14, 26, 31, 0.82);
+        padding: 18px;
+      }
+      code, pre {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        color: var(--code);
+      }
+      pre {
+        overflow-x: auto;
+        border: 1px solid rgba(79, 209, 179, 0.18);
+        border-radius: 6px;
+        background: #050b0d;
+        padding: 14px;
+        margin: 12px 0 0;
+        font-size: 0.84rem;
+      }
+      ul { margin: 8px 0 0; padding-left: 20px; color: var(--muted); }
+      li + li { margin-top: 6px; }
+      .full { grid-column: 1 / -1; }
+      @media (max-width: 760px) {
+        main { padding-top: 34px; }
+        .grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Ground Codes API</h1>
+        <p>Encode coordinates into human-readable share codes, decode them back to coordinates, and search regions or codes through stable versioned endpoints.</p>
+        <div class="actions">
+          <a href="/">OpenAPI Reference</a>
+          <a href="/json">OpenAPI JSON</a>
+          <a href="/metrics">Metrics</a>
+          <a href="/readyz">Readiness</a>
+        </div>
+      </header>
+      <div class="grid">
+        <section>
+          <h2>Base URL</h2>
+          <p>Production clients should call <code>https://api.ground.codes</code> and keep all new integrations on <code>/v1/*</code>.</p>
+        </section>
+        <section>
+          <h2>Share URL Format</h2>
+          <ul>
+            <li>Earth: <code>https://ground.codes/Seoul-word-word</code></li>
+            <li>Moon: <code>https://ground.codes/moon/word-word-word</code></li>
+            <li>Mars: <code>https://ground.codes/mars/word-word-word</code></li>
+          </ul>
+        </section>
+        <section class="full">
+          <h2>Encode</h2>
+          <p>POST <code>/v1/encode</code> with latitude, longitude, language, body, and optional precision controls.</p>
+          <pre><code>curl -X POST https://api.ground.codes/v1/encode \\
+  -H "Content-Type: application/json" \\
+  -d '{"lat":37.566,"lng":126.978,"language":"english","body":"earth","regionLevel":2}'</code></pre>
+        </section>
+        <section class="full">
+          <h2>Search</h2>
+          <p>Search accepts encoded ground codes, partial region names, and common aliases such as <code>nyc</code>.</p>
+          <pre><code>curl -X POST https://api.ground.codes/v1/search \\
+  -H "Content-Type: application/json" \\
+  -d '{"query":"Seoul-happy-river","language":"english","body":"earth","maxResults":5}'</code></pre>
+        </section>
+        <section>
+          <h2>Operational Endpoints</h2>
+          <ul>
+            <li><code>/healthz</code> liveness</li>
+            <li><code>/readyz</code> deployment readiness</li>
+            <li><code>/metrics</code> request counts and latency</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Error Shape</h2>
+          <p>Client and server errors return a structured <code>{"error":{"code","message","details"}}</code> payload.</p>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>`;
+
+export const docsEndpoint = new Elysia().get(
+  "/docs",
+  ({ set }) => {
+    set.headers["cache-control"] = "public, max-age=300";
+    set.headers["content-type"] = "text/html; charset=utf-8";
+    return docsHtml;
+  },
+  {
+    detail: {
+      hide: true,
+    },
+  },
+);

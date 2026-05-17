@@ -1,5 +1,6 @@
 import React from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 import { FaTimes } from "react-icons/fa";
 import { useI18n } from "@/lib/i18n/i18n-context";
 
@@ -23,9 +24,12 @@ const PhotoModal: React.FC<PhotoModalProps> = ({ photoUrl, onClose }) => {
         <FaTimes size={18} />
       </button>
       <div className="w-full h-full flex items-center justify-center">
-        <img
+        <Image
+          unoptimized
           src={photoUrl}
           alt={t("common.viewFullImage")}
+          width={1600}
+          height={1200}
           className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
           onClick={(e) => e.stopPropagation()}
           style={{ maxWidth: "95vw" }}

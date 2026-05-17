@@ -10,8 +10,8 @@ export function useMapEventHandlers(
   drawGrid: (mapInstance: google.maps.Map) => void,
   handleGridCellClick: (e: google.maps.MapMouseEvent) => void,
   options?: {
-    locationMode?: any; 
-    setLocationMode?: (mode: any) => void; 
+    locationMode?: string | number;
+    setLocationMode?: (mode: string | number) => void;
     placeDetailsVisible?: boolean;
     setPlaceDetailsVisible?: (visible: boolean) => void;
     setSelectedPlaceId?: (placeId: string | null) => void;
@@ -22,9 +22,6 @@ export function useMapEventHandlers(
 ) {
   return useCallback(
     (mapInstance: google.maps.Map) => {
-      // Store initial zoom level
-      const currentZoomRef = { current: mapInstance.getZoom() || null };
-
       // Draw grid when map movement is complete
       mapInstance.addListener("idle", () => {
         // Only draw grid when showGrid is true
@@ -41,13 +38,14 @@ export function useMapEventHandlers(
         }
 
         // Check if a POI was clicked
-        if ((e as any).placeId) {
+        const iconEvent = e as google.maps.IconMouseEvent;
+        if (iconEvent.placeId) {
           // Immediately stop the default POI click behavior
-          (e as google.maps.IconMouseEvent).stop();
+          iconEvent.stop();
 
           // A POI was clicked
           if (options?.setSelectedPlaceId) {
-            options.setSelectedPlaceId((e as any).placeId);
+            options.setSelectedPlaceId(iconEvent.placeId);
           }
           if (options?.setSelectedLocation) {
             options.setSelectedLocation(e.latLng || null);
@@ -95,7 +93,6 @@ export function useMapEventHandlers(
  * Hook for grid cell click handler
  */
 export function useGridCellClickHandler(
-  showGrid: boolean,
   isGridVisibleAtZoom: (zoom: number | undefined) => boolean,
   mapInstanceRef: React.MutableRefObject<google.maps.Map | null>,
   setSelectedArea: React.Dispatch<React.SetStateAction<Coordinates | null>>,
@@ -106,14 +103,9 @@ export function useGridCellClickHandler(
     (e: google.maps.MapMouseEvent) => {
       if (!e.latLng) return;
 
-      // Get map instance from event or from ref
-      let mapInstance = (e.latLng as any).map;
+      const mapInstance = mapInstanceRef.current;
       if (!mapInstance) {
-        if (mapInstanceRef.current) {
-          mapInstance = mapInstanceRef.current;
-        } else {
-          return;
-        }
+        return;
       }
 
       // Grid drawing is zoom-gated for performance, but address selection should
@@ -153,7 +145,6 @@ export function useGridCellClickHandler(
       }
     },
     [
-      showGrid,
       isGridVisibleAtZoom,
       mapInstanceRef,
       setSelectedArea,

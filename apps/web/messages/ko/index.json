@@ -30,10 +30,16 @@
     "loading": "로딩 중...",
     "coordinates": {
       "title": "선택된 영역 좌표",
-      "copy": "복사"
+      "copy": "복사",
+      "share": "공유",
+      "copied": "그라운드 코드가 복사되었습니다",
+      "shareCopied": "공유 URL이 복사되었습니다"
     },
     "search": {
-      "placeholder": "위치 검색"
+      "placeholder": "그라운드 코드, 지역, 장소 검색",
+      "submit": "검색",
+      "noResults": "일치하는 그라운드 코드나 지역을 찾지 못했습니다",
+      "error": "검색에 실패했습니다"
     },
     "groundCode": "그라운드 코드",
     "encoding": "인코딩 중",
