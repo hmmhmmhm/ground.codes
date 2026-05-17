@@ -1,6 +1,6 @@
-"use client";
-
 import GoogleMap from "@/components/google-map";
+
+export const runtime = "edge";
 
 export default function SharedCodePage() {
   return (

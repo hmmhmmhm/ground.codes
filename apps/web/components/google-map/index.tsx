@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { FaCopy, FaShareAlt } from "react-icons/fa";
 import { GoogleMap } from "@react-google-maps/api";
