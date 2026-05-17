@@ -11,7 +11,7 @@ describe("Ground Code share URLs", () => {
         code: "서울-안방",
         body: "earth",
       }),
-    ).toBe("/%EC%84%9C%EC%9A%B8-%EC%95%88%EB%B0%A9");
+    ).toBe("/서울-안방");
   });
 
   test("uses explicit body prefixes for Moon and Mars codes", () => {
@@ -20,14 +20,14 @@ describe("Ground Code share URLs", () => {
         code: "Olympus Mons-Happy-Tiger",
         body: "mars",
       }),
-    ).toBe("/mars/Olympus%20Mons-Happy-Tiger");
+    ).toBe("/mars/Olympus Mons-Happy-Tiger");
 
     expect(
       buildGroundCodeSharePath({
         code: "Mare Tranquillitatis-Happy-Tiger",
         body: "moon",
       }),
-    ).toBe("/moon/Mare%20Tranquillitatis-Happy-Tiger");
+    ).toBe("/moon/Mare Tranquillitatis-Happy-Tiger");
   });
 
   test("parses Earth, Moon, and Mars share paths", () => {

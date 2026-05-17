@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FaCopy, FaShareAlt } from "react-icons/fa";
+import { FaShareAlt } from "react-icons/fa";
 import { GoogleMap } from "@react-google-maps/api";
 import { useMapContainer } from "./hooks/use-map-container";
 import MapMarkers from "./map-markers";
@@ -85,12 +85,6 @@ function GoogleMapComponent() {
       initialQuery={initialGroundSearchQuery}
     />
   );
-  const copyGroundCode = async () => {
-    if (!encodedCoordinates) return;
-    await navigator.clipboard?.writeText(encodedCoordinates);
-    setFeedbackMessage(t("map.coordinates.copied"));
-    window.setTimeout(() => setFeedbackMessage(null), 1800);
-  };
   const shareSelectedArea = async () => {
     if (!selectedArea) return;
 
@@ -114,9 +108,20 @@ function GoogleMapComponent() {
   };
   const selectedAreaPanel = selectedArea ? (
     <div
-      className="absolute bottom-[calc(env(safe-area-inset-bottom)+12px)] left-1/2 z-20 max-h-[42vh] w-[min(calc(100%-24px),30rem)] -translate-x-1/2 overflow-auto rounded-lg border border-white/20 bg-black/65 px-4 py-3 text-xs text-white shadow-lg backdrop-blur-md"
+      className="absolute bottom-[calc(env(safe-area-inset-bottom)+12px)] left-1/2 z-20 max-h-[42vh] w-[min(calc(100%-24px),30rem)] -translate-x-1/2 overflow-auto rounded-lg border border-white/20 bg-black/65 px-4 py-3 pr-14 text-xs text-white shadow-lg backdrop-blur-md"
       data-testid="selected-area-panel"
     >
+      {!isEncoding && encodedCoordinates && (
+        <button
+          type="button"
+          className="absolute right-3 top-3 inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-white/15 bg-black/35 px-2 py-1 text-xs text-white/85 backdrop-blur-md hover:bg-white/10"
+          onClick={shareSelectedArea}
+          aria-label={t("map.coordinates.share")}
+          title={t("map.coordinates.share")}
+        >
+          <FaShareAlt aria-hidden="true" />
+        </button>
+      )}
       <div className="font-mono">
         {selectedArea.lat.toFixed(6)}, {selectedArea.lng.toFixed(6)}
       </div>
@@ -129,28 +134,6 @@ function GoogleMapComponent() {
           precisionLabel: groundCodePrecisionLabel,
         })}
       </div>
-      {!isEncoding && encodedCoordinates && (
-        <div className="mt-3 flex gap-2">
-          <button
-            type="button"
-            className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-white/15 px-2 py-1 text-xs text-white/85 hover:bg-white/10"
-            onClick={copyGroundCode}
-            aria-label={t("map.coordinates.copy")}
-            title={t("map.coordinates.copy")}
-          >
-            <FaCopy aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-white/15 px-2 py-1 text-xs text-white/85 hover:bg-white/10"
-            onClick={shareSelectedArea}
-            aria-label={t("map.coordinates.share")}
-            title={t("map.coordinates.share")}
-          >
-            <FaShareAlt aria-hidden="true" />
-          </button>
-        </div>
-      )}
       {feedbackMessage && (
         <div className="mt-2 text-[11px] text-white/70">{feedbackMessage}</div>
       )}

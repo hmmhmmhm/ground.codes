@@ -19,8 +19,8 @@ export const buildGroundCodeSharePath = ({
   code,
   body,
 }: GroundCodeSharePath) => {
-  const encodedCode = encodeURIComponent(code);
-  return body === "earth" ? `/${encodedCode}` : `/${body}/${encodedCode}`;
+  const readableCode = code.trim();
+  return body === "earth" ? `/${readableCode}` : `/${body}/${readableCode}`;
 };
 
 const isCodeLikeShareSegment = (code: string) => {
