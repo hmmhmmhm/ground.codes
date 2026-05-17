@@ -15,9 +15,10 @@ export interface GroundCodeSearchResponse {
   results: GroundCodeSearchResult[];
 }
 
-const getApiBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_GROUND_CODES_API_URL ?? "https://api.ground.codes")
-    .replace(/\/+$/, "");
+const getApiBaseUrl = () => {
+  const configuredApiUrl = process.env.NEXT_PUBLIC_GROUND_CODES_API_URL?.trim();
+  return (configuredApiUrl || "https://api.ground.codes").replace(/\/+$/, "");
+};
 
 const postApi = async (path: string, body: unknown) => {
   const response = await fetch(`${getApiBaseUrl()}${path}`, {
