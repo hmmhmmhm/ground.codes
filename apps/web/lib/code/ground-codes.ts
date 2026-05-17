@@ -32,6 +32,21 @@ const postApi = async (path: string, body: unknown) => {
   return response;
 };
 
+const postApiTextWithFallback = async (
+  primaryPath: string,
+  fallbackPath: string,
+  body: unknown,
+) => {
+  try {
+    const response = await postApi(primaryPath, body);
+    return await response.text();
+  } catch (primaryError) {
+    console.warn("Ground Codes primary API request failed:", primaryError);
+    const response = await postApi(fallbackPath, body);
+    return await response.text();
+  }
+};
+
 /**
  * Encodes a set of coordinates into a ground code.
  */
@@ -48,19 +63,14 @@ export const encode = async ({
   precisionMeters?: number;
   body?: CelestialBody;
 }) => {
-  const response = await postApi(
-    "/v1/encode",
-    {
-      lat,
-      lng,
-      regionLevel: 2,
-      language,
-      precisionMeters,
-      body,
-    },
-  );
-
-  return await response.text();
+  return await postApiTextWithFallback("/v1/encode", "/encode", {
+    lat,
+    lng,
+    regionLevel: 2,
+    language,
+    precisionMeters,
+    body,
+  });
 };
 
 export const searchGroundCodes = async ({
