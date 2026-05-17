@@ -433,7 +433,6 @@ const Earth3DMap = ({
       `${markerPosition.lat},${markerPosition.lng},${markerPosition.altitude}`,
     );
     marker.setAttribute("altitude-mode", "clamp-to-ground");
-    marker.setAttribute("label", markerLabel);
     marker.setAttribute("title", markerLabel);
     map3d.append(marker);
     markerRef.current = marker;
@@ -462,7 +461,6 @@ const Earth3DMap = ({
     if (!markerRef.current || !markerPopoverRef.current) return;
 
     const markerLabel = getMarkerLabel(isEncoding, encodedCoordinates);
-    markerRef.current.setAttribute("label", markerLabel);
     markerRef.current.setAttribute("title", markerLabel);
     const content = markerPopoverRef.current.firstElementChild;
     if (content) {
