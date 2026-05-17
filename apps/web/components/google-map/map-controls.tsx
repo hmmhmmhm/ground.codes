@@ -89,6 +89,8 @@ const MapControls: React.FC<MapControlsProps> = ({
   const mapTypeOptions: EarthMapType[] = isEarth
     ? ["roadmap", "satellite", "earth3d"]
     : ["roadmap", "planetary3d"];
+  const mobileUpDesktopDownMenuPosition =
+    "absolute bottom-[45px] left-0 right-auto top-auto sm:bottom-auto sm:left-auto sm:right-0 sm:top-[45px]";
 
   const handleMapTypeChange = (newMapType: EarthMapType) => {
     selectMapType(newMapType);
@@ -246,7 +248,9 @@ const MapControls: React.FC<MapControlsProps> = ({
           </button>
 
           {showBodyOptions && (
-            <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer min-w-[132px] overflow-hidden">
+            <div
+              className={`${mobileUpDesktopDownMenuPosition} min-w-[132px] overflow-hidden rounded-lg border border-white/20 bg-black/30 backdrop-blur-md cursor-pointer`}
+            >
               <div className="flex flex-col">
                 {BODY_OPTIONS.map((option) => (
                   <button
@@ -301,7 +305,9 @@ const MapControls: React.FC<MapControlsProps> = ({
           </button>
 
           {showMapTypeOptions && (
-            <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer min-w-[144px] overflow-hidden">
+            <div
+              className={`${mobileUpDesktopDownMenuPosition} min-w-[144px] overflow-hidden rounded-lg border border-white/20 bg-black/30 backdrop-blur-md cursor-pointer`}
+            >
               <div className="flex flex-col">
                 {mapTypeOptions.map((option) => (
                   <button
@@ -348,7 +354,9 @@ const MapControls: React.FC<MapControlsProps> = ({
 
           {/* Language Options Dropdown */}
           {showLanguageOptions && (
-            <div className="absolute top-[45px] right-0 bg-black/30 backdrop-blur-md border border-white/20 rounded-lg cursor-pointer">
+            <div
+              className={`${mobileUpDesktopDownMenuPosition} rounded-lg border border-white/20 bg-black/30 backdrop-blur-md cursor-pointer`}
+            >
               <div className="flex flex-col">
                 {locales.map((localeOption) => (
                   <button
