@@ -25,9 +25,18 @@ const MapSearch: React.FC<MapSearchProps> = ({
 }) => {
   const { t } = useI18n();
   const [query, setQuery] = useState("");
+  const [placePredictions, setPlacePredictions] = useState<
+    google.maps.places.AutocompletePrediction[]
+  >([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const autocompleteServiceRef =
+    useRef<google.maps.places.AutocompleteService | null>(null);
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
+  const predictionCacheRef = useRef<
+    Map<string, google.maps.places.AutocompletePrediction[]>
+  >(new Map());
+  const predictionRequestIdRef = useRef(0);
 
   useEffect(() => {
     if (initialQuery && !query) {
@@ -78,12 +87,83 @@ const MapSearch: React.FC<MapSearchProps> = ({
     };
   }, [map, onPlaceSelect]);
 
+  useEffect(() => {
+    const trimmedQuery = query.trim();
+    const normalizedQuery = trimmedQuery.toLocaleLowerCase();
+    const requestId = predictionRequestIdRef.current + 1;
+    predictionRequestIdRef.current = requestId;
+
+    if (trimmedQuery.length < 2 || isGroundSearchLoading) {
+      setPlacePredictions([]);
+      return;
+    }
+
+    const cachedPredictions = predictionCacheRef.current.get(normalizedQuery);
+    if (cachedPredictions) {
+      setPlacePredictions(cachedPredictions);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      if (
+        typeof google === "undefined" ||
+        !google.maps?.places?.AutocompleteService
+      ) {
+        return;
+      }
+
+      autocompleteServiceRef.current ??=
+        new google.maps.places.AutocompleteService();
+
+      autocompleteServiceRef.current.getPlacePredictions(
+        {
+          input: trimmedQuery,
+        },
+        (predictions, status) => {
+          if (requestId !== predictionRequestIdRef.current) return;
+
+          const nextPredictions =
+            status === google.maps.places.PlacesServiceStatus.OK
+              ? (predictions ?? []).slice(0, 5)
+              : [];
+
+          predictionCacheRef.current.set(normalizedQuery, nextPredictions);
+          if (predictionCacheRef.current.size > 30) {
+            const oldestQuery = predictionCacheRef.current.keys().next().value;
+            if (oldestQuery) {
+              predictionCacheRef.current.delete(oldestQuery);
+            }
+          }
+
+          setPlacePredictions(nextPredictions);
+        }
+      );
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [isGroundSearchLoading, query]);
+
   const submitSearch = async (event: React.FormEvent) => {
     event.preventDefault();
     const trimmedQuery = (searchInputRef.current?.value ?? query).trim();
     if (!trimmedQuery || isGroundSearchLoading) return;
+    predictionRequestIdRef.current += 1;
+    setPlacePredictions([]);
     setQuery(trimmedQuery);
     await onGroundSearch(trimmedQuery);
+  };
+
+  const selectPlacePrediction = async (
+    prediction: google.maps.places.AutocompletePrediction
+  ) => {
+    if (isGroundSearchLoading) return;
+
+    predictionRequestIdRef.current += 1;
+    setQuery(prediction.description);
+    setPlacePredictions([]);
+    await onGroundSearch(prediction.description);
   };
 
   const translatedGroundSearchError = groundSearchError?.startsWith("map.")
@@ -102,6 +182,11 @@ const MapSearch: React.FC<MapSearchProps> = ({
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onInput={(event) => setQuery(event.currentTarget.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              setPlacePredictions([]);
+            }
+          }}
           placeholder={t("map.search.placeholder")}
           className="h-11 w-full bg-transparent py-2 pl-10 pr-12 text-sm text-white placeholder:text-white/70 focus:outline-none"
           aria-label={t("map.search.placeholder")}
@@ -147,6 +232,39 @@ const MapSearch: React.FC<MapSearchProps> = ({
           )}
         </button>
       </div>
+      {placePredictions.length > 0 && (
+        <div
+          className="mt-2 overflow-hidden rounded-lg border border-white/15 bg-black/75 text-white shadow-lg backdrop-blur-md"
+          role="listbox"
+        >
+          {placePredictions.map((prediction) => {
+            const mainText =
+              prediction.structured_formatting?.main_text ??
+              prediction.description;
+            const secondaryText =
+              prediction.structured_formatting?.secondary_text;
+
+            return (
+              <button
+                key={prediction.place_id}
+                type="button"
+                className="flex w-full flex-col border-b border-white/10 px-3 py-2 text-left last:border-b-0 hover:bg-white/10 focus:bg-white/10 focus:outline-none"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => selectPlacePrediction(prediction)}
+                role="option"
+                aria-selected="false"
+              >
+                <span className="truncate text-sm font-medium">{mainText}</span>
+                {secondaryText && (
+                  <span className="truncate text-xs text-white/60">
+                    {secondaryText}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
       {translatedGroundSearchError && (
         <div className="mx-auto mt-2 w-fit max-w-full rounded-md border border-red-300/30 bg-red-950/80 px-3 py-1 text-xs text-red-100 shadow-lg backdrop-blur-md">
           {translatedGroundSearchError}
