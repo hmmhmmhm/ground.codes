@@ -39,10 +39,26 @@ const region2ByLanguage: Record<string, Region3Row[]> = {
   japanese: region2Japanese,
 };
 
+const englishDatasets: Array<[string, Region3Row[]]> = [
+  ["region-1", region1],
+  ["region-2", region2English],
+  ["region-3", region3English],
+];
+
 const findRegionNameByCode = (rows: Region3Row[], code: string) =>
   rows.find((row) => row.code === code)?.name;
 
 describe("region-3 dataset", () => {
+  test("keeps English earth region names ASCII-only for readable URLs", () => {
+    const nonAsciiNames = englishDatasets.flatMap(([datasetName, rows]) =>
+      rows
+        .filter((row) => /[^\x20-\x7E]/.test(row.name))
+        .map((row) => `${datasetName}:${row.name}`),
+    );
+
+    assert.deepEqual(nonAsciiNames, []);
+  });
+
   test("keeps reviewed localized earth region names translated", () => {
     assert.equal(findRegionNameByCode(region2Korean, "1847050"), "애월");
     assert.equal(

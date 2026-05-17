@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { decode, encode, findClosestRegion } from "../src/index.js";
+import {
+  decode,
+  encode,
+  findClosestRegion,
+  findRegionByCodeOrName,
+} from "../src/index.js";
 
 const assertClose = (actual: number, expected: number, tolerance: number) => {
   assert.ok(
@@ -41,6 +46,17 @@ describe("region fallback", () => {
     const decoded = await decode(encoded);
     assertClose(decoded.lat, target.lat, 0.0001);
     assertClose(decoded.lng, target.lng, 0.0001);
+  });
+
+  test("matches legacy accented English region URL labels against ASCII data", async () => {
+    const region = await findRegionByCodeOrName("Möllereisstrom", {
+      regionLevel: 3,
+      language: "english",
+    });
+
+    assert.equal(region?.name, "Mollereisstrom");
+    assert.equal(region?.lat, -82);
+    assert.equal(region?.lng, -63);
   });
 
   test("uses word-set encoding for region-1 when selected as a region-2 fallback", async () => {

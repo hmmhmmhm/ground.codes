@@ -6,7 +6,7 @@
     "long": 66.59216131095278
   },
   {
-    "name": "Åland Islands",
+    "name": "Aland Islands",
     "code": "AX",
     "lat": 60.179,
     "long": 19.916
@@ -5017,7 +5017,7 @@
   },
   {
     "code": "TMR",
-    "name": "Aguenar – Hadj Bey Akhamok Airport",
+    "name": "Aguenar Hadj Bey Akhamok Airport",
     "lat": 22.8115005493,
     "long": 5.4510798454
   },
@@ -5101,7 +5101,7 @@
   },
   {
     "code": "TLM",
-    "name": "Zenata – Messali El Hadj Airport",
+    "name": "Zenata Messali El Hadj Airport",
     "lat": 35.0167007446,
     "long": -1.4500000477
   },
@@ -17047,7 +17047,7 @@
   },
   {
     "code": "GRK",
-    "name": "Robert Gray  Army Air Field Airport",
+    "name": "Robert Gray Army Air Field Airport",
     "lat": 31.067199707,
     "long": -97.8289031982
   },
@@ -17365,7 +17365,7 @@
   },
   {
     "code": "HLR",
-    "name": "Yoakum–DeFrenn Army Heliport",
+    "name": "Yoakum DeFrenn Army Heliport",
     "lat": 31.1387004852,
     "long": -97.7145004272
   },
@@ -22987,7 +22987,7 @@
   },
   {
     "code": "RMU",
-    "name": "Región de Murcia International Airport",
+    "name": "Region de Murcia International Airport",
     "lat": 37.803,
     "long": -1.125
   },
@@ -24709,7 +24709,7 @@
   },
   {
     "code": "VCE",
-    "name": "Venezia / Tessera -  Marco Polo Airport",
+    "name": "Venezia / Tessera - Marco Polo Airport",
     "lat": 45.5052986145,
     "long": 12.3519001007
   },
@@ -25603,7 +25603,7 @@
   },
   {
     "code": "OGU",
-    "name": "Ordu–Giresun Airport",
+    "name": "Ordu Giresun Airport",
     "lat": 40.966667,
     "long": 38.08
   },
@@ -25771,7 +25771,7 @@
   },
   {
     "code": "RZV",
-    "name": "Rize–Artvin Airport",
+    "name": "Rize Artvin Airport",
     "lat": 41.169167,
     "long": 40.828889
   },
@@ -33973,7 +33973,7 @@
   },
   {
     "code": "JHF",
-    "name": "São Paulo Catarina Executive Airport",
+    "name": "Sao Paulo Catarina Executive Airport",
     "lat": -23.426944,
     "long": -47.165833
   },
@@ -34441,7 +34441,7 @@
   },
   {
     "code": "WPA",
-    "name": "Cabo 1° Juan Roman Airport",
+    "name": "Cabo 1 deg Juan Roman Airport",
     "lat": -45.3992004395,
     "long": -72.6703033447
   },
@@ -34477,7 +34477,7 @@
   },
   {
     "code": "YAI",
-    "name": "Gral. Bernardo O´Higgins Airport",
+    "name": "Gral. Bernardo O'Higgins Airport",
     "lat": -36.5825004578,
     "long": -72.0314025879
   },
@@ -37525,7 +37525,7 @@
   },
   {
     "code": "GGB",
-    "name": "Fazenda Olhos D`agua Airport",
+    "name": "Fazenda Olhos D'agua Airport",
     "lat": -14.0194444656,
     "long": -52.1522216797
   },
@@ -40255,7 +40255,7 @@
   },
   {
     "code": "SAI",
-    "name": "Siem Reap–Angkor International Airport",
+    "name": "Siem Reap Angkor International Airport",
     "lat": 13.375278,
     "long": 104.220833
   },
@@ -41815,7 +41815,7 @@
   },
   {
     "code": "THD",
-    "name": "Thọ Xuân Airport",
+    "name": "Tho Xuan Airport",
     "lat": 19.901667,
     "long": 105.467778
   },
@@ -90133,7 +90133,7 @@
   },
   {
     "code": "EDGW",
-    "name": "Wolfhagen „Graner Berg“ Airport",
+    "name": "Wolfhagen \"Graner Berg\" Airport",
     "lat": 51.307220459,
     "long": 9.17527771
   },
@@ -106927,7 +106927,7 @@
   },
   {
     "code": "K3TE",
-    "name": "Meyers–Diver's Airport",
+    "name": "Meyers Diver's Airport",
     "lat": 42.02511083,
     "long": -83.93929694
   },
@@ -107959,7 +107959,7 @@
   },
   {
     "code": "K5M0",
-    "name": "Hartselle–Morgan County Regional Airport",
+    "name": "Hartselle Morgan County Regional Airport",
     "lat": 34.40822222,
     "long": -86.93294444
   },
@@ -109237,7 +109237,7 @@
   },
   {
     "code": "K8D4",
-    "name": "Miller–Sparta Airport",
+    "name": "Miller Sparta Airport",
     "lat": 43.127222,
     "long": -85.678333
   },
@@ -110269,7 +110269,7 @@
   },
   {
     "code": "KBKV",
-    "name": "Brooksville–Tampa Bay Regional Airport",
+    "name": "Brooksville Tampa Bay Regional Airport",
     "lat": 28.47360039,
     "long": -82.45539856
   },
@@ -112297,7 +112297,7 @@
   },
   {
     "code": "KGDK",
-    "name": "Greene County–Lewis A. Jackson Regional Airport",
+    "name": "Greene County Lewis A. Jackson Regional Airport",
     "lat": 39.691111,
     "long": -83.991944
   },
@@ -122893,7 +122893,7 @@
   },
   {
     "code": "LOXT",
-    "name": "Brumowski  Air Base",
+    "name": "Brumowski Air Base",
     "lat": 48.3166999817,
     "long": 16.1166992188
   },
@@ -128077,7 +128077,7 @@
   },
   {
     "code": "MS70",
-    "name": "Mc Lain  -Calico Airport",
+    "name": "Mc Lain -Calico Airport",
     "lat": 32.7354011536,
     "long": -88.9259033203
   },
@@ -144115,7 +144115,7 @@
   },
   {
     "code": "SIKZ",
-    "name": "Fazenda Olho D`Agua Airport",
+    "name": "Fazenda Olho D'Agua Airport",
     "lat": -5.6666669846,
     "long": -43.5349998474
   },
@@ -145843,7 +145843,7 @@
   },
   {
     "code": "SJCD",
-    "name": "Fazenda Pingo D`Agua Airport",
+    "name": "Fazenda Pingo D'Agua Airport",
     "lat": -17.7211112976,
     "long": -53.9375
   },
@@ -145855,7 +145855,7 @@
   },
   {
     "code": "SJCF",
-    "name": "Fazenda Estrela D`Alva Airport",
+    "name": "Fazenda Estrela D'Alva Airport",
     "lat": -13.1891670227,
     "long": -52.3069458008
   },
@@ -147331,7 +147331,7 @@
   },
   {
     "code": "SJPU",
-    "name": "Pau D`Arco Airport",
+    "name": "Pau D'Arco Airport",
     "lat": -7.1199998856,
     "long": -56.8144454956
   },
@@ -152755,7 +152755,7 @@
   },
   {
     "code": "SPGP",
-    "name": "Gueppi­ Airport",
+    "name": "Gueppi Airport",
     "lat": -0.1190560013,
     "long": -75.2479019165
   },
@@ -153637,7 +153637,7 @@
   },
   {
     "code": "SSDT",
-    "name": "Fazenda Pau D`Arco Airport",
+    "name": "Fazenda Pau D'Arco Airport",
     "lat": -7.943611145,
     "long": -50.1763877869
   },
@@ -155227,7 +155227,7 @@
   },
   {
     "code": "SSSA",
-    "name": "Fazenda Sant`anna do Apa Airport",
+    "name": "Fazenda Sant'anna do Apa Airport",
     "lat": -22.0266666412,
     "long": -56.193611145
   },
@@ -155347,7 +155347,7 @@
   },
   {
     "code": "SSTI",
-    "name": "Arraial d`Ajuda Airport",
+    "name": "Arraial d'Ajuda Airport",
     "lat": -16.457778,
     "long": -39.165833
   },
@@ -157915,7 +157915,7 @@
   },
   {
     "code": "SVVQ",
-    "name": "Venelac  Airport",
+    "name": "Venelac Airport",
     "lat": 10.2427997589,
     "long": -70.5018005371
   },
@@ -160087,7 +160087,7 @@
   },
   {
     "code": "SWTX",
-    "name": "Fazenda Olho D`Agua Airport",
+    "name": "Fazenda Olho D'Agua Airport 2",
     "lat": -16.1452789307,
     "long": -52.9713897705
   },
@@ -160279,7 +160279,7 @@
   },
   {
     "code": "SWVT",
-    "name": "Fazenda Estrela D`Alva Airport",
+    "name": "Fazenda Estrela D'Alva Airport 2",
     "lat": -12.1233329773,
     "long": -52.6458320618
   },
@@ -176725,7 +176725,7 @@
   },
   {
     "code": "SLAL",
-    "name": "AlcantarÃ­ International Airport",
+    "name": "Alcantari International Airport",
     "lat": -19.24627,
     "long": -65.15104
   },

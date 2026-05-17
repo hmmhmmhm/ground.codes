@@ -255,6 +255,24 @@ const toRegionResult = (region: Region) => ({
   distanceKm: region.distanceKm,
 });
 
+const normalizeRegionLookupKey = (value: string) =>
+  value
+    .replace(/Æ/g, "Ae")
+    .replace(/æ/g, "ae")
+    .replace(/Œ/g, "Oe")
+    .replace(/œ/g, "oe")
+    .replace(/Ø/g, "O")
+    .replace(/ø/g, "o")
+    .replace(/Ð/g, "D")
+    .replace(/ð/g, "d")
+    .replace(/Þ/g, "Th")
+    .replace(/þ/g, "th")
+    .replace(/ß/g, "ss")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+
 export const findClosestRegion = async (
   {
     lat,
@@ -399,7 +417,7 @@ export const findRegionsByQuery = async (
       maxResults = 5,
     } = options ?? {};
 
-    const normalizedSearch = codeOrName.toLowerCase().trim();
+    const normalizedSearch = normalizeRegionLookupKey(codeOrName);
     const results: Array<{
       lat: number;
       lng: number;
@@ -412,42 +430,42 @@ export const findRegionsByQuery = async (
 
     const addMatches = async (candidateRegionLevel: number) => {
       const regions = await loadRegions(candidateRegionLevel, language, body);
-      const exactMatches = regions.filter(
-        (region) =>
-          region.code.toLowerCase() === normalizedSearch ||
-          region.name.toLowerCase() === normalizedSearch,
+      const lookupRows = regions.map((region) => ({
+        region,
+        codeKey: normalizeRegionLookupKey(region.code),
+        nameKey: normalizeRegionLookupKey(region.name),
+      }));
+      const exactMatches = lookupRows.filter(
+        ({ codeKey, nameKey }) =>
+          codeKey === normalizedSearch || nameKey === normalizedSearch,
       );
-      const partialMatches = regions
+      const partialMatches = lookupRows
         .filter(
-          (region) =>
-            !exactMatches.includes(region) &&
-            (region.code.toLowerCase().includes(normalizedSearch) ||
-              region.name.toLowerCase().includes(normalizedSearch)),
+          (row) =>
+            !exactMatches.includes(row) &&
+            (row.codeKey.includes(normalizedSearch) ||
+              row.nameKey.includes(normalizedSearch)),
         )
         .sort((a, b) => {
-          const aName = a.name.toLowerCase();
-          const bName = b.name.toLowerCase();
-          const aCode = a.code.toLowerCase();
-          const bCode = b.code.toLowerCase();
-          const aRank = aName.startsWith(normalizedSearch)
+          const aRank = a.nameKey.startsWith(normalizedSearch)
             ? 0
-            : aCode.startsWith(normalizedSearch)
+            : a.codeKey.startsWith(normalizedSearch)
               ? 1
               : 2;
-          const bRank = bName.startsWith(normalizedSearch)
+          const bRank = b.nameKey.startsWith(normalizedSearch)
             ? 0
-            : bCode.startsWith(normalizedSearch)
+            : b.codeKey.startsWith(normalizedSearch)
               ? 1
               : 2;
 
           return (
             aRank - bRank ||
-            (b.population ?? 0) - (a.population ?? 0) ||
-            a.name.length - b.name.length
+            (b.region.population ?? 0) - (a.region.population ?? 0) ||
+            a.region.name.length - b.region.name.length
           );
         });
 
-      for (const region of [...exactMatches, ...partialMatches]) {
+      for (const { region } of [...exactMatches, ...partialMatches]) {
         const key = `${body}:${candidateRegionLevel}:${region.code}:${region.name}`;
         if (seen.has(key)) continue;
         seen.add(key);
