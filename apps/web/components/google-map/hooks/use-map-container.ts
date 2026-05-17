@@ -777,14 +777,59 @@ export const useMapContainer = () => {
       try {
         setIsGroundSearchLoading(true);
         setGroundSearchError(null);
-        const response = await searchGroundCodes({
-          query: trimmedQuery,
-          language: getGroundCodeLanguage(locale),
-          body: searchBody,
-          maxResults: 5,
-        });
-        setGroundSearchResults(response.results);
-        const result = response.results[0];
+        let results: GroundCodeSearchResult[] = [];
+
+        try {
+          const response = await searchGroundCodes({
+            query: trimmedQuery,
+            language: getGroundCodeLanguage(locale),
+            body: searchBody,
+            maxResults: 5,
+          });
+          results = response.results;
+        } catch (apiError) {
+          console.warn("Ground code API search unavailable:", apiError);
+        }
+
+        if (results.length === 0 && searchBody === "earth") {
+          const geocodedResult = await new Promise<GroundCodeSearchResult | null>(
+            (resolve) => {
+              if (typeof google === "undefined" || !google.maps?.Geocoder) {
+                resolve(null);
+                return;
+              }
+
+              const geocoder = new google.maps.Geocoder();
+              geocoder.geocode({ address: trimmedQuery }, (geocodeResults, status) => {
+                if (
+                  status !== google.maps.GeocoderStatus.OK ||
+                  !geocodeResults?.[0]?.geometry?.location
+                ) {
+                  resolve(null);
+                  return;
+                }
+
+                const geocodeResult = geocodeResults[0];
+                const location = geocodeResult.geometry.location;
+                resolve({
+                  type: "region",
+                  label: geocodeResult.formatted_address ?? trimmedQuery,
+                  lat: location.lat(),
+                  lng: location.lng(),
+                  body: "earth",
+                  regionLevel: 2,
+                });
+              });
+            },
+          );
+
+          if (geocodedResult) {
+            results = [geocodedResult];
+          }
+        }
+
+        setGroundSearchResults(results);
+        const result = results[0];
 
         if (!result) {
           setGroundSearchError("map.search.noResults");
