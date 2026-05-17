@@ -191,6 +191,9 @@ export const useMapContainer = () => {
 
   // Selected area state
   const [selectedArea, setSelectedArea] = useState<Coordinates | null>(null);
+  const [selectedAreaAddress, setSelectedAreaAddress] = useState<string | null>(
+    null,
+  );
 
   // Search result state
   const [searchedPlace, setSearchedPlace] =
@@ -674,6 +677,49 @@ export const useMapContainer = () => {
     }
   }, [selectedArea, encodeSelectedAreaCoordinates]);
 
+  useEffect(() => {
+    if (!selectedArea) {
+      setSelectedAreaAddress(null);
+      return;
+    }
+
+    if (
+      !isEarth ||
+      !hasGoogleMapsApiKey ||
+      !isGoogleMapsLoaded ||
+      typeof google === "undefined" ||
+      !google.maps?.Geocoder
+    ) {
+      setSelectedAreaAddress(null);
+      return;
+    }
+
+    let isActive = true;
+    const geocoder = new google.maps.Geocoder();
+
+    geocoder.geocode({ location: selectedArea }, (results, status) => {
+      if (!isActive) return;
+
+      if (status !== google.maps.GeocoderStatus.OK || !results?.length) {
+        setSelectedAreaAddress(null);
+        return;
+      }
+
+      setSelectedAreaAddress(results[0]?.formatted_address ?? null);
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [
+    hasGoogleMapsApiKey,
+    isEarth,
+    isGoogleMapsLoaded,
+    selectedArea,
+    selectedArea?.lat,
+    selectedArea?.lng,
+  ]);
+
   // Initialize InfoWindow
   useEffect(() => {
     if (hasGoogleMapsApiKey && isGoogleMapsLoaded && !infoWindow) {
@@ -692,6 +738,7 @@ export const useMapContainer = () => {
       }
 
       setSearchedPlace(place);
+      setSelectedAreaAddress(place.formatted_address ?? place.name ?? null);
 
       // Adjust map view based on place geometry
       if (place.geometry.viewport) {
@@ -758,6 +805,11 @@ export const useMapContainer = () => {
         setZoom(nextZoom);
         userZoomRef.current = nextZoom;
         setSelectedArea(nextLocation);
+        setSelectedAreaAddress(
+          resultBody === "earth" && result.type !== "ground-code"
+            ? result.label
+            : null,
+        );
         setShowInfoWindow(true);
 
         if (map && resultBody === body) {
@@ -1018,6 +1070,7 @@ export const useMapContainer = () => {
 
     // Selected area state
     selectedArea,
+    selectedAreaAddress,
     setSelectedArea,
 
     // Search state

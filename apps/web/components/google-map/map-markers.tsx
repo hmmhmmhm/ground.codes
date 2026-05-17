@@ -172,29 +172,31 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
           options={{
             pixelOffset: new google.maps.Size(0, -5),
             disableAutoPan: false,
-            maxWidth: 200,
-            minWidth: 150,
+            maxWidth: 260,
+            minWidth: 180,
           }}
         >
-          <div className="relative p-1 max-w-[200px]">
+          <div className="relative max-w-[240px] px-3 py-2.5">
             <button
-              className="absolute top-0 right-0 w-5 h-5 flex items-center justify-center bg-transparent border-none cursor-pointer text-base font-bold text-white p-0 m-0 leading-none focus:outline-none focus-visible:outline-none"
+              className="absolute right-1 top-1 flex h-6 w-6 cursor-pointer items-center justify-center border-none bg-transparent p-0 text-base font-bold leading-none text-white focus:outline-none focus-visible:outline-none"
               onClick={() => setShowInfoWindow(false)}
               aria-label="Close"
             >
               ×
             </button>
-            <div className="font-medium mb-1 pr-5 text-white">
+            <div className="mb-1 pr-6 text-[12px] font-medium text-white">
               {t("map.groundCode")}:
             </div>
             {isEncoding ? (
-              <div className="font-bold text-white">{t("map.encoding")}...</div>
+              <div className="text-[13px] font-bold text-white">
+                {t("map.encoding")}...
+              </div>
             ) : (
-              <div className="font-bold break-words text-white">
+              <div className="break-words text-[13px] font-bold leading-snug text-white">
                 {encodedCoordinates}
               </div>
             )}
-            <div className="mt-1 text-xs text-white/70">
+            <div className="mt-1.5 text-[11px] leading-snug text-white/70">
               {groundCodePrecisionLabel}
             </div>
           </div>

@@ -12,6 +12,7 @@ import WeatherInfo from "./weather-info";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import Earth3DMap from "./earth-3d-map";
 import Planetary3DMap from "./planetary-3d-map";
+import { getSelectedAreaDetailText } from "./selected-area-summary";
 import { buildGroundCodeSharePath } from "@/lib/code/share-url";
 import {
   DEFAULT_GROUND_CODE_PRECISION_METERS,
@@ -55,6 +56,7 @@ function GoogleMapComponent() {
     resetMapHeading,
     setMapHeading,
     locationMode,
+    selectedAreaAddress,
     // Place Details state
     placeDetailsVisible,
     selectedPlaceId,
@@ -112,7 +114,7 @@ function GoogleMapComponent() {
   };
   const selectedAreaPanel = selectedArea ? (
     <div
-      className="absolute bottom-[calc(env(safe-area-inset-bottom)+12px)] left-1/2 z-20 max-h-[38vh] w-[min(calc(100%-24px),28rem)] -translate-x-1/2 overflow-auto rounded-lg border border-white/20 bg-black/60 p-3 text-xs text-white shadow-lg backdrop-blur-md"
+      className="absolute bottom-[calc(env(safe-area-inset-bottom)+12px)] left-1/2 z-20 max-h-[42vh] w-[min(calc(100%-24px),30rem)] -translate-x-1/2 overflow-auto rounded-lg border border-white/20 bg-black/65 px-4 py-3 text-xs text-white shadow-lg backdrop-blur-md"
       data-testid="selected-area-panel"
     >
       <div className="font-medium">{t("map.coordinates.title")}</div>
@@ -122,8 +124,11 @@ function GoogleMapComponent() {
       <div className="mt-2 break-all text-white/80">
         {isEncoding ? t("map.encoding") : encodedCoordinates}
       </div>
-      <div className="mt-1 text-[11px] text-white/60">
-        {groundCodePrecisionLabel}
+      <div className="mt-2 max-h-14 overflow-auto break-words text-[11px] leading-snug text-white/65 sm:max-h-none">
+        {getSelectedAreaDetailText({
+          address: isEarth ? selectedAreaAddress : null,
+          precisionLabel: groundCodePrecisionLabel,
+        })}
       </div>
       {!isEncoding && encodedCoordinates && (
         <div className="mt-3 flex gap-2">
@@ -241,6 +246,7 @@ function GoogleMapComponent() {
           mapHeading={mapHeading}
           onCameraHeadingChange={setMapHeading}
           selectedArea={selectedArea}
+          selectedAreaAddress={selectedAreaAddress}
           showGrid={showGrid}
           setSelectedArea={setSelectedArea}
           userLocation={userLocation}
@@ -279,6 +285,8 @@ function GoogleMapComponent() {
           hasSelectedArea: Boolean(selectedArea),
         }}
       />
+
+      {selectedAreaPanel}
 
       {planetaryAttribution && !isPlanetary3D && (
         <div className="absolute left-[10px] bottom-[10px] z-10 bg-black/40 backdrop-blur-md border border-white/20 rounded-md px-2 py-1 text-[11px] text-white/80">

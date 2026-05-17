@@ -616,10 +616,10 @@ const Planetary3DMap = ({
         font: "600 13px sans-serif",
         showBackground: true,
         backgroundColor: Cesium.Color.BLACK.withAlpha(0.58),
-        backgroundPadding: new Cesium.Cartesian2(8, 5),
+        backgroundPadding: new Cesium.Cartesian2(12, 8),
         outlineColor: Cesium.Color.BLACK,
         outlineWidth: 2,
-        pixelOffset: new Cesium.Cartesian2(0, -52),
+        pixelOffset: new Cesium.Cartesian2(0, -58),
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
@@ -651,19 +651,6 @@ const Planetary3DMap = ({
       >
         {PLANETARY_FALLBACK_LABELS[body]}
       </div>
-      {selectedArea && (
-        <div className="absolute left-1/2 bottom-[18px] z-10 w-[min(460px,calc(100%-24px))] -translate-x-1/2 rounded-lg border border-white/20 bg-black/50 px-3 py-2 text-sm text-white shadow-lg backdrop-blur-md">
-          <div className="text-xs text-white/70">
-            {selectedArea.lat.toFixed(6)}, {selectedArea.lng.toFixed(6)}
-          </div>
-          <div className="mt-1 break-words font-medium">
-            {isEncoding ? "Encoding..." : encodedCoordinates}
-          </div>
-          <div className="mt-1 text-[11px] text-white/60">
-            {groundCodePrecisionLabel}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

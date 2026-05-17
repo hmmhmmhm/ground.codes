@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Coordinates } from "./types";
+import { getSelectedAreaDetailText } from "./selected-area-summary";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import {
   DEFAULT_GROUND_CODE_PRECISION_METERS,
@@ -13,6 +14,7 @@ type Earth3DMapProps = {
   mapHeading: number;
   onCameraHeadingChange: (heading: number) => void;
   selectedArea: Coordinates | null;
+  selectedAreaAddress?: string | null;
   showGrid: boolean;
   setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>;
   userLocation: Coordinates | null;
@@ -251,6 +253,7 @@ const Earth3DMap = ({
   mapHeading,
   onCameraHeadingChange,
   selectedArea,
+  selectedAreaAddress,
   showGrid,
   setSelectedArea,
   userLocation,
@@ -456,6 +459,8 @@ const Earth3DMap = ({
     popover.positionAnchor = marker;
     const content = document.createElement("div");
     content.style.maxWidth = "280px";
+    content.style.minWidth = "180px";
+    content.style.padding = "10px 12px";
     content.style.wordBreak = "break-word";
     content.style.fontSize = "13px";
     content.style.fontWeight = "600";
@@ -467,7 +472,10 @@ const Earth3DMap = ({
     precision.style.fontSize = "11px";
     precision.style.fontWeight = "500";
     precision.style.opacity = "0.72";
-    precision.textContent = groundCodePrecisionLabel;
+    precision.textContent = getSelectedAreaDetailText({
+      address: selectedAreaAddress,
+      precisionLabel: groundCodePrecisionLabel,
+    });
     content.append(label, precision);
     popover.append(content);
     map3d.append(popover);
@@ -478,6 +486,7 @@ const Earth3DMap = ({
     isEncoding,
     mapReady,
     selectedArea,
+    selectedAreaAddress,
   ]);
 
   useEffect(() => {
@@ -494,10 +503,18 @@ const Earth3DMap = ({
       label.textContent = markerLabel;
     }
     if (precision && precision !== label) {
-      precision.textContent = groundCodePrecisionLabel;
+      precision.textContent = getSelectedAreaDetailText({
+        address: selectedAreaAddress,
+        precisionLabel: groundCodePrecisionLabel,
+      });
     }
     markerPopoverRef.current.open = true;
-  }, [encodedCoordinates, groundCodePrecisionLabel, isEncoding]);
+  }, [
+    encodedCoordinates,
+    groundCodePrecisionLabel,
+    isEncoding,
+    selectedAreaAddress,
+  ]);
 
   useEffect(() => {
     const map3d = mapRef.current;
@@ -543,23 +560,10 @@ const Earth3DMap = ({
   }, [mapReady, setSelectedArea, userLocation]);
 
   return (
-    <div className="absolute inset-0 bg-black" ref={containerRef}>
+    <div className="earth-3d-map absolute inset-0 bg-black" ref={containerRef}>
       {loadFailed && (
         <div className="absolute inset-0 flex items-center justify-center text-sm text-white/80">
           3D map unavailable
-        </div>
-      )}
-      {selectedArea && (
-        <div className="absolute left-1/2 bottom-[18px] z-10 w-[min(460px,calc(100%-24px))] -translate-x-1/2 rounded-lg border border-white/20 bg-black/50 px-3 py-2 text-sm text-white shadow-lg backdrop-blur-md">
-          <div className="text-xs text-white/70">
-            {selectedArea.lat.toFixed(6)}, {selectedArea.lng.toFixed(6)}
-          </div>
-          <div className="mt-1 break-words font-medium">
-            {isEncoding ? "Encoding..." : encodedCoordinates}
-          </div>
-          <div className="mt-1 text-[11px] text-white/60">
-            {groundCodePrecisionLabel}
-          </div>
         </div>
       )}
     </div>

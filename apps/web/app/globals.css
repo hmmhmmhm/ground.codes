@@ -2,6 +2,8 @@
 
 body {
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  touch-action: manipulation;
 }
 
 /* Remove Google from the Google Maps search bar */
@@ -46,6 +48,17 @@ button.gm-ui-hover-effect,
 .planetary-3d-map.hide-cesium-ion-credit .cesium-credit-textContainer,
 .planetary-3d-map.hide-cesium-ion-credit .cesium-widget-credits {
   display: none !important;
+}
+
+.map-container,
+.earth-3d-map,
+.earth-3d-map gmp-map-3d,
+.planetary-3d-map,
+.planetary-3d-map .cesium-viewer,
+.planetary-3d-map .cesium-widget,
+.planetary-3d-map canvas {
+  overscroll-behavior: contain;
+  touch-action: none;
 }
 
 @media (max-width: 640px) {
