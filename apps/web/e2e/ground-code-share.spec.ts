@@ -22,8 +22,8 @@ test("opens a canonical Earth Ground Code share URL", async ({ page }) => {
   await expect((await encodeResponse).ok()).toBe(true);
 
   await expect(page.getByText(/37\.566000/).first()).toBeVisible();
-  await expect(page.getByRole("button", { name: /Copy|복사/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /Share|공유/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Copy|복사/ })).toHaveCount(0);
 });
 
 test("searches partial region names and shows selectable results", async ({

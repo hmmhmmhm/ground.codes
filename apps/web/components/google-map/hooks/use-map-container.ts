@@ -852,18 +852,31 @@ export const useMapContainer = () => {
               }
 
               const geocoder = new google.maps.Geocoder();
+              let settled = false;
+              const timeoutId = window.setTimeout(() => {
+                if (settled) return;
+                settled = true;
+                resolve(null);
+              }, 3_500);
+              const finish = (result: GroundCodeSearchResult | null) => {
+                if (settled) return;
+                settled = true;
+                window.clearTimeout(timeoutId);
+                resolve(result);
+              };
+
               geocoder.geocode({ address: trimmedQuery }, (geocodeResults, status) => {
                 if (
                   status !== google.maps.GeocoderStatus.OK ||
                   !geocodeResults?.[0]?.geometry?.location
                 ) {
-                  resolve(null);
+                  finish(null);
                   return;
                 }
 
                 const geocodeResult = geocodeResults[0];
                 const location = geocodeResult.geometry.location;
-                resolve({
+                finish({
                   type: "region",
                   label: geocodeResult.formatted_address ?? trimmedQuery,
                   lat: location.lat(),
