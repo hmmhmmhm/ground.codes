@@ -5,6 +5,11 @@ import {
   METERS_PER_DEGREE_BY_BODY,
   PLANETARY_BODY_CONFIGS,
 } from "@/lib/map/celestial-bodies";
+import {
+  DEFAULT_GROUND_CODE_PRECISION_METERS,
+  formatPrecisionMeters,
+} from "@/lib/code/ground-codes";
+import { useI18n } from "@/lib/i18n/i18n-context";
 import { Coordinates } from "./types";
 
 type Planetary3DMapProps = {
@@ -261,6 +266,10 @@ const Planetary3DMap = ({
   showGrid,
   setSelectedArea,
 }: Planetary3DMapProps) => {
+  const { t } = useI18n();
+  const groundCodePrecisionLabel = t("map.coordinates.precision", {
+    precision: formatPrecisionMeters(DEFAULT_GROUND_CODE_PRECISION_METERS),
+  });
   const containerRef = useRef<HTMLDivElement | null>(null);
   const viewerRef = useRef<CesiumViewer | null>(null);
   const handlerRef = useRef<CesiumEventHandler | null>(null);
@@ -584,6 +593,8 @@ const Planetary3DMap = ({
     if (!selectedArea) return;
 
     const ellipsoid = getEllipsoid(Cesium, body);
+    const markerLabel =
+      isEncoding || !encodedCoordinates ? "Encoding..." : encodedCoordinates;
     markerRef.current = viewer.entities.add({
       position: Cesium.Cartesian3.fromDegrees(
         selectedArea.lng,
@@ -600,10 +611,7 @@ const Planetary3DMap = ({
         scaleByDistance: new Cesium.NearFarScalar(2000, 1.15, 6500000, 0.72),
       },
       label: {
-        text:
-          isEncoding || !encodedCoordinates
-            ? "Encoding..."
-            : encodedCoordinates,
+        text: `${markerLabel}\n${groundCodePrecisionLabel}`,
         fillColor: Cesium.Color.WHITE,
         font: "600 13px sans-serif",
         showBackground: true,
@@ -616,7 +624,13 @@ const Planetary3DMap = ({
         disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
     });
-  }, [body, encodedCoordinates, isEncoding, selectedArea]);
+  }, [
+    body,
+    encodedCoordinates,
+    groundCodePrecisionLabel,
+    isEncoding,
+    selectedArea,
+  ]);
 
   return (
     <div
@@ -644,6 +658,9 @@ const Planetary3DMap = ({
           </div>
           <div className="mt-1 break-words font-medium">
             {isEncoding ? "Encoding..." : encodedCoordinates}
+          </div>
+          <div className="mt-1 text-[11px] text-white/60">
+            {groundCodePrecisionLabel}
           </div>
         </div>
       )}

@@ -33,7 +33,8 @@
       "copy": "복사",
       "share": "공유",
       "copied": "그라운드 코드가 복사되었습니다",
-      "shareCopied": "공유 URL이 복사되었습니다"
+      "shareCopied": "공유 URL이 복사되었습니다",
+      "precision": "정밀도 약 {precision}"
     },
     "search": {
       "placeholder": "그라운드 코드, 지역, 장소 검색",

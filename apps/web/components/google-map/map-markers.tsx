@@ -6,6 +6,10 @@ import {
   OverlayView,
 } from "@react-google-maps/api";
 import { useI18n } from "@/lib/i18n/i18n-context";
+import {
+  DEFAULT_GROUND_CODE_PRECISION_METERS,
+  formatPrecisionMeters,
+} from "@/lib/code/ground-codes";
 
 interface MapMarkersProps {
   userLocation: {
@@ -34,6 +38,9 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
   setShowInfoWindow,
 }) => {
   const { t } = useI18n();
+  const groundCodePrecisionLabel = t("map.coordinates.precision", {
+    precision: formatPrecisionMeters(DEFAULT_GROUND_CODE_PRECISION_METERS),
+  });
 
   // Determine if selected area marker should be shown based on grid visibility
   const shouldShowSelectedAreaMarker =
@@ -187,6 +194,9 @@ const MapMarkers: React.FC<MapMarkersProps> = ({
                 {encodedCoordinates}
               </div>
             )}
+            <div className="mt-1 text-xs text-white/70">
+              {groundCodePrecisionLabel}
+            </div>
           </div>
         </InfoWindow>
       )}

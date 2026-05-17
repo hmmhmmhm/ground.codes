@@ -13,6 +13,10 @@ import { useI18n } from "@/lib/i18n/i18n-context";
 import Earth3DMap from "./earth-3d-map";
 import Planetary3DMap from "./planetary-3d-map";
 import { buildGroundCodeSharePath } from "@/lib/code/share-url";
+import {
+  DEFAULT_GROUND_CODE_PRECISION_METERS,
+  formatPrecisionMeters,
+} from "@/lib/code/ground-codes";
 
 function GoogleMapComponent() {
   const { t, isChangingLanguage } = useI18n();
@@ -64,6 +68,9 @@ function GoogleMapComponent() {
   const isEarth3D = isEarth && mapType === "earth3d";
   const isPlanetary3D = !isEarth && mapType === "planetary3d";
   const showGoogleMap = hasGoogleMapsApiKey && !isEarth3D && !isPlanetary3D;
+  const groundCodePrecisionLabel = t("map.coordinates.precision", {
+    precision: formatPrecisionMeters(DEFAULT_GROUND_CODE_PRECISION_METERS),
+  });
   const search = (
     <MapSearch
       map={isEarth && showGoogleMap ? map : null}
@@ -114,6 +121,9 @@ function GoogleMapComponent() {
       </div>
       <div className="mt-2 break-all text-white/80">
         {isEncoding ? t("map.encoding") : encodedCoordinates}
+      </div>
+      <div className="mt-1 text-[11px] text-white/60">
+        {groundCodePrecisionLabel}
       </div>
       {!isEncoding && encodedCoordinates && (
         <div className="mt-3 flex gap-2">

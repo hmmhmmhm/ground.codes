@@ -1,5 +1,10 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Coordinates } from "./types";
+import { useI18n } from "@/lib/i18n/i18n-context";
+import {
+  DEFAULT_GROUND_CODE_PRECISION_METERS,
+  formatPrecisionMeters,
+} from "@/lib/code/ground-codes";
 
 type Earth3DMapProps = {
   center: Coordinates;
@@ -250,6 +255,10 @@ const Earth3DMap = ({
   setSelectedArea,
   userLocation,
 }: Earth3DMapProps) => {
+  const { t } = useI18n();
+  const groundCodePrecisionLabel = t("map.coordinates.precision", {
+    precision: formatPrecisionMeters(DEFAULT_GROUND_CODE_PRECISION_METERS),
+  });
   const containerRef = useRef<HTMLDivElement | null>(null);
   const maps3dRef = useRef<Maps3DLibrary | null>(null);
   const mapRef = useRef<Map3DElementInstance | null>(null);
@@ -451,25 +460,44 @@ const Earth3DMap = ({
     content.style.fontSize = "13px";
     content.style.fontWeight = "600";
     content.style.lineHeight = "1.35";
-    content.textContent = markerLabel;
+    const label = document.createElement("div");
+    label.textContent = markerLabel;
+    const precision = document.createElement("div");
+    precision.style.marginTop = "2px";
+    precision.style.fontSize = "11px";
+    precision.style.fontWeight = "500";
+    precision.style.opacity = "0.72";
+    precision.textContent = groundCodePrecisionLabel;
+    content.append(label, precision);
     popover.append(content);
     map3d.append(popover);
     markerPopoverRef.current = popover;
-  }, [encodedCoordinates, isEncoding, mapReady, selectedArea]);
+  }, [
+    encodedCoordinates,
+    groundCodePrecisionLabel,
+    isEncoding,
+    mapReady,
+    selectedArea,
+  ]);
 
   useEffect(() => {
     if (!markerRef.current || !markerPopoverRef.current) return;
 
     const markerLabel = getMarkerLabel(isEncoding, encodedCoordinates);
     markerRef.current.setAttribute("title", markerLabel);
-    const content = markerPopoverRef.current.firstElementChild;
-    if (content) {
-      content.textContent = markerLabel;
-    } else {
-      markerPopoverRef.current.textContent = markerLabel;
+    const content = markerPopoverRef.current.firstElementChild as
+      | HTMLElement
+      | null;
+    const label = content?.firstElementChild;
+    const precision = content?.lastElementChild;
+    if (label) {
+      label.textContent = markerLabel;
+    }
+    if (precision && precision !== label) {
+      precision.textContent = groundCodePrecisionLabel;
     }
     markerPopoverRef.current.open = true;
-  }, [encodedCoordinates, isEncoding]);
+  }, [encodedCoordinates, groundCodePrecisionLabel, isEncoding]);
 
   useEffect(() => {
     const map3d = mapRef.current;
@@ -528,6 +556,9 @@ const Earth3DMap = ({
           </div>
           <div className="mt-1 break-words font-medium">
             {isEncoding ? "Encoding..." : encodedCoordinates}
+          </div>
+          <div className="mt-1 text-[11px] text-white/60">
+            {groundCodePrecisionLabel}
           </div>
         </div>
       )}

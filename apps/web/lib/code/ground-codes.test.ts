@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { encode, searchGroundCodes } from "./ground-codes";
+import {
+  DEFAULT_GROUND_CODE_PRECISION_METERS,
+  encode,
+  formatPrecisionMeters,
+  searchGroundCodes,
+} from "./ground-codes";
 
 const originalFetch = globalThis.fetch;
 const originalApiUrl = process.env.NEXT_PUBLIC_GROUND_CODES_API_URL;
@@ -14,6 +19,13 @@ afterEach(() => {
 });
 
 describe("ground-codes API client", () => {
+  test("formats the default precision for UI labels", () => {
+    expect(DEFAULT_GROUND_CODE_PRECISION_METERS).toBe(3);
+    expect(formatPrecisionMeters(DEFAULT_GROUND_CODE_PRECISION_METERS)).toBe(
+      "3m",
+    );
+  });
+
   test("encodes through the versioned API and configurable base URL", async () => {
     process.env.NEXT_PUBLIC_GROUND_CODES_API_URL = "https://api.example.test/";
     const requests: Array<{ url: string; body: unknown }> = [];
@@ -40,7 +52,7 @@ describe("ground-codes API client", () => {
         lng: 126.978,
         regionLevel: 2,
         language: "english",
-        precisionMeters: 3,
+        precisionMeters: DEFAULT_GROUND_CODE_PRECISION_METERS,
         body: "earth",
       },
     });

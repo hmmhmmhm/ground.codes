@@ -1,5 +1,12 @@
 type CelestialBody = "earth" | "moon" | "mars";
 
+export const DEFAULT_GROUND_CODE_PRECISION_METERS = 3;
+
+export const formatPrecisionMeters = (precisionMeters: number) => {
+  if (Number.isInteger(precisionMeters)) return `${precisionMeters}m`;
+  return `${precisionMeters.toFixed(2).replace(/\.?0+$/, "")}m`;
+};
+
 export interface GroundCodeSearchResult {
   type: "ground-code" | "region" | "coordinates" | string;
   label: string;
@@ -55,7 +62,7 @@ export const encode = async ({
   lat,
   lng,
   language = "english",
-  precisionMeters = 3,
+  precisionMeters = DEFAULT_GROUND_CODE_PRECISION_METERS,
   body = "earth",
 }: {
   lat: number;
