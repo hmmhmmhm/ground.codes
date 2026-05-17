@@ -1,11 +1,6 @@
 import Elysia, { t } from "elysia";
-import {
-  CelestialBody,
-  decode,
-  encode,
-  findRegionsByQuery,
-  SupportedLanguage,
-} from "ground-codes";
+import * as GroundCodes from "ground-codes";
+import type { CelestialBody, SupportedLanguage } from "ground-codes";
 import { supportedLanguages } from "./language.js";
 import {
   validateBody,
@@ -45,10 +40,52 @@ const searchAliases: Record<string, string> = {
 const resolveSearchAlias = (query: string) =>
   searchAliases[query.toLowerCase()] ?? query;
 
+type RegionSearchResult = {
+  lat: number;
+  lng: number;
+  regionLevel?: number;
+  body?: CelestialBody;
+  name?: string;
+  code?: string;
+};
+
+type GroundCodesWithOptionalRegionSearch = typeof GroundCodes & {
+  findRegionsByQuery?: (
+    codeOrName: string,
+    options?: {
+      regionLevel?: number;
+      language?: SupportedLanguage;
+      body?: CelestialBody;
+      maxResults?: number;
+    },
+  ) => Promise<RegionSearchResult[]>;
+};
+
 const getRegionSearchLanguages = (language: string, query: string) => {
   if (language === "english") return ["english"];
   if (englishLikePattern.test(query)) return ["english", language];
   return [language, "english"];
+};
+
+const findRegionMatches = async (
+  query: string,
+  options: {
+    regionLevel: number;
+    language: SupportedLanguage;
+    body: CelestialBody;
+    maxResults: number;
+  },
+): Promise<RegionSearchResult[]> => {
+  const findRegionsByQuery = (
+    GroundCodes as GroundCodesWithOptionalRegionSearch
+  ).findRegionsByQuery;
+
+  if (findRegionsByQuery) {
+    return await findRegionsByQuery(query, options);
+  }
+
+  const exactMatch = await GroundCodes.findRegionByCodeOrName(query, options);
+  return exactMatch ? [exactMatch] : [];
 };
 
 export const v1Search = new Elysia().post(
@@ -78,7 +115,7 @@ export const v1Search = new Elysia().post(
     const resolvedQuery = resolveSearchAlias(normalizedQuery);
     const coordinates = parseCoordinates(resolvedQuery);
     if (coordinates) {
-      const encoded = await encode(coordinates, {
+      const encoded = await GroundCodes.encode(coordinates, {
         regionLevel,
         language: validatedLanguage as SupportedLanguage,
         body: validatedBody as CelestialBody,
@@ -102,7 +139,7 @@ export const v1Search = new Elysia().post(
     if (resolvedQuery.includes("-")) {
       for (const candidateLanguage of getDecodeLanguages(validatedLanguage)) {
         try {
-          const decoded = await decode(resolvedQuery, {
+          const decoded = await GroundCodes.decode(resolvedQuery, {
             regionLevel,
             language: candidateLanguage as SupportedLanguage,
             body: validatedBody as CelestialBody,
@@ -127,12 +164,12 @@ export const v1Search = new Elysia().post(
       }
     }
 
-    const regions: Awaited<ReturnType<typeof findRegionsByQuery>> = [];
+    const regions: RegionSearchResult[] = [];
     for (const candidateLanguage of getRegionSearchLanguages(
       validatedLanguage,
       resolvedQuery,
     )) {
-      const candidateRegions = await findRegionsByQuery(resolvedQuery, {
+      const candidateRegions = await findRegionMatches(resolvedQuery, {
         regionLevel,
         language: candidateLanguage as SupportedLanguage,
         body: validatedBody as CelestialBody,
