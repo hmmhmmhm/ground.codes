@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import Image from "next/image";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { AirQualityData, WeatherData } from "@/app/api/weather-data/route";
 
@@ -146,20 +147,20 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
   };
 
   // Convert RGB object to CSS color string
-  const rgbToColorString = (colorObj: any) => {
-    if (!colorObj || typeof colorObj !== "object") return "#808080"; // Default gray
-
-    // Check if it's already a hex color string
+  const rgbToColorString = (colorObj: unknown) => {
     if (typeof colorObj === "string" && colorObj.startsWith("#")) {
       return colorObj;
     }
 
+    if (!colorObj || typeof colorObj !== "object") return "#808080"; // Default gray
+
     // Check if it has RGB components
     if ("red" in colorObj && "green" in colorObj && "blue" in colorObj) {
+      const rgb = colorObj as { red: number; green: number; blue: number };
       // Convert 0-1 range to 0-255 range
-      const r = Math.round(colorObj.red * 255);
-      const g = Math.round(colorObj.green * 255);
-      const b = Math.round(colorObj.blue * 255);
+      const r = Math.round(rgb.red * 255);
+      const g = Math.round(rgb.green * 255);
+      const b = Math.round(rgb.blue * 255);
       return `rgb(${r}, ${g}, ${b})`;
     }
 
@@ -206,9 +207,12 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
                 {weatherData.name || t("weather.currentLocation")}
               </h3>
               {weatherData.weather && weatherData.weather[0] && (
-                <img
+                <Image
+                  unoptimized
                   src={getWeatherIconUrl(weatherData.weather[0].icon)}
                   alt={weatherData.weather[0].description}
+                  width={48}
+                  height={48}
                   className="ml-2 h-12 w-12"
                 />
               )}

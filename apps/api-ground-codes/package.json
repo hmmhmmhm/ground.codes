@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "build": "node scripts/build.mjs",
-    "start": "bun run src/index.ts"
+    "start": "bun run src/index.ts",
+    "check-types": "tsc --noEmit",
+    "test": "pnpm --filter ground-codes build && bun test src/*.test.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",

@@ -1,4 +1,8 @@
-import { findClosestRegion, findRegionByCodeOrName } from "./region.js";
+import {
+  findClosestRegion,
+  findRegionByCodeOrName,
+  findRegionsByQuery,
+} from "./region.js";
 import {
   CelestialBody,
   calculateCoordinateDiff,
@@ -248,6 +252,7 @@ export {
   setSpiralCacheEnabled,
   findClosestRegion,
   findRegionByCodeOrName,
+  findRegionsByQuery,
   encodeByWordSet,
   decodeByWordSet,
   calculateCoordinateDiff,

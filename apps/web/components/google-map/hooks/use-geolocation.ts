@@ -105,6 +105,26 @@ export const useGeolocation = (
     }
   }, []);
 
+  // Update location function
+  const updateUserLocation = useCallback(
+    (position: GeolocationPosition) => {
+      const newLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+        heading:
+          position.coords.heading !== null &&
+          position.coords.heading !== undefined
+            ? position.coords.heading
+            : userLocation?.heading || null,
+      };
+
+      setUserLocation(newLocation);
+      return newLocation;
+    },
+    [userLocation],
+  );
+
   // Start watching position
   const startWatchingPosition = useCallback(() => {
     if (navigator.geolocation) {
@@ -112,9 +132,6 @@ export const useGeolocation = (
 
       // Update loading ref directly instead of state
       isLoadingRef.current = true;
-
-      // Maintain previous location info (include heading)
-      const prevLocation = userLocation;
 
       const watchId = navigator.geolocation.watchPosition(
         (position) => {
@@ -135,44 +152,27 @@ export const useGeolocation = (
           // Update location
           setUserLocation(newLocation);
         },
-        (error) => {
+        () => {
           // Update loading ref directly
           isLoadingRef.current = false;
           // setError(error.message);
         },
         {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 1000,
+          enableHighAccuracy,
+          timeout,
+          maximumAge,
         },
       );
 
       geolocationRequestIdRef.current = watchId;
     }
-  }, [cancelGeolocationRequest, userLocation]);
-
-  // Update location function
-  const updateUserLocation = useCallback(
-    (position: GeolocationPosition) => {
-      // Create new location info
-      const newLocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        accuracy: position.coords.accuracy,
-        // Heading processing (update if new heading exists, otherwise maintain previous heading)
-        heading:
-          position.coords.heading !== null &&
-          position.coords.heading !== undefined
-            ? position.coords.heading
-            : userLocation?.heading || null,
-      };
-
-      // Update location
-      setUserLocation(newLocation);
-      return newLocation;
-    },
-    [userLocation],
-  );
+  }, [
+    cancelGeolocationRequest,
+    enableHighAccuracy,
+    maximumAge,
+    timeout,
+    updateUserLocation,
+  ]);
 
   const getUserLocation = useCallback(() => {
     if (navigator.geolocation) {
@@ -222,19 +222,22 @@ export const useGeolocation = (
           isLoadingRef.current = false;
         },
         {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
+          enableHighAccuracy,
+          timeout,
+          maximumAge,
         },
       );
     }
   }, [
     cancelGeolocationRequest,
+    enableHighAccuracy,
     isTrackingMode,
     map,
+    maximumAge,
     onPositionUpdate,
     setCenter,
     setSelectedArea,
+    timeout,
     updateUserLocation,
     userLocationLoaded,
   ]);

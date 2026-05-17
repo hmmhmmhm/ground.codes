@@ -1,0 +1,20 @@
+name: Production Smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check API readiness
+        run: curl -fsS https://api.ground.codes/readyz
+
+      - name: Check web robots
+        run: curl -fsS https://ground.codes/robots.txt
+
+      - name: Check web sitemap
+        run: curl -fsS https://ground.codes/sitemap.xml

@@ -42,6 +42,7 @@ export const useAirQuality = (
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isUnavailable, setIsUnavailable] = useState(false);
 
   // Debounce coordinates to avoid excessive API calls
   const debouncedCoordinates = useDebounce(coordinates, debounceMs);
@@ -66,6 +67,7 @@ export const useAirQuality = (
 
       setIsLoading(true);
       setError(null);
+      setIsUnavailable(false);
 
       try {
         // Fetch both air quality and weather data using the combined API endpoint
@@ -85,6 +87,13 @@ export const useAirQuality = (
         }
 
         const data: CombinedWeatherData = await response.json();
+
+        if (data.unavailable) {
+          setAirQuality(null);
+          setWeatherData(null);
+          setIsUnavailable(true);
+          return;
+        }
 
         // Handle air quality data
         if (data.airQuality) {
@@ -127,6 +136,7 @@ export const useAirQuality = (
     weatherIcon,
     isLoading,
     error,
+    isUnavailable,
     weatherData,
   };
 };

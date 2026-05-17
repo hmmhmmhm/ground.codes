@@ -37,8 +37,9 @@ The API uses these optimization techniques in several key endpoints:
 
 - `/v1/region/around`: Finds regions near specified coordinates using GeoKDBush spatial indexing
 - `/v1/region/info`: Retrieves region information using LevelDB's fast key-value lookups
-- `/encode`: Utilizes the optimized region search to find the nearest region for encoding coordinates
-- `/decode`: Uses efficient region data retrieval when decoding ground codes
+- `/v1/encode`: Utilizes the optimized region search to find the nearest region for encoding coordinates
+- `/v1/decode`: Uses efficient region data retrieval when decoding ground codes
+- `/v1/search`: Resolves encoded Ground Codes, `lat,lng` coordinate pairs, and region names/codes
 
 The API uses the shared `ground-codes` package for encode/decode behavior and
 loads `@ground-codes/geoint` embedded databases for region lookup endpoints.
@@ -117,14 +118,17 @@ changes from the same commit.
 
 ### 🧩 Core Endpoints
 
-- `POST /encode`: Encode geographic coordinates to a ground code
-- `POST /decode`: Decode a ground code to geographic coordinates
-- `GET /v1/region/around`: Get regions around specific coordinates
-- `GET /v1/region/info`: Get information about a specific region
+- `POST /v1/encode`: Encode geographic coordinates to a ground code
+- `POST /v1/decode`: Decode a ground code to geographic coordinates
+- `POST /v1/search`: Search by encoded ground code, coordinate pair, or region name
+- `POST /v1/region/around`: Get regions around specific coordinates
+- `POST /v1/region/info`: Get information about a specific region
 
 ### 🔧 Utility Endpoints
 
 - `GET /healthz`: Health check endpoint
+- `GET /readyz`: Readiness endpoint for deploy/load-balancer checks
+- `GET /metrics`: Lightweight JSON operational counters
 - `GET /swagger`: Swagger UI for API documentation
 - `GET /`: Redirects to Swagger documentation
 
@@ -133,7 +137,7 @@ changes from the same commit.
 ### 🔄 Encode Coordinates
 
 ```bash
-curl -X POST http://localhost:3000/encode \
+curl -X POST http://localhost:3000/v1/encode \
   -H "Content-Type: application/json" \
   -d '{"lat": 37.422, "lng": 127.024, "regionLevel": 2, "language": "english"}'
 ```
@@ -147,7 +151,7 @@ Response:
 ### 🔍 Decode Ground Code
 
 ```bash
-curl -X POST http://localhost:3000/decode \
+curl -X POST http://localhost:3000/v1/decode \
   -H "Content-Type: application/json" \
   -d '{"code": "Seoul-Happy-Tiger", "regionLevel": 2, "language": "english"}'
 ```
@@ -164,7 +168,7 @@ Response:
 ### 🌕 Encode Moon or Mars Coordinates
 
 ```bash
-curl -X POST http://localhost:3000/encode \
+curl -X POST http://localhost:3000/v1/encode \
   -H "Content-Type: application/json" \
   -d '{"lat": 8.35, "lng": 30.84, "body": "moon", "regionLevel": 2}'
 ```
@@ -178,7 +182,7 @@ Response:
 Japanese labels are also available:
 
 ```bash
-curl -X POST http://localhost:3000/encode \
+curl -X POST http://localhost:3000/v1/encode \
   -H "Content-Type: application/json" \
   -d '{"lat": 18.6528, "lng": 226.1975, "body": "mars", "regionLevel": 2, "language": "japanese"}'
 ```
@@ -190,7 +194,7 @@ Response:
 ```
 
 ```bash
-curl -X POST http://localhost:3000/decode \
+curl -X POST http://localhost:3000/v1/decode \
   -H "Content-Type: application/json" \
   -d '{"code": "Mare Tranquillitatis-...", "body": "moon", "regionLevel": 2}'
 ```
@@ -209,6 +213,11 @@ The API supports various configuration options:
 - 🌐 **Language**: Select from supported languages (English, Korean, Chinese, Japanese)
 - 📏 **Precision**: Adjust the precision of encoded locations in meters
 - 🪐 **Body**: Select `earth`, `moon`, or `mars` for coordinate conversion and labels
+- 🔐 **CORS**: Set `CORS_ALLOWED_ORIGINS` as a comma-separated production allowlist
+- 🛡️ **Rate Limit**: Set `API_RATE_LIMIT_PER_MINUTE`; use `0` only to disable it intentionally
+
+Search responses include short-lived shared-cache headers so production edges can
+cache common lookups without caching mutable operational checks.
 
 ## 📚 Documentation
 

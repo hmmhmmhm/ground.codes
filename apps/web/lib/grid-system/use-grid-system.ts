@@ -18,8 +18,8 @@ export function useGridSystem(
   selectedArea: Coordinates | null,
   setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>,
   mapOptions?: {
-    locationMode?: any;
-    setLocationMode?: (mode: any) => void;
+    locationMode?: string | number;
+    setLocationMode?: (mode: string | number) => void;
     placeDetailsVisible?: boolean;
     setPlaceDetailsVisible?: (visible: boolean) => void;
     setSelectedPlaceId?: (placeId: string | null) => void;
@@ -33,7 +33,6 @@ export function useGridSystem(
     metersPerDegree !== undefined && metersPerDegree < 100000;
   const {
     gridLinesRef,
-    selectedRectangleRef,
     mapInstanceRef,
     clearAllGridLines,
     drawSelectedAreaRectangle,
@@ -155,12 +154,15 @@ export function useGridSystem(
       isGridVisibleAtZoom,
       metersPerDegree,
       isPlanetaryGrid,
+      currentZoomRef,
+      gridLinesRef,
+      gridVisibleRef,
+      mapInstanceRef,
     ],
   );
 
   // Create the grid cell click handler
   const handleGridCellClick = useGridCellClickHandler(
-    showGrid,
     isGridVisibleAtZoom,
     mapInstanceRef,
     setSelectedArea,

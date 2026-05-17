@@ -1,18 +1,58 @@
 import swagger from "@elysiajs/swagger";
+import Elysia, { redirect } from "elysia";
+
+const publicDocPathsToHide = [
+  "/json",
+  "/encode",
+  "/decode",
+  "/search",
+  "/docs",
+  "/region/around",
+  "/region/info",
+  "/{path}",
+];
+
+const scalarReferenceConfig = {
+  theme: "mars" as const,
+  darkMode: true,
+  forceDarkModeState: "dark" as const,
+  hideClientButton: true,
+  hideDarkModeToggle: true,
+  hideModels: true,
+  hiddenClients: true as const,
+  defaultHttpClient: {
+    targetKey: "shell" as const,
+    clientKey: "curl",
+  },
+  customCss: `
+    .scalar-mcp-layer,
+    .scalar-mcp-layer-link,
+    .gitbook-show.scalar-version-number,
+    .references-developer-tools,
+    .agent-button-container,
+    button[id^="headlessui-popover-button-scalar-refs-"],
+    button.bg-sidebar-b-search.whitespace-nowrap,
+    a[href*="scalar.com"],
+    [aria-label="Deploy"],
+    [aria-label="Share"],
+    [aria-label="Configure"],
+    [aria-label="Developer Tools"],
+    [aria-label="Ask AI"] {
+      display: none !important;
+    }
+  `,
+  favicon: "/favicon.ico",
+};
 
 export const swaggerEndpoint = swagger({
   path: "/",
-  exclude: ["/json"],
-  scalarConfig: {
-    theme: "mars",
-    darkMode: true,
-    customCss: ``,
-    favicon: "/favicon.ico",
-  },
+  exclude: publicDocPathsToHide,
+  scalarConfig: scalarReferenceConfig,
   documentation: {
     info: {
       title: "Ground Codes API Documentation",
-      description: "API documentation for Ground Codes SaaS",
+      description:
+        "Production API documentation for Ground Codes. Use the versioned `/v1/*` endpoints for new integrations. Quick start: POST `/v1/encode` with `{ \"lat\": 37.566, \"lng\": 126.978, \"language\": \"english\", \"regionLevel\": 2 }`, then POST `/v1/search` with the returned code or share it as `https://ground.codes/{encoded-code}`. Earth share URLs are code-only; Moon and Mars use `/moon/{encoded-code}` and `/mars/{encoded-code}`.",
       version: "1.0.0",
     },
     tags: [
@@ -34,3 +74,32 @@ export const swaggerEndpoint = swagger({
     ],
   },
 });
+
+export const swaggerRedirectEndpoint = new Elysia()
+  .get(
+    "/swagger",
+    () => redirect("/"),
+    {
+      detail: {
+        hide: true,
+      },
+    },
+  )
+  .get(
+    "/swagger/",
+    () => redirect("/"),
+    {
+      detail: {
+        hide: true,
+      },
+    },
+  )
+  .get(
+    "/swagger/json",
+    () => redirect("/json"),
+    {
+      detail: {
+        hide: true,
+      },
+    },
+  );

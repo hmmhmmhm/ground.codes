@@ -17,3 +17,30 @@ export const healthz = new Elysia().get(
     }),
   }
 );
+
+export const readyz = new Elysia().get(
+  "/readyz",
+  async ({ set }) => {
+    set.headers["cache-control"] = "no-store";
+
+    return {
+      status: "ready",
+      service: "api-ground-codes",
+    };
+  },
+  {
+    detail: {
+      tags: ["Health"],
+      summary: "Readiness Check",
+      description: "Deployment readiness endpoint",
+    },
+    response: t.Object({
+      status: t.String({
+        example: "ready",
+      }),
+      service: t.String({
+        example: "api-ground-codes",
+      }),
+    }),
+  }
+);

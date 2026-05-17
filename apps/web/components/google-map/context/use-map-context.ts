@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from "react";
 import { useGridSystem } from "@/lib/grid-system";
 import { useMapCoordinates } from "../hooks/use-map-coordinates";
 import { useGeolocation } from "../hooks/use-geolocation";
-import { googleMapDarkTheme } from "@/lib/map/google-map-theme";
 import { Coordinates, MapContextType, defaultCenter } from "./types";
 
 export const useMapContextState = (): MapContextType => {

@@ -9,6 +9,12 @@ import { useI18n } from "@/lib/i18n/i18n-context";
 import { useLocationTracking } from "./use-location-tracking";
 import { Coordinates, LocationMode } from "../types";
 import {
+  GroundCodeSearchResult,
+  searchGroundCodes,
+} from "@/lib/code/ground-codes";
+import { parseGroundCodeSharePath } from "@/lib/code/share-url";
+import { getGroundCodeLanguage } from "@/lib/i18n/ground-code-language";
+import {
   CelestialBody,
   createPlanetaryMapType,
   getDefaultPlanetaryLayerId,
@@ -90,6 +96,9 @@ const getInitialMapType = (body: CelestialBody): EarthMapType => {
 
 const getInitialBody = (): CelestialBody => {
   if (typeof window === "undefined") return "earth";
+  const sharedCode = parseGroundCodeSharePath(window.location.pathname);
+  if (sharedCode) return sharedCode.body;
+
   return parseCelestialBody(
     new URLSearchParams(window.location.search).get("body"),
   );
@@ -128,7 +137,7 @@ const getInitialZoom = (body: CelestialBody): number => {
 
 export const useMapContainer = () => {
   const { getUserLanguage } = useLanguage();
-  const { isChangingLanguage } = useI18n();
+  const { isChangingLanguage, locale } = useI18n();
   const [body, setBody] = useState<CelestialBody>(getInitialBody);
   const isEarth = body === "earth";
   const [planetaryLayerId, setPlanetaryLayerId] = useState(() =>
@@ -137,14 +146,18 @@ export const useMapContainer = () => {
 
   // Get language from cookie for Google Maps API
   const mapLanguage = isChangingLanguage ? "en" : getUserLanguage();
+  const googleMapsApiKey =
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim() ?? "";
+  const hasGoogleMapsApiKey = googleMapsApiKey.length > 0;
 
-  // Load Google Maps API
-  const { isLoaded } = useJsApiLoader({
+  // Load Google Maps API. The hook must be called unconditionally.
+  const { isLoaded: isGoogleMapsLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    language: mapLanguage, // Language code for Google Maps API
-    libraries, // Use the constant libraries array
+    googleMapsApiKey: googleMapsApiKey || "missing-google-maps-api-key",
+    language: mapLanguage,
+    libraries,
   });
+  const isLoaded = hasGoogleMapsApiKey ? isGoogleMapsLoaded : true;
 
   // Map state
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -182,6 +195,15 @@ export const useMapContainer = () => {
   // Search result state
   const [searchedPlace, setSearchedPlace] =
     useState<google.maps.places.PlaceResult | null>(null);
+  const [isGroundSearchLoading, setIsGroundSearchLoading] = useState(false);
+  const [groundSearchError, setGroundSearchError] = useState<string | null>(
+    null,
+  );
+  const [groundSearchResults, setGroundSearchResults] = useState<
+    GroundCodeSearchResult[]
+  >([]);
+  const [initialGroundSearchQuery, setInitialGroundSearchQuery] = useState("");
+  const restoredSharePathRef = useRef(false);
   const [searchMarker, setSearchMarker] = useState<google.maps.Marker | null>(
     null,
   );
@@ -197,13 +219,10 @@ export const useMapContainer = () => {
     locationMode,
     setLocationMode,
     isLoadingLocation,
-    isTrackingLocation,
     startLocationTracking,
     stopLocationTracking,
-    toggleLocationMode,
   } = useLocationTracking({
     map,
-    isTrackingMode: true,
     onLocationUpdate: useCallback((location) => {
       if (location) {
         // Explicitly include heading information in state update
@@ -225,15 +244,12 @@ export const useMapContainer = () => {
     if (isLoadingLocation !== undefined) {
       setIsLoading(isLoadingLocation);
     }
-    // Empty dependency array to run only once on mount
-  }, []);
+  }, [isLoadingLocation]);
 
   // Get user location using the hook
   const {
-    userLocation: geoLocation,
     getUserLocation: getGeoLocation,
     cancelGeolocationRequest,
-    requestOrientationPermission,
   } = useGeolocation(map, setCenter, setSelectedArea, {
     autoGetLocation: isEarth,
     initialFetch: isEarth,
@@ -295,6 +311,7 @@ export const useMapContainer = () => {
     userLocation,
     getGeoLocation,
     isEarth,
+    setLocationMode,
   ]);
 
   const selectMapType = useCallback(
@@ -458,7 +475,7 @@ export const useMapContainer = () => {
     removeMapEventHandlers,
   } = useGridSystem(showGrid, selectedArea, setSelectedArea, {
     locationMode,
-    setLocationMode,
+    setLocationMode: (mode) => setLocationMode(mode as LocationMode),
     placeDetailsVisible,
     setPlaceDetailsVisible,
     setSelectedPlaceId,
@@ -559,6 +576,7 @@ export const useMapContainer = () => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (parseGroundCodeSharePath(window.location.pathname)) return;
 
     const params = new URLSearchParams(window.location.search);
     if (body === "earth") {
@@ -658,10 +676,10 @@ export const useMapContainer = () => {
 
   // Initialize InfoWindow
   useEffect(() => {
-    if (isLoaded && !infoWindow) {
+    if (hasGoogleMapsApiKey && isGoogleMapsLoaded && !infoWindow) {
       setInfoWindow(new google.maps.InfoWindow());
     }
-  }, [isLoaded, infoWindow]);
+  }, [hasGoogleMapsApiKey, isGoogleMapsLoaded, infoWindow]);
 
   // Handle place selection from search
   const handlePlaceSelect = useCallback(
@@ -719,6 +737,82 @@ export const useMapContainer = () => {
     [map, searchMarker, infoWindow, locationMode, setLocationMode],
   );
 
+  const applyGroundSearchResult = useCallback(
+    (result: GroundCodeSearchResult) => {
+        const resultBody = parseCelestialBody(String(result.body));
+        const nextLocation = { lat: result.lat, lng: result.lng };
+        const nextZoom = resultBody === "earth" ? 14 : 5;
+
+        if (resultBody !== body) {
+          selectBody(resultBody);
+        }
+
+        if (locationMode === LocationMode.TRACKING) {
+          setLocationMode(LocationMode.OFF);
+        }
+
+        setPlaceDetailsVisible(false);
+        setSelectedPlaceId(null);
+        setSelectedLocation(null);
+        setCenter(nextLocation);
+        setZoom(nextZoom);
+        userZoomRef.current = nextZoom;
+        setSelectedArea(nextLocation);
+        setShowInfoWindow(true);
+
+        if (map && resultBody === body) {
+          map.setCenter(nextLocation);
+          map.setZoom(nextZoom);
+        }
+    },
+    [body, locationMode, map, selectBody, setLocationMode],
+  );
+
+  const handleGroundSearch = useCallback(
+    async (query: string, options?: { body?: CelestialBody }) => {
+      const trimmedQuery = query.trim();
+      if (!trimmedQuery) return;
+      const searchBody = options?.body ?? body;
+
+      try {
+        setIsGroundSearchLoading(true);
+        setGroundSearchError(null);
+        const response = await searchGroundCodes({
+          query: trimmedQuery,
+          language: getGroundCodeLanguage(locale),
+          body: searchBody,
+          maxResults: 5,
+        });
+        setGroundSearchResults(response.results);
+        const result = response.results[0];
+
+        if (!result) {
+          setGroundSearchError("map.search.noResults");
+          return;
+        }
+
+        applyGroundSearchResult(result);
+      } catch (error) {
+        console.error("Ground code search failed:", error);
+        setGroundSearchError("map.search.error");
+      } finally {
+        setIsGroundSearchLoading(false);
+      }
+    },
+    [applyGroundSearchResult, body, locale],
+  );
+
+  useEffect(() => {
+    if (restoredSharePathRef.current || typeof window === "undefined") return;
+
+    const sharedCode = parseGroundCodeSharePath(window.location.pathname);
+    if (!sharedCode) return;
+
+    restoredSharePathRef.current = true;
+    setInitialGroundSearchQuery(sharedCode.code);
+    void handleGroundSearch(sharedCode.code, { body: sharedCode.body });
+  }, [handleGroundSearch]);
+
   // Map load handler
   const onLoad = useCallback(
     (mapInstance: google.maps.Map) => {
@@ -762,7 +856,7 @@ export const useMapContainer = () => {
 
       // Intercept POI click event to prevent default InfoWindow display
       mapInstance.addListener("click", (e: google.maps.MapMouseEvent) => {
-        if ((e as any).placeId) {
+        if ((e as google.maps.IconMouseEvent).placeId) {
           // Stop default POI click action
           (e as google.maps.IconMouseEvent).stop();
         }
@@ -837,6 +931,7 @@ export const useMapContainer = () => {
   return {
     // Map state
     isLoaded,
+    hasGoogleMapsApiKey,
     map,
     center,
     zoom,
@@ -883,6 +978,12 @@ export const useMapContainer = () => {
     // Search state
     searchedPlace,
     handlePlaceSelect,
+    handleGroundSearch,
+    handleGroundSearchResultSelect: applyGroundSearchResult,
+    isGroundSearchLoading,
+    groundSearchError,
+    groundSearchResults,
+    initialGroundSearchQuery,
 
     // Place Details state
     placeDetailsVisible,

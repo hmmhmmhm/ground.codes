@@ -62,7 +62,13 @@ export interface CombinedWeatherData {
   airQuality: AirQualityData | null;
   weather: WeatherData | null;
   error?: string;
+  unavailable?: boolean;
 }
+
+type WeatherEnvKey = "GOOGLE_MAPS_NODEJS_API_KEY" | "OPENWEATHER_API_KEY";
+
+const getOptionalWeatherEnv = (key: WeatherEnvKey): string | undefined =>
+  process.env[key];
 
 /**
  * API route to fetch both air quality and weather data
@@ -73,7 +79,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { lat, lng, language = "en" } = body;
 
-    if (!lat || !lng) {
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
       return NextResponse.json(
         { error: "Latitude and longitude are required" },
         { status: 400 }
@@ -81,15 +87,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Access API keys securely from server environment
-    const googleMapsApiKey = process.env.GOOGLE_MAPS_NODEJS_API_KEY;
-    const openWeatherApiKey = process.env.OPENWEATHER_API_KEY;
+    const googleMapsApiKey = getOptionalWeatherEnv("GOOGLE_MAPS_NODEJS_API_KEY");
+    const openWeatherApiKey = getOptionalWeatherEnv("OPENWEATHER_API_KEY");
 
     if (!googleMapsApiKey || !openWeatherApiKey) {
-      console.error("API keys are missing");
-      return NextResponse.json(
-        { error: "API configuration error" },
-        { status: 500 }
-      );
+      return NextResponse.json({
+        airQuality: null,
+        weather: null,
+        unavailable: true,
+      });
     }
 
     // Map the language code to supported languages for each API

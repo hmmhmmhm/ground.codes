@@ -5,7 +5,6 @@ import { useDeviceOrientation } from "./use-device-orientation";
 interface UseLocationTrackingProps {
   map: google.maps.Map | null;
   onLocationUpdate: (location: Coordinates) => void;
-  isTrackingMode?: boolean;
 }
 
 /**
@@ -15,7 +14,6 @@ interface UseLocationTrackingProps {
 export const useLocationTracking = ({
   map,
   onLocationUpdate,
-  isTrackingMode = false,
 }: UseLocationTrackingProps) => {
   // Default value is OFF
   const [locationMode, setLocationMode] = useState<LocationMode>(
@@ -33,11 +31,6 @@ export const useLocationTracking = ({
     () => isLoadingLocationRef.current,
     []
   );
-
-  // Loading state setter function
-  const setIsLoadingLocationRef = useCallback((loading: boolean) => {
-    isLoadingLocationRef.current = loading;
-  }, []);
 
   // Watch position ID reference
   const watchPositionIdRef = useRef<number | null>(null);
@@ -221,7 +214,14 @@ export const useLocationTracking = ({
 
     // Release loading state (direct ref update)
     isLoadingLocationRef.current = false;
-  }, [locationMode]);
+  }, []);
+
+  /**
+   * Set location mode directly
+   */
+  const setLocationModeDirectly = useCallback((mode: LocationMode) => {
+    setLocationMode(mode);
+  }, []);
 
   /**
    * Toggle location mode function
@@ -242,17 +242,7 @@ export const useLocationTracking = ({
         setLocationModeDirectly(LocationMode.OFF);
         break;
     }
-  }, [locationMode]);
-
-  /**
-   * Set location mode directly
-   */
-  const setLocationModeDirectly = useCallback(
-    (mode: LocationMode) => {
-      setLocationMode(mode);
-    },
-    [locationMode]
-  );
+  }, [locationMode, setLocationModeDirectly]);
 
   /**
    * Update tracking state when location mode changes

@@ -11,6 +11,17 @@ interface UseDeviceOrientationReturn extends DeviceOrientationState {
   requestPermission: () => Promise<boolean>;
 }
 
+type DeviceOrientationPermission = "granted" | "denied" | "prompt";
+
+interface DeviceOrientationEventWithCompass extends DeviceOrientationEvent {
+  compassHeading?: number;
+  webkitCompassHeading?: number;
+}
+
+interface DeviceOrientationEventConstructorWithPermission {
+  requestPermission?: () => Promise<DeviceOrientationPermission>;
+}
+
 export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
   const [orientationState, setOrientationState] =
     useState<DeviceOrientationState>({
@@ -61,16 +72,16 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
 
   // Handle device orientation event with debouncing and threshold
   const handleOrientation = useCallback(
-    (event: DeviceOrientationEvent) => {
+    (event: DeviceOrientationEventWithCompass) => {
       let newHeading: number | null = null;
 
       // For devices that support deviceorientationabsolute
-      if ("compassHeading" in event) {
-        newHeading = (event as any).compassHeading;
+      if (typeof event.compassHeading === "number") {
+        newHeading = event.compassHeading;
       }
       // For devices that support deviceorientation with webkitCompassHeading
-      else if ("webkitCompassHeading" in event) {
-        newHeading = (event as any).webkitCompassHeading;
+      else if (typeof event.webkitCompassHeading === "number") {
+        newHeading = event.webkitCompassHeading;
       }
       // For devices that only provide alpha value (relative to initial position)
       else if (event.alpha !== null) {
@@ -147,13 +158,12 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
     }
 
     // For iOS devices
-    if (
-      typeof (DeviceOrientationEvent as any).requestPermission === "function"
-    ) {
+    const orientationEvent =
+      window.DeviceOrientationEvent as unknown as DeviceOrientationEventConstructorWithPermission;
+
+    if (typeof orientationEvent.requestPermission === "function") {
       try {
-        const permission = await (
-          DeviceOrientationEvent as any
-        ).requestPermission();
+        const permission = await orientationEvent.requestPermission();
         const granted = permission === "granted";
 
         if (granted) {
@@ -224,8 +234,10 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
   useEffect(() => {
     const checkSupport = () => {
       const supported = window.DeviceOrientationEvent !== undefined;
+      const orientationEvent =
+        window.DeviceOrientationEvent as unknown as DeviceOrientationEventConstructorWithPermission;
       const permissionAPI =
-        typeof (DeviceOrientationEvent as any).requestPermission === "function";
+        typeof orientationEvent.requestPermission === "function";
 
       setOrientationState((prev) => ({
         ...prev,

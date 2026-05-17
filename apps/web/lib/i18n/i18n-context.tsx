@@ -4,14 +4,14 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { Locale, defaultLocale, locales } from "@/i18n";
 
 // Message type
-type Messages = Record<string, any>;
+type Messages = Record<string, unknown>;
 
 // Context type
 interface I18nContextType {
   locale: Locale;
   messages: Messages;
   setLocale: (locale: Locale) => void;
-  t: (key: string, params?: Record<string, any>) => string;
+  t: (key: string, params?: Record<string, string | number | boolean | null | undefined>) => string;
   isChangingLanguage: boolean; // Add flag to indicate language is changing
 }
 
@@ -31,14 +31,16 @@ const I18nContext = createContext<I18nContextType>(defaultContext);
 export const useI18n = () => useContext(I18nContext);
 
 // Get nested value from message
-const getNestedValue = (obj: any, path: string): string => {
+const getNestedValue = (obj: unknown, path: string): string => {
   const keys = path.split(".");
-  return keys.reduce((acc, key) => {
+  const value = keys.reduce<unknown>((acc, key) => {
     if (acc && typeof acc === "object" && key in acc) {
-      return acc[key];
+      return (acc as Record<string, unknown>)[key];
     }
     return path; // If key not found, return original path
   }, obj);
+
+  return typeof value === "string" ? value : path;
 };
 
 // Check if value is a valid locale
@@ -172,7 +174,10 @@ export const I18nProvider: React.FC<{
   };
 
   // Translation function
-  const t = (key: string, params?: Record<string, any>): string => {
+  const t = (
+    key: string,
+    params?: Record<string, string | number | boolean | null | undefined>
+  ): string => {
     let value = getNestedValue(messages, key);
 
     // Parameter replacement
@@ -222,7 +227,7 @@ export const I18nProvider: React.FC<{
         // Load messages
         const loadedMessages = (
           await import(`@/messages/${localeToUse}/index.json`)
-        ).default;
+        ).default as Messages;
         setMessages(loadedMessages);
         setLocaleState(localeToUse);
 

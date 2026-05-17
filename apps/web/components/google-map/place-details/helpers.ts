@@ -33,7 +33,9 @@ export const getDayIndexFromString = (dayString: string | undefined): number => 
  * Returns true when the place is open at the current moment.
  * Works with both `periods` and `weekday_text` data from the Places API.
  */
-export const isOpenNow = (placeDetails: any): boolean => {
+export const isOpenNow = (
+  placeDetails: google.maps.places.PlaceResult | null
+): boolean => {
   try {
     if (placeDetails?.opening_hours?.periods) {
       const now = new Date();
@@ -41,16 +43,17 @@ export const isOpenNow = (placeDetails: any): boolean => {
       const currentTime = now.getHours() * 60 + now.getMinutes();
 
       // 24-hour operation: single period with no close time
+      const firstPeriod = placeDetails.opening_hours.periods[0];
       if (
         placeDetails.opening_hours.periods.length === 1 &&
-        placeDetails.opening_hours.periods[0].open &&
-        !placeDetails.opening_hours.periods[0].close
+        firstPeriod?.open &&
+        !firstPeriod.close
       ) {
         return true;
       }
 
       const todayPeriods = placeDetails.opening_hours.periods.filter(
-        (period: any) => period.open && period.open.day === day
+        (period) => period.open && period.open.day === day
       );
 
       for (const period of todayPeriods) {

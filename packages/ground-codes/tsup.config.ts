@@ -9,6 +9,7 @@ export default defineConfig({
     },
   },
   splitting: true,
+  minify: true,
   sourcemap: false,
   clean: true,
 });

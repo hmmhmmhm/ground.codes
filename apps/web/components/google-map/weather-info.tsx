@@ -50,30 +50,35 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({
     airQuality,
     isLoading,
     error,
+    isUnavailable,
     weatherData,
   } = useAirQuality(mapCenter, {
     debounceMs: 1500, // Debounce map center changes to prevent excessive API calls
   });
+
+  if (isUnavailable || (!isLoading && !temperature && !airQuality && !error)) {
+    return null;
+  }
 
   // Get the air quality index from the response
   const airQualityIndex = airQuality?.indexes?.[0]?.aqi || 0;
   const airQualityCategory = airQuality?.indexes?.[0]?.category || "";
 
   // Convert RGB object to CSS color string
-  const rgbToColorString = (colorObj: any) => {
-    if (!colorObj || typeof colorObj !== "object") return "#808080"; // Default gray
-
-    // Check if it's already a hex color string
+  const rgbToColorString = (colorObj: unknown) => {
     if (typeof colorObj === "string" && colorObj.startsWith("#")) {
       return colorObj;
     }
 
+    if (!colorObj || typeof colorObj !== "object") return "#808080"; // Default gray
+
     // Check if it has RGB components
     if ("red" in colorObj && "green" in colorObj && "blue" in colorObj) {
+      const rgb = colorObj as { red: number; green: number; blue: number };
       // Convert 0-1 range to 0-255 range
-      const r = Math.round(colorObj.red * 255);
-      const g = Math.round(colorObj.green * 255);
-      const b = Math.round(colorObj.blue * 255);
+      const r = Math.round(rgb.red * 255);
+      const g = Math.round(rgb.green * 255);
+      const b = Math.round(rgb.blue * 255);
       return `rgb(${r}, ${g}, ${b})`;
     }
 
