@@ -13,7 +13,7 @@
     "test:e2e": "playwright test",
     "test:e2e:prod": "playwright test --config=playwright.production.config.ts",
     "qa:visual": "playwright test e2e/visual-qa.spec.ts --config=playwright.production.config.ts",
-    "pages:build": "npx @cloudflare/next-on-pages",
+    "pages:build": "npx @cloudflare/next-on-pages && node scripts/patch-pages-routes.mjs",
     "preview": "pnpm run pages:build && wrangler pages dev",
     "deploy": "pnpm run pages:build && wrangler pages deploy"
   },

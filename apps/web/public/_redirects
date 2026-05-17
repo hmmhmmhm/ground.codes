@@ -1,0 +1,6 @@
+/favicon.ico /favicon.ico 200
+/_next/* /_next/:splat 200
+/api/* /api/:splat 200
+/robots.txt /robots.txt 200
+/sitemap.xml /sitemap.xml 200
+/* / 200
