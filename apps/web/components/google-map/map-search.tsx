@@ -37,6 +37,7 @@ const MapSearch: React.FC<MapSearchProps> = ({
     Map<string, google.maps.places.AutocompletePrediction[]>
   >(new Map());
   const predictionRequestIdRef = useRef(0);
+  const suppressedPredictionQueryRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (initialQuery && !query) {
@@ -93,7 +94,11 @@ const MapSearch: React.FC<MapSearchProps> = ({
     const requestId = predictionRequestIdRef.current + 1;
     predictionRequestIdRef.current = requestId;
 
-    if (trimmedQuery.length < 2 || isGroundSearchLoading) {
+    if (
+      trimmedQuery.length < 2 ||
+      isGroundSearchLoading ||
+      normalizedQuery === suppressedPredictionQueryRef.current
+    ) {
       setPlacePredictions([]);
       return;
     }
@@ -150,6 +155,7 @@ const MapSearch: React.FC<MapSearchProps> = ({
     const trimmedQuery = (searchInputRef.current?.value ?? query).trim();
     if (!trimmedQuery || isGroundSearchLoading) return;
     predictionRequestIdRef.current += 1;
+    suppressedPredictionQueryRef.current = trimmedQuery.toLocaleLowerCase();
     setPlacePredictions([]);
     setQuery(trimmedQuery);
     await onGroundSearch(trimmedQuery);
@@ -161,6 +167,8 @@ const MapSearch: React.FC<MapSearchProps> = ({
     if (isGroundSearchLoading) return;
 
     predictionRequestIdRef.current += 1;
+    suppressedPredictionQueryRef.current =
+      prediction.description.trim().toLocaleLowerCase();
     setQuery(prediction.description);
     setPlacePredictions([]);
     await onGroundSearch(prediction.description);
@@ -180,8 +188,14 @@ const MapSearch: React.FC<MapSearchProps> = ({
           ref={searchInputRef}
           type="text"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          onInput={(event) => setQuery(event.currentTarget.value)}
+          onChange={(event) => {
+            suppressedPredictionQueryRef.current = null;
+            setQuery(event.target.value);
+          }}
+          onInput={(event) => {
+            suppressedPredictionQueryRef.current = null;
+            setQuery(event.currentTarget.value);
+          }}
           onKeyDown={(event) => {
             if (event.key === "Escape") {
               setPlacePredictions([]);
