@@ -117,8 +117,7 @@ function GoogleMapComponent() {
       className="absolute bottom-[calc(env(safe-area-inset-bottom)+12px)] left-1/2 z-20 max-h-[42vh] w-[min(calc(100%-24px),30rem)] -translate-x-1/2 overflow-auto rounded-lg border border-white/20 bg-black/65 px-4 py-3 text-xs text-white shadow-lg backdrop-blur-md"
       data-testid="selected-area-panel"
     >
-      <div className="font-medium">{t("map.coordinates.title")}</div>
-      <div className="mt-1 font-mono">
+      <div className="font-mono">
         {selectedArea.lat.toFixed(6)}, {selectedArea.lng.toFixed(6)}
       </div>
       <div className="mt-2 break-all text-white/80">
@@ -246,7 +245,6 @@ function GoogleMapComponent() {
           mapHeading={mapHeading}
           onCameraHeadingChange={setMapHeading}
           selectedArea={selectedArea}
-          selectedAreaAddress={selectedAreaAddress}
           showGrid={showGrid}
           setSelectedArea={setSelectedArea}
           userLocation={userLocation}

@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Coordinates } from "./types";
-import { getSelectedAreaDetailText } from "./selected-area-summary";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import {
   DEFAULT_GROUND_CODE_PRECISION_METERS,
@@ -14,7 +13,6 @@ type Earth3DMapProps = {
   mapHeading: number;
   onCameraHeadingChange: (heading: number) => void;
   selectedArea: Coordinates | null;
-  selectedAreaAddress?: string | null;
   showGrid: boolean;
   setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>;
   userLocation: Coordinates | null;
@@ -253,7 +251,6 @@ const Earth3DMap = ({
   mapHeading,
   onCameraHeadingChange,
   selectedArea,
-  selectedAreaAddress,
   showGrid,
   setSelectedArea,
   userLocation,
@@ -472,10 +469,7 @@ const Earth3DMap = ({
     precision.style.fontSize = "11px";
     precision.style.fontWeight = "500";
     precision.style.opacity = "0.72";
-    precision.textContent = getSelectedAreaDetailText({
-      address: selectedAreaAddress,
-      precisionLabel: groundCodePrecisionLabel,
-    });
+    precision.textContent = groundCodePrecisionLabel;
     content.append(label, precision);
     popover.append(content);
     map3d.append(popover);
@@ -486,7 +480,6 @@ const Earth3DMap = ({
     isEncoding,
     mapReady,
     selectedArea,
-    selectedAreaAddress,
   ]);
 
   useEffect(() => {
@@ -503,18 +496,10 @@ const Earth3DMap = ({
       label.textContent = markerLabel;
     }
     if (precision && precision !== label) {
-      precision.textContent = getSelectedAreaDetailText({
-        address: selectedAreaAddress,
-        precisionLabel: groundCodePrecisionLabel,
-      });
+      precision.textContent = groundCodePrecisionLabel;
     }
     markerPopoverRef.current.open = true;
-  }, [
-    encodedCoordinates,
-    groundCodePrecisionLabel,
-    isEncoding,
-    selectedAreaAddress,
-  ]);
+  }, [encodedCoordinates, groundCodePrecisionLabel, isEncoding]);
 
   useEffect(() => {
     const map3d = mapRef.current;
