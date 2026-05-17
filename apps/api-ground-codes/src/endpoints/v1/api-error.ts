@@ -33,6 +33,16 @@ export const formatApiError = (
     };
   }
 
+  if (code === "NOT_FOUND") {
+    set.status = 404;
+    return {
+      error: {
+        code: "NOT_FOUND",
+        message: "Route not found.",
+      },
+    };
+  }
+
   set.status = 500;
   return {
     error: {

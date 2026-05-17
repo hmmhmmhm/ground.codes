@@ -77,6 +77,17 @@ describe("Ground Codes API contract", () => {
     expect(schemaResponse.headers.get("location")).toBe("/json");
   });
 
+  test("returns a structured not found error for unsupported routes", async () => {
+    const response = await get("/v1/encode");
+
+    expect(response.status).toBe(404);
+    expect(await response.json()).toMatchObject({
+      error: {
+        code: "NOT_FOUND",
+      },
+    });
+  });
+
   test(
     "serves encode through the versioned v1 route",
     async () => {
