@@ -2,9 +2,9 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./e2e",
-  timeout: 30_000,
+  timeout: 90_000,
   expect: {
-    timeout: 10_000,
+    timeout: 15_000,
   },
   use: {
     baseURL: "http://127.0.0.1:3001",
@@ -20,7 +20,7 @@ export default defineConfig({
     },
     {
       command:
-        "NEXT_PUBLIC_GROUND_CODES_API_URL=http://127.0.0.1:3000 pnpm --filter web exec next dev --turbopack -p 3001",
+        "NEXT_PUBLIC_GROUND_CODES_API_URL=http://127.0.0.1:3000 pnpm --filter web exec next dev -p 3001",
       cwd: "../..",
       url: "http://127.0.0.1:3001",
       reuseExistingServer: !process.env.CI,

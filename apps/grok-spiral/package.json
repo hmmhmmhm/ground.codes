@@ -7,7 +7,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint app lib next.config.ts --max-warnings 0",
     "check-types": "tsc --noEmit",
     "pages:build": "npx @cloudflare/next-on-pages",
     "preview": "pnpm run pages:build && wrangler pages dev",

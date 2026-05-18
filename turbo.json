@@ -2,7 +2,9 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "globalEnv": [
+    "CI",
     "GOOGLE_MAPS_NODEJS_API_KEY",
+    "NODE_ENV",
     "OPENWEATHER_API_KEY",
     "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
     "NEXT_PUBLIC_API_BASE_URL"
@@ -11,7 +13,9 @@
     "build": {
       "dependsOn": ["^build"],
       "env": [
+        "CI",
         "GOOGLE_MAPS_NODEJS_API_KEY",
+        "NODE_ENV",
         "OPENWEATHER_API_KEY",
         "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
         "NEXT_PUBLIC_API_BASE_URL"
@@ -22,7 +26,9 @@
     "lint": {
       "dependsOn": ["^lint"],
       "env": [
+        "CI",
         "GOOGLE_MAPS_NODEJS_API_KEY",
+        "NODE_ENV",
         "OPENWEATHER_API_KEY",
         "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
         "NEXT_PUBLIC_API_BASE_URL"

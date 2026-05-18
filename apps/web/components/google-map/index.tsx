@@ -99,7 +99,7 @@ function GoogleMapComponent() {
   };
   const selectedAreaPanel = selectedArea ? (
     <div
-      className="absolute bottom-[calc(env(safe-area-inset-bottom)+12px)] left-1/2 z-20 max-h-[42vh] w-[min(calc(100%-24px),30rem)] -translate-x-1/2 overflow-auto rounded-lg border border-white/20 bg-black/65 px-4 py-3 pr-14 text-xs text-white shadow-lg backdrop-blur-md"
+      className="absolute bottom-[calc(env(safe-area-inset-bottom)+12px)] left-1/2 z-20 max-h-[42vh] w-[min(calc(100%-24px),30rem)] -translate-x-1/2 overflow-auto rounded-lg border border-white/20 bg-black/65 py-3 pl-16 pr-14 text-xs text-white shadow-lg backdrop-blur-md sm:pl-4"
       data-testid="selected-area-panel"
     >
       {!isEncoding && encodedCoordinates && (
@@ -113,7 +113,7 @@ function GoogleMapComponent() {
           <FaShareAlt aria-hidden="true" />
         </button>
       )}
-      <div className="font-mono">
+      <div className="font-mono" data-testid="selected-area-coordinate">
         {selectedArea.lat.toFixed(6)}, {selectedArea.lng.toFixed(6)}
       </div>
       <div className="mt-2 break-all text-white/80">

@@ -4,6 +4,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["127.0.0.1"],
   transpilePackages: ["@repo/ui"],
   images: {
     unoptimized: true,
@@ -20,9 +21,6 @@ const nextConfig: NextConfig = {
       process.env.NEXT_PUBLIC_CESIUM_MARS_ASSET_ID,
     NEXT_PUBLIC_GROUND_CODES_API_URL:
       process.env.NEXT_PUBLIC_GROUND_CODES_API_URL,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
   },
   trailingSlash: true,
 };

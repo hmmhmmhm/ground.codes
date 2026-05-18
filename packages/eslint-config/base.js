@@ -27,6 +27,14 @@ export const config = [
     },
   },
   {
-    ignores: ["dist/**"],
+    ignores: [
+      ".next/**",
+      "coverage/**",
+      "dist/**",
+      "next-env.d.ts",
+      "out/**",
+      "playwright-report/**",
+      "test-results/**",
+    ],
   },
 ];

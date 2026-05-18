@@ -7,7 +7,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint app components e2e hooks i18n i18n.ts lib next.config.ts playwright.config.ts playwright.production.config.ts --max-warnings 0",
     "check-types": "tsc --noEmit",
     "test": "bun test ./lib ./app ./components ./hooks",
     "test:e2e": "playwright test",

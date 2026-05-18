@@ -101,15 +101,20 @@ test("keeps mobile map controls clear of search and selected area panel", async 
     .boundingBox();
   const actionBox = await page.getByTestId("map-action-controls").boundingBox();
   const panelBox = await page.getByTestId("selected-area-panel").boundingBox();
+  const panelCoordinateBox = await page
+    .getByTestId("selected-area-coordinate")
+    .boundingBox();
 
   expect(searchBox).not.toBeNull();
   expect(settingsBox).not.toBeNull();
   expect(actionBox).not.toBeNull();
   expect(panelBox).not.toBeNull();
+  expect(panelCoordinateBox).not.toBeNull();
 
   expect(boxesOverlap(settingsBox!, searchBox!)).toBe(false);
   expect(boxesOverlap(settingsBox!, panelBox!)).toBe(false);
   expect(boxesOverlap(actionBox!, panelBox!)).toBe(false);
+  expect(panelCoordinateBox!.x - panelBox!.x).toBeGreaterThanOrEqual(52);
 });
 
 test("keeps the mobile celestial body menu inside the viewport", async ({

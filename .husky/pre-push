@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # Run lint-staged to check files in apps/web
 pnpm --filter web lint
 pnpm --filter web check-types
