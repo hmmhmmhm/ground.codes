@@ -26,6 +26,36 @@ test("opens a canonical Earth Ground Code share URL", async ({ page }) => {
   await expect(page.getByRole("button", { name: /Copy|복사/ })).toHaveCount(0);
 });
 
+test("opens explicit Moon and Mars Ground Code share URLs", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+
+  for (const share of [
+    {
+      path: "/moon/Mare%20Tranquillitatis-Alder-Talking",
+      body: "moon",
+      label: /Mare Tranquillitatis/,
+    },
+    {
+      path: "/mars/Olympus%20Mons-Alder",
+      body: "mars",
+      label: /Olympus Mons/,
+    },
+  ]) {
+    const searchResponse = page.waitForResponse((response) => {
+      if (!response.url().includes("/v1/search")) return false;
+      const payload = response.request().postDataJSON() as { body?: string };
+      return payload.body === share.body;
+    });
+
+    await page.goto(share.path);
+    await expect((await searchResponse).ok()).toBe(true);
+    await expect(page.getByTestId("selected-area-panel")).toBeVisible();
+    await expect(page.getByText(share.label).first()).toBeVisible();
+  }
+});
+
 test("searches partial region names and shows selectable results", async ({
   page,
 }) => {
@@ -80,6 +110,24 @@ test("keeps mobile map controls clear of search and selected area panel", async 
   expect(boxesOverlap(settingsBox!, searchBox!)).toBe(false);
   expect(boxesOverlap(settingsBox!, panelBox!)).toBe(false);
   expect(boxesOverlap(actionBox!, panelBox!)).toBe(false);
+});
+
+test("keeps the mobile celestial body menu inside the viewport", async ({
+  page,
+}) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/?map=roadmap");
+
+  await page.getByRole("button", { name: /Celestial body|천체 선택/ }).click();
+
+  const marsOption = page.getByRole("button", { name: /^Mars$|^화성$/ });
+  await expect(marsOption).toBeVisible();
+
+  const optionBox = await marsOption.boundingBox();
+  expect(optionBox).not.toBeNull();
+  expect(optionBox!.y).toBeGreaterThanOrEqual(0);
+  expect(optionBox!.y + optionBox!.height).toBeLessThanOrEqual(844);
 });
 
 test("shows a visible error for an invalid code-shaped share URL", async ({

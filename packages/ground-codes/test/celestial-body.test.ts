@@ -5,6 +5,7 @@ import {
   decode,
   encode,
   findClosestRegion,
+  findRegionsByQuery,
   getBodyMetersPerDegree,
 } from "../src/index.js";
 
@@ -74,6 +75,33 @@ describe("celestial bodies", () => {
     });
 
     assert.equal(defaultEncoded, earthEncoded);
+  });
+
+  test("keeps ASCII-normalized English earth labels usable in codes and search", async () => {
+    const target = { lat: -82, lng: -63 };
+
+    const encoded = await encode(target, {
+      regionLevel: 2,
+      language: "english",
+      body: "earth",
+    });
+    assert.equal(encoded, "Mollereisstrom-Alder");
+
+    const decoded = await decode(encoded, {
+      regionLevel: 2,
+      language: "english",
+      body: "earth",
+    });
+    assertClose(decoded.lat, target.lat, 0.0002);
+    assertClose(decoded.lng, target.lng, 0.0002);
+
+    const matches = await findRegionsByQuery("Mollereisstrom", {
+      regionLevel: 3,
+      language: "english",
+      body: "earth",
+      maxResults: 1,
+    });
+    assert.equal(matches[0]?.name, "Mollereisstrom");
   });
 
   test("finds official Moon nomenclature for lunar coordinates", async () => {

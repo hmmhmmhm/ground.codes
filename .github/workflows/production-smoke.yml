@@ -10,11 +10,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check API readiness
-        run: curl -fsS https://api.ground.codes/readyz
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Check web robots
-        run: curl -fsS https://ground.codes/robots.txt
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
 
-      - name: Check web sitemap
-        run: curl -fsS https://ground.codes/sitemap.xml
+      - name: Run production smoke
+        run: node scripts/production-smoke.mjs

@@ -4,6 +4,7 @@ import {
   decode,
   type SupportedLanguage,
 } from "ground-codes/src/index.ts";
+import { ApiInputError } from "./api-error.js";
 import { supportedLanguages } from "./language.js";
 import {
   validateBody,
@@ -27,11 +28,19 @@ export const v1Decode = new Elysia().post(
     const validatedBody = validateBody(celestialBody);
     validateRegionLevel({ body: validatedBody, regionLevel });
 
-    return await decode(code, {
-      regionLevel,
-      language: validatedLanguage as SupportedLanguage,
-      body: validatedBody as CelestialBody,
-    });
+    try {
+      return await decode(code, {
+        regionLevel,
+        language: validatedLanguage as SupportedLanguage,
+        body: validatedBody as CelestialBody,
+      });
+    } catch (error) {
+      throw new ApiInputError(
+        error instanceof Error
+          ? error.message
+          : "Ground Code could not be decoded.",
+      );
+    }
   },
   {
     detail: {

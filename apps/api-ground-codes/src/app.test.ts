@@ -88,21 +88,17 @@ describe("Ground Codes API contract", () => {
     });
   });
 
-  test(
-    "serves encode through the versioned v1 route",
-    async () => {
-      const response = await postJson("/v1/encode", {
-        lat: 37.566,
-        lng: 126.978,
-        language: "english",
-        regionLevel: 2,
-      });
+  test("serves encode through the versioned v1 route", async () => {
+    const response = await postJson("/v1/encode", {
+      lat: 37.566,
+      lng: 126.978,
+      language: "english",
+      regionLevel: 2,
+    });
 
-      expect(response.status).toBe(200);
-      expect(await response.text()).toMatch(/^Seoul-/);
-    },
-    90_000,
-  );
+    expect(response.status).toBe(200);
+    expect(await response.text()).toMatch(/^Seoul-/);
+  }, 90_000);
 
   test("search resolves an encoded ground code", async () => {
     const encodedResponse = await postJson("/v1/encode", {
@@ -181,26 +177,22 @@ describe("Ground Codes API contract", () => {
     });
   });
 
-  test(
-    "search falls back to English region names from a localized request",
-    async () => {
-      const response = await postJson("/v1/search", {
-        query: "Seoul",
-        language: "korean",
-        regionLevel: 2,
-      });
+  test("search falls back to English region names from a localized request", async () => {
+    const response = await postJson("/v1/search", {
+      query: "Seoul",
+      language: "korean",
+      regionLevel: 2,
+    });
 
-      expect(response.status).toBe(200);
-      const body = await response.json();
-      expect(body.results[0]).toMatchObject({
-        type: "region",
-        label: "Seoul",
-        body: "earth",
-        regionLevel: 2,
-      });
-    },
-    90_000,
-  );
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.results[0]).toMatchObject({
+      type: "region",
+      label: "Seoul",
+      body: "earth",
+      regionLevel: 2,
+    });
+  }, 90_000);
 
   test("search detects an English encoded code from a localized request", async () => {
     const encodedResponse = await postJson("/v1/encode", {
@@ -247,6 +239,21 @@ describe("Ground Codes API contract", () => {
     const response = await postJson("/v1/encode", {
       lat: 120,
       lng: 126.978,
+      language: "english",
+      regionLevel: 2,
+    });
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({
+      error: {
+        code: "INVALID_INPUT",
+      },
+    });
+  });
+
+  test("returns a structured client error for undecodable codes", async () => {
+    const response = await postJson("/v1/decode", {
+      code: "Seoul-notrealcode",
       language: "english",
       regionLevel: 2,
     });
