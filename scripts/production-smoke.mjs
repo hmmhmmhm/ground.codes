@@ -139,6 +139,25 @@ await check("Undecodable code is a client error", async () => {
   );
 });
 
+await check("Missing region info is not a server error", async () => {
+  const response = await fetch(`${apiBaseUrl}/v1/region/info`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: "not-a-real-region",
+      language: "english",
+      regionLevel: 2,
+      body: "earth",
+    }),
+  });
+  const body = await response.json();
+  assert(response.status === 404, `expected 404, got ${response.status}`);
+  assert(
+    body.error?.code === "NOT_FOUND",
+    `unexpected body: ${JSON.stringify(body)}`,
+  );
+});
+
 await check("Unsupported route is not a server error", async () => {
   const response = await fetch(`${apiBaseUrl}/v1/encode`);
   const body = await response.json();

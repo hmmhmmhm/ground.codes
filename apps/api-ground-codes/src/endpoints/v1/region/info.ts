@@ -1,5 +1,6 @@
 import Elysia, { t } from "elysia";
 import { info } from "@ground-codes/geoint/src/index.ts";
+import { ApiNotFoundError } from "../api-error.js";
 import { getRegionDatasetName, supportedLanguages } from "../language.js";
 import {
   validateBody,
@@ -29,10 +30,10 @@ export const v1RegionInfo = new Elysia().post(
     const data = await info({
       name: query,
       regionName,
-    });
+    }).catch(() => null);
 
     if (!data) {
-      throw new Error("Failed to find region");
+      throw new ApiNotFoundError(`Region "${query}" was not found.`);
     }
 
     return {

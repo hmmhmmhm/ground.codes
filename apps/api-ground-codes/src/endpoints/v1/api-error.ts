@@ -8,12 +8,32 @@ export class ApiInputError extends Error {
   }
 }
 
+export class ApiNotFoundError extends Error {
+  code = "NOT_FOUND";
+  status = 404;
+
+  constructor(message: string) {
+    super(message);
+    this.name = "ApiNotFoundError";
+  }
+}
+
 export const formatApiError = (
   error: unknown,
   code: string | number,
   set: { status?: number | string },
 ) => {
   if (error instanceof ApiInputError) {
+    set.status = error.status;
+    return {
+      error: {
+        code: error.code,
+        message: error.message,
+      },
+    };
+  }
+
+  if (error instanceof ApiNotFoundError) {
     set.status = error.status;
     return {
       error: {

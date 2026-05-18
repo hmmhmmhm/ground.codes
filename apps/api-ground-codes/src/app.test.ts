@@ -235,6 +235,22 @@ describe("Ground Codes API contract", () => {
     });
   });
 
+  test("returns a structured not found error for missing region info", async () => {
+    const response = await postJson("/v1/region/info", {
+      name: "not-a-real-region",
+      language: "english",
+      regionLevel: 2,
+      body: "earth",
+    });
+
+    expect(response.status).toBe(404);
+    expect(await response.json()).toMatchObject({
+      error: {
+        code: "NOT_FOUND",
+      },
+    });
+  });
+
   test("returns a structured client error for invalid coordinates", async () => {
     const response = await postJson("/v1/encode", {
       lat: 120,
