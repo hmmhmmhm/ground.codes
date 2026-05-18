@@ -104,6 +104,30 @@ describe("celestial bodies", () => {
     assert.equal(matches[0]?.name, "Mollereisstrom");
   });
 
+  test("biases repeated region-name search results toward the current map center", async () => {
+    const missouriMatches = await findRegionsByQuery("Springfield", {
+      regionLevel: 2,
+      language: "english",
+      body: "earth",
+      maxResults: 1,
+      biasLat: 37.2,
+      biasLng: -93.3,
+    });
+    assert.equal(missouriMatches[0]?.name, "Springfield");
+    assertClose(missouriMatches[0]?.lat ?? Infinity, 37.2, 1);
+
+    const massachusettsMatches = await findRegionsByQuery("Springfield", {
+      regionLevel: 2,
+      language: "english",
+      body: "earth",
+      maxResults: 1,
+      biasLat: 42.1,
+      biasLng: -72.6,
+    });
+    assert.equal(massachusettsMatches[0]?.name, "West Springfield");
+    assertClose(massachusettsMatches[0]?.lat ?? Infinity, 42.1, 1);
+  });
+
   test("finds official Moon nomenclature for lunar coordinates", async () => {
     const region = await findClosestRegion(
       { lat: 8.3487, lng: 30.8346 },

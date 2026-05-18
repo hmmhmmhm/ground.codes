@@ -106,13 +106,18 @@ pnpm --filter api-ground-codes start
 
 If Railway is configured with `apps/api-ground-codes` as the root directory,
 only this app directory is available during install. In that standalone mode the
-app installs the published `ground-codes` and `@ground-codes/geoint` packages
-from npm instead of workspace links. The app build script detects this and skips
-local package builds so install/build does not fail with
-`ERR_PNPM_WORKSPACE_PKG_NOT_FOUND`.
+API runtime packages are pinned to a repository tag:
+`railway-api-runtime-20260518-search-bias`. Bump that tag whenever the deployed
+API needs new local changes from `ground-codes`, `@ground-codes/geoint`, or
+`@repo/codebook`, then run:
 
-Use repository-root deployment when the API must deploy unreleased local package
-changes from the same commit.
+```bash
+pnpm runtime:check-pins
+pnpm production:smoke
+```
+
+`pnpm runtime:check-pins` is also part of CI so the standalone Railway package
+set does not silently drift back to stale npm artifacts.
 
 ## 🔌 API Endpoints
 
@@ -120,7 +125,7 @@ changes from the same commit.
 
 - `POST /v1/encode`: Encode geographic coordinates to a ground code
 - `POST /v1/decode`: Decode a ground code to geographic coordinates
-- `POST /v1/search`: Search by encoded ground code, coordinate pair, or region name
+- `POST /v1/search`: Search by encoded ground code, coordinate pair, or region name. Optional `biasLat` and `biasLng` rank ambiguous region names near the current map center.
 - `POST /v1/region/around`: Get regions around specific coordinates
 - `POST /v1/region/info`: Get information about a specific region
 
@@ -203,6 +208,33 @@ Mars sparse fallback labels use official nearby anchors with crater numbering:
 
 ```
 "Bohar Crater 2-..."
+```
+
+### 🔎 Search Region Names Near the Current Map
+
+```bash
+curl -X POST http://localhost:3000/v1/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Springfield", "regionLevel": 2, "language": "english", "maxResults": 3, "biasLat": 42.1, "biasLng": -72.6}'
+```
+
+Response:
+
+```json
+{
+  "query": "Springfield",
+  "results": [
+    {
+      "type": "region",
+      "label": "West Springfield",
+      "lat": 42.10704,
+      "lng": -72.62037,
+      "code": "4955089",
+      "body": "earth",
+      "regionLevel": 2
+    }
+  ]
+}
 ```
 
 ## ⚙️ Configuration

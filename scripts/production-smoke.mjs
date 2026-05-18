@@ -96,6 +96,22 @@ await check("ASCII region search", async () => {
   );
 });
 
+await check("Biased region search", async () => {
+  const result = await postJsonBody("/v1/search", {
+    query: "Springfield",
+    language: "english",
+    regionLevel: 2,
+    body: "earth",
+    maxResults: 1,
+    biasLat: 42.1,
+    biasLng: -72.6,
+  });
+  assert(
+    result.results?.[0]?.label === "West Springfield",
+    `unexpected biased search result: ${JSON.stringify(result)}`,
+  );
+});
+
 await check("Moon encode", async () => {
   const code = await postJson("/v1/encode", {
     lat: 8.35,

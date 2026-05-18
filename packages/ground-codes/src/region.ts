@@ -22,6 +22,19 @@ const DEFAULT_REGION_2_FALLBACK_DISTANCE_KM = 100;
 const DEFAULT_MARS_REGION_2_FALLBACK_DISTANCE_KM = 100;
 const regionDataCache = new Map<string, Promise<Region[]>>();
 
+type RegionLookupRow = {
+  region: Region;
+  codeKey: string;
+  nameKey: string;
+};
+
+type RegionSearchMatch = RegionLookupRow & {
+  matchRank: number;
+  distanceKm: number | undefined;
+};
+
+const regionLookupCache = new Map<string, Promise<RegionLookupRow[]>>();
+
 const loadRegions = async (
   regionLevel: number,
   language?: SupportedLanguage,
@@ -275,6 +288,32 @@ const normalizeRegionLookupKey = (value: string) =>
     .toLowerCase()
     .trim();
 
+const loadRegionLookupRows = async (
+  regionLevel: number,
+  language?: SupportedLanguage,
+  body: CelestialBody = "earth",
+) => {
+  const normalizedLanguage = language?.toLowerCase();
+  const cacheKey = `${body}:${regionLevel}:${normalizedLanguage ?? "english"}`;
+  const cached = regionLookupCache.get(cacheKey);
+  if (cached) return cached;
+
+  const promise = loadRegions(regionLevel, language, body)
+    .then((regions) =>
+      regions.map((region) => ({
+        region,
+        codeKey: normalizeRegionLookupKey(region.code),
+        nameKey: normalizeRegionLookupKey(region.name),
+      })),
+    )
+    .catch((error) => {
+      regionLookupCache.delete(cacheKey);
+      throw error;
+    });
+  regionLookupCache.set(cacheKey, promise);
+  return promise;
+};
+
 export const findClosestRegion = async (
   {
     lat,
@@ -396,6 +435,8 @@ export const findRegionsByQuery = async (
     language?: SupportedLanguage;
     body?: CelestialBody;
     maxResults?: number;
+    biasLat?: number;
+    biasLng?: number;
   },
 ): Promise<
   Array<{
@@ -417,7 +458,13 @@ export const findRegionsByQuery = async (
       language,
       body = "earth",
       maxResults = 5,
+      biasLat,
+      biasLng,
     } = options ?? {};
+    const hasSearchBias = Number.isFinite(biasLat) && Number.isFinite(biasLng);
+    const normalizedBiasLng = hasSearchBias
+      ? normalizeLongitudeForBody(biasLng as number, body)
+      : undefined;
 
     const normalizedSearch = normalizeRegionLookupKey(codeOrName);
     const results: Array<{
@@ -431,23 +478,41 @@ export const findRegionsByQuery = async (
     const seen = new Set<string>();
 
     const addMatches = async (candidateRegionLevel: number) => {
-      const regions = await loadRegions(candidateRegionLevel, language, body);
-      const lookupRows = regions.map((region) => ({
-        region,
-        codeKey: normalizeRegionLookupKey(region.code),
-        nameKey: normalizeRegionLookupKey(region.name),
-      }));
-      const exactMatches = lookupRows.filter(
-        ({ codeKey, nameKey }) =>
-          codeKey === normalizedSearch || nameKey === normalizedSearch,
+      const lookupRows = await loadRegionLookupRows(
+        candidateRegionLevel,
+        language,
+        body,
       );
-      const partialMatches = lookupRows
-        .filter(
-          (row) =>
-            !exactMatches.includes(row) &&
-            (row.codeKey.includes(normalizedSearch) ||
-              row.nameKey.includes(normalizedSearch)),
-        )
+      const matches = lookupRows
+        .flatMap((row): RegionSearchMatch[] => {
+          const isExact =
+            row.codeKey === normalizedSearch ||
+            row.nameKey === normalizedSearch;
+          const isPartial =
+            row.codeKey.includes(normalizedSearch) ||
+            row.nameKey.includes(normalizedSearch);
+          if (!isExact && !isPartial) return [];
+
+          const matchRank = isExact
+            ? 0
+            : row.nameKey.startsWith(normalizedSearch)
+              ? 1
+              : row.codeKey.startsWith(normalizedSearch)
+                ? 2
+                : 3;
+          const distanceKm =
+            hasSearchBias && normalizedBiasLng !== undefined
+              ? calculateDistance(
+                  biasLat as number,
+                  normalizedBiasLng,
+                  row.region.lat,
+                  normalizeLongitudeForBody(row.region.long, body),
+                  body,
+                )
+              : undefined;
+
+          return [{ ...row, matchRank, distanceKm }];
+        })
         .sort((a, b) => {
           const aRank = a.nameKey.startsWith(normalizedSearch)
             ? 0
@@ -460,14 +525,18 @@ export const findRegionsByQuery = async (
               ? 1
               : 2;
 
-          return (
-            aRank - bRank ||
-            (b.region.population ?? 0) - (a.region.population ?? 0) ||
-            a.region.name.length - b.region.name.length
-          );
+          return hasSearchBias
+            ? (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity) ||
+                a.matchRank - b.matchRank ||
+                (b.region.population ?? 0) - (a.region.population ?? 0) ||
+                a.region.name.length - b.region.name.length
+            : a.matchRank - b.matchRank ||
+                aRank - bRank ||
+                (b.region.population ?? 0) - (a.region.population ?? 0) ||
+                a.region.name.length - b.region.name.length;
         });
 
-      for (const { region } of [...exactMatches, ...partialMatches]) {
+      for (const { region } of matches) {
         const key = `${body}:${candidateRegionLevel}:${region.code}:${region.name}`;
         if (seen.has(key)) continue;
         seen.add(key);

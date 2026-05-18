@@ -34,7 +34,9 @@ export const validateCoordinates = ({
   lng: number;
 }) => {
   if (!isFiniteNumber(lat) || lat < -90 || lat > 90) {
-    throw new ApiInputError("Latitude must be a finite number between -90 and 90.");
+    throw new ApiInputError(
+      "Latitude must be a finite number between -90 and 90.",
+    );
   }
 
   if (!isFiniteNumber(lng) || lng < -360 || lng > 360) {
@@ -58,8 +60,7 @@ export const validateRegionLevel = ({
   body: ApiBody;
   regionLevel: number;
 }) => {
-  const allowed =
-    body === "moon" ? [2] : body === "mars" ? [2, 3] : [1, 2, 3];
+  const allowed = body === "moon" ? [2] : body === "mars" ? [2, 3] : [1, 2, 3];
   if (!Number.isInteger(regionLevel) || !allowed.includes(regionLevel)) {
     throw new ApiInputError(
       `${body} supports regionLevel values: ${allowed.join(", ")}.`,
@@ -71,6 +72,22 @@ export const validateMaxResults = (maxResults: number) => {
   if (!Number.isInteger(maxResults) || maxResults < 1 || maxResults > 100) {
     throw new ApiInputError("maxResults must be an integer between 1 and 100.");
   }
+};
+
+export const validateSearchBiasCoordinates = ({
+  biasLat,
+  biasLng,
+}: {
+  biasLat?: number;
+  biasLng?: number;
+}) => {
+  if (biasLat === undefined && biasLng === undefined) return null;
+  if (biasLat === undefined || biasLng === undefined) {
+    throw new ApiInputError("biasLat and biasLng must be provided together.");
+  }
+
+  validateCoordinates({ lat: biasLat, lng: biasLng });
+  return { biasLat, biasLng };
 };
 
 export const validateSearchQuery = (query: string) => {

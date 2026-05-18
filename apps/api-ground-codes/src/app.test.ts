@@ -46,9 +46,9 @@ describe("Ground Codes API contract", () => {
   test("serves public API documentation without exposing legacy routes", async () => {
     const firstPartyDocsResponse = await get("/docs");
     expect(firstPartyDocsResponse.status).toBe(200);
-    expect(await firstPartyDocsResponse.text()).toContain(
-      "https://api.ground.codes/v1/encode",
-    );
+    const firstPartyDocs = await firstPartyDocsResponse.text();
+    expect(firstPartyDocs).toContain("https://api.ground.codes/v1/encode");
+    expect(firstPartyDocs).toContain("biasLat");
 
     const docsResponse = await get("/");
     expect(docsResponse.status).toBe(200);
@@ -61,6 +61,10 @@ describe("Ground Codes API contract", () => {
     const schema = await schemaResponse.json();
     expect(schema.paths["/v1/encode"]).toBeDefined();
     expect(schema.paths["/v1/search"]).toBeDefined();
+    expect(
+      schema.paths["/v1/search"].post.requestBody.content["application/json"]
+        .schema.properties.biasLat,
+    ).toBeDefined();
     expect(schema.paths["/encode"]).toBeUndefined();
     expect(schema.paths["/search"]).toBeUndefined();
     expect(schema.paths["/docs"]).toBeUndefined();
@@ -162,6 +166,26 @@ describe("Ground Codes API contract", () => {
     );
   });
 
+  test("search ranks ambiguous region names by the supplied map-center bias", async () => {
+    const response = await postJson("/v1/search", {
+      query: "Springfield",
+      language: "english",
+      regionLevel: 2,
+      maxResults: 1,
+      biasLat: 42.1,
+      biasLng: -72.6,
+    });
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.results[0]).toMatchObject({
+      type: "region",
+      label: "West Springfield",
+      body: "earth",
+      regionLevel: 2,
+    });
+  });
+
   test("search resolves common city aliases", async () => {
     const response = await postJson("/v1/search", {
       query: "nyc",
@@ -257,6 +281,22 @@ describe("Ground Codes API contract", () => {
       lng: 126.978,
       language: "english",
       regionLevel: 2,
+    });
+
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({
+      error: {
+        code: "INVALID_INPUT",
+      },
+    });
+  });
+
+  test("returns a structured client error for incomplete search bias", async () => {
+    const response = await postJson("/v1/search", {
+      query: "Springfield",
+      language: "english",
+      regionLevel: 2,
+      biasLat: 42.1,
     });
 
     expect(response.status).toBe(400);

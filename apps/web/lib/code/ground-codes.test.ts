@@ -85,6 +85,8 @@ describe("ground-codes API client", () => {
       language: "english",
       body: "earth",
       maxResults: 5,
+      biasLat: 37.566,
+      biasLng: 126.978,
     });
 
     expect(result.results[0]?.type).toBe("ground-code");
@@ -96,6 +98,8 @@ describe("ground-codes API client", () => {
         language: "english",
         body: "earth",
         maxResults: 5,
+        biasLat: 37.566,
+        biasLng: 126.978,
       },
     });
   });

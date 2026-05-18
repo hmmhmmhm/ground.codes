@@ -8,6 +8,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "production:smoke": "node scripts/production-smoke.mjs",
+    "runtime:check-pins": "node scripts/check-api-runtime-pins.mjs",
     "prepare": "husky install"
   },
   "lint-staged": {

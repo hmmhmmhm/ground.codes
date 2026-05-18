@@ -11,11 +11,11 @@ import {
   validateLanguage,
   validateMaxResults,
   validateRegionLevel,
+  validateSearchBiasCoordinates,
   validateSearchQuery,
 } from "./validation.js";
 
-const coordinatePattern =
-  /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/;
+const coordinatePattern = /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/;
 
 const parseCoordinates = (query: string) => {
   const match = query.match(coordinatePattern);
@@ -60,6 +60,8 @@ type GroundCodesWithOptionalRegionSearch = typeof GroundCodes & {
       language?: SupportedLanguage;
       body?: CelestialBody;
       maxResults?: number;
+      biasLat?: number;
+      biasLng?: number;
     },
   ) => Promise<RegionSearchResult[]>;
 };
@@ -77,6 +79,8 @@ const findRegionMatches = async (
     language: SupportedLanguage;
     body: CelestialBody;
     maxResults: number;
+    biasLat?: number;
+    biasLng?: number;
   },
 ): Promise<RegionSearchResult[]> => {
   const findRegionsByQuery = (
@@ -100,6 +104,8 @@ export const v1Search = new Elysia().post(
       language = "english",
       body: celestialBody = "earth",
       maxResults = 5,
+      biasLat,
+      biasLng,
     },
     set,
   }) => {
@@ -108,6 +114,7 @@ export const v1Search = new Elysia().post(
     const validatedBody = validateBody(celestialBody);
     validateRegionLevel({ body: validatedBody, regionLevel });
     validateMaxResults(maxResults);
+    const searchBias = validateSearchBiasCoordinates({ biasLat, biasLng });
     set.headers["cache-control"] = "public, max-age=60, s-maxage=600";
 
     const baseResult = {
@@ -177,6 +184,7 @@ export const v1Search = new Elysia().post(
         language: candidateLanguage as SupportedLanguage,
         body: validatedBody as CelestialBody,
         maxResults: maxResults - regions.length,
+        ...(searchBias ?? {}),
       });
       regions.push(...candidateRegions);
       if (regions.length >= maxResults) break;
@@ -205,7 +213,8 @@ export const v1Search = new Elysia().post(
     body: t.Object({
       query: t.String({
         example: "Seoul-Happy-Tiger",
-        description: "Ground Code, coordinate pair, region name, or region code",
+        description:
+          "Ground Code, coordinate pair, region name, or region code",
       }),
       regionLevel: t.Optional(
         t.Number({
@@ -233,6 +242,20 @@ export const v1Search = new Elysia().post(
           minimum: 1,
           maximum: 25,
           example: 5,
+        }),
+      ),
+      biasLat: t.Optional(
+        t.Number({
+          example: 37.566,
+          description:
+            "Optional map-center latitude used to rank ambiguous region-name matches.",
+        }),
+      ),
+      biasLng: t.Optional(
+        t.Number({
+          example: 126.978,
+          description:
+            "Optional map-center longitude used with biasLat to rank ambiguous region-name matches.",
         }),
       ),
     }),

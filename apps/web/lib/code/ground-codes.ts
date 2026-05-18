@@ -87,12 +87,16 @@ export const searchGroundCodes = async ({
   body = "earth",
   regionLevel = 2,
   maxResults = 5,
+  biasLat,
+  biasLng,
 }: {
   query: string;
   language?: string;
   body?: CelestialBody;
   regionLevel?: number;
   maxResults?: number;
+  biasLat?: number;
+  biasLng?: number;
 }): Promise<GroundCodeSearchResponse> => {
   const response = await postApi("/v1/search", {
     query,
@@ -100,6 +104,9 @@ export const searchGroundCodes = async ({
     language,
     body,
     maxResults,
+    ...(biasLat !== undefined && biasLng !== undefined
+      ? { biasLat, biasLng }
+      : {}),
   });
 
   return await response.json();

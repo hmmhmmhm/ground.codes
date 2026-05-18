@@ -250,13 +250,11 @@ export const useMapContainer = () => {
   }, [isLoadingLocation]);
 
   // Get user location using the hook
-  const {
-    getUserLocation: getGeoLocation,
-    cancelGeolocationRequest,
-  } = useGeolocation(map, setCenter, setSelectedArea, {
-    autoGetLocation: isEarth,
-    initialFetch: isEarth,
-  });
+  const { getUserLocation: getGeoLocation, cancelGeolocationRequest } =
+    useGeolocation(map, setCenter, setSelectedArea, {
+      autoGetLocation: isEarth,
+      initialFetch: isEarth,
+    });
 
   // Location tracking start function
   const startWatchingPosition = useCallback(() => {
@@ -786,36 +784,36 @@ export const useMapContainer = () => {
 
   const applyGroundSearchResult = useCallback(
     (result: GroundCodeSearchResult) => {
-        const resultBody = parseCelestialBody(String(result.body));
-        const nextLocation = { lat: result.lat, lng: result.lng };
-        const nextZoom = resultBody === "earth" ? 14 : 5;
+      const resultBody = parseCelestialBody(String(result.body));
+      const nextLocation = { lat: result.lat, lng: result.lng };
+      const nextZoom = resultBody === "earth" ? 14 : 5;
 
-        if (resultBody !== body) {
-          selectBody(resultBody);
-        }
+      if (resultBody !== body) {
+        selectBody(resultBody);
+      }
 
-        if (locationMode === LocationMode.TRACKING) {
-          setLocationMode(LocationMode.OFF);
-        }
+      if (locationMode === LocationMode.TRACKING) {
+        setLocationMode(LocationMode.OFF);
+      }
 
-        setPlaceDetailsVisible(false);
-        setSelectedPlaceId(null);
-        setSelectedLocation(null);
-        setCenter(nextLocation);
-        setZoom(nextZoom);
-        userZoomRef.current = nextZoom;
-        setSelectedArea(nextLocation);
-        setSelectedAreaAddress(
-          resultBody === "earth" && result.type !== "ground-code"
-            ? result.label
-            : null,
-        );
-        setShowInfoWindow(true);
+      setPlaceDetailsVisible(false);
+      setSelectedPlaceId(null);
+      setSelectedLocation(null);
+      setCenter(nextLocation);
+      setZoom(nextZoom);
+      userZoomRef.current = nextZoom;
+      setSelectedArea(nextLocation);
+      setSelectedAreaAddress(
+        resultBody === "earth" && result.type !== "ground-code"
+          ? result.label
+          : null,
+      );
+      setShowInfoWindow(true);
 
-        if (map && resultBody === body) {
-          map.setCenter(nextLocation);
-          map.setZoom(nextZoom);
-        }
+      if (map && resultBody === body) {
+        map.setCenter(nextLocation);
+        map.setZoom(nextZoom);
+      }
     },
     [body, locationMode, map, selectBody, setLocationMode],
   );
@@ -837,6 +835,8 @@ export const useMapContainer = () => {
             language: getGroundCodeLanguage(locale),
             body: searchBody,
             maxResults: 5,
+            biasLat: center.lat,
+            biasLng: center.lng,
           });
           results = response.results;
         } catch (apiError) {
@@ -844,8 +844,8 @@ export const useMapContainer = () => {
         }
 
         if (results.length === 0 && searchBody === "earth") {
-          const geocodedResult = await new Promise<GroundCodeSearchResult | null>(
-            (resolve) => {
+          const geocodedResult =
+            await new Promise<GroundCodeSearchResult | null>((resolve) => {
               if (typeof google === "undefined" || !google.maps?.Geocoder) {
                 resolve(null);
                 return;
@@ -865,28 +865,30 @@ export const useMapContainer = () => {
                 resolve(result);
               };
 
-              geocoder.geocode({ address: trimmedQuery }, (geocodeResults, status) => {
-                if (
-                  status !== google.maps.GeocoderStatus.OK ||
-                  !geocodeResults?.[0]?.geometry?.location
-                ) {
-                  finish(null);
-                  return;
-                }
+              geocoder.geocode(
+                { address: trimmedQuery },
+                (geocodeResults, status) => {
+                  if (
+                    status !== google.maps.GeocoderStatus.OK ||
+                    !geocodeResults?.[0]?.geometry?.location
+                  ) {
+                    finish(null);
+                    return;
+                  }
 
-                const geocodeResult = geocodeResults[0];
-                const location = geocodeResult.geometry.location;
-                finish({
-                  type: "region",
-                  label: geocodeResult.formatted_address ?? trimmedQuery,
-                  lat: location.lat(),
-                  lng: location.lng(),
-                  body: "earth",
-                  regionLevel: 2,
-                });
-              });
-            },
-          );
+                  const geocodeResult = geocodeResults[0];
+                  const location = geocodeResult.geometry.location;
+                  finish({
+                    type: "region",
+                    label: geocodeResult.formatted_address ?? trimmedQuery,
+                    lat: location.lat(),
+                    lng: location.lng(),
+                    body: "earth",
+                    regionLevel: 2,
+                  });
+                },
+              );
+            });
 
           if (geocodedResult) {
             results = [geocodedResult];
@@ -909,7 +911,7 @@ export const useMapContainer = () => {
         setIsGroundSearchLoading(false);
       }
     },
-    [applyGroundSearchResult, body, locale],
+    [applyGroundSearchResult, body, center.lat, center.lng, locale],
   );
 
   useEffect(() => {

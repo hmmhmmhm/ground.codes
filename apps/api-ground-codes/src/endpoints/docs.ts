@@ -106,10 +106,10 @@ const docsHtml = `<!doctype html>
         </section>
         <section class="full">
           <h2>Search</h2>
-          <p>Search accepts encoded ground codes, partial region names, and common aliases such as <code>nyc</code>.</p>
+          <p>Search accepts encoded ground codes, partial region names, and common aliases such as <code>nyc</code>. Pass <code>biasLat</code> and <code>biasLng</code> from the current map center to rank ambiguous names nearby.</p>
           <pre><code>curl -X POST https://api.ground.codes/v1/search \\
   -H "Content-Type: application/json" \\
-  -d '{"query":"Seoul-happy-river","language":"english","body":"earth","maxResults":5}'</code></pre>
+  -d '{"query":"Springfield","language":"english","body":"earth","maxResults":5,"biasLat":42.1,"biasLng":-72.6}'</code></pre>
         </section>
         <section>
           <h2>Operational Endpoints</h2>

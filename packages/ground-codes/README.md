@@ -150,6 +150,31 @@ Finds the closest region to the given coordinates.
 
 **Returns:** `Promise<{ name: string, code: string, lat: number, lng: number }>` - The closest region
 
+### 🔍 `findRegionsByQuery(codeOrName, options?)`
+
+Finds exact and partial region-name/code matches for search suggestions.
+
+**Parameters:**
+
+- `codeOrName`: `string` - Region name or code to search
+- `options` (optional):
+  - `regionLevel`: `number` - Region level to search for
+  - `language`: `SupportedLanguage` - Language for region names
+  - `body`: `"earth" | "moon" | "mars"` - Celestial body (default: `"earth"`)
+  - `maxResults`: `number` - Maximum results to return
+  - `biasLat`, `biasLng`: `number` - Optional map-center coordinates used to rank ambiguous matches nearby
+
+```typescript
+await findRegionsByQuery("Springfield", {
+  regionLevel: 2,
+  body: "earth",
+  biasLat: 42.1,
+  biasLng: -72.6,
+  maxResults: 1,
+});
+// [{ name: "West Springfield", ... }]
+```
+
 ### 🪐 Celestial Body Model
 
 The spherical coordinate diff model uses meters per latitude degree:
