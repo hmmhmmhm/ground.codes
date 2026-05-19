@@ -22,6 +22,30 @@ export interface GroundCodeSearchResponse {
   results: GroundCodeSearchResult[];
 }
 
+export class GroundCodeApiError extends Error {
+  readonly status: number;
+  readonly code: string | null;
+  readonly details: unknown;
+
+  constructor({
+    status,
+    code,
+    message,
+    details,
+  }: {
+    status: number;
+    code?: string | null;
+    message: string;
+    details?: unknown;
+  }) {
+    super(message);
+    this.name = "GroundCodeApiError";
+    this.status = status;
+    this.code = code ?? null;
+    this.details = details;
+  }
+}
+
 const getApiBaseUrl = () => {
   const configuredApiUrl = process.env.NEXT_PUBLIC_GROUND_CODES_API_URL?.trim();
   return (configuredApiUrl || "https://api.ground.codes").replace(/\/+$/, "");
@@ -36,7 +60,25 @@ const postApi = async (path: string, body: unknown) => {
     body: JSON.stringify(body),
   });
 
-  if (!response.ok) throw new Error("Ground Codes API request failed");
+  if (!response.ok) {
+    let errorBody: {
+      error?: { code?: string; message?: string; details?: unknown };
+    } | null = null;
+    try {
+      errorBody = await response.json();
+    } catch {
+      errorBody = null;
+    }
+
+    throw new GroundCodeApiError({
+      status: response.status,
+      code: errorBody?.error?.code,
+      message:
+        errorBody?.error?.message ??
+        `Ground Codes API request failed with status ${response.status}`,
+      details: errorBody?.error?.details,
+    });
+  }
   return response;
 };
 

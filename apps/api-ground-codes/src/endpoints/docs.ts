@@ -91,6 +91,7 @@ const docsHtml = `<!doctype html>
         </section>
         <section>
           <h2>Share URL Format</h2>
+          <p>Earth URLs stay code-only. Moon and Mars use explicit body prefixes so links remain readable without adding query parameters.</p>
           <ul>
             <li>Earth: <code>https://ground.codes/Seoul-word-word</code></li>
             <li>Moon: <code>https://ground.codes/moon/word-word-word</code></li>
@@ -118,6 +119,7 @@ const docsHtml = `<!doctype html>
             <li><code>/readyz</code> deployment readiness</li>
             <li><code>/metrics</code> request counts and latency</li>
           </ul>
+          <pre><code>curl https://api.ground.codes/metrics</code></pre>
         </section>
         <section>
           <h2>Error Shape</h2>

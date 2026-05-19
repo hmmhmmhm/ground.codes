@@ -36,6 +36,12 @@ jobs:
       - name: Check API runtime pins
         run: pnpm runtime:check-pins
 
+      - name: Test operational scripts
+        run: pnpm scripts:test
+
+      - name: Audit URL label data
+        run: pnpm data:audit-labels
+
       - name: Type check
         run: pnpm check-types
 

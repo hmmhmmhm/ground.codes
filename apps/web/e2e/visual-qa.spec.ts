@@ -27,10 +27,24 @@ test.describe("visual QA capture", () => {
       fullPage: true,
     });
 
+    await page.setViewportSize({ width: 360, height: 740 });
+    await waitForShareUrlToResolve(page);
+    await page.screenshot({
+      path: testInfo.outputPath("compact-mobile-map.png"),
+      fullPage: true,
+    });
+
     await page.setViewportSize({ width: 390, height: 844 });
     await waitForShareUrlToResolve(page);
     await page.screenshot({
       path: testInfo.outputPath("mobile-map.png"),
+      fullPage: true,
+    });
+
+    await page.setViewportSize({ width: 768, height: 1024 });
+    await waitForShareUrlToResolve(page);
+    await page.screenshot({
+      path: testInfo.outputPath("tablet-map.png"),
       fullPage: true,
     });
 

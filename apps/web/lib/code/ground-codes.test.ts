@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import {
   DEFAULT_GROUND_CODE_PRECISION_METERS,
+  GroundCodeApiError,
   encode,
   formatPrecisionMeters,
   searchGroundCodes,
@@ -102,5 +103,34 @@ describe("ground-codes API client", () => {
         biasLng: 126.978,
       },
     });
+  });
+
+  test("throws structured API errors for search failures", async () => {
+    globalThis.fetch = (async () =>
+      Response.json(
+        {
+          error: {
+            code: "UPSTREAM_UNAVAILABLE",
+            message: "Search backend unavailable",
+          },
+        },
+        { status: 503 },
+      )) as typeof fetch;
+
+    try {
+      await searchGroundCodes({
+        query: "Seoul",
+        language: "english",
+        body: "earth",
+      });
+      throw new Error("expected search to fail");
+    } catch (error) {
+      expect(error).toBeInstanceOf(GroundCodeApiError);
+      expect(error).toMatchObject({
+        status: 503,
+        code: "UPSTREAM_UNAVAILABLE",
+        message: "Search backend unavailable",
+      });
+    }
   });
 });

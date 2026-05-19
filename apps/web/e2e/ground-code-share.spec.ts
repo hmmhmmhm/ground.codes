@@ -76,6 +76,30 @@ test("searches partial region names and shows selectable results", async ({
   await expect(page.getByText("Seongnamsi").first()).toBeVisible();
 });
 
+test("shows a stable loading state while ground search is slow", async ({
+  page,
+}) => {
+  test.setTimeout(90_000);
+  await page.route("**/v1/search", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    await route.continue();
+  });
+  await page.goto("/?map=roadmap");
+
+  const search = page.getByRole("textbox", {
+    name: /그라운드 코드|Ground Code/,
+  });
+  await search.fill("Seo");
+  const searchResponse = page.waitForResponse((response) =>
+    response.url().includes("/v1/search"),
+  );
+  await search.press("Enter");
+
+  await expect(page.getByTestId("ground-search-loading")).toBeVisible();
+  await expect((await searchResponse).ok()).toBe(true);
+  await expect(page.getByTestId("ground-search-loading")).toHaveCount(0);
+});
+
 test("keeps mobile map controls clear of search and selected area panel", async ({
   page,
 }) => {

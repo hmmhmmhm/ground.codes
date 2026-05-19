@@ -40,6 +40,7 @@
       "placeholder": "Search Ground Code, region, or place",
       "submit": "Search",
       "noResults": "No matching Ground Code or region found",
+      "unavailable": "Ground Code search is temporarily unavailable",
       "error": "Search failed"
     },
     "groundCode": "Ground Code",

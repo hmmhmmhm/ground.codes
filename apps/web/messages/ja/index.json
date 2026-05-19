@@ -40,6 +40,7 @@
       "placeholder": "Ground Code、地域、場所を検索",
       "submit": "検索",
       "noResults": "一致する Ground Code または地域が見つかりません",
+      "unavailable": "Ground Code検索は一時的に利用できません",
       "error": "検索に失敗しました"
     },
     "groundCode": "グラウンドコード",

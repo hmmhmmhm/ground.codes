@@ -148,6 +148,15 @@ configured. Weather and air-quality widgets are optional; if their server-side
 keys are missing, the widget is hidden instead of surfacing a user-facing API
 error.
 
+## 🔗 Share URL Rules
+
+- Earth links are code-only: `https://ground.codes/Seoul-word-word`
+- Moon links use an explicit prefix: `https://ground.codes/moon/Mare Tranquillitatis-word-word`
+- Mars links use an explicit prefix: `https://ground.codes/mars/Olympus Mons-word-word`
+
+The web client keeps user-facing URLs decoded where possible so Korean,
+Japanese, Chinese, and ASCII-normalized English region labels remain readable.
+
 ### 🔐 How to obtain API keys:
 
 - **NEXT_PUBLIC_GOOGLE_MAPS_API_KEY** (Required):

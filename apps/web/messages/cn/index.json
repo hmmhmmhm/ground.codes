@@ -40,6 +40,7 @@
       "placeholder": "搜索 Ground Code、区域或地点",
       "submit": "搜索",
       "noResults": "未找到匹配的 Ground Code 或区域",
+      "unavailable": "Ground Code 搜索暂时不可用",
       "error": "搜索失败"
     },
     "groundCode": "地面代码",

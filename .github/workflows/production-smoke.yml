@@ -8,6 +8,8 @@ on:
 jobs:
   smoke:
     runs-on: ubuntu-latest
+    env:
+      MOSHI_WEBHOOK_TOKEN: ${{ secrets.MOSHI_WEBHOOK_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -21,3 +23,10 @@ jobs:
 
       - name: Run production smoke
         run: node scripts/production-smoke.mjs
+
+      - name: Notify smoke failure
+        if: failure() && env.MOSHI_WEBHOOK_TOKEN != ''
+        run: |
+          curl -X POST https://api.getmoshi.app/api/webhook \
+            -H "Content-Type: application/json" \
+            -d "{\"token\":\"${MOSHI_WEBHOOK_TOKEN}\",\"title\":\"ground.codes smoke failed\",\"message\":\"Production smoke failed on ${GITHUB_REF_NAME}. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"

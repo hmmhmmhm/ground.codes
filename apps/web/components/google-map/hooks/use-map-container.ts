@@ -829,6 +829,7 @@ export const useMapContainer = () => {
         setGroundSearchError(null);
         let results: GroundCodeSearchResult[] = [];
 
+        let apiSearchUnavailable = false;
         try {
           const response = await searchGroundCodes({
             query: trimmedQuery,
@@ -840,6 +841,7 @@ export const useMapContainer = () => {
           });
           results = response.results;
         } catch (apiError) {
+          apiSearchUnavailable = true;
           console.warn("Ground code API search unavailable:", apiError);
         }
 
@@ -899,7 +901,11 @@ export const useMapContainer = () => {
         const result = results[0];
 
         if (!result) {
-          setGroundSearchError("map.search.noResults");
+          setGroundSearchError(
+            apiSearchUnavailable
+              ? "map.search.unavailable"
+              : "map.search.noResults",
+          );
           return;
         }
 

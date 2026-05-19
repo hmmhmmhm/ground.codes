@@ -8,7 +8,10 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "production:smoke": "node scripts/production-smoke.mjs",
+    "data:audit-labels": "pnpm --filter ground-codes test:data-audit",
     "runtime:check-pins": "node scripts/check-api-runtime-pins.mjs",
+    "runtime:update-pins": "node scripts/update-api-runtime-pins.mjs",
+    "scripts:test": "node --test scripts/*.test.mjs",
     "prepare": "husky install"
   },
   "lint-staged": {

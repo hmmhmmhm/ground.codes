@@ -10,6 +10,7 @@
     "dev": "tsup --config tsup.config.ts --watch",
     "build": "tsup --config tsup.config.ts",
     "test": "tsx --test test/*.test.ts",
+    "test:data-audit": "tsx --test --test-concurrency=1 --test-name-pattern \"ASCII-normalized|localized|URL-safe|legacy accented|Latin|unique\" test/celestial-body.test.ts test/multilingual-codebook-review.test.ts test/region-3-dataset.test.ts test/region-fallback.test.ts",
     "test:standalone": "pnpm build && node scripts/check-standalone-package.mjs",
     "generate-spiral-fixture": "tsx scripts/generate-spiral-fixture.ts",
     "benchmark:spiral": "tsx scripts/benchmark-spiral.ts",

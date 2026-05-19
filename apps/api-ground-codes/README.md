@@ -112,12 +112,25 @@ API needs new local changes from `ground-codes`, `@ground-codes/geoint`, or
 `@repo/codebook`, then run:
 
 ```bash
+pnpm runtime:update-pins railway-api-runtime-YYYYMMDD-short-name
 pnpm runtime:check-pins
+pnpm scripts:test
+pnpm data:audit-labels
 pnpm production:smoke
 ```
 
 `pnpm runtime:check-pins` is also part of CI so the standalone Railway package
-set does not silently drift back to stale npm artifacts.
+set does not silently drift back to stale npm artifacts. `pnpm
+runtime:update-pins` rewrites all three package pins together so Railway cannot
+end up with a mixed runtime.
+
+### 🛰️ Production Monitoring
+
+The scheduled `Production Smoke` workflow runs every 30 minutes and checks the
+Railway API, the Cloudflare Pages web app, and API route metrics. It records
+per-check response times for `/readyz`, `/v1/encode`, `/v1/search`, `/metrics`,
+`robots.txt`, and `sitemap.xml`. Add a `MOSHI_WEBHOOK_TOKEN` repository secret to
+send a webhook alert when the smoke workflow fails.
 
 ## 🔌 API Endpoints
 

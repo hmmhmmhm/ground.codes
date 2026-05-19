@@ -48,6 +48,8 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocsResponse.status).toBe(200);
     const firstPartyDocs = await firstPartyDocsResponse.text();
     expect(firstPartyDocs).toContain("https://api.ground.codes/v1/encode");
+    expect(firstPartyDocs).toContain("https://ground.codes/moon/");
+    expect(firstPartyDocs).toContain("curl https://api.ground.codes/metrics");
     expect(firstPartyDocs).toContain("biasLat");
 
     const docsResponse = await get("/");

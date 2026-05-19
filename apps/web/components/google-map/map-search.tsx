@@ -226,9 +226,13 @@ const MapSearch: React.FC<MapSearchProps> = ({
           disabled={isGroundSearchLoading}
           aria-label={t("map.search.submit")}
           title={t("map.search.submit")}
+          data-testid="ground-search-submit"
         >
           {isGroundSearchLoading ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            <span
+              className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+              data-testid="ground-search-loading"
+            />
           ) : (
             <svg
               className="h-4 w-4"

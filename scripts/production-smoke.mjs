@@ -1,3 +1,10 @@
+import {
+  createSmokeRecorder,
+  fetchWithRetry,
+  formatSmokeSummary,
+  getMissingMetricRoutes,
+} from "./production-smoke-helpers.mjs";
+
 const apiBaseUrl = (
   process.env.GROUND_CODES_API_URL ?? "https://api.ground.codes"
 ).replace(/\/+$/, "");
@@ -5,34 +12,21 @@ const webBaseUrl = (
   process.env.GROUND_CODES_WEB_URL ?? "https://ground.codes"
 ).replace(/\/+$/, "");
 
-const failures = [];
-
-const check = async (name, run) => {
-  try {
-    await run();
-    console.log(`ok ${name}`);
-  } catch (error) {
-    failures.push(
-      `${name}: ${error instanceof Error ? error.message : String(error)}`,
-    );
-    console.error(`not ok ${name}`);
-    console.error(error);
-  }
-};
+const smoke = createSmokeRecorder();
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message);
 };
 
 const fetchText = async (url, init) => {
-  const response = await fetch(url, init);
+  const response = await fetchWithRetry(url, init);
   const text = await response.text();
   assert(response.ok, `${url} returned ${response.status}: ${text}`);
   return text;
 };
 
 const postJson = async (path, body) => {
-  const response = await fetch(`${apiBaseUrl}${path}`, {
+  const response = await fetchWithRetry(`${apiBaseUrl}${path}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -48,7 +42,7 @@ const postJson = async (path, body) => {
 const postJsonBody = async (path, body) =>
   JSON.parse(await postJson(path, body));
 
-await check("API readiness", async () => {
+await smoke.check("API readiness", async () => {
   const text = await fetchText(`${apiBaseUrl}/readyz`);
   const ready = JSON.parse(text);
   assert(
@@ -57,7 +51,7 @@ await check("API readiness", async () => {
   );
 });
 
-await check("Earth Seoul encode", async () => {
+await smoke.check("Earth Seoul encode", async () => {
   const code = await postJson("/v1/encode", {
     lat: 37.566,
     lng: 126.978,
@@ -68,7 +62,7 @@ await check("Earth Seoul encode", async () => {
   assert(/^Seoul-/.test(code), `expected Seoul code, got ${code}`);
 });
 
-await check("ASCII earth region data", async () => {
+await smoke.check("ASCII earth region data", async () => {
   const code = await postJson("/v1/encode", {
     lat: -82,
     lng: -63,
@@ -82,7 +76,7 @@ await check("ASCII earth region data", async () => {
   );
 });
 
-await check("ASCII region search", async () => {
+await smoke.check("ASCII region search", async () => {
   const result = await postJsonBody("/v1/search", {
     query: "Mollereisstrom",
     language: "english",
@@ -96,7 +90,7 @@ await check("ASCII region search", async () => {
   );
 });
 
-await check("Biased region search", async () => {
+await smoke.check("Biased region search", async () => {
   const result = await postJsonBody("/v1/search", {
     query: "Springfield",
     language: "english",
@@ -112,7 +106,7 @@ await check("Biased region search", async () => {
   );
 });
 
-await check("Moon encode", async () => {
+await smoke.check("Moon encode", async () => {
   const code = await postJson("/v1/encode", {
     lat: 8.35,
     lng: 30.84,
@@ -126,7 +120,7 @@ await check("Moon encode", async () => {
   );
 });
 
-await check("Mars encode", async () => {
+await smoke.check("Mars encode", async () => {
   const code = await postJson("/v1/encode", {
     lat: 18.6528,
     lng: -133.8025,
@@ -137,8 +131,8 @@ await check("Mars encode", async () => {
   assert(/^Olympus Mons-/.test(code), `expected Mars code, got ${code}`);
 });
 
-await check("Undecodable code is a client error", async () => {
-  const response = await fetch(`${apiBaseUrl}/v1/decode`, {
+await smoke.check("Undecodable code is a client error", async () => {
+  const response = await fetchWithRetry(`${apiBaseUrl}/v1/decode`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -155,8 +149,8 @@ await check("Undecodable code is a client error", async () => {
   );
 });
 
-await check("Missing region info is not a server error", async () => {
-  const response = await fetch(`${apiBaseUrl}/v1/region/info`, {
+await smoke.check("Missing region info is not a server error", async () => {
+  const response = await fetchWithRetry(`${apiBaseUrl}/v1/region/info`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -174,8 +168,8 @@ await check("Missing region info is not a server error", async () => {
   );
 });
 
-await check("Unsupported route is not a server error", async () => {
-  const response = await fetch(`${apiBaseUrl}/v1/encode`);
+await smoke.check("Unsupported route is not a server error", async () => {
+  const response = await fetchWithRetry(`${apiBaseUrl}/v1/encode`);
   const body = await response.json();
   assert(response.status === 404, `expected 404, got ${response.status}`);
   assert(
@@ -184,12 +178,25 @@ await check("Unsupported route is not a server error", async () => {
   );
 });
 
-await check("Web robots", async () => {
+await smoke.check("API route metrics cover smoke paths", async () => {
+  const metrics = JSON.parse(await fetchText(`${apiBaseUrl}/metrics`));
+  const missingRoutes = getMissingMetricRoutes(metrics, [
+    "/readyz",
+    "/v1/encode",
+    "/v1/search",
+  ]);
+  assert(
+    missingRoutes.length === 0,
+    `metrics missing route samples: ${missingRoutes.join(", ")}`,
+  );
+});
+
+await smoke.check("Web robots", async () => {
   const robots = await fetchText(`${webBaseUrl}/robots.txt`);
   assert(robots.includes("Sitemap:"), "robots.txt does not include a sitemap");
 });
 
-await check("Web sitemap", async () => {
+await smoke.check("Web sitemap", async () => {
   const sitemap = await fetchText(`${webBaseUrl}/sitemap.xml`);
   assert(
     sitemap.includes("<loc>https://ground.codes</loc>"),
@@ -197,9 +204,14 @@ await check("Web sitemap", async () => {
   );
 });
 
-if (failures.length > 0) {
-  console.error(`Production smoke failed with ${failures.length} failure(s):`);
-  for (const failure of failures) {
+console.log("Production smoke timings:");
+console.log(formatSmokeSummary(smoke.results));
+
+if (smoke.failures.length > 0) {
+  console.error(
+    `Production smoke failed with ${smoke.failures.length} failure(s):`,
+  );
+  for (const failure of smoke.failures) {
     console.error(`- ${failure}`);
   }
   process.exit(1);
