@@ -82,6 +82,7 @@ function GoogleMapComponent() {
       isGroundSearchLoading={isGroundSearchLoading}
       groundSearchError={groundSearchError}
       groundSearchResults={groundSearchResults}
+      isPlacePredictionEnabled={isEarth && showGoogleMap}
       initialQuery={initialGroundSearchQuery}
     />
   );

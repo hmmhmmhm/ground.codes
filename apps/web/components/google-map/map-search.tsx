@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { GroundCodeSearchResult } from "@/lib/code/ground-codes";
+import { shouldRequestPlacePredictions } from "./map-search-state";
 
 interface MapSearchProps {
   map: google.maps.Map | null;
@@ -10,6 +11,7 @@ interface MapSearchProps {
   isGroundSearchLoading: boolean;
   groundSearchError: string | null;
   groundSearchResults: GroundCodeSearchResult[];
+  isPlacePredictionEnabled: boolean;
   initialQuery?: string | null;
 }
 
@@ -21,6 +23,7 @@ const MapSearch: React.FC<MapSearchProps> = ({
   isGroundSearchLoading,
   groundSearchError,
   groundSearchResults,
+  isPlacePredictionEnabled,
   initialQuery = null,
 }) => {
   const { t } = useI18n();
@@ -95,9 +98,13 @@ const MapSearch: React.FC<MapSearchProps> = ({
     predictionRequestIdRef.current = requestId;
 
     if (
-      trimmedQuery.length < 2 ||
-      isGroundSearchLoading ||
-      normalizedQuery === suppressedPredictionQueryRef.current
+      !shouldRequestPlacePredictions({
+        isPlacePredictionEnabled,
+        isGroundSearchLoading,
+        trimmedQuery,
+        normalizedQuery,
+        suppressedPredictionQuery: suppressedPredictionQueryRef.current,
+      })
     ) {
       setPlacePredictions([]);
       return;
@@ -148,7 +155,7 @@ const MapSearch: React.FC<MapSearchProps> = ({
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [isGroundSearchLoading, query]);
+  }, [isGroundSearchLoading, isPlacePredictionEnabled, query]);
 
   const submitSearch = async (event: React.FormEvent) => {
     event.preventDefault();
