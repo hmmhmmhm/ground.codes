@@ -76,6 +76,64 @@ export const AGENT_REVIEWED_POLICY_FINDINGS = {
         Leafmold Forklift
       `,
     }),
+    ...entries({
+      reason: "second-pass-personal-name-or-surname",
+      words: `
+        Jean Kent Clark Lewis Moore Edward George Gordon Harris Howard Johnny
+        Martin Morgan Morris Murray Norman Oliver Ronald Samuel Sharon Steven
+        Stuart Walter Wilson Anthony Charles Charlie Douglas Francis Leonard
+        Matthew Patrick Raymond Richard Russell Stanley Stephen Timothy Vincent
+        William Winston Anderson Franklin Jonathan Lawrence Margaret Marshall
+        Michelle Mitchell Nicholas Victoria Charlotte
+      `,
+    }),
+    ...entries({
+      reason: "second-pass-place-name-overlap",
+      words: "Durham Madison Hampton Brighton Hamilton Kingston Stanford",
+    }),
+    ...entries({
+      reason: "second-pass-place-demonym-or-language",
+      words: `
+        Dutch French German Jersey African British England English Holland
+        Italian Memphis Newport Oakland Spanish American Arkansas Brooklyn
+        Canadian Carolina European Maryland Portland Cleveland
+      `,
+    }),
+    ...entries({
+      reason: "second-pass-software-web-or-network-jargon",
+      words: `
+        Plugin Server Upload Network Website Username Websites Antivirus
+        Databases Networking Client Clients Script Scripts Socket Packet
+      `,
+    }),
+    ...entries({
+      reason: "second-pass-brand-or-personal-name",
+      words: "Mercedes",
+    }),
+    ...entries({
+      reason: "second-pass-legal-political-or-civic",
+      words: `
+        Tax Mayor State Voted Votes Courts Empire Nation Patent Permit Police
+        Policy Treaty Justice License Senator Contract Governance
+      `,
+    }),
+    ...entries({
+      reason: "second-pass-body-part-or-medical",
+      words:
+        "Arm Ear Eye Foot Bone Skin Brain Heart Hearts Mouth Finger Muscle Nurses",
+    }),
+    ...entries({
+      reason: "second-pass-adult-military-or-tobacco",
+      words: "Kiss Navy Smoking",
+    }),
+    ...entries({
+      confidence: "medium-high",
+      reason: "second-pass-generated-place-like-or-awkward-compound",
+      words: `
+        Alderbowl Rosehill Brightleaf Softleaf Redleaf Stillwater Whiskbroom
+        Hearthrug
+      `,
+    }),
   ],
   korean: [
     ...entries({
@@ -140,6 +198,46 @@ export const AGENT_REVIEWED_POLICY_FINDINGS = {
       reason: "generated-looking-compound",
       words:
         "푸른새봄 은빛달빛 은빛물빛 차분한일감 새벽일감 밝은누룽지 고요한누룽지",
+    }),
+    ...entries({
+      reason: "second-pass-fragment-brand-or-platform-collision",
+      words: "빙 뷰 톡 줌 텐 티쏘 다이소",
+    }),
+    ...entries({
+      reason: "second-pass-proper-name-or-place-fragment",
+      words: "베토 주안 가거",
+    }),
+    ...entries({
+      reason: "second-pass-religious-myth-or-occult",
+      words: "신화 주술 영혼 마술 여신",
+    }),
+    ...entries({
+      reason: "second-pass-medical-or-clinical",
+      words: "간호 진료 증세 예후 약통 치주 부기 경련",
+    }),
+    ...entries({
+      reason: "second-pass-legal-political-or-civic",
+      words: "특허 상표 판사 고소 고발 의회",
+    }),
+    ...entries({
+      reason: "second-pass-gambling-game-or-chance",
+      words: "블랙잭 주사위 고도리 백개먼",
+    }),
+    ...entries({
+      reason: "second-pass-disaster-violence-or-hunting",
+      words: "해일 태풍 사냥꾼",
+    }),
+    ...entries({
+      reason: "second-pass-alcohol",
+      words: "브루어리",
+    }),
+    ...entries({
+      reason: "second-pass-dating-or-relationship",
+      words: "약혼",
+    }),
+    ...entries({
+      reason: "second-pass-clipped-or-malformed-loanword",
+      words: "악세 부끄",
     }),
   ],
   chinese: [
@@ -218,6 +316,52 @@ export const AGENT_REVIEWED_POLICY_FINDINGS = {
       reason: "awkward-childish-or-generated-looking",
       words: "水瓢子 小星星 小太阳 小月亮",
     }),
+    ...entries({
+      reason: "second-pass-brand-platform-or-social-app",
+      words: "优酷 虎扑 陌陌 美克",
+    }),
+    ...entries({
+      reason: "second-pass-planet-or-celestial-proper-name",
+      words: "地球 水星 金星 火星 木星 土星",
+    }),
+    ...entries({
+      reason: "second-pass-place-sea-mountain-or-landmark",
+      words: "北海 东海 西海 香山 南山 五岳",
+    }),
+    ...entries({
+      reason: "second-pass-lake-or-place-like-label",
+      words:
+        "东湖 南湖 北湖 龙湖 南岭 南村 南园 南河 南岛 西塔 西港 西岭 西河 西村",
+    }),
+    ...entries({
+      reason: "second-pass-anatomy-or-body-root",
+      words: "肺 肝 胃 肾 牙 眼 耳 鼻 喉 脉 胆 骨 脑 肠 齿",
+    }),
+    ...entries({
+      reason: "second-pass-medical-physiology-or-biomedical",
+      words: "灸 呼吸 消化 发育 心跳 基因 核酸 遗传",
+    }),
+    ...entries({
+      reason: "second-pass-medicine-herb-or-drug-root",
+      words: "枸杞 艾草 陈皮 金银花 银杏叶",
+    }),
+    ...entries({
+      reason: "second-pass-legal-case-evidence-or-civic",
+      words: "卷宗 证言 证据 当事人 合规 义务 权益 权限",
+    }),
+    ...entries({
+      reason: "second-pass-religious-ritual-occult-or-myth",
+      words: "祈 庵 坛 魂 符文 精灵 信仰 图腾 仪式",
+    }),
+    ...entries({
+      reason: "second-pass-gambling-or-alcohol",
+      words: "筹 干杯",
+    }),
+    ...entries({
+      confidence: "medium-high",
+      reason: "second-pass-generated-looking-color-nature-compound",
+      words: "青沙 绿沙",
+    }),
   ],
   japanese: [
     ...entries({
@@ -288,6 +432,45 @@ export const AGENT_REVIEWED_POLICY_FINDINGS = {
       confidence: "medium",
       reason: "repeated-mimetic-or-filler",
       words: "ごろごろ ただただ ふわふわ ぐるぐる がちがち もやもや",
+    }),
+    ...entries({
+      reason: "second-pass-relationship-or-dating",
+      words: "あい であい",
+    }),
+    ...entries({
+      reason: "second-pass-medical-body-anatomy-or-treatment",
+      words: `
+        しんたい さいぼう しんけい きんにく かいぼう しょうどく
+        こっかく みゃく ちゆ そせい べんじょ
+      `,
+    }),
+    ...entries({
+      reason: "second-pass-alcohol-venue-or-process",
+      words: "さかば じょうぞう",
+    }),
+    ...entries({
+      reason: "second-pass-finance-tax-or-accounting",
+      words: `
+        ぎんこう とうし きんゆう かぶしき のうぜい かぜい ぞうぜい
+        げらく ふきょう けいり ふりこみ はいとう
+      `,
+    }),
+    ...entries({
+      reason: "second-pass-legal-or-crime",
+      words:
+        "いほう ごうほう ほうてい ほうれい みんじ ほうか ほうふく れんこう",
+    }),
+    ...entries({
+      reason: "second-pass-disaster-violence-or-conflict",
+      words: "たいふう ほうかい たたかう あらそう てんらく ぼっぱつ",
+    }),
+    ...entries({
+      reason: "second-pass-religious-clergy-or-pilgrimage",
+      words: "しさい しんぷ そうりょ じゅんれい",
+    }),
+    ...entries({
+      reason: "second-pass-political-title-empire-or-dynasty",
+      words: "こうしつ だんしゃく おうちょう ていこく",
     }),
   ],
 };
