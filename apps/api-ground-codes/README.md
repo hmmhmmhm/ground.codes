@@ -116,6 +116,7 @@ pnpm runtime:update-pins railway-api-runtime-YYYYMMDD-short-name
 pnpm runtime:check-pins
 pnpm scripts:test
 pnpm data:audit-labels
+pnpm data:report-labels
 pnpm production:smoke
 ```
 
@@ -126,11 +127,12 @@ end up with a mixed runtime.
 
 ### 🛰️ Production Monitoring
 
-The scheduled `Production Smoke` workflow runs every 30 minutes and checks the
-Railway API, the Cloudflare Pages web app, and API route metrics. It records
-per-check response times for `/readyz`, `/v1/encode`, `/v1/search`, `/metrics`,
-`robots.txt`, and `sitemap.xml`. Add a `MOSHI_WEBHOOK_TOKEN` repository secret to
-send a webhook alert when the smoke workflow fails.
+The `Production Smoke` workflow runs every 30 minutes and after the web deploy
+workflow completes. It checks the Railway API, the Cloudflare Pages web app, and
+API route metrics. It records per-check response times for `/readyz`,
+`/v1/encode`, `/v1/search`, `/metrics`, `robots.txt`, and `sitemap.xml`, and
+writes the timing table to the GitHub run summary. Add a `MOSHI_WEBHOOK_TOKEN`
+repository secret to send a webhook alert when the smoke workflow fails.
 
 ## 🔌 API Endpoints
 

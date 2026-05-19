@@ -39,6 +39,8 @@
     "search": {
       "placeholder": "그라운드 코드, 지역, 장소 검색",
       "submit": "검색",
+      "placesHeading": "장소 추천",
+      "groundCodesHeading": "그라운드 코드 결과",
       "noResults": "일치하는 그라운드 코드나 지역을 찾지 못했습니다",
       "unavailable": "그라운드 코드 검색을 잠시 사용할 수 없습니다",
       "error": "검색에 실패했습니다"

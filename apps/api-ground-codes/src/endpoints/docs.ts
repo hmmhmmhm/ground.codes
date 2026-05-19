@@ -99,6 +99,10 @@ const docsHtml = `<!doctype html>
           </ul>
         </section>
         <section class="full">
+          <h2>Copy-ready Examples</h2>
+          <p>These examples are safe to run as-is from a terminal. Use encode for new links, search for user-entered text, and decode when validating a shared code.</p>
+        </section>
+        <section class="full">
           <h2>Encode</h2>
           <p>POST <code>/v1/encode</code> with latitude, longitude, language, body, and optional precision controls.</p>
           <pre><code>curl -X POST https://api.ground.codes/v1/encode \\
@@ -112,6 +116,13 @@ const docsHtml = `<!doctype html>
   -H "Content-Type: application/json" \\
   -d '{"query":"Springfield","language":"english","body":"earth","maxResults":5,"biasLat":42.1,"biasLng":-72.6}'</code></pre>
         </section>
+        <section class="full">
+          <h2>Decode</h2>
+          <p>Decode validates a Ground Code and returns its approximate center coordinate for the requested body and language.</p>
+          <pre><code>curl -X POST https://api.ground.codes/v1/decode \\
+  -H "Content-Type: application/json" \\
+  -d '{"code":"Seoul-Alder","language":"english","body":"earth","regionLevel":2}'</code></pre>
+        </section>
         <section>
           <h2>Operational Endpoints</h2>
           <ul>
@@ -124,6 +135,11 @@ const docsHtml = `<!doctype html>
         <section>
           <h2>Error Shape</h2>
           <p>Client and server errors return a structured <code>{"error":{"code","message","details"}}</code> payload.</p>
+          <ul>
+            <li><strong>HTTP Status</strong> <code>400</code>: invalid or undecodable client input</li>
+            <li><strong>HTTP Status</strong> <code>404</code>: missing region info or unsupported route</li>
+            <li><strong>HTTP Status</strong> <code>429</code>: rate limit exceeded</li>
+          </ul>
         </section>
       </div>
     </main>

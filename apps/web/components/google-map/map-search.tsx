@@ -255,6 +255,9 @@ const MapSearch: React.FC<MapSearchProps> = ({
           className="mt-2 overflow-hidden rounded-lg border border-white/15 bg-black/75 text-white shadow-lg backdrop-blur-md"
           role="listbox"
         >
+          <div className="border-b border-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-white/55">
+            {t("map.search.placesHeading")}
+          </div>
           {placePredictions.map((prediction) => {
             const mainText =
               prediction.structured_formatting?.main_text ??
@@ -290,6 +293,9 @@ const MapSearch: React.FC<MapSearchProps> = ({
       )}
       {groundSearchResults.length > 1 && (
         <div className="mt-2 overflow-hidden rounded-lg border border-white/15 bg-black/70 text-white shadow-lg backdrop-blur-md">
+          <div className="border-b border-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-white/55">
+            {t("map.search.groundCodesHeading")}
+          </div>
           {groundSearchResults.map((result) => (
             <button
               key={`${result.body}:${result.regionLevel}:${result.code ?? result.label}:${result.lat}:${result.lng}`}

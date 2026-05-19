@@ -4,9 +4,15 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "*/30 * * * *"
+  workflow_run:
+    workflows:
+      - Deploy Web to Cloudflare Pages
+    types:
+      - completed
 
 jobs:
   smoke:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     env:
       MOSHI_WEBHOOK_TOKEN: ${{ secrets.MOSHI_WEBHOOK_TOKEN }}

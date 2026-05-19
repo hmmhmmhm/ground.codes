@@ -4,6 +4,7 @@ import { describe, test } from "node:test";
 import {
   createSmokeRecorder,
   fetchWithRetry,
+  formatGitHubStepSummary,
   getMissingMetricRoutes,
 } from "./production-smoke-helpers.mjs";
 
@@ -58,5 +59,16 @@ describe("production smoke monitoring helpers", () => {
 
     assert.equal(attempts, 2);
     assert.equal(response.status, 200);
+  });
+
+  test("formats a GitHub step summary with check timings", () => {
+    const markdown = formatGitHubStepSummary([
+      { name: "API readiness", ok: true, durationMs: 122.4 },
+      { name: "Web sitemap", ok: false, durationMs: 508.9 },
+    ]);
+
+    assert.match(markdown, /^## Production Smoke/);
+    assert.match(markdown, /\| API readiness \| ok \| 122.4ms \|/);
+    assert.match(markdown, /\| Web sitemap \| failed \| 508.9ms \|/);
   });
 });

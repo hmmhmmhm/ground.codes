@@ -56,7 +56,7 @@ test("opens explicit Moon and Mars Ground Code share URLs", async ({
   }
 });
 
-test("searches partial region names and shows selectable results", async ({
+test("searches partial region names and shows selectable results @smoke", async ({
   page,
 }) => {
   test.setTimeout(90_000);
@@ -74,9 +74,10 @@ test("searches partial region names and shows selectable results", async ({
 
   await expect(page.getByText("Seoul").first()).toBeVisible();
   await expect(page.getByText("Seongnamsi").first()).toBeVisible();
+  await expect(page.getByText(/Ground Codes|그라운드 코드 결과/)).toBeVisible();
 });
 
-test("shows a stable loading state while ground search is slow", async ({
+test("shows a stable loading state while ground search is slow @smoke", async ({
   page,
 }) => {
   test.setTimeout(90_000);

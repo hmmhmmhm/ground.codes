@@ -157,6 +157,24 @@ error.
 The web client keeps user-facing URLs decoded where possible so Korean,
 Japanese, Chinese, and ASCII-normalized English region labels remain readable.
 
+## 🧪 Browser QA
+
+Use the lightweight smoke suite for regular checks:
+
+```bash
+pnpm --filter web test:e2e:smoke
+```
+
+Use the full suite only when touching shared map behavior:
+
+```bash
+pnpm --filter web test:e2e:full
+```
+
+Use visual QA when you need desktop, compact mobile, mobile, tablet, and API
+docs screenshots. The `Visual QA` GitHub workflow uploads the screenshots from
+`apps/web/test-results` as an artifact.
+
 ### 🔐 How to obtain API keys:
 
 - **NEXT_PUBLIC_GOOGLE_MAPS_API_KEY** (Required):

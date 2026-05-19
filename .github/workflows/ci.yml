@@ -42,6 +42,9 @@ jobs:
       - name: Audit URL label data
         run: pnpm data:audit-labels
 
+      - name: Report URL label data
+        run: pnpm data:report-labels
+
       - name: Type check
         run: pnpm check-types
 
@@ -61,4 +64,4 @@ jobs:
         run: pnpm --filter web exec playwright install --with-deps chromium
 
       - name: Browser smoke test
-        run: pnpm --filter web test:e2e
+        run: pnpm --filter web test:e2e:smoke

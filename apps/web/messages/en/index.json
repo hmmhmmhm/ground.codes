@@ -39,6 +39,8 @@
     "search": {
       "placeholder": "Search Ground Code, region, or place",
       "submit": "Search",
+      "placesHeading": "Places",
+      "groundCodesHeading": "Ground Codes",
       "noResults": "No matching Ground Code or region found",
       "unavailable": "Ground Code search is temporarily unavailable",
       "error": "Search failed"

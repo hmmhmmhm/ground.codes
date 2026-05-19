@@ -1,6 +1,9 @@
+import { appendFileSync } from "node:fs";
+
 import {
   createSmokeRecorder,
   fetchWithRetry,
+  formatGitHubStepSummary,
   formatSmokeSummary,
   getMissingMetricRoutes,
 } from "./production-smoke-helpers.mjs";
@@ -206,6 +209,13 @@ await smoke.check("Web sitemap", async () => {
 
 console.log("Production smoke timings:");
 console.log(formatSmokeSummary(smoke.results));
+
+if (process.env.GITHUB_STEP_SUMMARY) {
+  appendFileSync(
+    process.env.GITHUB_STEP_SUMMARY,
+    formatGitHubStepSummary(smoke.results),
+  );
+}
 
 if (smoke.failures.length > 0) {
   console.error(

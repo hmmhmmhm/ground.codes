@@ -11,6 +11,8 @@
     "check-types": "tsc --noEmit",
     "test": "bun test ./lib ./app ./components ./hooks",
     "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test e2e/ground-code-share.spec.ts --grep @smoke",
+    "test:e2e:full": "playwright test",
     "test:e2e:prod": "playwright test --config=playwright.production.config.ts",
     "qa:visual": "playwright test e2e/visual-qa.spec.ts --config=playwright.production.config.ts",
     "pages:build": "npx @cloudflare/next-on-pages && node scripts/patch-pages-routes.mjs",

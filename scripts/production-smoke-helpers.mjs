@@ -68,3 +68,21 @@ export const formatSmokeSummary = (results) =>
         `${ok ? "ok" : "not ok"} ${name}: ${durationMs}ms`,
     )
     .join("\n");
+
+export const formatGitHubStepSummary = (results) => {
+  const rows = results
+    .map(
+      ({ name, ok, durationMs }) =>
+        `| ${name} | ${ok ? "ok" : "failed"} | ${durationMs}ms |`,
+    )
+    .join("\n");
+
+  return [
+    "## Production Smoke",
+    "",
+    "| Check | Status | Duration |",
+    "| --- | --- | ---: |",
+    rows,
+    "",
+  ].join("\n");
+};
