@@ -1,5 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { shouldRequestPlacePredictions } from "./map-search-state";
+import {
+  shouldRequestGroundSuggestions,
+  shouldRequestPlacePredictions,
+} from "./map-search-state";
 
 describe("map search state", () => {
   test("does not request Google place predictions outside Earth place search", () => {
@@ -32,6 +35,35 @@ describe("map search state", () => {
         trimmedQuery: "S",
         normalizedQuery: "s",
         suppressedPredictionQuery: null,
+      }),
+    ).toBe(false);
+  });
+
+  test("requests body-specific ground suggestions while typing", () => {
+    expect(
+      shouldRequestGroundSuggestions({
+        isGroundSearchLoading: false,
+        trimmedQuery: "Olympus",
+        normalizedQuery: "olympus",
+        suppressedPredictionQuery: null,
+      }),
+    ).toBe(true);
+
+    expect(
+      shouldRequestGroundSuggestions({
+        isGroundSearchLoading: false,
+        trimmedQuery: "O",
+        normalizedQuery: "o",
+        suppressedPredictionQuery: null,
+      }),
+    ).toBe(false);
+
+    expect(
+      shouldRequestGroundSuggestions({
+        isGroundSearchLoading: false,
+        trimmedQuery: "Olympus",
+        normalizedQuery: "olympus",
+        suppressedPredictionQuery: "olympus",
       }),
     ).toBe(false);
   });

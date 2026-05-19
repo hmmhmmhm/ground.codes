@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 const boxesOverlap = (
   a: { x: number; y: number; width: number; height: number },
@@ -9,6 +10,9 @@ const boxesOverlap = (
   a.y < b.y + b.height &&
   a.y + a.height > b.y;
 
+const gotoApp = (page: Page, path: string) =>
+  page.goto(path, { waitUntil: "domcontentloaded" });
+
 test("opens a canonical Earth Ground Code share URL", async ({ page }) => {
   test.setTimeout(90_000);
   const searchResponse = page.waitForResponse((response) =>
@@ -17,7 +21,7 @@ test("opens a canonical Earth Ground Code share URL", async ({ page }) => {
   const encodeResponse = page.waitForResponse((response) =>
     response.url().includes("/v1/encode"),
   );
-  await page.goto("/%EC%84%9C%EC%9A%B8-%EC%95%88%EB%B0%A9");
+  await gotoApp(page, "/%EC%84%9C%EC%9A%B8-%EC%95%88%EB%B0%A9");
   await expect((await searchResponse).ok()).toBe(true);
   await expect((await encodeResponse).ok()).toBe(true);
 
@@ -49,7 +53,7 @@ test("opens explicit Moon and Mars Ground Code share URLs", async ({
       return payload.body === share.body;
     });
 
-    await page.goto(share.path);
+    await gotoApp(page, share.path);
     await expect((await searchResponse).ok()).toBe(true);
     await expect(page.getByTestId("selected-area-panel")).toBeVisible();
     await expect(page.getByText(share.label).first()).toBeVisible();
@@ -60,7 +64,7 @@ test("searches partial region names and shows selectable results @smoke", async 
   page,
 }) => {
   test.setTimeout(90_000);
-  await page.goto("/?map=roadmap");
+  await gotoApp(page, "/?map=roadmap");
 
   const search = page.getByRole("textbox", {
     name: /그라운드 코드|Ground Code/,
@@ -85,7 +89,7 @@ test("shows a stable loading state while ground search is slow @smoke", async ({
     await new Promise((resolve) => setTimeout(resolve, 800));
     await route.continue();
   });
-  await page.goto("/?map=roadmap");
+  await gotoApp(page, "/?map=roadmap");
 
   const search = page.getByRole("textbox", {
     name: /그라운드 코드|Ground Code/,
@@ -101,7 +105,7 @@ test("shows a stable loading state while ground search is slow @smoke", async ({
   await expect(page.getByTestId("ground-search-loading")).toHaveCount(0);
 });
 
-test("keeps mobile map controls clear of search and selected area panel", async ({
+test("keeps mobile map controls clear of search and selected area panel @layout", async ({
   page,
 }) => {
   test.setTimeout(90_000);
@@ -113,7 +117,7 @@ test("keeps mobile map controls clear of search and selected area panel", async 
   const encodeResponse = page.waitForResponse((response) =>
     response.url().includes("/v1/encode"),
   );
-  await page.goto("/%EC%84%9C%EC%9A%B8-%EC%95%88%EB%B0%A9");
+  await gotoApp(page, "/%EC%84%9C%EC%9A%B8-%EC%95%88%EB%B0%A9");
   await expect((await searchResponse).ok()).toBe(true);
   await expect((await encodeResponse).ok()).toBe(true);
   await expect(page.getByText(/37\.566000/).first()).toBeVisible();
@@ -142,12 +146,12 @@ test("keeps mobile map controls clear of search and selected area panel", async 
   expect(panelCoordinateBox!.x - panelBox!.x).toBeGreaterThanOrEqual(52);
 });
 
-test("keeps the mobile celestial body menu inside the viewport", async ({
+test("keeps the mobile celestial body menu inside the viewport @layout", async ({
   page,
 }) => {
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/?map=roadmap");
+  await gotoApp(page, "/?map=roadmap");
 
   await page.getByRole("button", { name: /Celestial body|천체 선택/ }).click();
 
@@ -168,7 +172,7 @@ test("shows a visible error for an invalid code-shaped share URL", async ({
     response.url().includes("/v1/search"),
   );
 
-  await page.goto("/Seoul-notrealcode");
+  await gotoApp(page, "/Seoul-notrealcode");
   await expect((await searchResponse).ok()).toBe(true);
   await expect(
     page.getByText(/No matching Ground Code|일치하는 그라운드 코드/),

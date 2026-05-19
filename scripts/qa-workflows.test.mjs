@@ -14,6 +14,10 @@ describe("QA workflow split", () => {
       webPackage.scripts["test:e2e:smoke"],
       "playwright test e2e/ground-code-share.spec.ts --grep @smoke",
     );
+    assert.equal(
+      webPackage.scripts["test:e2e:layout"],
+      "playwright test e2e/ground-code-share.spec.ts --grep @layout",
+    );
     assert.equal(webPackage.scripts["test:e2e:full"], "playwright test");
     assert.equal(
       readJson("../package.json").scripts["data:report-labels"],
@@ -28,6 +32,7 @@ describe("QA workflow split", () => {
     const visualWorkflow = readText("../.github/workflows/visual-qa.yml");
 
     assert.match(visualWorkflow, /workflow_dispatch:/);
+    assert.match(visualWorkflow, /pnpm --filter web test:e2e:layout/);
     assert.match(visualWorkflow, /pnpm --filter web qa:visual/);
     assert.match(visualWorkflow, /actions\/upload-artifact@v7/);
     assert.match(visualWorkflow, /apps\/web\/test-results/);
@@ -40,8 +45,11 @@ describe("production smoke workflow triggers", () => {
     const smokeScript = readText("./production-smoke.mjs");
 
     assert.match(smokeWorkflow, /workflow_run:/);
+    assert.match(smokeWorkflow, /force_failure:/);
+    assert.match(smokeWorkflow, /GROUND_CODES_SMOKE_FORCE_FAILURE/);
     assert.match(smokeWorkflow, /Deploy Web to Cloudflare Pages/);
     assert.match(smokeWorkflow, /github\.event\.workflow_run\.conclusion == 'success'/);
     assert.match(smokeScript, /GITHUB_STEP_SUMMARY/);
+    assert.match(smokeScript, /GROUND_CODES_SMOKE_FORCE_FAILURE/);
   });
 });

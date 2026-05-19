@@ -90,12 +90,21 @@ const docsHtml = `<!doctype html>
           <p>Production clients should call <code>https://api.ground.codes</code> and keep all new integrations on <code>/v1/*</code>.</p>
         </section>
         <section>
-          <h2>Share URL Format</h2>
-          <p>Earth URLs stay code-only. Moon and Mars use explicit body prefixes so links remain readable without adding query parameters.</p>
+          <h2>Share URL Rules</h2>
+          <p>Earth URLs stay code-only. Moon and Mars use explicit body prefixes so links remain readable without adding query parameters or percent-encoded labels.</p>
           <ul>
             <li>Earth: <code>https://ground.codes/Seoul-word-word</code></li>
             <li>Moon: <code>https://ground.codes/moon/word-word-word</code></li>
             <li>Mars: <code>https://ground.codes/mars/word-word-word</code></li>
+          </ul>
+        </section>
+        <section class="full">
+          <h2>Body Constraints</h2>
+          <p>Earth defaults to the code-only share path and can combine Ground Code region search with map place search in the web client. Non-Earth bodies must be selected explicitly.</p>
+          <ul>
+            <li>Earth supports <code>body:"earth"</code>, regionLevel <code>2</code> or <code>3</code>, and no share URL prefix.</li>
+            <li>Moon supports regionLevel 2 and the <code>/moon/</code> share URL prefix.</li>
+            <li>Mars supports regionLevel 2 and 3 and the <code>/mars/</code> share URL prefix.</li>
           </ul>
         </section>
         <section class="full">
@@ -133,7 +142,7 @@ const docsHtml = `<!doctype html>
           <pre><code>curl https://api.ground.codes/metrics</code></pre>
         </section>
         <section>
-          <h2>Error Shape</h2>
+          <h2>Status Code Reference</h2>
           <p>Client and server errors return a structured <code>{"error":{"code","message","details"}}</code> payload.</p>
           <ul>
             <li><strong>HTTP Status</strong> <code>400</code>: invalid or undecodable client input</li>

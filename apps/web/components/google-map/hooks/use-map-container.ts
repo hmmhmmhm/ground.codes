@@ -920,6 +920,25 @@ export const useMapContainer = () => {
     [applyGroundSearchResult, body, center.lat, center.lng, locale],
   );
 
+  const handleGroundSuggest = useCallback(
+    async (query: string) => {
+      const trimmedQuery = query.trim();
+      if (!trimmedQuery) return [];
+
+      const response = await searchGroundCodes({
+        query: trimmedQuery,
+        language: getGroundCodeLanguage(locale),
+        body,
+        maxResults: 5,
+        biasLat: center.lat,
+        biasLng: center.lng,
+      });
+
+      return response.results;
+    },
+    [body, center.lat, center.lng, locale],
+  );
+
   useEffect(() => {
     if (restoredSharePathRef.current || typeof window === "undefined") return;
 
@@ -1098,6 +1117,7 @@ export const useMapContainer = () => {
     searchedPlace,
     handlePlaceSelect,
     handleGroundSearch,
+    handleGroundSuggest,
     handleGroundSearchResultSelect: applyGroundSearchResult,
     isGroundSearchLoading,
     groundSearchError,

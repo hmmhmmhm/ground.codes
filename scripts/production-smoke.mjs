@@ -207,6 +207,12 @@ await smoke.check("Web sitemap", async () => {
   );
 });
 
+if (process.env.GROUND_CODES_SMOKE_FORCE_FAILURE === "true") {
+  await smoke.check("Forced notification test", async () => {
+    throw new Error("Forced failure requested by workflow_dispatch input");
+  });
+}
+
 console.log("Production smoke timings:");
 console.log(formatSmokeSummary(smoke.results));
 

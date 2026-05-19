@@ -26,20 +26,25 @@ const DATASETS = [
 
 const hasNonAscii = (value) => /[^\x20-\x7E]/.test(value);
 const hasLatin = (value) => /[A-Za-z]/.test(value);
+const sampleLabels = (names, predicate) => names.filter(predicate).slice(0, 5);
 
 export const buildUrlLabelReport = (datasets) => {
   const reportDatasets = datasets.map(({ name, language, rows }) => {
     const names = rows.map((row) => String(row.name ?? ""));
-    const englishNonAscii =
-      language === "english" ? names.filter(hasNonAscii).length : 0;
-    const localizedLatin =
-      language === "english" ? 0 : names.filter(hasLatin).length;
+    const englishNonAsciiSamples =
+      language === "english" ? sampleLabels(names, hasNonAscii) : [];
+    const localizedLatinSamples =
+      language === "english" ? [] : sampleLabels(names, hasLatin);
 
     return {
       name,
       rows: rows.length,
-      englishNonAscii,
-      localizedLatin,
+      englishNonAscii:
+        language === "english" ? names.filter(hasNonAscii).length : 0,
+      localizedLatin:
+        language === "english" ? 0 : names.filter(hasLatin).length,
+      englishNonAsciiSamples,
+      localizedLatinSamples,
     };
   });
 
@@ -63,8 +68,24 @@ export const formatUrlLabelReportMarkdown = (report) => {
         `| ${dataset.name} | ${dataset.rows} | ${dataset.englishNonAscii} | ${dataset.localizedLatin} |`,
     )
     .join("\n");
+  const sampleRows = report.datasets
+    .flatMap((dataset) => {
+      const samples = [];
+      if (dataset.englishNonAsciiSamples?.length) {
+        samples.push(
+          `- ${dataset.name}: English non-ASCII: ${dataset.englishNonAsciiSamples.join(", ")}`,
+        );
+      }
+      if (dataset.localizedLatinSamples?.length) {
+        samples.push(
+          `- ${dataset.name}: Localized Latin: ${dataset.localizedLatinSamples.join(", ")}`,
+        );
+      }
+      return samples;
+    })
+    .join("\n");
 
-  return [
+  const sections = [
     "## URL Label Data",
     "",
     `Total labels: ${report.totals.rows}`,
@@ -73,7 +94,13 @@ export const formatUrlLabelReportMarkdown = (report) => {
     "| --- | ---: | ---: | ---: |",
     rows,
     "",
-  ].join("\n");
+  ];
+
+  if (sampleRows) {
+    sections.push("### Sample Issues", "", sampleRows, "");
+  }
+
+  return sections.join("\n");
 };
 
 const loadConfiguredDatasets = () =>

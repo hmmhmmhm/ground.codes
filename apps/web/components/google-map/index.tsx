@@ -41,6 +41,7 @@ function GoogleMapComponent() {
     isEncoding,
     handlePlaceSelect,
     handleGroundSearch,
+    handleGroundSuggest,
     handleGroundSearchResultSelect,
     isGroundSearchLoading,
     groundSearchError,
@@ -78,11 +79,13 @@ function GoogleMapComponent() {
       map={isEarth && showGoogleMap ? map : null}
       onPlaceSelect={isEarth && showGoogleMap ? handlePlaceSelect : undefined}
       onGroundSearch={handleGroundSearch}
+      onGroundSuggest={handleGroundSuggest}
       onGroundSearchResultSelect={handleGroundSearchResultSelect}
       isGroundSearchLoading={isGroundSearchLoading}
       groundSearchError={groundSearchError}
       groundSearchResults={groundSearchResults}
       isPlacePredictionEnabled={isEarth && showGoogleMap}
+      groundSuggestionScope={body}
       initialQuery={initialGroundSearchQuery}
     />
   );

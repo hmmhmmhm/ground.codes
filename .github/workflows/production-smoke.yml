@@ -2,6 +2,12 @@ name: Production Smoke
 
 on:
   workflow_dispatch:
+    inputs:
+      force_failure:
+        description: "Force a smoke failure to test failure notifications"
+        required: false
+        type: boolean
+        default: false
   schedule:
     - cron: "*/30 * * * *"
   workflow_run:
@@ -16,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MOSHI_WEBHOOK_TOKEN: ${{ secrets.MOSHI_WEBHOOK_TOKEN }}
+      GROUND_CODES_SMOKE_FORCE_FAILURE: ${{ github.event.inputs.force_failure || 'false' }}
 
     steps:
       - name: Checkout repository

@@ -54,6 +54,12 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("Copy-ready Examples");
     expect(firstPartyDocs).toContain("https://api.ground.codes/v1/decode");
     expect(firstPartyDocs).toContain("HTTP Status");
+    expect(firstPartyDocs).toContain("Body Constraints");
+    expect(firstPartyDocs).toContain("Earth defaults to");
+    expect(firstPartyDocs).toContain("Moon supports regionLevel 2");
+    expect(firstPartyDocs).toContain("Mars supports regionLevel 2 and 3");
+    expect(firstPartyDocs).toContain("Share URL Rules");
+    expect(firstPartyDocs).toContain("Status Code Reference");
 
     const docsResponse = await get("/");
     expect(docsResponse.status).toBe(200);

@@ -1,17 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { GroundCodeSearchResult } from "@/lib/code/ground-codes";
-import { shouldRequestPlacePredictions } from "./map-search-state";
+import {
+  shouldRequestGroundSuggestions,
+  shouldRequestPlacePredictions,
+} from "./map-search-state";
 
 interface MapSearchProps {
   map: google.maps.Map | null;
   onPlaceSelect?: (place: google.maps.places.PlaceResult) => void;
   onGroundSearch: (query: string) => Promise<void> | void;
+  onGroundSuggest: (query: string) => Promise<GroundCodeSearchResult[]>;
   onGroundSearchResultSelect: (result: GroundCodeSearchResult) => void;
   isGroundSearchLoading: boolean;
   groundSearchError: string | null;
   groundSearchResults: GroundCodeSearchResult[];
   isPlacePredictionEnabled: boolean;
+  groundSuggestionScope: string;
   initialQuery?: string | null;
 }
 
@@ -19,17 +24,22 @@ const MapSearch: React.FC<MapSearchProps> = ({
   map,
   onPlaceSelect,
   onGroundSearch,
+  onGroundSuggest,
   onGroundSearchResultSelect,
   isGroundSearchLoading,
   groundSearchError,
   groundSearchResults,
   isPlacePredictionEnabled,
+  groundSuggestionScope,
   initialQuery = null,
 }) => {
   const { t } = useI18n();
   const [query, setQuery] = useState("");
   const [placePredictions, setPlacePredictions] = useState<
     google.maps.places.AutocompletePrediction[]
+  >([]);
+  const [groundSuggestions, setGroundSuggestions] = useState<
+    GroundCodeSearchResult[]
   >([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
@@ -39,7 +49,11 @@ const MapSearch: React.FC<MapSearchProps> = ({
   const predictionCacheRef = useRef<
     Map<string, google.maps.places.AutocompletePrediction[]>
   >(new Map());
+  const groundSuggestionCacheRef = useRef<
+    Map<string, GroundCodeSearchResult[]>
+  >(new Map());
   const predictionRequestIdRef = useRef(0);
+  const groundSuggestionRequestIdRef = useRef(0);
   const suppressedPredictionQueryRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -157,13 +171,73 @@ const MapSearch: React.FC<MapSearchProps> = ({
     };
   }, [isGroundSearchLoading, isPlacePredictionEnabled, query]);
 
+  useEffect(() => {
+    const trimmedQuery = query.trim();
+    const normalizedQuery = trimmedQuery.toLocaleLowerCase();
+    const requestId = groundSuggestionRequestIdRef.current + 1;
+    groundSuggestionRequestIdRef.current = requestId;
+
+    if (
+      !shouldRequestGroundSuggestions({
+        isGroundSearchLoading,
+        trimmedQuery,
+        normalizedQuery,
+        suppressedPredictionQuery: suppressedPredictionQueryRef.current,
+      })
+    ) {
+      setGroundSuggestions([]);
+      return;
+    }
+
+    const cacheKey = `${groundSuggestionScope}:${normalizedQuery}`;
+    const cachedSuggestions = groundSuggestionCacheRef.current.get(cacheKey);
+    if (cachedSuggestions) {
+      setGroundSuggestions(cachedSuggestions);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void onGroundSuggest(trimmedQuery)
+        .then((results) => {
+          if (requestId !== groundSuggestionRequestIdRef.current) return;
+
+          const nextSuggestions = results.slice(0, 5);
+          groundSuggestionCacheRef.current.set(cacheKey, nextSuggestions);
+          if (groundSuggestionCacheRef.current.size > 30) {
+            const oldestQuery = groundSuggestionCacheRef.current.keys().next()
+              .value;
+            if (oldestQuery) {
+              groundSuggestionCacheRef.current.delete(oldestQuery);
+            }
+          }
+
+          setGroundSuggestions(nextSuggestions);
+        })
+        .catch((error) => {
+          if (requestId !== groundSuggestionRequestIdRef.current) return;
+          console.warn("Ground code suggestions unavailable:", error);
+          setGroundSuggestions([]);
+        });
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [groundSuggestionScope, isGroundSearchLoading, onGroundSuggest, query]);
+
+  useEffect(() => {
+    setGroundSuggestions([]);
+  }, [groundSuggestionScope]);
+
   const submitSearch = async (event: React.FormEvent) => {
     event.preventDefault();
     const trimmedQuery = (searchInputRef.current?.value ?? query).trim();
     if (!trimmedQuery || isGroundSearchLoading) return;
     predictionRequestIdRef.current += 1;
+    groundSuggestionRequestIdRef.current += 1;
     suppressedPredictionQueryRef.current = trimmedQuery.toLocaleLowerCase();
     setPlacePredictions([]);
+    setGroundSuggestions([]);
     setQuery(trimmedQuery);
     await onGroundSearch(trimmedQuery);
   };
@@ -174,16 +248,38 @@ const MapSearch: React.FC<MapSearchProps> = ({
     if (isGroundSearchLoading) return;
 
     predictionRequestIdRef.current += 1;
+    groundSuggestionRequestIdRef.current += 1;
     suppressedPredictionQueryRef.current =
       prediction.description.trim().toLocaleLowerCase();
     setQuery(prediction.description);
     setPlacePredictions([]);
+    setGroundSuggestions([]);
     await onGroundSearch(prediction.description);
+  };
+
+  const selectGroundSuggestion = async (result: GroundCodeSearchResult) => {
+    if (isGroundSearchLoading) return;
+
+    predictionRequestIdRef.current += 1;
+    groundSuggestionRequestIdRef.current += 1;
+    suppressedPredictionQueryRef.current = result.label
+      .trim()
+      .toLocaleLowerCase();
+    setQuery(result.label);
+    setPlacePredictions([]);
+    setGroundSuggestions([]);
+    onGroundSearchResultSelect(result);
   };
 
   const translatedGroundSearchError = groundSearchError?.startsWith("map.")
     ? t(groundSearchError)
     : groundSearchError;
+  const visibleGroundResults =
+    groundSuggestions.length > 0
+      ? groundSuggestions
+      : groundSearchResults.length > 1
+        ? groundSearchResults
+        : [];
 
   return (
     <form
@@ -298,17 +394,17 @@ const MapSearch: React.FC<MapSearchProps> = ({
           {translatedGroundSearchError}
         </div>
       )}
-      {groundSearchResults.length > 1 && (
+      {visibleGroundResults.length > 0 && (
         <div className="mt-2 overflow-hidden rounded-lg border border-white/15 bg-black/70 text-white shadow-lg backdrop-blur-md">
           <div className="border-b border-white/10 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-white/55">
             {t("map.search.groundCodesHeading")}
           </div>
-          {groundSearchResults.map((result) => (
+          {visibleGroundResults.map((result) => (
             <button
               key={`${result.body}:${result.regionLevel}:${result.code ?? result.label}:${result.lat}:${result.lng}`}
               type="button"
               className="flex w-full items-center justify-between gap-3 border-b border-white/10 px-3 py-2 text-left text-sm last:border-b-0 hover:bg-white/10"
-              onClick={() => onGroundSearchResultSelect(result)}
+              onClick={() => selectGroundSuggestion(result)}
             >
               <span className="min-w-0">
                 <span className="block truncate font-medium">

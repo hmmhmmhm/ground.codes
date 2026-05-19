@@ -15,3 +15,18 @@ export const shouldRequestPlacePredictions = ({
   trimmedQuery.length >= 2 &&
   !isGroundSearchLoading &&
   normalizedQuery !== suppressedPredictionQuery;
+
+export const shouldRequestGroundSuggestions = ({
+  isGroundSearchLoading,
+  trimmedQuery,
+  normalizedQuery,
+  suppressedPredictionQuery,
+}: {
+  isGroundSearchLoading: boolean;
+  trimmedQuery: string;
+  normalizedQuery: string;
+  suppressedPredictionQuery: string | null;
+}) =>
+  trimmedQuery.length >= 2 &&
+  !isGroundSearchLoading &&
+  normalizedQuery !== suppressedPredictionQuery;

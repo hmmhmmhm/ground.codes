@@ -28,6 +28,8 @@ describe("URL label report", () => {
     assert.equal(report.totals.rows, 4);
     assert.equal(report.totals.englishNonAscii, 1);
     assert.equal(report.totals.localizedLatin, 1);
+    assert.deepEqual(report.datasets[0].englishNonAsciiSamples, ["Möllereisstrom"]);
+    assert.deepEqual(report.datasets[1].localizedLatinSamples, ["Seoul"]);
   });
 
   test("formats a compact markdown report for CI summaries", () => {
@@ -43,11 +45,23 @@ describe("URL label report", () => {
           rows: 2,
           englishNonAscii: 0,
           localizedLatin: 0,
+          englishNonAsciiSamples: [],
+          localizedLatinSamples: [],
+        },
+        {
+          name: "moon region-2 english",
+          rows: 3,
+          englishNonAscii: 1,
+          localizedLatin: 0,
+          englishNonAsciiSamples: ["Möllereisstrom"],
+          localizedLatinSamples: [],
         },
       ],
     });
 
     assert.match(markdown, /^## URL Label Data/);
     assert.match(markdown, /\| earth region-2 english \| 2 \| 0 \| 0 \|/);
+    assert.match(markdown, /### Sample Issues/);
+    assert.match(markdown, /moon region-2 english: English non-ASCII: Möllereisstrom/);
   });
 });
