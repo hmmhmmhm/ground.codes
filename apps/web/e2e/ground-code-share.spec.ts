@@ -46,6 +46,21 @@ test("opens explicit Moon and Mars Ground Code share URLs", async ({
       body: "mars",
       label: /Olympus Mons/,
     },
+    {
+      path: "/mars/%EB%8B%88%ED%81%AC%EC%8A%A4%20%EC%98%A4%EB%A5%B4%EC%9D%B4%EB%AF%80%ED%94%BC%EC%B9%B4-%EC%B0%BD-%EC%A1%B0%EB%B6%80-%EC%95%84%EB%B3%B4%EC%B9%B4%EB%8F%84%EC%9C%A0",
+      body: "mars",
+      label: /니크스 오르이므피카/,
+    },
+    {
+      path: "/moon/%EB%B8%8C%EB%9D%BC%EC%8B%9C%EC%97%90%EC%95%84%EB%A5%B4%20%ED%94%BC%20%EB%B6%80%EC%86%8D%20%EC%A7%80%ED%98%95-%EC%97%B0%ED%95%84%EA%B9%8E%EC%9D%B4-%EB%8B%A4%EB%A6%AC-%EA%B3%B5%EC%9B%90-%EA%B8%B0%EC%81%A8",
+      body: "moon",
+      label: /브라시에아르 피/,
+    },
+    {
+      path: "/mars/%EB%A6%AC%EC%B9%98%EC%95%84%EB%A5%B4%EB%93%9C%EC%86%8C%EB%8A%90%20%ED%81%AC%EB%A0%88%EC%9D%B4%ED%84%B0-%ED%91%B8%EB%A5%B8%EC%83%98%EB%AC%BC-%ED%91%B8%EB%A5%B8%EB%B0%94%EB%8B%B7%EA%B8%B8-%EB%8C%80%ED%9A%8C-%EC%97%B0%ED%9A%8C",
+      body: "mars",
+      label: /리치아르드소느/,
+    },
   ]) {
     const searchResponse = page.waitForResponse((response) => {
       if (!response.url().includes("/v1/search")) return false;

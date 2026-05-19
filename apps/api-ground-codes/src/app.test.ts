@@ -254,6 +254,38 @@ describe("Ground Codes API contract", () => {
     });
   });
 
+  test("search resolves longer localized Moon and Mars ground codes", async () => {
+    for (const sample of [
+      {
+        query: "브라시에아르 피 부속 지형-연필깎이-다리-공원-기쁨",
+        body: "moon",
+      },
+      {
+        query: "리치아르드소느 크레이터-푸른샘물-푸른바닷길-대회-연회",
+        body: "mars",
+      },
+    ]) {
+      const response = await postJson("/v1/search", {
+        query: sample.query,
+        language: "korean",
+        body: sample.body,
+        regionLevel: 2,
+        maxResults: 1,
+      });
+
+      expect(response.status).toBe(200);
+      const body = await response.json();
+      expect(body.results[0]).toMatchObject({
+        type: "ground-code",
+        label: sample.query,
+        body: sample.body,
+        regionLevel: 2,
+      });
+      expect(body.results[0].lat).toBeNumber();
+      expect(body.results[0].lng).toBeNumber();
+    }
+  }, 90_000);
+
   test("loads region lookup data on demand for region endpoints", async () => {
     const response = await postJson("/v1/region/around", {
       lat: 37.566,

@@ -25,7 +25,7 @@ export const buildGroundCodeSharePath = ({
 
 const isCodeLikeShareSegment = (code: string) => {
   const wordCount = code.split("-").filter(Boolean).length;
-  return wordCount >= 2 && wordCount <= 3;
+  return wordCount >= 2 && wordCount <= 6;
 };
 
 export const parseGroundCodeSharePath = (

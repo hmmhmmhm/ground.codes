@@ -94,8 +94,8 @@ const docsHtml = `<!doctype html>
           <p>Earth URLs stay code-only. Moon and Mars use explicit body prefixes so links remain readable without adding query parameters or percent-encoded labels.</p>
           <ul>
             <li>Earth: <code>https://ground.codes/Seoul-word-word</code></li>
-            <li>Moon: <code>https://ground.codes/moon/word-word-word</code></li>
-            <li>Mars: <code>https://ground.codes/mars/word-word-word</code></li>
+            <li>Moon: <code>https://ground.codes/moon/Mare Tranquillitatis-word-word</code></li>
+            <li>Mars: <code>https://ground.codes/mars/Olympus Mons-word-word</code></li>
           </ul>
         </section>
         <section class="full">
