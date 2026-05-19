@@ -28,9 +28,8 @@ describe("QA workflow split", () => {
     const visualWorkflow = readText("../.github/workflows/visual-qa.yml");
 
     assert.match(visualWorkflow, /workflow_dispatch:/);
-    assert.match(visualWorkflow, /FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"/);
     assert.match(visualWorkflow, /pnpm --filter web qa:visual/);
-    assert.match(visualWorkflow, /actions\/upload-artifact@v5/);
+    assert.match(visualWorkflow, /actions\/upload-artifact@v7/);
     assert.match(visualWorkflow, /apps\/web\/test-results/);
   });
 });
