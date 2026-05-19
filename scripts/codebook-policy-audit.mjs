@@ -1,5 +1,7 @@
 import { readFileSync } from "node:fs";
 
+import { AGENT_REVIEWED_BLOCKLISTS } from "./codebook-policy-findings.mjs";
+
 export const EXPECTED_COUNTS = {
   english: 6000,
   korean: 5630,
@@ -219,12 +221,19 @@ const JAPANESE_BLOCKED_TERMS = [
   "じじ",
 ];
 
-const EXACT_BLOCKLISTS = {
+const GUIDE_REVIEWED_BLOCKLISTS = {
   english: ENGLISH_BLOCKED_TERMS,
   korean: KOREAN_BLOCKED_TERMS,
   chinese: CHINESE_BLOCKED_TERMS,
   japanese: JAPANESE_BLOCKED_TERMS,
 };
+
+const EXACT_BLOCKLISTS = Object.fromEntries(
+  Object.entries(GUIDE_REVIEWED_BLOCKLISTS).map(([language, words]) => [
+    language,
+    [...words, ...(AGENT_REVIEWED_BLOCKLISTS[language] ?? [])],
+  ]),
+);
 
 const readJson = (path) =>
   JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8"));
@@ -340,8 +349,7 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               index,
               word,
               rule: "english-hard-pronunciation",
-              detail:
-                "Guide rejects hard clusters and silent-letter patterns",
+              detail: "Guide rejects hard clusters and silent-letter patterns",
             }),
           );
         }
