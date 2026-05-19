@@ -14,16 +14,35 @@ describe("codebook authoring guide", () => {
       "## Product Principles",
       "## Accepted Words",
       "## Rejected Words",
+      "## Accept / Reject Examples",
+      "## Review Decision Tree",
       "## Language-Specific Rules",
+      "## Automated Checks",
       "## Generation Prompt Rules",
       "## Review Workflow",
       "## Compatibility Rules",
+      "## Versioning Playbook",
       "## Required Checks",
     ]) {
       assert.match(
         guide,
         new RegExp(heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
       );
+    }
+  });
+
+  test("keeps codebook decisions grounded in examples and compatibility policy", () => {
+    const guide = readText("../packages/codebook/CODEBOOK_GUIDE.md");
+
+    for (const phrase of [
+      "Accept when",
+      "Reject when",
+      "When in doubt, reject",
+      "same index",
+      "legacy decode",
+      "versioned migration",
+    ]) {
+      assert.match(guide, new RegExp(phrase));
     }
   });
 

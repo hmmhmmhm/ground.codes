@@ -58,6 +58,48 @@ Good categories:
 - Simple actions as noun-like entries only when natural in the language
 - Friendly abstract nouns when common and non-sensitive: `balance`, `calm`
 
+## Accept / Reject Examples
+
+Use examples to calibrate review decisions. The examples below describe the
+reasoning pattern; they are not a request to add the exact accepted examples.
+
+| Candidate pattern | Decision | Reason |
+| --- | --- | --- |
+| `basket`, `바구니`, `竹篮`, `かご` | Accept when common, neutral, concrete, and naturally written in the target language. | The word is readable in a public place label and has low semantic risk. |
+| `cloud`, `구름`, `云朵`, `くも` | Accept when the meaning is broad, familiar, and not tied to a sensitive domain. | Nature words are usually safe unless they are place names, brands, or idioms with negative force. |
+| `Seoul`, `서울`, `东京`, `とうきょう` | Reject when the word is a place name, even if ordinary users know it well. | Ground Codes already use region labels; coordinate payload words should not add extra geography. |
+| `Poker`, `슬롯`, `彩票`, `ぱちんこ` | Reject when tied to gambling, betting, or games of chance. | Codes must not create embarrassing or regulated-domain associations. |
+| `Clinic`, `당뇨`, `药`, `ちりょう` | Reject when medical, disease, medication, diagnosis, or treatment related. | A medical-looking address can be alarming or inappropriate in unrelated locations. |
+| `Samsung`, `카카오`, `腾讯`, `やふおく` | Reject when a brand, platform, app, service, or product. | Brand terms create trademark, endorsement, and freshness problems. |
+| `프로`, `시뮬`, `ぐぐ`, `foo` | Reject when clipped, generated-looking, foreign, or not a stable standalone word. | Fragment-like entries make codes look broken and reduce trust. |
+
+When in doubt, reject the candidate and pick a simpler neutral replacement.
+The codebook has enough surface area that marginal words are not worth keeping.
+
+## Review Decision Tree
+
+Apply this sequence to every new or suspicious candidate:
+
+1. Is it a complete noun in the target language?
+   If no, reject it.
+2. Is it a person, place, brand, product, platform, landmark, demonym, title, or
+   named entity?
+   If yes, reject it.
+3. Does it belong to a sensitive domain listed in this guide?
+   If yes, reject it.
+4. Would it look neutral next to a home, school, hospital, business, memorial,
+   or sacred site?
+   If no, reject it.
+5. Is it short, common, pronounceable, and easy to copy from a URL?
+   If no, prefer a clearer replacement.
+6. Is it visually or phonetically too close to many existing entries?
+   If yes, replace it unless there is a strong reason to keep it.
+7. Can a reviewer explain why it is safe in one sentence?
+   If no, reject it.
+
+Default rule: reject uncertain candidates. Review time should be spent finding
+better replacements, not defending marginal words.
+
 ## Rejected Words
 
 Reject any word in these categories, even when the exact term is not already in
@@ -138,6 +180,35 @@ a test blocklist.
   adult, gambling, medical, political, religious, legal, military, violent, or
   risky terms.
 
+## Automated Checks
+
+Automated checks cannot replace human review, but they should catch repeatable
+classes of mistakes.
+
+Current required checks:
+
+- Expected language counts and uniqueness.
+- Exact reviewed blocklist terms.
+- Japanese kana-visible and natural-word shape checks.
+- Region label URL safety and localized label reports.
+- Runtime guide discoverability via `scripts/codebook-guide.test.mjs`.
+
+Checks to add when a review finds a repeatable pattern:
+
+- Script-shape checks: one-character Chinese entries, one-syllable Korean
+  entries, or Japanese entries with unnatural script forms.
+- Substring/root checks for sensitive domains such as gambling, medicine,
+  religion, weapons, and politics.
+- Named-entity candidate checks for places, brands, apps, and personal names.
+- Similarity checks for near-duplicates that differ only by suffix, spelling, or
+  transliteration.
+- URL readability checks for very long entries or entries likely to require
+  confusing percent-encoding.
+
+Do not add broad automated rejection rules without reviewing false positives.
+Automated checks should point reviewers to suspicious candidates; exact
+blocklists should remain conservative and explainable.
+
 ## Generation Prompt Rules
 
 Generation prompts and refinement prompts must follow this guide.
@@ -181,6 +252,57 @@ existing decoded coordinates.
 - Treat any broad replacement pass as a compatibility-sensitive change.
 - When compatibility must change, document the migration in
   `packages/ground-codes/README.md` and API release notes.
+
+## Versioning Playbook
+
+Use this playbook before changing any distributed `codebook-dist/*.json` file.
+
+### Safe Patch
+
+Use a safe patch when a word is unacceptable but the language count and base stay
+the same.
+
+- Replace only the bad word at the same index.
+- Keep every other index unchanged.
+- Add the rejected word to review tests when useful.
+- Verify existing known-pair tests and smoke paths.
+- Document the reason in the commit message or PR body.
+
+This preserves numeric decoding for the same index. It changes the visible word
+for newly encoded values at that index, so support teams should still know what
+changed.
+
+### Compatibility-Sensitive Change
+
+Treat the change as compatibility-sensitive when it does any of the following:
+
+- Reorders entries.
+- Adds or removes entries.
+- Changes the language count or word-set base.
+- Regenerates a large part of a language.
+- Changes tokenization, casing, normalization, or decode lookup semantics.
+
+For these changes, define a versioned migration before shipping:
+
+- Keep legacy decode support for old codebook versions.
+- Encode new values with the new version only after readers can decode both.
+- Decide how share URLs identify the codebook version if needed.
+- Add known-pair tests for old and new encodings.
+- Document the migration in `packages/ground-codes/README.md`, API docs, and
+  release notes.
+
+### Emergency Removal
+
+If a harmful term is already distributed:
+
+1. Replace it at the same index with a safe neutral word.
+2. Add an exact blocklist test for the removed term.
+3. Run production smoke after deployment.
+4. Record the visible-code impact for support.
+5. Consider whether legacy decode aliases are needed for already shared URLs.
+
+Emergency changes still need compatibility review; speed does not make index
+changes safe.
 
 ## Required Checks
 
