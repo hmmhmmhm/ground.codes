@@ -10,6 +10,12 @@
 
 The Codebook package is a specialized word collection developed for the ground.codes project. It functions similarly to numerical base systems (like base32), but instead uses words as the basic units. This allows for the representation of data using human-readable words rather than abstract symbols or numbers.
 
+## 📌 Authoring Policy
+
+The canonical policy for creating, reviewing, and replacing codebook words is
+[`CODEBOOK_GUIDE.md`](./CODEBOOK_GUIDE.md). Read it before running generation,
+refinement, manual review, or distribution updates.
+
 ## 🎯 Purpose
 
 The primary purpose of the Codebook is to provide a dictionary of words that can be used systematically in various applications within the ground.codes ecosystem, such as generating memorable identifiers, creating readable codes, or establishing unique naming conventions.
@@ -32,20 +38,22 @@ The word dictionaries are constructed using generative AI through the following 
 
 ## ✅ Word Selection Guidelines
 
-While not strictly enforced, the following guidelines are recommended for words in the codebook:
+The short version:
 
-- 😊 Words should not evoke negative perceptions when used in place names
-- 🔤 Words should be concise and easy to pronounce
-- 📝 Preference is given to proper nouns
-- 🌍 Words should be commonly known and frequently used
-- 🧩 Simple words are preferred over compound words (e.g., "tiger" is acceptable, but "sea tiger" is not)
-- 🌐 Words should not contain specific country names
-- 🗣️ Foreign words not commonly used in the target language should be avoided
+- Words should not evoke negative perceptions when used in place names.
+- Words should be concise, concrete, common, neutral, and easy to pronounce.
+- Common nouns are preferred; proper names, places, brands, and products are
+  rejected.
+- Artificial compounds, awkward fragments, specialist jargon, and unnatural
+  loanwords are rejected.
+- Sensitive domains such as adult, gambling, alcohol, weapon, medical, legal,
+  political, religious, disaster, and violent terms are rejected.
 
 For manual and sub-agent review passes, use
 `codebook-dataset/subagent-review-checklist.md`. The checklist covers recurring
 misses such as one-syllable fragments, foreign abbreviations, place names,
 brands, medical/religious/gambling terms, and other domain-specific words.
+The checklist is operational; `CODEBOOK_GUIDE.md` remains the source of truth.
 
 ## 🛠️ Usage
 

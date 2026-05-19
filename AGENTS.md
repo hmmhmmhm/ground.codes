@@ -30,7 +30,7 @@
 
 - `packages/ground-codes` — 핵심 인코딩·디코딩 구현
 - `packages/geoint` — 인구 500명 이상 지역의 큐레이션 지리 데이터
-- `packages/codebook` — 좌표 인코딩에 쓰이는 단어 codebook
+- `packages/codebook` — 좌표 인코딩에 쓰이는 단어 codebook. 단어 생성·교체·검수는 `packages/codebook/CODEBOOK_GUIDE.md` 를 기준으로 합니다.
 - `packages/ui` — 공통 UI 컴포넌트
 - `packages/eslint-config`, `packages/typescript-config` — 공통 도구 설정
 
@@ -154,3 +154,4 @@ PR 제출 전 위 4개를 모두 통과시킵니다.
 - **Google Maps 3D 지구**: Earth 3D 는 Google `Map3DElement.heading` 을 부모 나침반 상태와 동기화합니다. 직접 구체를 돌리는 경우 `steadychange` 이벤트와 짧은 polling 으로 heading 변화를 감지합니다.
 - **Cesium 달·화성 3D**: Cesium 구체는 `camera.heading` 또는 `camera.setView({ orientation.heading })` 만으로는 화면상 회전이 체감되지 않을 수 있습니다. 나침반 기반 회전은 현재 시야 축 기준 `camera.twistRight()` 에 최단 heading delta 를 적용합니다. 직접 구체 조작 후 나침반 동기화는 화면 중심점에서 실제 북쪽이 화면상 어느 방향을 향하는지 계산해 부모 나침반 상태로 올립니다.
 - **Cesium 초기화 주의**: 달·화성 3D 초기 카메라는 북쪽 기준으로 세팅한 뒤 필요한 나침반 heading 만 별도 twist 로 적용합니다. 초기 `setView` heading 과 `twistRight` 를 동시에 같은 heading 으로 적용하면 재마운트 시 회전이 중복될 수 있습니다.
+- **Codebook 단어 정책**: `packages/codebook` 의 단어 생성·교체·검수는 `packages/codebook/CODEBOOK_GUIDE.md` 를 canonical policy 로 사용합니다. proper name, 지명, 브랜드, 민감 도메인, 어색한 합성어·파편을 새로 넣지 않습니다.

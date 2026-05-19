@@ -1,5 +1,10 @@
 # Codebook Sub-Agent Review Checklist
 
+Canonical policy: [`../CODEBOOK_GUIDE.md`](../CODEBOOK_GUIDE.md).
+
+This checklist is an operational companion for review passes. If it conflicts
+with `CODEBOOK_GUIDE.md`, the guide wins and this checklist should be updated.
+
 Use this checklist when adding or regenerating codebook words. The automated
 tests keep exact reviewed terms out, but they do not understand new words in the
 same semantic class. A sub-agent review should therefore scan by pattern and

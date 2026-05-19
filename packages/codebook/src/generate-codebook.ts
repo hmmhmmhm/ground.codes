@@ -11,7 +11,7 @@ const timeout = 60_000; // 30 seconds timeout
 export default async () => {
   console.log(
     chalk.green(
-      "This command runs through the process of generating a codebook using generative AI."
+      "This command runs through the process of generating a codebook using generative AI. Read CODEBOOK_GUIDE.md before using the output."
     )
   );
 
@@ -86,14 +86,13 @@ export default async () => {
 [Given Topic]
 ${question}
 
-[Word requirement]
-- Words should not cause potentially negative perceptions when used in place names.
-- The word should be as short as possible and easy to pronounce.
-- The word should be a proper noun.
-- The word must be a commonly known and frequently used word.
-- The word cannot be a compound word, for example, "tiger" is possible, but not an artificial word like "sea tiger"
-- The word must not contain the geographic name of a specific country.
-- Foreign words that are not used in your language should not be used.`;
+[Word requirement based on CODEBOOK_GUIDE.md]
+- Use only target-language noun entries.
+- Prefer short, concrete, neutral, common nouns that are easy to pronounce.
+- Reject proper names: people, surnames, cities, states, countries, regions, landmarks, brands, platforms, and product names.
+- Reject adult, gambling, alcohol, weapon, violent, military, medical, legal, political, religious, disaster, crime, insult, and risk terms.
+- Reject artificial compounds, awkward fragments, repeated filler, specialist jargon, and unnatural foreign loanwords.
+- Return only words that would feel neutral in a public place label.`;
 
         let parseFailedText = "";
 
