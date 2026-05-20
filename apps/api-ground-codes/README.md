@@ -108,7 +108,7 @@ pnpm --filter api-ground-codes start
 If Railway is configured with `apps/api-ground-codes` as the root directory,
 only this app directory is available during install. In that standalone mode the
 API runtime packages are pinned to a repository tag:
-`railway-api-runtime-20260520-spanish`. Bump that tag whenever the deployed
+`railway-api-runtime-20260520-korean-policy`. Bump that tag whenever the deployed
 API needs new local changes from `ground-codes`, `@ground-codes/geoint`, or
 `@repo/codebook`, then run:
 
