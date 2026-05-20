@@ -29,4 +29,48 @@ describe("codebook policy audit", () => {
         .join("\n"),
     );
   });
+
+  test("flags Korean entries that differ only by common pronunciation confusions", () => {
+    const { violations } = auditCodebooks({
+      english: Array.from(
+        { length: EXPECTED_COUNTS.english },
+        (_, index) => `Word${index}`,
+      ),
+      korean: [
+        "나무채반",
+        "나무체반",
+        ...Array.from(
+          { length: EXPECTED_COUNTS.korean - 2 },
+          (_, index) => `테스트${index}`,
+        ),
+      ],
+      chinese: Array.from(
+        { length: EXPECTED_COUNTS.chinese },
+        (_, index) => `词${index}`,
+      ),
+      japanese: Array.from(
+        { length: EXPECTED_COUNTS.japanese },
+        (_, index) => `ことば${index}`,
+      ),
+      spanish: Array.from(
+        { length: EXPECTED_COUNTS.spanish },
+        (_, index) => `Palabra${index}`,
+      ),
+    });
+
+    assert.deepEqual(
+      violations.filter(
+        (item) => item.rule === "korean-pronunciation-collision",
+      ),
+      [
+        {
+          language: "korean",
+          index: 1,
+          word: "나무체반",
+          rule: "korean-pronunciation-collision",
+          detail: 'Sounds like index 0 "나무채반" under Korean confusion groups',
+        },
+      ],
+    );
+  });
 });

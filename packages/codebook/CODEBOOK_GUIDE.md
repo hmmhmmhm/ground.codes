@@ -164,6 +164,12 @@ a test blocklist.
   naturally recognize, such as `종이배`, `책받침`, `나무문`, or `찻잔받침`.
   Reject invented material/nature/object compounds such as `도토리토리`,
   `도토리걸이`, `토기묶음`, `자개쌀독`, and `호박자`.
+- Reject entries that look or sound like misspellings of another entry. Apply a
+  pronunciation-similarity pass for common Korean confusion pairs such as
+  `채/체` and `개/게`; when two entries collide, keep the more familiar and less
+  ambiguous one.
+- Reject uncommon `채반`/`체반` family terms outright rather than keeping one
+  spelling variant.
 - Reject rare or old-fashioned household terms when ordinary users are unlikely
   to recognize them, even if they are dictionary words; examples include
   `자배기`, `옹배기`, `고리짝`, `동곳`, `조롱`, `광목포`, `함지`, and `주발`.

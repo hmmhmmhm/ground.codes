@@ -886,6 +886,13 @@ describe("reviewed multilingual codebooks", () => {
     ]);
   });
 
+  test("keeps uncommon Korean chaeban family terms out", () => {
+    assert.deepEqual(
+      koreanWords.filter((word) => /[채체]반/u.test(word)),
+      [],
+    );
+  });
+
   test("keeps latest English sub-agent review findings out", () => {
     assertBlockedWordsAbsent(englishWords, [
       "Ali",

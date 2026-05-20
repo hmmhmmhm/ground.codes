@@ -263,6 +263,36 @@ const EXACT_BLOCKLISTS = Object.fromEntries(
   ]),
 );
 
+const HANGUL_BASE = 0xac00;
+const HANGUL_END = 0xd7a3;
+const HANGUL_VOWEL_COUNT = 21;
+const HANGUL_FINAL_COUNT = 28;
+const KOREAN_VOWEL_CONFUSION_GROUPS = new Map([
+  [1, "E"], // ㅐ
+  [5, "E"], // ㅔ
+]);
+
+const makeKoreanPronunciationKey = (word) =>
+  [...word]
+    .map((char) => {
+      const code = char.codePointAt(0);
+      if (code < HANGUL_BASE || code > HANGUL_END) return char;
+
+      const offset = code - HANGUL_BASE;
+      const initial = Math.floor(
+        offset / (HANGUL_VOWEL_COUNT * HANGUL_FINAL_COUNT),
+      );
+      const vowel = Math.floor(
+        (offset % (HANGUL_VOWEL_COUNT * HANGUL_FINAL_COUNT)) /
+          HANGUL_FINAL_COUNT,
+      );
+      const final = offset % HANGUL_FINAL_COUNT;
+      const normalizedVowel = KOREAN_VOWEL_CONFUSION_GROUPS.get(vowel) ?? vowel;
+
+      return `${initial}:${normalizedVowel}:${final}`;
+    })
+    .join("|");
+
 const readJson = (path) =>
   JSON.parse(readFileSync(new URL(path, import.meta.url), "utf8"));
 
@@ -306,6 +336,8 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
         }),
       );
     }
+
+    const koreanPronunciationKeys = new Map();
 
     for (const [index, word] of words.entries()) {
       if (word.trim() === "") {
@@ -419,6 +451,37 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
             detail: "Korean entries should be written in Hangul",
           }),
         );
+      }
+
+      if (language === "korean") {
+        if (/[채체]반/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "korean-obscure-household-term",
+              detail:
+                "Korean entries should avoid uncommon 채반/체반 family terms",
+            }),
+          );
+        }
+
+        const pronunciationKey = makeKoreanPronunciationKey(word);
+        const previous = koreanPronunciationKeys.get(pronunciationKey);
+        if (previous !== undefined && previous.word !== word) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "korean-pronunciation-collision",
+              detail: `Sounds like index ${previous.index} "${previous.word}" under Korean confusion groups`,
+            }),
+          );
+        } else {
+          koreanPronunciationKeys.set(pronunciationKey, { index, word });
+        }
       }
 
       if (language === "chinese" && !/^[\p{Script=Han}]+$/u.test(word)) {
