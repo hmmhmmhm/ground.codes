@@ -153,6 +153,20 @@ a test blocklist.
 
 - Prefer complete, natural Korean nouns written in Hangul.
 - Review every one-syllable entry manually unless already allowlisted.
+- One-syllable entries can stay when they are familiar, neutral standalone
+  nouns such as `물`, `빛`, `별`, `꽃`, `숲`, `쌀`, `밥`, `떡`, `솜`, `꿀`,
+  `깨`, or `벼`. Reject one-syllable entries that can sound like profanity,
+  insults, clipped stems, or ambiguous fragments; for example, reject `잣`.
+- Prefer familiar nature, food, and household nouns such as `도토리`, `솔방울`,
+  `밤송이`, `호박`, `연잎`, `나뭇잎`, `보리쌀`, `콩알`, `팥알`, `항아리`,
+  `소쿠리`, `바구니`, `방석`, `돗자리`, `찻잔`, and `책갈피`.
+- Allow compounds only when they are established Korean words users would
+  naturally recognize, such as `종이배`, `책받침`, `나무문`, or `찻잔받침`.
+  Reject invented material/nature/object compounds such as `도토리토리`,
+  `도토리걸이`, `토기묶음`, `자개쌀독`, and `호박자`.
+- Reject rare or old-fashioned household terms when ordinary users are unlikely
+  to recognize them, even if they are dictionary words; examples include
+  `자배기`, `옹배기`, `고리짝`, `동곳`, `조롱`, `광목포`, `함지`, and `주발`.
 - Reject clipped foreign stems and abbreviations such as `프로`, `시뮬`, `트레`,
   `카`, `스`, `프`, `브`, `클`, `딩`, and `팅`.
 - Reject repeated-syllable forms such as `기기` or `코코` unless explicitly
@@ -160,6 +174,9 @@ a test blocklist.
 - Reject Korean place names, island names, districts, brands, and loanword
   fragments.
 - Be strict with plant, herb, instrument, textile, game, and religious loanwords.
+- Reject rare plant names and obscure loanwords such as `플록스`, and reject
+  verb-derived action labels such as `섞기` unless they are established object
+  nouns in everyday Korean.
 
 ### Chinese
 

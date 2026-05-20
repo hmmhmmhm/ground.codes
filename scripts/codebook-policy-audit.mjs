@@ -134,6 +134,14 @@ const KOREAN_BLOCKED_TERMS = [
   "스타일링",
   "스테이션",
   "프로듀서",
+  "잣",
+  "플록스",
+  "도토리토리",
+  "도토리걸이",
+  "토기묶음",
+  "섞기",
+  "자개쌀독",
+  "호박자",
 ];
 
 const CHINESE_BLOCKED_TERMS = [
