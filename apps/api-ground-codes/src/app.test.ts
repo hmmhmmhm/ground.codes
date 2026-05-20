@@ -297,11 +297,11 @@ describe("Ground Codes API contract", () => {
   test("search resolves longer localized Moon and Mars ground codes", async () => {
     for (const sample of [
       {
-        query: "브라시에아르 피 부속 지형-연필깎이-다리-공원-기쁨",
+        query: "고요의 바다-안방-모시풍경",
         body: "moon",
       },
       {
-        query: "리치아르드소느 크레이터-푸른샘물-푸른바닷길-대회-연회",
+        query: "보하르 크레이터 2-달력장-메밀-카스테라",
         body: "mars",
       },
     ]) {
