@@ -1496,7 +1496,7 @@ export const AGENT_REVIEWED_POLICY_FINDINGS = {
     ...entries({
       reason: "twenty-first-pass-doc-place-media-event-science-loanword-or-abstract",
       words: `
-        눈 춤 사진첩 책 길 방 글 목 곡 모래길 공터 모임 형식 내용 기초
+        눈 춤 책 길 방 글 목 곡 모래길 공터 모임 형식 내용 기초
         연습 동화 사연 배경 감정 모험 기억 여행 구성 의미 전환 패턴 구조
         구경 활동 그림 도안 영감 소식 벽화 엽서 수첩 안내 지도 탐험 탐사
         해답 조합 조정 산책 사교 가사 장르 성장 정원 온실 화단 텃밭 정자

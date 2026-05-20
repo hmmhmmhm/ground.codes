@@ -160,10 +160,15 @@ a test blocklist.
 - Prefer familiar nature, food, and household nouns such as `도토리`, `솔방울`,
   `밤송이`, `호박`, `연잎`, `나뭇잎`, `보리쌀`, `콩알`, `팥알`, `항아리`,
   `소쿠리`, `바구니`, `방석`, `돗자리`, `찻잔`, and `책갈피`.
+- Allow a small reviewed set of fully settled everyday loanwords when they are
+  concrete and familiar, such as `테이블`, `테이프`, `스카프`, `포스터`,
+  `스티커`, `아이스크림`, `피스타치오`, `디저트`, `피아노`, `테니스`,
+  `마라톤`, `콘서트`, and `클래식`.
 - Allow compounds only when they are established Korean words users would
   naturally recognize, such as `종이배`, `책받침`, `나무문`, or `찻잔받침`.
   Reject invented material/nature/object compounds such as `도토리토리`,
-  `도토리걸이`, `토기묶음`, `자개쌀독`, and `호박자`.
+  `도토리걸이`, `토기묶음`, `자개쌀독`, `호박자`, `솔방울묶음`,
+  `솔방울꼬챙이`, and `호박쌀독`.
 - Reject entries that look or sound like misspellings of another entry. Apply a
   pronunciation-similarity pass for common Korean confusion pairs such as
   `채/체` and `개/게`; when two entries collide, keep the more familiar and less
@@ -179,7 +184,9 @@ a test blocklist.
   approved.
 - Reject Korean place names, island names, districts, brands, and loanword
   fragments.
-- Be strict with plant, herb, instrument, textile, game, and religious loanwords.
+- Be strict with plant, herb, instrument, textile, game, and religious loanwords;
+  only keep reviewed exceptions that are everyday words rather than specialist
+  terms.
 - Reject rare plant names and obscure loanwords such as `플록스`, and reject
   verb-derived action labels such as `섞기` unless they are established object
   nouns in everyday Korean.

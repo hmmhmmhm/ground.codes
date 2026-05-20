@@ -15,6 +15,14 @@ const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   );
 };
 
+const assertWordsPresent = (words: string[], expectedWords: string[]) => {
+  const available = new Set(words);
+  assert.deepEqual(
+    expectedWords.filter((word) => !available.has(word)),
+    [],
+  );
+};
+
 const assertCodebook = ({
   words,
   expectedLength,
@@ -891,6 +899,42 @@ describe("reviewed multilingual codebooks", () => {
       koreanWords.filter((word) => /[채체]반/u.test(word)),
       [],
     );
+  });
+
+  test("keeps approved restored Korean everyday terms in", () => {
+    assertWordsPresent(koreanWords, [
+      "테이블",
+      "테이프",
+      "스카프",
+      "포스터",
+      "스티커",
+      "아이스크림",
+      "피스타치오",
+      "디저트",
+      "피아노",
+      "테니스",
+      "마라톤",
+      "콘서트",
+      "클래식",
+      "사진첩",
+    ]);
+
+    assertBlockedWordsAbsent(koreanWords, [
+      "나무고리짝",
+      "나무자배기",
+      "나무옹배기",
+      "들꽃동곳",
+      "솔방울묶음",
+      "연잎고리짝",
+      "연잎자배기",
+      "연잎옹배기",
+      "호박끌",
+      "솔방울꼬챙이",
+      "솔방울꽂개",
+      "솔방울걸개",
+      "호박쌀독",
+      "한지도장집",
+    ]);
   });
 
   test("keeps latest English sub-agent review findings out", () => {
