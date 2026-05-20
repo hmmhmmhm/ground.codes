@@ -5,6 +5,7 @@ import chineseWords from "@repo/codebook/codebook-dist/chinese.json";
 import englishWords from "@repo/codebook/codebook-dist/english.json";
 import japaneseWords from "@repo/codebook/codebook-dist/japanese.json";
 import koreanWords from "@repo/codebook/codebook-dist/korean.json";
+import spanishWords from "@repo/codebook/codebook-dist/spanish.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -1146,6 +1147,35 @@ describe("reviewed multilingual codebooks", () => {
       "べっと",
       "とまと",
       "りっち",
+    ]);
+  });
+
+  test("keeps Spanish codebook URL-safe and neutral", () => {
+    assert.equal(spanishWords.length, 5000);
+    assert.equal(new Set(spanishWords).size, spanishWords.length);
+    assert.deepEqual(
+      spanishWords.filter((word) => !/^[A-Z][a-z]+$/.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      spanishWords.filter((word) => word.length > 14),
+      [],
+    );
+    assertBlockedWordsAbsent(spanishWords, [
+      "Sexo",
+      "Casino",
+      "Apuesta",
+      "Arma",
+      "Guerra",
+      "Militar",
+      "Droga",
+      "Medico",
+      "Politica",
+      "Religion",
+      "Crimen",
+      "Muerte",
+      "Odio",
+      "Violencia",
     ]);
   });
 });

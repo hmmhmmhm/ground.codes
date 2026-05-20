@@ -12,6 +12,8 @@ import region2Korean from "@ground-codes/geoint/region-dist/region-2-korean.json
 // @ts-ignore
 import region2Japanese from "@ground-codes/geoint/region-dist/region-2-japanese.json";
 // @ts-ignore
+import region2Spanish from "@ground-codes/geoint/region-dist/region-2-spanish.json";
+// @ts-ignore
 import region3Chinese from "@ground-codes/geoint/region-dist/region-3-chinese.json";
 // @ts-ignore
 import region3English from "@ground-codes/geoint/region-dist/region-3.json";
@@ -19,6 +21,8 @@ import region3English from "@ground-codes/geoint/region-dist/region-3.json";
 import region3Korean from "@ground-codes/geoint/region-dist/region-3-korean.json";
 // @ts-ignore
 import region3Japanese from "@ground-codes/geoint/region-dist/region-3-japanese.json";
+// @ts-ignore
+import region3Spanish from "@ground-codes/geoint/region-dist/region-3-spanish.json";
 
 type Region3Row = {
   name: string;
@@ -31,12 +35,14 @@ const datasets: Array<[string, Region3Row[]]> = [
   ["korean", region3Korean],
   ["chinese", region3Chinese],
   ["japanese", region3Japanese],
+  ["spanish", region3Spanish],
 ];
 const region2ByLanguage: Record<string, Region3Row[]> = {
   english: region2English,
   korean: region2Korean,
   chinese: region2Chinese,
   japanese: region2Japanese,
+  spanish: region2Spanish,
 };
 
 const englishDatasets: Array<[string, Region3Row[]]> = [
@@ -69,6 +75,8 @@ describe("region-3 dataset", () => {
       findRegionNameByCode(region2Chinese, "3018060"),
       "方丹弗朗塞斯",
     );
+    assert.equal(findRegionNameByCode(region2Spanish, "1835848"), "Seul");
+    assert.equal(findRegionNameByCode(region3Spanish, "OCN0"), "Mar Ross 1");
 
     assert.deepEqual(
       region2Korean

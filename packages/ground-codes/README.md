@@ -209,11 +209,14 @@ await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "chinese" });
 
 await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "japanese" });
 // "ボハルクレーター 2-..."
+
+await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "spanish" });
+// "Crater Bohar 2-..."
 ```
 
-Japanese is supported for both region prefix labels and the coordinate word-set
-payload. Earth, Moon, and Mars labels use localized Japanese datasets, while the
-payload uses a 5,000-word frequency-guided hiragana set.
+Japanese and Spanish are supported for both region prefix labels and the
+coordinate word-set payload. Spanish URL labels are ASCII-only, so shared URLs
+remain readable while accent-insensitive search still works.
 
 Current Mars 0.25 degree sampling with official names plus crater fallback:
 

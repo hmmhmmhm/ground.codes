@@ -7,6 +7,7 @@ export const EXPECTED_COUNTS = {
   korean: 5630,
   chinese: 5140,
   japanese: 5000,
+  spanish: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -14,6 +15,7 @@ const CODEBOOK_FILES = {
   korean: "../packages/codebook/codebook-dist/korean.json",
   chinese: "../packages/codebook/codebook-dist/chinese.json",
   japanese: "../packages/codebook/codebook-dist/japanese.json",
+  spanish: "../packages/codebook/codebook-dist/spanish.json",
 };
 
 const ENGLISH_BLOCKED_TERMS = [
@@ -221,11 +223,29 @@ const JAPANESE_BLOCKED_TERMS = [
   "じじ",
 ];
 
+const SPANISH_BLOCKED_TERMS = [
+  "Sexo",
+  "Casino",
+  "Apuesta",
+  "Arma",
+  "Guerra",
+  "Militar",
+  "Droga",
+  "Medico",
+  "Politica",
+  "Religion",
+  "Crimen",
+  "Muerte",
+  "Odio",
+  "Violencia",
+];
+
 const GUIDE_REVIEWED_BLOCKLISTS = {
   english: ENGLISH_BLOCKED_TERMS,
   korean: KOREAN_BLOCKED_TERMS,
   chinese: CHINESE_BLOCKED_TERMS,
   japanese: JAPANESE_BLOCKED_TERMS,
+  spanish: SPANISH_BLOCKED_TERMS,
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -350,6 +370,32 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               word,
               rule: "english-hard-pronunciation",
               detail: "Guide rejects hard clusters and silent-letter patterns",
+            }),
+          );
+        }
+      }
+
+      if (language === "spanish") {
+        if (!/^[A-Z][a-z]+$/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "spanish-shape",
+              detail:
+                "Spanish URL codebook entries should use ASCII title-case words",
+            }),
+          );
+        }
+        if (word.length > 14) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "spanish-too-long",
+              detail: "Spanish entries should stay short for URL readability",
             }),
           );
         }

@@ -6,43 +6,51 @@ const DATASETS = [
   ["earth region-2 korean", "korean", "../packages/geoint/region-dist/region-2-korean.json"],
   ["earth region-2 chinese", "chinese", "../packages/geoint/region-dist/region-2-chinese.json"],
   ["earth region-2 japanese", "japanese", "../packages/geoint/region-dist/region-2-japanese.json"],
+  ["earth region-2 spanish", "spanish", "../packages/geoint/region-dist/region-2-spanish.json"],
   ["earth region-3 english", "english", "../packages/geoint/region-dist/region-3.json"],
   ["earth region-3 korean", "korean", "../packages/geoint/region-dist/region-3-korean.json"],
   ["earth region-3 chinese", "chinese", "../packages/geoint/region-dist/region-3-chinese.json"],
   ["earth region-3 japanese", "japanese", "../packages/geoint/region-dist/region-3-japanese.json"],
+  ["earth region-3 spanish", "spanish", "../packages/geoint/region-dist/region-3-spanish.json"],
   ["moon region-2 english", "english", "../packages/geoint/region-dist/region-2-moon.json"],
   ["moon region-2 korean", "korean", "../packages/geoint/region-dist/region-2-moon-korean.json"],
   ["moon region-2 chinese", "chinese", "../packages/geoint/region-dist/region-2-moon-chinese.json"],
   ["moon region-2 japanese", "japanese", "../packages/geoint/region-dist/region-2-moon-japanese.json"],
+  ["moon region-2 spanish", "spanish", "../packages/geoint/region-dist/region-2-moon-spanish.json"],
   ["mars region-2 english", "english", "../packages/geoint/region-dist/region-2-mars.json"],
   ["mars region-2 korean", "korean", "../packages/geoint/region-dist/region-2-mars-korean.json"],
   ["mars region-2 chinese", "chinese", "../packages/geoint/region-dist/region-2-mars-chinese.json"],
   ["mars region-2 japanese", "japanese", "../packages/geoint/region-dist/region-2-mars-japanese.json"],
+  ["mars region-2 spanish", "spanish", "../packages/geoint/region-dist/region-2-mars-spanish.json"],
   ["mars region-3 english", "english", "../packages/geoint/region-dist/region-3-mars.json"],
   ["mars region-3 korean", "korean", "../packages/geoint/region-dist/region-3-mars-korean.json"],
   ["mars region-3 chinese", "chinese", "../packages/geoint/region-dist/region-3-mars-chinese.json"],
   ["mars region-3 japanese", "japanese", "../packages/geoint/region-dist/region-3-mars-japanese.json"],
+  ["mars region-3 spanish", "spanish", "../packages/geoint/region-dist/region-3-mars-spanish.json"],
 ];
 
 const hasNonAscii = (value) => /[^\x20-\x7E]/.test(value);
 const hasLatin = (value) => /[A-Za-z]/.test(value);
+const allowsLatinLabels = (language) =>
+  language === "english" || language === "spanish";
 const sampleLabels = (names, predicate) => names.filter(predicate).slice(0, 5);
 
 export const buildUrlLabelReport = (datasets) => {
   const reportDatasets = datasets.map(({ name, language, rows }) => {
     const names = rows.map((row) => String(row.name ?? ""));
     const englishNonAsciiSamples =
-      language === "english" ? sampleLabels(names, hasNonAscii) : [];
+      allowsLatinLabels(language) ? sampleLabels(names, hasNonAscii) : [];
     const localizedLatinSamples =
-      language === "english" ? [] : sampleLabels(names, hasLatin);
+      allowsLatinLabels(language) ? [] : sampleLabels(names, hasLatin);
 
     return {
       name,
       rows: rows.length,
       englishNonAscii:
-        language === "english" ? names.filter(hasNonAscii).length : 0,
-      localizedLatin:
-        language === "english" ? 0 : names.filter(hasLatin).length,
+        allowsLatinLabels(language) ? names.filter(hasNonAscii).length : 0,
+      localizedLatin: allowsLatinLabels(language)
+        ? 0
+        : names.filter(hasLatin).length,
       englishNonAsciiSamples,
       localizedLatinSamples,
     };

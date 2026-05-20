@@ -53,11 +53,12 @@ requests use USGS/IAU Gazetteer planetary feature names and body-specific meter
 conversion while keeping Earth as the default for backward compatibility. Mars
 uses official feature names first, then falls back to readable Robbins crater
 labels such as `Abalos Crater 1` when official names are sparse.
-Korean, Chinese, and Japanese planetary labels are supported with
-`language: "korean"`, `language: "chinese"`, and `language: "japanese"`;
+Korean, Chinese, Japanese, and Spanish planetary labels are supported with
+`language: "korean"`, `language: "chinese"`, `language: "japanese"`, and
+`language: "spanish"`;
 proper names are generally preserved while terrain descriptors are localized.
 For example, `Olympus Mons` becomes `올림푸스 산` in Korean, `奥林帕斯山` in
-Chinese, and `オリンポス山` in Japanese.
+Chinese, `オリンポス山` in Japanese, and `Monte Olimpo` in Spanish.
 
 This implementation enables the API to handle high volumes of geospatial queries with minimal latency, making it suitable for production applications with strict performance requirements.
 

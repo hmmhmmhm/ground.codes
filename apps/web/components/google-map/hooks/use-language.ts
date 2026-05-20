@@ -65,6 +65,9 @@ export const useLanguage = () => {
         if (langCode === "ja") {
           return "ja";
         }
+        if (langCode === "es") {
+          return "es";
+        }
         return langCode;
       }
 

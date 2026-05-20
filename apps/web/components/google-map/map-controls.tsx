@@ -61,12 +61,14 @@ const MapControls: React.FC<MapControlsProps> = ({
     ko: "한국어",
     cn: "中文",
     ja: "日本語",
+    es: "Español",
   };
   const localeShortLabels: Record<Locale, string> = {
     en: "EN",
     ko: "KO",
     cn: "CN",
     ja: "JA",
+    es: "ES",
   };
 
   const handleLanguageChange = (newLocale: Locale) => {

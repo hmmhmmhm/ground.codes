@@ -12,6 +12,12 @@ describe("Ground Code share URLs", () => {
         body: "earth",
       }),
     ).toBe("/서울-안방");
+    expect(
+      buildGroundCodeSharePath({
+        code: "Seul-Abedulabanico-Abedulanillo",
+        body: "earth",
+      }),
+    ).toBe("/Seul-Abedulabanico-Abedulanillo");
   });
 
   test("uses explicit body prefixes for Moon and Mars codes", () => {

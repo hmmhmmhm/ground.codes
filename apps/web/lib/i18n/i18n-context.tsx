@@ -146,9 +146,11 @@ export const I18nProvider: React.FC<{
         ? "언어 설정을 변경하면 페이지가 새로고침되며 현재 보고 있는 내용이 초기화됩니다. 계속하시겠습니까?"
         : locale === "cn"
           ? "更改语言设置将刷新页面并重置您当前查看的内容。是否继续？"
-          : locale === "ja"
-            ? "言語設定を変更するとページが再読み込みされ、現在の表示がリセットされます。続行しますか？"
-            : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
+            : locale === "ja"
+              ? "言語設定を変更するとページが再読み込みされ、現在の表示がリセットされます。続行しますか？"
+              : locale === "es"
+                ? "Cambiar el idioma recargará la página y restablecerá la vista actual. ¿Deseas continuar?"
+                : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
 
     const userConfirmed = window.confirm(confirmMessage);
 

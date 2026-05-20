@@ -27,6 +27,7 @@ Current distributed word counts:
 | Korean | 5630 | `codebook-dist/korean.json` |
 | Chinese | 5140 | `codebook-dist/chinese.json` |
 | Japanese | 5000 | `codebook-dist/japanese.json` |
+| Spanish | 5000 | `codebook-dist/spanish.json` |
 
 ## Product Principles
 
