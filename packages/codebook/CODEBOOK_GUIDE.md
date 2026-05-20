@@ -167,6 +167,9 @@ a test blocklist.
   and `에코백`.
 - Allow compounds only when they are established Korean words users would
   naturally recognize, such as `종이배`, `책받침`, `나무문`, or `찻잔받침`.
+  Concrete everyday objects should be preferred over generated material/object
+  compounds; when replacement candidates are available, reduce
+  material-plus-tool combinations in staged cleanup passes.
   Reject invented material/nature/object compounds such as `도토리토리`,
   `도토리걸이`, `토기묶음`, `자개쌀독`, `호박자`, `솔방울묶음`,
   `솔방울꾸러미`, `솔방울꼬챙이`, `연잎목판`, `대나무빗살`, and
