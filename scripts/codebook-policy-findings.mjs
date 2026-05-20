@@ -866,6 +866,10 @@ export const AGENT_REVIEWED_POLICY_FINDINGS = {
       reason: "fiftieth-pass-promotional-collision",
       words: "Lowest",
     }),
+    ...entries({
+      reason: "core-review-test-blocklist-alignment",
+      words: "Amberstone Petunia",
+    }),
   ],
   korean: [
     ...entries({
