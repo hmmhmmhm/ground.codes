@@ -164,7 +164,7 @@ a test blocklist.
   concrete and familiar, such as `테이블`, `테이프`, `스카프`, `포스터`,
   `스티커`, `아이스크림`, `피스타치오`, `디저트`, `피아노`, `테니스`,
   `마라톤`, `콘서트`, `클래식`, `머그잔`, `프라이팬`, `시리얼`, `티슈`,
-  and `에코백`.
+  `에코백`, `손거울`, `벽시계`, `볼펜`, `계량컵`, and `세탁바구니`.
 - Allow compounds only when they are established Korean words users would
   naturally recognize, such as `종이배`, `책받침`, `나무문`, or `찻잔받침`.
   Concrete everyday objects should be preferred over generated material/object
@@ -172,8 +172,8 @@ a test blocklist.
   material-plus-tool combinations in staged cleanup passes.
   Reject invented material/nature/object compounds such as `도토리토리`,
   `도토리걸이`, `토기묶음`, `자개쌀독`, `호박자`, `솔방울묶음`,
-  `솔방울꾸러미`, `솔방울꼬챙이`, `연잎목판`, `대나무빗살`, and
-  `호박쌀독`.
+  `솔방울꾸러미`, `솔방울꼬챙이`, `연잎목판`, `대나무빗살`,
+  `나무광목포`, `비단토리`, `정겨운물결`, and `호박쌀독`.
 - Reject entries that look or sound like misspellings of another entry. Apply a
   pronunciation-similarity pass for common Korean confusion pairs such as
   `채/체` and `개/게`; when two entries collide, keep the more familiar and less
