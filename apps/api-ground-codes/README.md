@@ -14,7 +14,7 @@ API Ground.codes is a RESTful API service built with Elysia.js and Bun that prov
 - 🔄 **Encode Coordinates**: Convert latitude and longitude to memorable ground codes
 - 🔍 **Decode Ground Codes**: Convert ground codes back to geographic coordinates
 - 🌎 **Region Information**: Get information about specific regions
-- 🌐 **Multilingual Support**: Support for multiple languages (English, Korean, Chinese, Japanese)
+- 🌐 **Multilingual Support**: Support for multiple languages (English, Korean, Chinese, Japanese, Spanish)
 - 🌕 **Planetary Bodies**: Encode Earth, Moon, and Mars coordinates with body-specific labels
 - 🎯 **Customizable Precision**: Adjust the precision of encoded locations
 - 📝 **Swagger Documentation**: Interactive API documentation
@@ -108,7 +108,7 @@ pnpm --filter api-ground-codes start
 If Railway is configured with `apps/api-ground-codes` as the root directory,
 only this app directory is available during install. In that standalone mode the
 API runtime packages are pinned to a repository tag:
-`railway-api-runtime-20260518-search-bias`. Bump that tag whenever the deployed
+`railway-api-runtime-20260520-spanish`. Bump that tag whenever the deployed
 API needs new local changes from `ground-codes`, `@ground-codes/geoint`, or
 `@repo/codebook`, then run:
 
