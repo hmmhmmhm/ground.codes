@@ -36,11 +36,11 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2(elysia@1.2.25(@sinclair/typebox@0.34.49)(openapi-types@12.1.3)(typescript@5.8.2))
       '@ground-codes/geoint':
-        specifier: git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260520-korean-policy&path:packages/geoint
-        version: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643#path:packages/geoint
+        specifier: git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260520-korean-pronunciation&path:packages/geoint
+        version: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2#path:packages/geoint
       '@repo/codebook':
-        specifier: git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260520-korean-policy&path:packages/codebook
-        version: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643#path:packages/codebook
+        specifier: git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260520-korean-pronunciation&path:packages/codebook
+        version: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2#path:packages/codebook
       '@sinclair/typebox':
         specifier: ^0.34.30
         version: 0.34.49
@@ -48,8 +48,8 @@ importers:
         specifier: latest
         version: 1.2.25(@sinclair/typebox@0.34.49)(openapi-types@12.1.3)(typescript@5.8.2)
       ground-codes:
-        specifier: git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260520-korean-policy&path:packages/ground-codes
-        version: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643#path:packages/ground-codes
+        specifier: git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260520-korean-pronunciation&path:packages/ground-codes
+        version: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2#path:packages/ground-codes
     devDependencies:
       bun-types:
         specifier: latest
@@ -973,8 +973,8 @@ packages:
   '@googlemaps/markerclusterer@2.5.3':
     resolution: {integrity: sha512-x7lX0R5yYOoiNectr10wLgCBasNcXFHiADIBdmn7jQllF2B5ENQw5XtZK+hIw4xnV0Df0xhN4LN98XqA5jaiOw==}
 
-  '@ground-codes/geoint@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643#path:packages/geoint':
-    resolution: {path: packages/geoint, tarball: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643}
+  '@ground-codes/geoint@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2#path:packages/geoint':
+    resolution: {path: packages/geoint, tarball: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2}
     version: 0.0.5
 
   '@humanfs/core@0.19.1':
@@ -1810,8 +1810,8 @@ packages:
   '@react-google-maps/marker-clusterer@2.20.0':
     resolution: {integrity: sha512-tieX9Va5w1yP88vMgfH1pHTacDQ9TgDTjox3tLlisKDXRQWdjw+QeVVghhf5XqqIxXHgPdcGwBvKY6UP+SIvLw==}
 
-  '@repo/codebook@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643#path:packages/codebook':
-    resolution: {path: packages/codebook, tarball: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643}
+  '@repo/codebook@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2#path:packages/codebook':
+    resolution: {path: packages/codebook, tarball: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2}
     version: 0.0.1
 
   '@rollup/pluginutils@5.1.4':
@@ -3487,8 +3487,8 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  ground-codes@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643#path:packages/ground-codes:
-    resolution: {path: packages/ground-codes, tarball: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643}
+  ground-codes@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2#path:packages/ground-codes:
+    resolution: {path: packages/ground-codes, tarball: https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2}
     version: 0.0.10
 
   has-bigints@1.1.0:
@@ -5788,7 +5788,7 @@ snapshots:
       fast-deep-equal: 3.1.3
       supercluster: 8.0.1
 
-  '@ground-codes/geoint@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643#path:packages/geoint':
+  '@ground-codes/geoint@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2#path:packages/geoint':
     dependencies:
       geokdbush: 2.0.1
       kdbush: 4.0.2
@@ -6489,7 +6489,7 @@ snapshots:
 
   '@react-google-maps/marker-clusterer@2.20.0': {}
 
-  '@repo/codebook@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643#path:packages/codebook': {}
+  '@repo/codebook@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2#path:packages/codebook': {}
 
   '@rollup/pluginutils@5.1.4(rollup@4.35.0)':
     dependencies:
@@ -8303,7 +8303,7 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  ground-codes@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/679e05bd528d516db8ded2b81aad28d6a07c2643#path:packages/ground-codes: {}
+  ground-codes@https://codeload.github.com/hmmhmmhm/ground.codes/tar.gz/3bdbd7904e44bdc6598baef168733f5ec02947e2#path:packages/ground-codes: {}
 
   has-bigints@1.1.0: {}
 
