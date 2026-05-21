@@ -1865,18 +1865,33 @@ describe("reviewed multilingual codebooks", () => {
       "Beras",
       "Bunga",
       "Daun",
+      "Jahe",
       "Kelapa",
       "Langit",
       "Laut",
+      "Pelangi",
       "Rumah",
+      "Sawah",
+      "Sungai",
     ]);
     assertBlockedWordsAbsent(indonesianWords, [
+      "Halia",
       "Judi",
       "Narkoba",
+      "Papaya",
       "Politik",
       "Senjata",
       "Seks",
       "Utang",
+      "Akarawan",
+      "Awankaleng",
+      "Garamwangi",
+      "Gelasakar",
+      "Gulabening",
+      "Kertasmanis",
+      "Lautdulang",
+      "Pancisegar",
+      "Topijernih",
     ]);
   });
 });

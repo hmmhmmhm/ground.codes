@@ -496,4 +496,75 @@ describe("codebook policy audit", () => {
       );
     }
   });
+
+  test("flags awkward Indonesian generated compounds", () => {
+    const { violations } = auditCodebooks({
+      english: Array.from(
+        { length: EXPECTED_COUNTS.english },
+        (_, index) =>
+          `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
+      chinese: Array.from(
+        { length: EXPECTED_COUNTS.chinese },
+        (_, index) => `词${index}`,
+      ),
+      japanese: Array.from(
+        { length: EXPECTED_COUNTS.japanese },
+        (_, index) => `ことば${index}`,
+      ),
+      spanish: Array.from(
+        { length: EXPECTED_COUNTS.spanish },
+        (_, index) =>
+          `Palabra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      french: Array.from(
+        { length: EXPECTED_COUNTS.french },
+        (_, index) =>
+          `Mot${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      german: Array.from(
+        { length: EXPECTED_COUNTS.german },
+        (_, index) =>
+          `Wort${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      portuguese: Array.from(
+        { length: EXPECTED_COUNTS.portuguese },
+        (_, index) =>
+          `Palavra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      indonesian: [
+        "Akarakar",
+        "Awankaleng",
+        "Garamwangi",
+        "Gulabening",
+        "Lautdulang",
+        "Pancisegar",
+        ...Array.from(
+          { length: EXPECTED_COUNTS.indonesian - 6 },
+          (_, index) =>
+            `Kata${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+        ),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    for (const word of [
+      "Akarakar",
+      "Awankaleng",
+      "Garamwangi",
+      "Gulabening",
+      "Lautdulang",
+      "Pancisegar",
+    ]) {
+      assert.equal(
+        actual.has(`${word}:indonesian-awkward-generated-compound`),
+        true,
+        word,
+      );
+    }
+  });
 });

@@ -87,6 +87,12 @@ describe("celestial bodies", () => {
     assertUniqueNames(marsFallbackGermanRegions);
     assertUniqueNames(marsFallbackPortugueseRegions);
     assertUniqueNames(marsFallbackIndonesianRegions);
+    assert.equal(
+      moonIndonesianRegions.find((region) =>
+        region.source.endsWith("/Feature/3686"),
+      )?.name,
+      "Laut Serenitas",
+    );
     assertNoLatinNames(moonKoreanRegions);
     assertNoLatinNames(marsKoreanRegions);
     assertNoLatinNames(marsFallbackKoreanRegions);

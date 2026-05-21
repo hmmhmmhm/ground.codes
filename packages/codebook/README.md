@@ -74,7 +74,7 @@ Current distributed word sets:
 - French: 5,000 URL-safe words seeded from reviewed French words and filtered BIP39-derived candidates
 - German: 5,000 URL-safe words seeded from reviewed German words and filtered compound candidates
 - Portuguese: 5,000 URL-safe words seeded from neutral concrete Portuguese nouns and filtered compound candidates
-- Indonesian: 5,000 URL-safe words seeded from neutral concrete Indonesian nouns and filtered compound candidates
+- Indonesian: 5,000 URL-safe words seeded from neutral concrete Indonesian nouns and filtered weak fused-compound candidates
 
 ## ⚙️ Generation Commands
 

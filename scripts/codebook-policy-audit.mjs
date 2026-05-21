@@ -771,6 +771,7 @@ const isAwkwardPortugueseCompound = (word) => {
 const INDONESIAN_BLOCKED_TERMS = [
   "Benci",
   "Bohong",
+  "Halia",
   "Jahat",
   "Judi",
   "Kalah",
@@ -778,6 +779,7 @@ const INDONESIAN_BLOCKED_TERMS = [
   "Mabuk",
   "Mati",
   "Narkoba",
+  "Papaya",
   "Politik",
   "Racun",
   "Sakit",
@@ -790,8 +792,121 @@ const INDONESIAN_BLOCKED_TERMS = [
 const INDONESIAN_AWKWARD_COMPOUND_PATTERN =
   /^(?:Laut|Ombak|Garam|Gula)(?:kaca|kain|kertas|meja|panci|piring|saku|topi)$/u;
 
+const INDONESIAN_AWKWARD_ADJECTIVE_PREFIXES = [
+  "Akar",
+  "Alam",
+  "Angin",
+  "Awan",
+  "Bayam",
+  "Beras",
+  "Cabai",
+  "Cawan",
+  "Garam",
+  "Gelas",
+  "Gula",
+  "Kertas",
+  "Lantai",
+  "Laut",
+  "Lidi",
+  "Ombak",
+  "Panci",
+  "Papan",
+  "Pati",
+  "Pot",
+  "Topi",
+  "Wadah",
+];
+
+const INDONESIAN_AWKWARD_ADJECTIVE_SUFFIXES = [
+  "awan",
+  "bagus",
+  "baru",
+  "bening",
+  "bersih",
+  "biru",
+  "bulat",
+  "cerah",
+  "datar",
+  "halus",
+  "hangat",
+  "harum",
+  "hijau",
+  "jernih",
+  "kecil",
+  "kuning",
+  "lebar",
+  "lembut",
+  "luas",
+  "lurus",
+  "manis",
+  "merah",
+  "muda",
+  "padat",
+  "putih",
+  "rapi",
+  "ringan",
+  "rindang",
+  "segar",
+  "sejuk",
+  "tenang",
+  "terang",
+  "tipis",
+  "utuh",
+  "wangi",
+];
+
+const INDONESIAN_AWKWARD_OBJECT_PREFIXES = [
+  "Akar",
+  "Alam",
+  "Angin",
+  "Awan",
+  "Garam",
+  "Gelas",
+  "Gula",
+  "Laut",
+  "Ombak",
+];
+
+const INDONESIAN_AWKWARD_OBJECT_SUFFIXES = [
+  "akar",
+  "dulang",
+  "gelas",
+  "kaleng",
+  "kaca",
+  "kain",
+  "kertas",
+  "meja",
+  "panci",
+  "piring",
+  "saku",
+  "topi",
+];
+
+const hasGeneratedPair = (word, prefixes, suffixes) =>
+  prefixes.some((prefix) =>
+    suffixes.some((suffix) => word === `${prefix}${suffix}`),
+  );
+
 const isAwkwardIndonesianCompound = (word) => {
   if (INDONESIAN_AWKWARD_COMPOUND_PATTERN.test(word)) return true;
+  if (
+    hasGeneratedPair(
+      word,
+      INDONESIAN_AWKWARD_ADJECTIVE_PREFIXES,
+      INDONESIAN_AWKWARD_ADJECTIVE_SUFFIXES,
+    )
+  ) {
+    return true;
+  }
+  if (
+    hasGeneratedPair(
+      word,
+      INDONESIAN_AWKWARD_OBJECT_PREFIXES,
+      INDONESIAN_AWKWARD_OBJECT_SUFFIXES,
+    )
+  ) {
+    return true;
+  }
 
   const lower = word.toLowerCase();
   if (lower.length % 2 !== 0) return false;

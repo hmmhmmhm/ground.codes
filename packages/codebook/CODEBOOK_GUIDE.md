@@ -78,9 +78,9 @@ Current inventory:
 | Portuguese | Recognized compound              |  1424 | 28.5% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
 | Portuguese | Short standalone                 |    58 |  1.2% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
 | Portuguese | Other standalone or unclassified |  3518 | 70.4% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
-| Indonesian | Recognized compound              |  1107 | 22.1% | `Alamakar`, `Anginakar`, `Awanakar`, `Bambuakar`, `Batuakar`         |
-| Indonesian | Short standalone                 |    37 |  0.7% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
-| Indonesian | Other standalone or unclassified |  3856 | 77.1% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
+| Indonesian | Recognized compound              |  1730 | 34.6% | `Bambuakar`, `Batuakar`, `Bayamakar`, `Berasakar`, `Bijiakar`        |
+| Indonesian | Short standalone                 |    61 |  1.2% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
+| Indonesian | Other standalone or unclassified |  3209 | 64.2% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
 
 Review implications:
 
@@ -104,6 +104,11 @@ Review implications:
   which removed Spanish-like entries, proper-name risks, and weak generated
   compounds. Keep it neutral and common across Lusophone regions, and do not
   raise template-compound saturation while filling future review gaps.
+- Indonesian quality v2 replaces Malay-leaning `Halia` with `Jahe`, keeps
+  `Pepaya` instead of `Papaya`, adds more everyday standalone nouns, and blocks
+  weak fused pairings such as `Garamwangi`, `Gulabening`, and `Awankaleng`-style
+  material/object combinations. Continue replacing generated compounds with
+  reviewed standalone Indonesian nouns as coverage grows.
 
 ## Product Principles
 
@@ -409,25 +414,26 @@ a test blocklist.
   `[A-Z][a-z]+` shape as other Latin URL codebooks.
 - Use familiar neutral nouns from nature, household objects, plants, materials,
   food staples, and simple tools: `Akar`, `Bambu`, `Beras`, `Bunga`, `Daun`,
-  `Kelapa`, `Langit`, `Laut`, `Rumah`.
+  `Jahe`, `Kelapa`, `Langit`, `Laut`, `Pelangi`, `Rumah`, `Sawah`, `Sungai`.
+- Prefer common Indonesian forms over regional or cross-language variants:
+  `Jahe` over `Halia`, and `Pepaya` over `Papaya`.
 - Reject sensitive or low-trust terms such as gambling, drugs, weapons, sex,
   debt, illness, hate, corruption, and overt politics.
 - Fused compounds are a fallback for filling the 5,000-word URL set. Keep them
   short, concrete, and pronounceable; reject self-duplication and implausible
   object pairings such as sea/sugar/salt combined with tableware or clothing.
+  Also reject weak noun-adjective pairings that read like accidental fused
+  phrases, for example `Garamwangi`, `Gulabening`, `Kertasmanis`,
+  `Pancisegar`, and `Topijernih`.
 - Region labels preserve proper names where possible. Localize stable terrain
   descriptors for readability, for example `Sea` -> `Laut`, `Ocean` ->
   `Samudra`, `Crater` -> `Kawah`, and `Mons` -> `Gunung`.
 - Reject self-duplicating or implausible generated compounds such as
-  `Folhafolha`, `Aguafita`, `Riolivro`, `Acucarfolha`, `Aguafolha`,
-  `Acucarbanco`, `Aguabanco`, `Arvorebranco`, `Folhabranco`, and `Luzbranco`.
-- Reject Spanish-like or proper-name risks such as `Almendra`, `Avelan`,
-  `Basilio`, `Betula`, `Roble`, and `Yute`.
-- Reject terms that are risky or awkward in a public address, including `Sexo`,
-  `Casino`, `Aposta`, `Arma`, `Guerra`, `Droga`, `Medico`, `Politica`,
-  `Religiao`, `Crime`, `Morte`, `Violencia`, `Medo`, `Erro`, `Perigo`,
-  `Doenca`, `Problema`, `Risco`, `Dor`, `Culpa`, and common verb-like entries
-  such as `Fazer`, `Querer`, `Saber`, `Dizer`, `Poder`, and `Dever`.
+  `Akarakar`, `Akarawan`, `Gelasakar`, `Lautdulang`, `Lautbening`,
+  `Garambening`, `Gulabening`, `Pancisegar`, `Topijernih`, and `Kertasmanis`.
+- Reject terms that are risky or awkward in a public address, including `Judi`,
+  `Narkoba`, `Senjata`, `Seks`, `Politik`, `Korupsi`, `Racun`, `Mati`,
+  `Sakit`, `Utang`, `Benci`, `Bohong`, `Jahat`, `Kalah`, and `Salah`.
 
 ## Automated Checks
 
