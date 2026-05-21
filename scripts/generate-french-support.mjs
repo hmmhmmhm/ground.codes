@@ -1,6 +1,11 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import path from "node:path";
 
 const root = new URL("../", import.meta.url);
+const geointRequire = createRequire(new URL("../packages/geoint/", import.meta.url));
+const { default: KDBush } = await import(geointRequire.resolve("kdbush"));
+const { Level } = await import(geointRequire.resolve("level"));
 
 const readJson = (path) => JSON.parse(readFileSync(new URL(path, root), "utf8"));
 const writeJson = (path, value) =>
@@ -686,6 +691,36 @@ const buildLocalizedRows = (sourcePath, targetPath, translateName) => {
   writeJson(targetPath, dedupeNames(rows));
 };
 
+const buildEmbeddedRegionDb = async (regionName) => {
+  const regionJsonPath = new URL(
+    `packages/geoint/region-dist/${regionName}.json`,
+    root,
+  );
+  const regionDbPath = new URL("packages/geoint/region-db/", root);
+  const regionLevelDbPath = path.join(regionDbPath.pathname, regionName);
+  const regionKDBushPath = path.join(regionDbPath.pathname, `${regionName}.index`);
+  const regionLevel = Number(regionName.split("-")[1]);
+  const regions = JSON.parse(readFileSync(regionJsonPath, "utf8"));
+
+  mkdirSync(regionDbPath, { recursive: true });
+  rmSync(regionLevelDbPath, { recursive: true, force: true });
+  rmSync(regionKDBushPath, { force: true });
+
+  const kdbush = new KDBush(regions.length);
+  const db = new Level(regionLevelDbPath);
+  await db.open();
+
+  for (const [index, region] of regions.entries()) {
+    await db.put(`I-${index}`, JSON.stringify(region));
+    await db.put(`N-${regionLevel === 1 ? region.code : region.name}`, `I-${index}`);
+    kdbush.add(region.long, region.lat);
+  }
+
+  kdbush.finish();
+  await db.close();
+  writeFileSync(regionKDBushPath, Buffer.from(kdbush.data));
+};
+
 writeJson("packages/codebook/codebook-dist/french.json", buildFrenchCodebook());
 
 buildLocalizedRows(
@@ -713,3 +748,13 @@ buildLocalizedRows(
   "packages/geoint/region-dist/region-3-mars-french.json",
   (row) => translatePlanetaryName(row.name),
 );
+
+for (const regionName of [
+  "region-2-french",
+  "region-3-french",
+  "region-2-moon-french",
+  "region-2-mars-french",
+  "region-3-mars-french",
+]) {
+  await buildEmbeddedRegionDb(regionName);
+}
