@@ -25,6 +25,7 @@ const region2PathByLanguage: Record<string, string> = {
   french: "@ground-codes/geoint/region-dist/region-2-french.json",
   german: "@ground-codes/geoint/region-dist/region-2-german.json",
   portuguese: "@ground-codes/geoint/region-dist/region-2-portuguese.json",
+  indonesian: "@ground-codes/geoint/region-dist/region-2-indonesian.json",
 };
 
 const region3PathByLanguage: Record<string, string> = {
@@ -36,6 +37,7 @@ const region3PathByLanguage: Record<string, string> = {
   french: "@ground-codes/geoint/region-dist/region-3-french.json",
   german: "@ground-codes/geoint/region-dist/region-3-german.json",
   portuguese: "@ground-codes/geoint/region-dist/region-3-portuguese.json",
+  indonesian: "@ground-codes/geoint/region-dist/region-3-indonesian.json",
 };
 
 const languages = Object.keys(region3PathByLanguage);
@@ -66,10 +68,12 @@ describe("region-3 dataset", () => {
     const region2French = readRows(region2PathByLanguage.french);
     const region2German = readRows(region2PathByLanguage.german);
     const region2Portuguese = readRows(region2PathByLanguage.portuguese);
+    const region2Indonesian = readRows(region2PathByLanguage.indonesian);
     const region3Spanish = readRows(region3PathByLanguage.spanish);
     const region3French = readRows(region3PathByLanguage.french);
     const region3German = readRows(region3PathByLanguage.german);
     const region3Portuguese = readRows(region3PathByLanguage.portuguese);
+    const region3Indonesian = readRows(region3PathByLanguage.indonesian);
 
     assert.equal(findRegionNameByCode(region2Korean, "1847050"), "애월");
     assert.equal(
@@ -92,6 +96,12 @@ describe("region-3 dataset", () => {
     assert.equal(
       findRegionNameByCode(region3Portuguese, "OCN0"),
       "Mar de Ross 1",
+    );
+    assert.equal(findRegionNameByCode(region2Indonesian, "1835848"), "Seoul");
+    assert.equal(findRegionNameByCode(region2Indonesian, "1642911"), "Jakarta");
+    assert.equal(
+      findRegionNameByCode(region3Indonesian, "OCN0"),
+      "Laut Ross 1",
     );
 
     assert.deepEqual(

@@ -31,6 +31,7 @@ Current distributed word counts:
 | French     |  5000 | `codebook-dist/french.json`     |
 | German     |  5000 | `codebook-dist/german.json`     |
 | Portuguese |  5000 | `codebook-dist/portuguese.json` |
+| Indonesian |  5000 | `codebook-dist/indonesian.json` |
 
 ## Current Word Type Inventory
 
@@ -77,6 +78,9 @@ Current inventory:
 | Portuguese | Recognized compound              |  1424 | 28.5% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
 | Portuguese | Short standalone                 |    58 |  1.2% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
 | Portuguese | Other standalone or unclassified |  3518 | 70.4% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
+| Indonesian | Recognized compound              |  1107 | 22.1% | `Alamakar`, `Anginakar`, `Awanakar`, `Bambuakar`, `Batuakar`         |
+| Indonesian | Short standalone                 |    37 |  0.7% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
+| Indonesian | Other standalone or unclassified |  3856 | 77.1% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
 
 Review implications:
 
@@ -397,6 +401,23 @@ a test blocklist.
 - Generated nature/material/object compounds may be used to preserve count, but
   the template share must stay below the Portuguese saturation limit enforced by
   `scripts/codebook-policy-audit.mjs`.
+
+### Indonesian
+
+- Prefer short ASCII title-case Indonesian words for URL readability. Indonesian
+  words generally do not need diacritic normalization, but keep the same
+  `[A-Z][a-z]+` shape as other Latin URL codebooks.
+- Use familiar neutral nouns from nature, household objects, plants, materials,
+  food staples, and simple tools: `Akar`, `Bambu`, `Beras`, `Bunga`, `Daun`,
+  `Kelapa`, `Langit`, `Laut`, `Rumah`.
+- Reject sensitive or low-trust terms such as gambling, drugs, weapons, sex,
+  debt, illness, hate, corruption, and overt politics.
+- Fused compounds are a fallback for filling the 5,000-word URL set. Keep them
+  short, concrete, and pronounceable; reject self-duplication and implausible
+  object pairings such as sea/sugar/salt combined with tableware or clothing.
+- Region labels preserve proper names where possible. Localize stable terrain
+  descriptors for readability, for example `Sea` -> `Laut`, `Ocean` ->
+  `Samudra`, `Crater` -> `Kawah`, and `Mons` -> `Gunung`.
 - Reject self-duplicating or implausible generated compounds such as
   `Folhafolha`, `Aguafita`, `Riolivro`, `Acucarfolha`, `Aguafolha`,
   `Acucarbanco`, `Aguabanco`, `Arvorebranco`, `Folhabranco`, and `Luzbranco`.

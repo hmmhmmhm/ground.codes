@@ -72,6 +72,7 @@ const getRegionSearchLanguages = (language: string, query: string) => {
   if (language === "french") return ["french", "english"];
   if (language === "german") return ["german", "english"];
   if (language === "portuguese") return ["portuguese", "english"];
+  if (language === "indonesian") return ["indonesian", "english"];
   if (englishLikePattern.test(query)) return ["english", language];
   return [language, "english"];
 };

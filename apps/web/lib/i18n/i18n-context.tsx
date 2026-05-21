@@ -11,7 +11,10 @@ interface I18nContextType {
   locale: Locale;
   messages: Messages;
   setLocale: (locale: Locale) => void;
-  t: (key: string, params?: Record<string, string | number | boolean | null | undefined>) => string;
+  t: (
+    key: string,
+    params?: Record<string, string | number | boolean | null | undefined>,
+  ) => string;
   isChangingLanguage: boolean; // Add flag to indicate language is changing
 }
 
@@ -146,12 +149,14 @@ export const I18nProvider: React.FC<{
         ? "언어 설정을 변경하면 페이지가 새로고침되며 현재 보고 있는 내용이 초기화됩니다. 계속하시겠습니까?"
         : locale === "cn"
           ? "更改语言设置将刷新页面并重置您当前查看的内容。是否继续？"
-            : locale === "ja"
-              ? "言語設定を変更するとページが再読み込みされ、現在の表示がリセットされます。続行しますか？"
-              : locale === "es"
-                ? "Cambiar el idioma recargará la página y restablecerá la vista actual. ¿Deseas continuar?"
-                : locale === "fr"
-                  ? "Changer la langue actualisera la page et reinitialisera la vue actuelle. Continuer ?"
+          : locale === "ja"
+            ? "言語設定を変更するとページが再読み込みされ、現在の表示がリセットされます。続行しますか？"
+            : locale === "es"
+              ? "Cambiar el idioma recargará la página y restablecerá la vista actual. ¿Deseas continuar?"
+              : locale === "fr"
+                ? "Changer la langue actualisera la page et reinitialisera la vue actuelle. Continuer ?"
+                : locale === "id"
+                  ? "Mengubah bahasa akan memuat ulang halaman dan mereset tampilan saat ini. Lanjutkan?"
                   : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
 
     const userConfirmed = window.confirm(confirmMessage);
@@ -180,7 +185,7 @@ export const I18nProvider: React.FC<{
   // Translation function
   const t = (
     key: string,
-    params?: Record<string, string | number | boolean | null | undefined>
+    params?: Record<string, string | number | boolean | null | undefined>,
   ): string => {
     let value = getNestedValue(messages, key);
 
@@ -189,7 +194,7 @@ export const I18nProvider: React.FC<{
       Object.entries(params).forEach(([paramKey, paramValue]) => {
         value = value.replace(
           new RegExp(`{${paramKey}}`, "g"),
-          String(paramValue)
+          String(paramValue),
         );
       });
     }

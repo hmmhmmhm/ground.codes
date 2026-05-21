@@ -60,6 +60,7 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("Mars supports regionLevel 2 and 3");
     expect(firstPartyDocs).toContain("<code>german</code>");
     expect(firstPartyDocs).toContain("<code>portuguese</code>");
+    expect(firstPartyDocs).toContain("<code>indonesian</code>");
     expect(firstPartyDocs).toContain("Share URL Rules");
     expect(firstPartyDocs).toContain("Status Code Reference");
 
@@ -321,6 +322,46 @@ describe("Ground Codes API contract", () => {
     });
   }, 90_000);
 
+  test("encodes and searches Indonesian ground codes and region labels", async () => {
+    const encodedResponse = await postJson("/v1/encode", {
+      lat: -6.1751,
+      lng: 106.865,
+      language: "indonesian",
+      regionLevel: 2,
+    });
+    expect(encodedResponse.status).toBe(200);
+    const code = await encodedResponse.text();
+    expect(code).toMatch(/^Jakarta-[A-Z][A-Za-z]+/);
+
+    const codeSearchResponse = await postJson("/v1/search", {
+      query: code,
+      language: "english",
+      regionLevel: 2,
+    });
+    expect(codeSearchResponse.status).toBe(200);
+    const codeSearch = await codeSearchResponse.json();
+    expect(codeSearch.results[0]).toMatchObject({
+      type: "ground-code",
+      label: code,
+      body: "earth",
+      regionLevel: 2,
+    });
+
+    const regionSearchResponse = await postJson("/v1/search", {
+      query: "Jakarta",
+      language: "indonesian",
+      regionLevel: 2,
+    });
+    expect(regionSearchResponse.status).toBe(200);
+    const regionSearch = await regionSearchResponse.json();
+    expect(regionSearch.results[0]).toMatchObject({
+      type: "region",
+      label: "Jakarta",
+      body: "earth",
+      regionLevel: 2,
+    });
+  }, 90_000);
+
   test("search returns multiple partial region matches with cache headers", async () => {
     const response = await postJson("/v1/search", {
       query: "Seo",
@@ -542,6 +583,33 @@ describe("Ground Codes API contract", () => {
     expect(infoResponse.status).toBe(200);
     expect(await infoResponse.json()).toMatchObject({
       name: "Lisboa",
+    });
+  });
+
+  test("loads Indonesian region lookup data on demand for region endpoints", async () => {
+    const aroundResponse = await postJson("/v1/region/around", {
+      lat: -6.1751,
+      lng: 106.865,
+      language: "indonesian",
+      regionLevel: 2,
+      maxResults: 1,
+    });
+
+    expect(aroundResponse.status).toBe(200);
+    const around = await aroundResponse.json();
+    expect(around[0]).toMatchObject({
+      name: "Jakarta",
+    });
+
+    const infoResponse = await postJson("/v1/region/info", {
+      name: "Jakarta",
+      language: "indonesian",
+      regionLevel: 2,
+      body: "earth",
+    });
+    expect(infoResponse.status).toBe(200);
+    expect(await infoResponse.json()).toMatchObject({
+      name: "Jakarta",
     });
   });
 

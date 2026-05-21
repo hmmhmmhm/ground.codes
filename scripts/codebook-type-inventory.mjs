@@ -9,6 +9,7 @@ const CODEBOOK_FILES = {
   french: "../packages/codebook/codebook-dist/french.json",
   german: "../packages/codebook/codebook-dist/german.json",
   portuguese: "../packages/codebook/codebook-dist/portuguese.json",
+  indonesian: "../packages/codebook/codebook-dist/indonesian.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -466,6 +467,65 @@ const COMPOUND_SUFFIXES = {
     "vaso",
     "vela",
   ],
+  indonesian: [
+    "akar",
+    "bakul",
+    "bambu",
+    "batu",
+    "benda",
+    "biji",
+    "bilik",
+    "bunga",
+    "cawan",
+    "daun",
+    "dulang",
+    "gelas",
+    "guci",
+    "ikat",
+    "jarum",
+    "kaca",
+    "kain",
+    "kaleng",
+    "kapas",
+    "kayu",
+    "kendi",
+    "kerang",
+    "kertas",
+    "kipas",
+    "kotak",
+    "kubus",
+    "kunci",
+    "lampu",
+    "lantai",
+    "layar",
+    "lemari",
+    "lensa",
+    "lidi",
+    "lilin",
+    "mangga",
+    "meja",
+    "nyiru",
+    "pagar",
+    "panci",
+    "papan",
+    "payung",
+    "pelita",
+    "piring",
+    "pita",
+    "pot",
+    "rak",
+    "rakit",
+    "ranting",
+    "rotan",
+    "rumah",
+    "saku",
+    "sikat",
+    "tali",
+    "taman",
+    "topi",
+    "wadah",
+    "wajan",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -477,6 +537,7 @@ const LANGUAGE_LABELS = {
   french: "French",
   german: "German",
   portuguese: "Portuguese",
+  indonesian: "Indonesian",
 };
 
 const TYPE_LABELS = {
@@ -500,7 +561,8 @@ const isShortStandalone = (language, word) => {
     language === "spanish" ||
     language === "french" ||
     language === "german" ||
-    language === "portuguese"
+    language === "portuguese" ||
+    language === "indonesian"
   ) {
     return length <= 4;
   }
@@ -521,7 +583,8 @@ const minPrefixLength = (language) => {
     language === "spanish" ||
     language === "french" ||
     language === "german" ||
-    language === "portuguese"
+    language === "portuguese" ||
+    language === "indonesian"
   ) {
     return 4;
   }
@@ -535,7 +598,8 @@ const normalizeForSuffix = (language, word) => {
     language === "spanish" ||
     language === "french" ||
     language === "german" ||
-    language === "portuguese"
+    language === "portuguese" ||
+    language === "indonesian"
   ) {
     return word.toLowerCase();
   }

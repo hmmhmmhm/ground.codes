@@ -11,6 +11,7 @@ export const EXPECTED_COUNTS = {
   french: 5000,
   german: 5000,
   portuguese: 5000,
+  indonesian: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -22,6 +23,7 @@ const CODEBOOK_FILES = {
   french: "../packages/codebook/codebook-dist/french.json",
   german: "../packages/codebook/codebook-dist/german.json",
   portuguese: "../packages/codebook/codebook-dist/portuguese.json",
+  indonesian: "../packages/codebook/codebook-dist/indonesian.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -766,6 +768,37 @@ const isAwkwardPortugueseCompound = (word) => {
   return half.length >= 4 && lower === `${half}${half}`;
 };
 
+const INDONESIAN_BLOCKED_TERMS = [
+  "Benci",
+  "Bohong",
+  "Jahat",
+  "Judi",
+  "Kalah",
+  "Korupsi",
+  "Mabuk",
+  "Mati",
+  "Narkoba",
+  "Politik",
+  "Racun",
+  "Sakit",
+  "Salah",
+  "Senjata",
+  "Seks",
+  "Utang",
+];
+
+const INDONESIAN_AWKWARD_COMPOUND_PATTERN =
+  /^(?:Laut|Ombak|Garam|Gula)(?:kaca|kain|kertas|meja|panci|piring|saku|topi)$/u;
+
+const isAwkwardIndonesianCompound = (word) => {
+  if (INDONESIAN_AWKWARD_COMPOUND_PATTERN.test(word)) return true;
+
+  const lower = word.toLowerCase();
+  if (lower.length % 2 !== 0) return false;
+  const half = lower.slice(0, lower.length / 2);
+  return half.length >= 3 && lower === `${half}${half}`;
+};
+
 const CHINESE_GENERATED_COMPOUND_PATTERN =
   /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
 
@@ -833,6 +866,7 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
   french: [...FRENCH_BLOCKED_TERMS, ...FRENCH_VERB_REJECTS],
   german: GERMAN_BLOCKED_TERMS,
   portuguese: PORTUGUESE_BLOCKED_TERMS,
+  indonesian: INDONESIAN_BLOCKED_TERMS,
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -1216,6 +1250,45 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               rule: "portuguese-too-long",
               detail:
                 "Portuguese entries should stay short for URL readability",
+            }),
+          );
+        }
+      }
+
+      if (language === "indonesian") {
+        if (isAwkwardIndonesianCompound(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "indonesian-awkward-generated-compound",
+              detail:
+                "Indonesian generated compounds should avoid self-duplication and implausible object pairings",
+            }),
+          );
+        }
+        if (!/^[A-Z][a-z]+$/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "indonesian-shape",
+              detail:
+                "Indonesian URL codebook entries should use ASCII title-case words",
+            }),
+          );
+        }
+        if (word.length > 12) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "indonesian-too-long",
+              detail:
+                "Indonesian entries should stay short for URL readability",
             }),
           );
         }

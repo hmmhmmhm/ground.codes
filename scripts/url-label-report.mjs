@@ -47,6 +47,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-portuguese.json",
   ],
   [
+    "earth region-2 indonesian",
+    "indonesian",
+    "../packages/geoint/region-dist/region-2-indonesian.json",
+  ],
+  [
     "earth region-3 english",
     "english",
     "../packages/geoint/region-dist/region-3.json",
@@ -85,6 +90,11 @@ const DATASETS = [
     "earth region-3 portuguese",
     "portuguese",
     "../packages/geoint/region-dist/region-3-portuguese.json",
+  ],
+  [
+    "earth region-3 indonesian",
+    "indonesian",
+    "../packages/geoint/region-dist/region-3-indonesian.json",
   ],
   [
     "moon region-2 english",
@@ -127,6 +137,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-moon-portuguese.json",
   ],
   [
+    "moon region-2 indonesian",
+    "indonesian",
+    "../packages/geoint/region-dist/region-2-moon-indonesian.json",
+  ],
+  [
     "mars region-2 english",
     "english",
     "../packages/geoint/region-dist/region-2-mars.json",
@@ -165,6 +180,11 @@ const DATASETS = [
     "mars region-2 portuguese",
     "portuguese",
     "../packages/geoint/region-dist/region-2-mars-portuguese.json",
+  ],
+  [
+    "mars region-2 indonesian",
+    "indonesian",
+    "../packages/geoint/region-dist/region-2-mars-indonesian.json",
   ],
   [
     "mars region-3 english",
@@ -206,6 +226,11 @@ const DATASETS = [
     "portuguese",
     "../packages/geoint/region-dist/region-3-mars-portuguese.json",
   ],
+  [
+    "mars region-3 indonesian",
+    "indonesian",
+    "../packages/geoint/region-dist/region-3-mars-indonesian.json",
+  ],
 ];
 
 const hasNonAscii = (value) => /[^\x20-\x7E]/.test(value);
@@ -215,7 +240,8 @@ const allowsLatinLabels = (language) =>
   language === "spanish" ||
   language === "french" ||
   language === "german" ||
-  language === "portuguese";
+  language === "portuguese" ||
+  language === "indonesian";
 const sampleLabels = (names, predicate) => names.filter(predicate).slice(0, 5);
 
 export const buildUrlLabelReport = (datasets) => {

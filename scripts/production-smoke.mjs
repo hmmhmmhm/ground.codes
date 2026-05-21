@@ -87,6 +87,20 @@ await smoke.check("Portuguese Seoul encode", async () => {
   assert(/^Seul-/.test(code), `expected Portuguese Seoul code, got ${code}`);
 });
 
+await smoke.check("Indonesian Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "indonesian",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(
+    /^Jakarta-/.test(code),
+    `expected Indonesian Jakarta code, got ${code}`,
+  );
+});
+
 await smoke.check("ASCII earth region data", async () => {
   const code = await postJson("/v1/encode", {
     lat: -82,

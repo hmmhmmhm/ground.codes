@@ -82,12 +82,14 @@ export async function POST(request: NextRequest) {
     if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
       return NextResponse.json(
         { error: "Latitude and longitude are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Access API keys securely from server environment
-    const googleMapsApiKey = getOptionalWeatherEnv("GOOGLE_MAPS_NODEJS_API_KEY");
+    const googleMapsApiKey = getOptionalWeatherEnv(
+      "GOOGLE_MAPS_NODEJS_API_KEY",
+    );
     const openWeatherApiKey = getOptionalWeatherEnv("OPENWEATHER_API_KEY");
 
     if (!googleMapsApiKey || !openWeatherApiKey) {
@@ -107,6 +109,7 @@ export async function POST(request: NextRequest) {
       cn: "zh-CN",
       es: "es",
       fr: "fr",
+      id: "id",
     };
 
     // Get the appropriate language code for Air Quality API
@@ -121,6 +124,7 @@ export async function POST(request: NextRequest) {
       cn: "zh-cn",
       es: "es",
       fr: "fr",
+      id: "id",
     };
     const weatherLanguage = weatherLanguageMap[language] || "en";
 
@@ -145,7 +149,7 @@ export async function POST(request: NextRequest) {
             ],
             languageCode: airQualityLanguage, // Use the mapped language code
           }),
-        }
+        },
       ).then((res) => {
         if (!res.ok) throw new Error(`Air Quality API error: ${res.status}`);
         return res.json();
@@ -153,7 +157,7 @@ export async function POST(request: NextRequest) {
 
       // Weather API request
       fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&lang=${weatherLanguage}&appid=${openWeatherApiKey}`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=metric&lang=${weatherLanguage}&appid=${openWeatherApiKey}`,
       ).then((res) => {
         if (!res.ok) throw new Error(`Weather API error: ${res.status}`);
         return res.json();
@@ -172,7 +176,7 @@ export async function POST(request: NextRequest) {
     } else if (airQualityResponse.status === "rejected") {
       console.error(
         "Air quality data fetch failed:",
-        airQualityResponse.reason
+        airQualityResponse.reason,
       );
     }
 
@@ -194,7 +198,7 @@ export async function POST(request: NextRequest) {
           airQuality: null,
           weather: null,
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -207,7 +211,7 @@ export async function POST(request: NextRequest) {
         airQuality: null,
         weather: null,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

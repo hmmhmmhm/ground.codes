@@ -10,4 +10,8 @@ describe("ground code language mapping", () => {
   test("maps Portuguese UI locale to Portuguese Ground Codes", () => {
     expect(getGroundCodeLanguage("pt")).toBe("portuguese");
   });
+
+  test("maps Indonesian UI locale to Indonesian Ground Codes", () => {
+    expect(getGroundCodeLanguage("id")).toBe("indonesian");
+  });
 });

@@ -16,4 +16,14 @@ describe("codebook type inventory", () => {
       false,
     );
   });
+
+  test("classifies Indonesian standalone and generated entries", () => {
+    const indonesian = buildTypeInventory().find(
+      (row) => row.language === "indonesian",
+    );
+
+    assert.ok(indonesian);
+    assert.ok(indonesian.counts.shortStandalone > 0);
+    assert.ok(indonesian.counts.recognizedCompound > 0);
+  });
 });

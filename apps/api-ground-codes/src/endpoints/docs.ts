@@ -91,7 +91,7 @@ const docsHtml = `<!doctype html>
         </section>
         <section>
           <h2>Languages</h2>
-          <p>Ground Codes supports <code>english</code>, <code>korean</code>, <code>chinese</code>, <code>japanese</code>, <code>spanish</code>, <code>french</code>, <code>german</code>, and <code>portuguese</code> for codebooks and localized region labels.</p>
+          <p>Ground Codes supports <code>english</code>, <code>korean</code>, <code>chinese</code>, <code>japanese</code>, <code>spanish</code>, <code>french</code>, <code>german</code>, <code>portuguese</code>, and <code>indonesian</code> for codebooks and localized region labels.</p>
         </section>
         <section>
           <h2>Share URL Rules</h2>

@@ -9,6 +9,7 @@ import spanishWords from "@repo/codebook/codebook-dist/spanish.json";
 import frenchWords from "@repo/codebook/codebook-dist/french.json";
 import germanWords from "@repo/codebook/codebook-dist/german.json";
 import portugueseWords from "@repo/codebook/codebook-dist/portuguese.json";
+import indonesianWords from "@repo/codebook/codebook-dist/indonesian.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -1843,6 +1844,39 @@ describe("reviewed multilingual codebooks", () => {
       "Dizer",
       "Poder",
       "Dever",
+    ]);
+  });
+
+  test("keeps Indonesian codebook URL-safe and neutral", () => {
+    assert.equal(indonesianWords.length, 5000);
+    assert.equal(new Set(indonesianWords).size, indonesianWords.length);
+    assert.deepEqual(
+      indonesianWords.filter((word) => !/^[A-Z][a-z]+$/.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      indonesianWords.filter((word) => word.length > 12),
+      [],
+    );
+    assertWordsPresent(indonesianWords, [
+      "Akar",
+      "Angin",
+      "Bambu",
+      "Beras",
+      "Bunga",
+      "Daun",
+      "Kelapa",
+      "Langit",
+      "Laut",
+      "Rumah",
+    ]);
+    assertBlockedWordsAbsent(indonesianWords, [
+      "Judi",
+      "Narkoba",
+      "Politik",
+      "Senjata",
+      "Seks",
+      "Utang",
     ]);
   });
 });
