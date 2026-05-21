@@ -1532,7 +1532,7 @@ describe("reviewed multilingual codebooks", () => {
       [],
     );
     assert.deepEqual(
-      spanishWords.filter((word) => word.length > 14),
+      spanishWords.filter((word) => word.length > 12),
       [],
     );
     assertBlockedWordsAbsent(spanishWords, [

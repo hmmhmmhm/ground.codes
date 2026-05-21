@@ -196,4 +196,44 @@ describe("codebook policy audit", () => {
       assert.equal(actual.has(`${word}:${rule}`), true, `${word}: ${rule}`);
     }
   });
+
+  test("flags Spanish codebooks saturated with fused template compounds", () => {
+    const makePrefix = (index) => {
+      let value = index;
+      let letters = "";
+      for (let i = 0; i < 5; i += 1) {
+        letters = String.fromCharCode(97 + (value % 26)) + letters;
+        value = Math.floor(value / 26);
+      }
+      return `${letters[0].toUpperCase()}${letters.slice(1)}`;
+    };
+    const suffixes = ["caja", "bolsa", "taza", "vaso", "plato"];
+
+    const { violations } = auditCodebooks({
+      english: Array.from(
+        { length: EXPECTED_COUNTS.english },
+        (_, index) => `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
+      chinese: Array.from(
+        { length: EXPECTED_COUNTS.chinese },
+        (_, index) => `词${index}`,
+      ),
+      japanese: Array.from(
+        { length: EXPECTED_COUNTS.japanese },
+        (_, index) => `ことば${index}`,
+      ),
+      spanish: Array.from(
+        { length: EXPECTED_COUNTS.spanish },
+        (_, index) => `${makePrefix(index)}${suffixes[index % suffixes.length]}`,
+      ),
+    });
+
+    assert.equal(
+      violations.some(
+        (item) => item.rule === "spanish-compound-saturation",
+      ),
+      true,
+    );
+  });
 });

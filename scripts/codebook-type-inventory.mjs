@@ -301,6 +301,10 @@ const minPrefixLength = (language) => {
     return 1;
   }
 
+  if (language === "spanish") {
+    return 4;
+  }
+
   return 3;
 };
 

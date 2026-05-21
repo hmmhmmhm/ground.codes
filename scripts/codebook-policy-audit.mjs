@@ -417,6 +417,10 @@ const ENGLISH_GENERATED_COMPOUND_PATTERN =
 const SPANISH_GENERATED_COMPOUND_PATTERN =
   /^(Abedul|Abeto|Acebo|Acero|Agata|Alamo|Albahaca|Alcornoque|Alga|Algodon|Almendra|Aloe|Ambar|Arcilla|Arena|Avellana|Azahar|Bambu|Barro|Brezo|Bronce|Cacao|Cafe|Calabaza|Canela|Cerezo|Cobre|Coral|Cristal|Encina|Esparto|Fresno|Granito|Haya|Helecho|Hierro|Higo|Jade|Junco|Laurel|Lino|Madera|Marmol|Menta|Mimbre|Nogal|Olivo|Paja|Pino|Roble|Romero|Sauce|Tomillo|Trigo|Vid|Yute)(abanico|anillo|asa|azulejo|bandeja|banco|barreno|baston|baul|bol|bolsa|botella|boton|brocha|caja|cajon|canasta|candil|cazo|cepillo|cesto|cinta|copa|cordel|cuenco|cuchara|cubo|cuna|dedal|estante|estera|etiqueta|frasco|gancho|jarra|jarron|lampara|lienzo|maceta|mango|manta|marco|mazo|mortero|olla|paleta|palo|pano|peine|percha|pieza|pinza|placa|plato|regla|saco|sarten|sello|soporte|tabla|tablon|tarro|taza|tejido|telar|tijera|tinaja|tira|torno|trenza|vasija|vaso|vela|varilla|cuerda|cucharita|escobilla|cazuela|criba|tamiz|regadera|cubeta|palillo|costal|morral|boceto|canutillo|carrete|dedalera|hilera|jofaina|lebrillo)$/u;
 
+const SPANISH_TEMPLATE_COMPOUND_PATTERN =
+  /^[A-Z][a-z]{3,}(?:abanico|anillo|aro|asa|azulejo|banco|bandeja|barreno|baston|baul|boceto|bol|bolsa|bote|botella|boton|brocha|caja|cajon|canasta|candil|carrete|cazo|cazuela|cepillo|cesta|cesto|cinta|copa|cordel|costal|criba|cuchara|cuerda|cuenco|cubo|cubeta|cuna|dado|dedal|estante|estera|etiqueta|ficha|flor|frasco|gancho|hilera|hoja|jarra|jarron|jofaina|lampara|lata|lebrillo|libro|lienzo|lona|luz|maceta|mango|manta|mapa|marco|mazo|mesa|miel|molde|morral|mortero|olla|pala|paleta|palillo|palo|pan|pano|peine|percha|pieza|pinza|placa|plato|red|regla|saco|sal|sarten|sello|silla|sol|soporte|tabla|tablon|tamiz|tapa|tarro|taza|tejido|telar|tijera|tinaja|tira|torno|trenza|tubo|vasija|vaso|vela|varilla)$/u;
+const SPANISH_COMPOUND_SATURATION_LIMIT = 4750;
+
 const CHINESE_GENERATED_COMPOUND_PATTERN =
   /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
 
@@ -562,6 +566,24 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
           detail: `Expected ${EXPECTED_COUNTS[language]} entries`,
         }),
       );
+    }
+
+    if (language === "spanish") {
+      const templateCompoundCount = words.filter((word) =>
+        SPANISH_TEMPLATE_COMPOUND_PATTERN.test(word),
+      ).length;
+
+      if (templateCompoundCount > SPANISH_COMPOUND_SATURATION_LIMIT) {
+        violations.push(
+          makeViolation({
+            language,
+            index: -1,
+            word: `${templateCompoundCount}`,
+            rule: "spanish-compound-saturation",
+            detail: `Spanish codebooks should not be saturated with fused template compounds; limit is ${SPANISH_COMPOUND_SATURATION_LIMIT}`,
+          }),
+        );
+      }
     }
 
     const koreanPronunciationKeys = new Map();

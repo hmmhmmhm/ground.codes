@@ -62,15 +62,15 @@ Current inventory:
 | Japanese | Recognized compound | 1068 | 21.4% | `りんごはこ`, `りんごかご`, `りんごさら`, `りんごつぼ`, `りんごなべ` |
 | Japanese | Short standalone | 371 | 7.4% | `いえ`, `すき`, `かい`, `やる`, `つぎ` |
 | Japanese | Other standalone or unclassified | 3561 | 71.2% | `あさかけ`, `はなし`, `おもう`, `かんがえ`, `かんじ` |
-| Spanish | Recognized compound | 5000 | 100.0% | `Manzanacaja`, `Manzanabolsa`, `Manzanataza`, `Manzanavaso`, `Manzanaplato` |
-| Spanish | Short standalone | 0 | 0.0% | |
-| Spanish | Other standalone or unclassified | 0 | 0.0% | |
+| Spanish | Recognized compound | 4588 | 91.8% | `Mangoaro`, `Mangoasa`, `Mangobol`, `Mangocubo`, `Mangosaco` |
+| Spanish | Short standalone | 72 | 1.4% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe` |
+| Spanish | Other standalone or unclassified | 340 | 6.8% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto` |
 
 Review implications:
 
-- Spanish is currently entirely compound-shaped. Future Spanish cleanup should
-  add reviewed standalone common nouns and reduce fused template compounds
-  without changing indexes casually.
+- Spanish is still heavily compound-shaped after the first standalone cleanup
+  pass. Continue adding reviewed standalone common nouns and reducing fused
+  template compounds without changing indexes casually.
 - Korean has the highest mixed compound load after Spanish. Keep reducing
   weak material/object compounds, but preserve settled everyday compounds.
 - Chinese, English, and Japanese have lower recognized-compound shares, but the
