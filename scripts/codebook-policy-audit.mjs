@@ -426,6 +426,30 @@ const SPANISH_BLOCKED_TERMS = [
   "Muerte",
   "Odio",
   "Violencia",
+  "Calavera",
+  "Centinela",
+  "Cicuta",
+  "Cloaca",
+  "Cobrador",
+  "Demo",
+  "Fatiga",
+  "Grumete",
+  "Guadana",
+  "Limosna",
+  "Maestre",
+  "Michi",
+  "Monogamia",
+  "Opio",
+  "Pancita",
+  "Pelele",
+  "Poligamia",
+  "Rating",
+  "Reten",
+  "Sanguijuela",
+  "Short",
+  "Tanga",
+  "Vicio",
+  "Yelmo",
 ];
 
 const ENGLISH_GENERATED_COMPOUND_PATTERN =
@@ -436,7 +460,7 @@ const SPANISH_GENERATED_COMPOUND_PATTERN =
 
 const SPANISH_TEMPLATE_COMPOUND_PATTERN =
   /^[A-Z][a-z]{3,}(?:abanico|anillo|aro|asa|azulejo|banco|bandeja|barreno|baston|baul|boceto|bol|bolsa|bote|botella|boton|brocha|caja|cajon|canasta|candil|carrete|cazo|cazuela|cepillo|cesta|cesto|cinta|copa|cordel|costal|criba|cuchara|cuerda|cuenco|cubo|cubeta|cuna|dado|dedal|estante|estera|etiqueta|ficha|flor|frasco|gancho|hilera|hoja|jarra|jarron|jofaina|lampara|lata|lebrillo|libro|lienzo|lona|luz|maceta|mango|manta|mapa|marco|mazo|mesa|miel|molde|morral|mortero|olla|pala|paleta|palillo|palo|pan|pano|peine|percha|pieza|pinza|placa|plato|red|regla|saco|sal|sarten|sello|silla|sol|soporte|tabla|tablon|tamiz|tapa|tarro|taza|tejido|telar|tijera|tinaja|tira|torno|trenza|tubo|vasija|vaso|vela|varilla)$/u;
-const SPANISH_COMPOUND_SATURATION_LIMIT = 4250;
+const SPANISH_COMPOUND_SATURATION_LIMIT = 2945;
 const SPANISH_REVIEWED_STANDALONE_WORDS = readReviewedSpanishStandaloneWords();
 
 const CHINESE_GENERATED_COMPOUND_PATTERN =
