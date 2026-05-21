@@ -69,6 +69,7 @@ type GroundCodesWithOptionalRegionSearch = typeof GroundCodes & {
 const getRegionSearchLanguages = (language: string, query: string) => {
   if (language === "english") return ["english"];
   if (language === "spanish") return ["spanish", "english"];
+  if (language === "french") return ["french", "english"];
   if (englishLikePattern.test(query)) return ["english", language];
   return [language, "english"];
 };

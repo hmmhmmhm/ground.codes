@@ -6,6 +6,7 @@ import englishWords from "@repo/codebook/codebook-dist/english.json";
 import japaneseWords from "@repo/codebook/codebook-dist/japanese.json";
 import koreanWords from "@repo/codebook/codebook-dist/korean.json";
 import spanishWords from "@repo/codebook/codebook-dist/spanish.json";
+import frenchWords from "@repo/codebook/codebook-dist/french.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -1550,6 +1551,39 @@ describe("reviewed multilingual codebooks", () => {
       "Muerte",
       "Odio",
       "Violencia",
+    ]);
+  });
+
+  test("keeps French codebook URL-safe and neutral", () => {
+    assert.equal(frenchWords.length, 5000);
+    assert.equal(new Set(frenchWords).size, frenchWords.length);
+    assert.deepEqual(
+      frenchWords.filter((word) => !/^[A-Z][a-z]+$/.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      frenchWords.filter((word) => word.length > 12),
+      [],
+    );
+    assertWordsPresent(frenchWords, [
+      "Abri",
+      "Amande",
+      "Bocal",
+      "Panier",
+      "Tilleul",
+    ]);
+    assertBlockedWordsAbsent(frenchWords, [
+      "Sexe",
+      "Casino",
+      "Arme",
+      "Guerre",
+      "Drogue",
+      "Medecin",
+      "Politique",
+      "Religion",
+      "Crime",
+      "Mort",
+      "Violence",
     ]);
   });
 });

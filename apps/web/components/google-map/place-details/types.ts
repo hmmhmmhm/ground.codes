@@ -4,6 +4,7 @@ import koPlaceTypes from "@/messages/ko/placeTypes.json";
 import cnPlaceTypes from "@/messages/cn/placeTypes.json";
 import jaPlaceTypes from "@/messages/ja/placeTypes.json";
 import esPlaceTypes from "@/messages/es/placeTypes.json";
+import frPlaceTypes from "@/messages/fr/placeTypes.json";
 
 export interface PlaceDetailsProps {
   map: google.maps.Map | null;
@@ -21,4 +22,5 @@ export const placeTypes: Record<Locale, PlaceTypesRecord> = {
   cn: cnPlaceTypes as PlaceTypesRecord,
   ja: jaPlaceTypes as PlaceTypesRecord,
   es: esPlaceTypes as PlaceTypesRecord,
+  fr: frPlaceTypes as PlaceTypesRecord,
 };

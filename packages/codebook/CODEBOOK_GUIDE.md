@@ -28,6 +28,7 @@ Current distributed word counts:
 | Chinese | 5140 | `codebook-dist/chinese.json` |
 | Japanese | 5000 | `codebook-dist/japanese.json` |
 | Spanish | 5000 | `codebook-dist/spanish.json` |
+| French | 5000 | `codebook-dist/french.json` |
 
 ## Current Word Type Inventory
 
@@ -65,6 +66,9 @@ Current inventory:
 | Spanish | Recognized compound | 2925 | 58.5% | `Papayatapa`, `Papayabote`, `Papayalata`, `Papayaolla`, `Papayacopa` |
 | Spanish | Short standalone | 280 | 5.6% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe` |
 | Spanish | Other standalone or unclassified | 1795 | 35.9% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto` |
+| French | Recognized compound | 2423 | 48.5% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri` |
+| French | Short standalone | 25 | 0.5% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois` |
+| French | Other standalone or unclassified | 2552 | 51.0% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau` |
 
 Review implications:
 
@@ -76,6 +80,10 @@ Review implications:
 - Chinese, English, and Japanese have lower recognized-compound shares, but the
   unclassified bucket still needs human review because the script intentionally
   avoids broad, risky inference.
+- French is initialized below the Korean and Spanish compound share by mixing a
+  reviewed BIP39-derived standalone seed with project-curated nouns and bounded
+  compounds. Continue replacing weak fused compounds with natural French
+  standalone words as review coverage grows.
 
 ## Product Principles
 
@@ -304,6 +312,25 @@ a test blocklist.
 - Reject fused generated material/object compounds such as `Abedulabanico`,
   `Abetocucharita`, `Albahacacordel`, and `Algodonpalillo`; Spanish code words
   should not look like template roots glued to object names.
+
+### French
+
+- Prefer short ASCII title-case French words for URL readability. Normalize
+  accents in public code words, such as `Ecole`, `Lumiere`, and `Trefle`.
+- Keep French entries at twelve letters or fewer unless a reviewed
+  compatibility reason exists.
+- Use the BIP39-derived seed only after filtering obvious sensitive, medical,
+  violent, political, religious, and adult terms. The seed improves
+  pronunciation and copying quality, but it is not a substitute for product
+  review.
+- Prefer concrete everyday nouns such as `Amande`, `Bocal`, `Panier`,
+  `Tilleul`, and `Violette`.
+- Generated nature/material/object compounds may be used to preserve count, but
+  they should stay below the Korean and Spanish compound share and be replaced
+  over time with natural standalone French entries.
+- Reject terms that are risky in a public address, including `Sexe`, `Casino`,
+  `Arme`, `Guerre`, `Drogue`, `Medecin`, `Politique`, `Religion`, `Crime`,
+  `Mort`, and `Violence`.
 
 ## Automated Checks
 

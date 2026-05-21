@@ -8,6 +8,7 @@ export const EXPECTED_COUNTS = {
   chinese: 5140,
   japanese: 5000,
   spanish: 5000,
+  french: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -16,6 +17,7 @@ const CODEBOOK_FILES = {
   chinese: "../packages/codebook/codebook-dist/chinese.json",
   japanese: "../packages/codebook/codebook-dist/japanese.json",
   spanish: "../packages/codebook/codebook-dist/spanish.json",
+  french: "../packages/codebook/codebook-dist/french.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -452,6 +454,24 @@ const SPANISH_BLOCKED_TERMS = [
   "Yelmo",
 ];
 
+const FRENCH_BLOCKED_TERMS = [
+  "Alcool",
+  "Arme",
+  "Casino",
+  "Crime",
+  "Drogue",
+  "Guerre",
+  "Haine",
+  "Maladie",
+  "Medecin",
+  "Mort",
+  "Politique",
+  "Religion",
+  "Sexe",
+  "Violence",
+  "Vin",
+];
+
 const ENGLISH_GENERATED_COMPOUND_PATTERN =
   /^(Amber|Alder|Apricot|Ash|Bamboo|Basalt|Beech|Birch|Cedar|Clover|Cobalt|Copper|Cotton|Crystal|Elm|Fern|Flax|Fruit|Gold|Granite|Hazel|Heather|Ivory|Jade|Juniper|Larch|Maple|Oak|Pine|River|Tea|Vine|Willow|Bright|Sun|Wind|Moss|Lake|Grove|Blossom)(awl|basin|basket|basketry|bead|beaker|bench|binder|block|board|bobbin|bowl|broom|brush|buckle|caddy|case|charm|crate|creel|crock|cup|dibber|dipper|drainer|gimlet|hamper|ladle|loom|mortar|napkin|pestle|pitcher|planter|pot|punnet|quilt|rasp|rod|satchel|saucer|sifter|tassel|tile|toggle|tote|tray|trivet|trug|tumbler|vessel|brook|field|haven|ridge|stone|vale|fall|water|leaf|wood|garden|path|pond|meadow|crest|branch|breeze|sprout|trail)$/u;
 
@@ -527,6 +547,7 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
   chinese: CHINESE_BLOCKED_TERMS,
   japanese: JAPANESE_BLOCKED_TERMS,
   spanish: SPANISH_BLOCKED_TERMS,
+  french: FRENCH_BLOCKED_TERMS,
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -752,6 +773,32 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               rule: "spanish-generated-material-compound",
               detail:
                 "Spanish entries should avoid fused generated material/object compounds",
+            }),
+          );
+        }
+      }
+
+      if (language === "french") {
+        if (!/^[A-Z][a-z]+$/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "french-shape",
+              detail:
+                "French URL codebook entries should use ASCII title-case words",
+            }),
+          );
+        }
+        if (word.length > 12) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "french-too-long",
+              detail: "French entries should stay short for URL readability",
             }),
           );
         }

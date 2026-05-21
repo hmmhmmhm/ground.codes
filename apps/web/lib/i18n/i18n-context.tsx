@@ -150,7 +150,9 @@ export const I18nProvider: React.FC<{
               ? "言語設定を変更するとページが再読み込みされ、現在の表示がリセットされます。続行しますか？"
               : locale === "es"
                 ? "Cambiar el idioma recargará la página y restablecerá la vista actual. ¿Deseas continuar?"
-                : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
+                : locale === "fr"
+                  ? "Changer la langue actualisera la page et reinitialisera la vue actuelle. Continuer ?"
+                  : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
 
     const userConfirmed = window.confirm(confirmMessage);
 

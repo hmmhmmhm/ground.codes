@@ -199,6 +199,46 @@ describe("Ground Codes API contract", () => {
     });
   }, 90_000);
 
+  test("encodes and searches French ground codes and region labels", async () => {
+    const encodedResponse = await postJson("/v1/encode", {
+      lat: 37.566,
+      lng: 126.978,
+      language: "french",
+      regionLevel: 2,
+    });
+    expect(encodedResponse.status).toBe(200);
+    const code = await encodedResponse.text();
+    expect(code).toMatch(/^Seoul-[A-Z][A-Za-z]+/);
+
+    const codeSearchResponse = await postJson("/v1/search", {
+      query: code,
+      language: "english",
+      regionLevel: 2,
+    });
+    expect(codeSearchResponse.status).toBe(200);
+    const codeSearch = await codeSearchResponse.json();
+    expect(codeSearch.results[0]).toMatchObject({
+      type: "ground-code",
+      label: code,
+      body: "earth",
+      regionLevel: 2,
+    });
+
+    const regionSearchResponse = await postJson("/v1/search", {
+      query: "Seoul",
+      language: "french",
+      regionLevel: 2,
+    });
+    expect(regionSearchResponse.status).toBe(200);
+    const regionSearch = await regionSearchResponse.json();
+    expect(regionSearch.results[0]).toMatchObject({
+      type: "region",
+      label: "Seoul",
+      body: "earth",
+      regionLevel: 2,
+    });
+  }, 90_000);
+
   test("search returns multiple partial region matches with cache headers", async () => {
     const response = await postJson("/v1/search", {
       query: "Seo",
@@ -366,6 +406,33 @@ describe("Ground Codes API contract", () => {
     expect(infoResponse.status).toBe(200);
     expect(await infoResponse.json()).toMatchObject({
       name: "Seul",
+    });
+  });
+
+  test("loads French region lookup data on demand for region endpoints", async () => {
+    const aroundResponse = await postJson("/v1/region/around", {
+      lat: 37.566,
+      lng: 126.978,
+      language: "french",
+      regionLevel: 2,
+      maxResults: 1,
+    });
+
+    expect(aroundResponse.status).toBe(200);
+    const around = await aroundResponse.json();
+    expect(around[0]).toMatchObject({
+      name: "Seoul",
+    });
+
+    const infoResponse = await postJson("/v1/region/info", {
+      name: "Seoul",
+      language: "french",
+      regionLevel: 2,
+      body: "earth",
+    });
+    expect(infoResponse.status).toBe(200);
+    expect(await infoResponse.json()).toMatchObject({
+      name: "Seoul",
     });
   });
 

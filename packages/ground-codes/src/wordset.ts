@@ -5,7 +5,8 @@ export type SupportedLanguage =
   | "korean"
   | "chinese"
   | "japanese"
-  | "spanish";
+  | "spanish"
+  | "french";
 
 export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   english: 6000,
@@ -13,6 +14,37 @@ export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   chinese: 5140,
   japanese: 5000,
   spanish: 5000,
+  french: 5000,
+};
+
+const loadWordSet = async (language: SupportedLanguage) => {
+  if (language.toLowerCase() === "english") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/english.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "korean") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/korean.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "chinese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/chinese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "japanese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/japanese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "spanish") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/spanish.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "french") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/french.json"))
+      .default as string[];
+  }
+
+  throw new Error(`Invalid language: ${language}`);
 };
 
 export const encodeByWordSet = async ({
@@ -22,33 +54,10 @@ export const encodeByWordSet = async ({
   n: number;
   language?: SupportedLanguage;
 }) => {
-  let wordSet: string[] | null = null;
   const baseSet = toBaseN(n, wordSetBaseCount[language]);
-  if (language.toLowerCase() === "english") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/english.json"))
-      .default as string[];
-  } else if (language.toLowerCase() === "korean") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/korean.json"))
-      .default as string[];
-  } else if (language.toLowerCase() === "chinese") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/chinese.json"))
-      .default as string[];
-  } else if (language.toLowerCase() === "japanese") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/japanese.json"))
-      .default as string[];
-  } else if (language.toLowerCase() === "spanish") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/spanish.json"))
-      .default as string[];
-  } else {
-    throw new Error(`Invalid language: ${language}`);
-  }
+  const wordSet = await loadWordSet(language);
 
-  const encodedBaseSet = baseSet.map((digit) => wordSet![digit]);
+  const encodedBaseSet = baseSet.map((digit) => wordSet[digit]);
   return encodedBaseSet.join("-");
 };
 
@@ -71,30 +80,7 @@ export const decodeByWordSet = async ({
   const words = encoded.split("-");
 
   // Load the appropriate word set based on language
-  let wordSet: string[] = [];
-  if (language.toLowerCase() === "english") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/english.json"))
-      .default as string[];
-  } else if (language.toLowerCase() === "korean") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/korean.json"))
-      .default as string[];
-  } else if (language.toLowerCase() === "chinese") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/chinese.json"))
-      .default as string[];
-  } else if (language.toLowerCase() === "japanese") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/japanese.json"))
-      .default as string[];
-  } else if (language.toLowerCase() === "spanish") {
-    // @ts-ignore
-    wordSet = (await import("@repo/codebook/codebook-dist/spanish.json"))
-      .default as string[];
-  } else {
-    throw new Error(`Invalid language: ${language}`);
-  }
+  const wordSet = await loadWordSet(language);
 
   // Convert words back to their indices in the word set
   const indices = words.map((word) => {

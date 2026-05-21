@@ -6,6 +6,7 @@ const CODEBOOK_FILES = {
   chinese: "../packages/codebook/codebook-dist/chinese.json",
   japanese: "../packages/codebook/codebook-dist/japanese.json",
   spanish: "../packages/codebook/codebook-dist/spanish.json",
+  french: "../packages/codebook/codebook-dist/french.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -280,6 +281,73 @@ const COMPOUND_SUFFIXES = {
     "vaso",
     "vela",
   ],
+  french: [
+    "abri",
+    "anse",
+    "arc",
+    "bague",
+    "balai",
+    "banc",
+    "bocal",
+    "boite",
+    "bol",
+    "borne",
+    "boule",
+    "brin",
+    "brosse",
+    "cache",
+    "cadre",
+    "caisse",
+    "canne",
+    "carafe",
+    "carte",
+    "casier",
+    "cloche",
+    "clou",
+    "corde",
+    "coupe",
+    "coussin",
+    "cruche",
+    "dalle",
+    "ecrin",
+    "etui",
+    "fagot",
+    "ficelle",
+    "fil",
+    "flacon",
+    "gobelet",
+    "grille",
+    "housse",
+    "jarre",
+    "lampe",
+    "louche",
+    "malle",
+    "manche",
+    "moule",
+    "nappe",
+    "panier",
+    "patere",
+    "peigne",
+    "pichet",
+    "pince",
+    "plaque",
+    "plateau",
+    "poche",
+    "poignee",
+    "pot",
+    "regle",
+    "rideau",
+    "ruban",
+    "sac",
+    "seau",
+    "tamis",
+    "tasse",
+    "tiroir",
+    "toile",
+    "vase",
+    "verre",
+    "volet",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -288,6 +356,7 @@ const LANGUAGE_LABELS = {
   chinese: "Chinese",
   japanese: "Japanese",
   spanish: "Spanish",
+  french: "French",
 };
 
 const TYPE_LABELS = {
@@ -304,7 +373,7 @@ const characterLength = (word) => [...word].length;
 const isShortStandalone = (language, word) => {
   const length = characterLength(word);
 
-  if (language === "english" || language === "spanish") {
+  if (language === "english" || language === "spanish" || language === "french") {
     return length <= 4;
   }
 
@@ -320,7 +389,7 @@ const minPrefixLength = (language) => {
     return 1;
   }
 
-  if (language === "spanish") {
+  if (language === "spanish" || language === "french") {
     return 4;
   }
 
@@ -328,7 +397,7 @@ const minPrefixLength = (language) => {
 };
 
 const normalizeForSuffix = (language, word) => {
-  if (language === "english" || language === "spanish") {
+  if (language === "english" || language === "spanish" || language === "french") {
     return word.toLowerCase();
   }
 

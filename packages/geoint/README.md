@@ -40,15 +40,21 @@ USGS/IAU Gazetteer of Planetary Nomenclature center-point KML downloads:
 - `region-2-moon-korean.json`: 9,085 Korean-localized lunar feature labels
 - `region-2-moon-chinese.json`: 9,085 Chinese-localized lunar feature labels
 - `region-2-moon-japanese.json`: 9,085 Japanese-localized lunar feature labels
+- `region-2-moon-spanish.json`: 9,085 Spanish-localized lunar feature labels
+- `region-2-moon-french.json`: 9,085 French-localized lunar feature labels
 - `region-2-mars.json`: 2,047 approved martian feature center points
 - `region-2-mars-korean.json`: 2,047 Korean-localized martian feature labels
 - `region-2-mars-chinese.json`: 2,047 Chinese-localized martian feature labels
 - `region-2-mars-japanese.json`: 2,047 Japanese-localized martian feature labels
+- `region-2-mars-spanish.json`: 2,047 Spanish-localized martian feature labels
+- `region-2-mars-french.json`: 2,047 French-localized martian feature labels
 - `region-3-mars.json`: 24,380 Mars crater fallback labels derived from
   Robbins V1 craters with diameter >= 10 km
 - `region-3-mars-korean.json`: 24,380 Korean-localized Mars crater fallback labels
 - `region-3-mars-chinese.json`: 24,380 Chinese-localized Mars crater fallback labels
 - `region-3-mars-japanese.json`: 24,380 Japanese-localized Mars crater fallback labels
+- `region-3-mars-spanish.json`: 24,380 Spanish-localized Mars crater fallback labels
+- `region-3-mars-french.json`: 24,380 French-localized Mars crater fallback labels
 
 The `region-2` datasets store official English feature names, descriptor codes,
 latitude, east-positive longitude normalized to `[-180, 180]`, feature type,
@@ -149,17 +155,24 @@ This approach provides significant performance benefits:
 - 🌕 `region-2-moon-korean.json`: Contains Korean-localized Moon feature labels
 - 🌕 `region-2-moon-chinese.json`: Contains Chinese-localized Moon feature labels
 - 🌕 `region-2-moon-japanese.json`: Contains Japanese-localized Moon feature labels
+- 🌕 `region-2-moon-spanish.json`: Contains Spanish-localized Moon feature labels
+- 🌕 `region-2-moon-french.json`: Contains French-localized Moon feature labels
 - 🪐 `region-2-mars.json`: Contains Mars feature names from the USGS/IAU Gazetteer
 - 🪐 `region-2-mars-korean.json`: Contains Korean-localized Mars feature labels
 - 🪐 `region-2-mars-chinese.json`: Contains Chinese-localized Mars feature labels
 - 🪐 `region-2-mars-japanese.json`: Contains Japanese-localized Mars feature labels
+- 🪐 `region-2-mars-spanish.json`: Contains Spanish-localized Mars feature labels
+- 🪐 `region-2-mars-french.json`: Contains French-localized Mars feature labels
 - 🪐 `region-3-mars.json`: Contains Mars crater fallback labels derived from Robbins V1
 - 🪐 `region-3-mars-korean.json`: Contains Korean-localized Mars crater fallback labels
 - 🪐 `region-3-mars-chinese.json`: Contains Chinese-localized Mars crater fallback labels
 - 🪐 `region-3-mars-japanese.json`: Contains Japanese-localized Mars crater fallback labels
+- 🪐 `region-3-mars-spanish.json`: Contains Spanish-localized Mars crater fallback labels
+- 🪐 `region-3-mars-french.json`: Contains French-localized Mars crater fallback labels
 - 🌊 `region-3.json`: Contains sparse global coverage labels for oceans, polar regions, deserts, and remote interiors
 - 🌐 `region-3-[language].json`: Contains localized region-3 names where translations are available
 - 🌐 `region-3-japanese.json`: Contains Japanese-localized sparse global coverage labels
+- 🌐 `region-3-french.json`: Contains French-localized sparse global coverage labels
 
 Localized Earth region language audits are recorded under
 `region-dataset/region-language-audit-2026-05-10.md`.

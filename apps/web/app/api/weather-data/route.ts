@@ -106,6 +106,7 @@ export async function POST(request: NextRequest) {
       ko: "ko",
       cn: "zh-CN",
       es: "es",
+      fr: "fr",
     };
 
     // Get the appropriate language code for Air Quality API
@@ -119,6 +120,7 @@ export async function POST(request: NextRequest) {
       ko: "kr",
       cn: "zh-cn",
       es: "es",
+      fr: "fr",
     };
     const weatherLanguage = weatherLanguageMap[language] || "en";
 

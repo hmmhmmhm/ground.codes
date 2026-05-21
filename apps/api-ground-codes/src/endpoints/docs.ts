@@ -90,6 +90,10 @@ const docsHtml = `<!doctype html>
           <p>Production clients should call <code>https://api.ground.codes</code> and keep all new integrations on <code>/v1/*</code>.</p>
         </section>
         <section>
+          <h2>Languages</h2>
+          <p>Ground Codes supports <code>english</code>, <code>korean</code>, <code>chinese</code>, <code>japanese</code>, <code>spanish</code>, and <code>french</code> for codebooks and localized region labels.</p>
+        </section>
+        <section>
           <h2>Share URL Rules</h2>
           <p>Earth URLs stay code-only. Moon and Mars use explicit body prefixes so links remain readable without adding query parameters or percent-encoded labels.</p>
           <ul>
