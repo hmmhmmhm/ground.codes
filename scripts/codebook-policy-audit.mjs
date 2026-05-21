@@ -797,13 +797,17 @@ const INDONESIAN_AWKWARD_ADJECTIVE_PREFIXES = [
   "Alam",
   "Angin",
   "Awan",
+  "Bambu",
   "Bayam",
   "Beras",
   "Cabai",
   "Cawan",
+  "Emas",
   "Garam",
   "Gelas",
   "Gula",
+  "Hutan",
+  "Kerang",
   "Kertas",
   "Lantai",
   "Laut",
@@ -812,7 +816,9 @@ const INDONESIAN_AWKWARD_ADJECTIVE_PREFIXES = [
   "Panci",
   "Papan",
   "Pati",
+  "Perak",
   "Pot",
+  "Rotan",
   "Topi",
   "Wadah",
 ];
@@ -831,25 +837,35 @@ const INDONESIAN_AWKWARD_ADJECTIVE_SUFFIXES = [
   "hangat",
   "harum",
   "hijau",
+  "indah",
   "jernih",
   "kecil",
   "kuning",
   "lebar",
+  "lebat",
   "lembut",
   "luas",
   "lurus",
   "manis",
   "merah",
+  "murni",
   "muda",
   "padat",
+  "panjang",
+  "pendek",
+  "rata",
   "putih",
   "rapi",
+  "rendah",
   "ringan",
   "rindang",
   "segar",
   "sejuk",
+  "subur",
+  "teduh",
   "tenang",
   "terang",
+  "tinggi",
   "tipis",
   "utuh",
   "wangi",
@@ -860,11 +876,23 @@ const INDONESIAN_AWKWARD_OBJECT_PREFIXES = [
   "Alam",
   "Angin",
   "Awan",
+  "Bambu",
+  "Cabai",
   "Garam",
   "Gelas",
   "Gula",
+  "Kaca",
+  "Kain",
+  "Kapas",
+  "Kapur",
+  "Karet",
+  "Kayu",
+  "Kelapa",
   "Laut",
   "Ombak",
+  "Wadah",
+  "Warna",
+  "Zaitun",
 ];
 
 const INDONESIAN_AWKWARD_OBJECT_SUFFIXES = [
@@ -927,9 +955,23 @@ const INDONESIAN_AWKWARD_OBJECT_SUFFIXES = [
   "wajan",
 ];
 
+const INDONESIAN_AWKWARD_UNIVERSAL_OBJECT_SUFFIXES = [
+  "benda",
+  "bilik",
+  "cawan",
+  "dulang",
+  "guci",
+];
+
 const hasGeneratedPair = (word, prefixes, suffixes) =>
   prefixes.some((prefix) =>
     suffixes.some((suffix) => word === `${prefix}${suffix}`),
+  );
+
+const hasGeneratedSuffix = (word, suffixes) =>
+  suffixes.some(
+    (suffix) =>
+      word.endsWith(suffix) && word.length >= suffix.length + "Akar".length,
   );
 
 const isAwkwardIndonesianCompound = (word) => {
@@ -949,6 +991,11 @@ const isAwkwardIndonesianCompound = (word) => {
       INDONESIAN_AWKWARD_OBJECT_PREFIXES,
       INDONESIAN_AWKWARD_OBJECT_SUFFIXES,
     )
+  ) {
+    return true;
+  }
+  if (
+    hasGeneratedSuffix(word, INDONESIAN_AWKWARD_UNIVERSAL_OBJECT_SUFFIXES)
   ) {
     return true;
   }

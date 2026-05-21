@@ -78,9 +78,9 @@ Current inventory:
 | Portuguese | Recognized compound              |  1424 | 28.5% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
 | Portuguese | Short standalone                 |    58 |  1.2% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
 | Portuguese | Other standalone or unclassified |  3518 | 70.4% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
-| Indonesian | Recognized compound              |  1728 | 34.6% | `Bambuakar`, `Batuakar`, `Bayamakar`, `Berasakar`, `Bijiakar`        |
+| Indonesian | Recognized compound              |  4638 | 92.8% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
 | Indonesian | Short standalone                 |    61 |  1.2% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
-| Indonesian | Other standalone or unclassified |  3211 | 64.2% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
+| Indonesian | Other standalone or unclassified |   301 |  6.0% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
 
 Review implications:
 
@@ -104,11 +104,13 @@ Review implications:
   which removed Spanish-like entries, proper-name risks, and weak generated
   compounds. Keep it neutral and common across Lusophone regions, and do not
   raise template-compound saturation while filling future review gaps.
-- Indonesian quality v2 replaces Malay-leaning `Halia` with `Jahe`, keeps
+- Indonesian quality v4 replaces Malay-leaning `Halia` with `Jahe`, keeps
   `Pepaya` instead of `Papaya`, adds more everyday standalone nouns, and blocks
-  weak fused pairings such as `Garamwangi`, `Gulabening`, and `Awankaleng`-style
-  material/object combinations. Continue replacing generated compounds with
-  reviewed standalone Indonesian nouns as coverage grows.
+  weak fused pairings such as `Emaskuning`, `Garamwangi`, `Gulabening`,
+  `Awankaleng`, `Bambubilik`, and `Tomatcawan`-style material/object
+  combinations. The generator now prefers a larger adjective-composition pool
+  before falling back to object pairings. Continue replacing generated
+  compounds with reviewed standalone Indonesian nouns as coverage grows.
 
 ## Product Principles
 
@@ -425,13 +427,19 @@ a test blocklist.
   Also reject weak noun-adjective pairings that read like accidental fused
   phrases, for example `Garamwangi`, `Gulabening`, `Kertasmanis`,
   `Pancisegar`, and `Topijernih`.
+- For Indonesian, prefer adjective-style generated fallbacks over object-pair
+  fallbacks when a reviewed standalone word is not available. Block
+  container/object suffixes that repeatedly create weak public URL words, such
+  as `benda`, `bilik`, `cawan`, `dulang`, and `guci`.
 - Region labels preserve proper names where possible. Localize stable terrain
   descriptors for readability, for example `Sea` -> `Laut`, `Ocean` ->
   `Samudra`, `Crater` -> `Kawah`, and `Mons` -> `Gunung`.
 - Reject self-duplicating or implausible generated compounds such as
   `Akarakar`, `Akarawan`, `Gelasakar`, `Lautdulang`, `Lautbening`,
   `Ombakbenda`, `Garambening`, `Gulabening`, `Pancisegar`, `Topijernih`, and
-  `Kertasmanis`.
+  `Kertasmanis`. Also reject reviewed Indonesian failures such as
+  `Emaskuning`, `Bambubilik`, `Kerangkuning`, `Hutanhalus`, `Rotankuning`,
+  `Palaguci`, and `Tomatcawan`.
 - Reject terms that are risky or awkward in a public address, including `Judi`,
   `Narkoba`, `Senjata`, `Seks`, `Politik`, `Korupsi`, `Racun`, `Mati`,
   `Sakit`, `Utang`, `Benci`, `Bohong`, `Jahat`, `Kalah`, and `Salah`.
