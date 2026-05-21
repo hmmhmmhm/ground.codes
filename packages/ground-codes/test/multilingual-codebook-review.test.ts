@@ -1890,6 +1890,7 @@ describe("reviewed multilingual codebooks", () => {
       "Gulabening",
       "Kertasmanis",
       "Lautdulang",
+      "Ombakbenda",
       "Pancisegar",
       "Topijernih",
     ]);

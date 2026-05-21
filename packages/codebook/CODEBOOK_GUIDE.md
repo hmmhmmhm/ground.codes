@@ -78,9 +78,9 @@ Current inventory:
 | Portuguese | Recognized compound              |  1424 | 28.5% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
 | Portuguese | Short standalone                 |    58 |  1.2% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
 | Portuguese | Other standalone or unclassified |  3518 | 70.4% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
-| Indonesian | Recognized compound              |  1730 | 34.6% | `Bambuakar`, `Batuakar`, `Bayamakar`, `Berasakar`, `Bijiakar`        |
+| Indonesian | Recognized compound              |  1728 | 34.6% | `Bambuakar`, `Batuakar`, `Bayamakar`, `Berasakar`, `Bijiakar`        |
 | Indonesian | Short standalone                 |    61 |  1.2% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
-| Indonesian | Other standalone or unclassified |  3209 | 64.2% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
+| Indonesian | Other standalone or unclassified |  3211 | 64.2% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
 
 Review implications:
 
@@ -430,7 +430,8 @@ a test blocklist.
   `Samudra`, `Crater` -> `Kawah`, and `Mons` -> `Gunung`.
 - Reject self-duplicating or implausible generated compounds such as
   `Akarakar`, `Akarawan`, `Gelasakar`, `Lautdulang`, `Lautbening`,
-  `Garambening`, `Gulabening`, `Pancisegar`, `Topijernih`, and `Kertasmanis`.
+  `Ombakbenda`, `Garambening`, `Gulabening`, `Pancisegar`, `Topijernih`, and
+  `Kertasmanis`.
 - Reject terms that are risky or awkward in a public address, including `Judi`,
   `Narkoba`, `Senjata`, `Seks`, `Politik`, `Korupsi`, `Racun`, `Mati`,
   `Sakit`, `Utang`, `Benci`, `Bohong`, `Jahat`, `Kalah`, and `Salah`.

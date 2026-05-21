@@ -539,9 +539,10 @@ describe("codebook policy audit", () => {
         "Garamwangi",
         "Gulabening",
         "Lautdulang",
+        "Ombakbenda",
         "Pancisegar",
         ...Array.from(
-          { length: EXPECTED_COUNTS.indonesian - 6 },
+          { length: EXPECTED_COUNTS.indonesian - 7 },
           (_, index) =>
             `Kata${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
         ),
@@ -558,6 +559,7 @@ describe("codebook policy audit", () => {
       "Garamwangi",
       "Gulabening",
       "Lautdulang",
+      "Ombakbenda",
       "Pancisegar",
     ]) {
       assert.equal(
