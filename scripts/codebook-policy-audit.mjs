@@ -411,6 +411,58 @@ const SPANISH_BLOCKED_TERMS = [
   "Violencia",
 ];
 
+const KOREAN_ALLOWED_ONE_SYLLABLE = new Set(
+  `
+    물 빛 별 꽃 숲 쌀 밥 떡 솜 꿀 깨 벼 밤 봄 달 옷 천 흙 삽 배 귤 논
+    닭 말 개 벌 새 맛 잔 향 국 김 해 붓 땅 곰 돌 들 샘 잎 늪 솔 씨 굴
+    빵 집 찜 초 띠 옥 벨 편 잠 햄 톳 쌈 알 잼 참 쑥 끈 틀 숯 솥 짚
+    뿔 빗 젓 쌍 찬 색 무 소 밀 팥 차 문 담 창 감 비 실 철 양 돛 벽 탕
+  `
+    .trim()
+    .split(/\s+/),
+);
+
+const KOREAN_POETIC_ADJECTIVE_PATTERN =
+  /^(정겨운|너른|푸른|따스한|고요한|소담한|새벽|밝은|고운|둥근|차분한|은빛|맑은)/u;
+
+const KOREAN_GENERATED_COMPOUND_ROOT_PATTERN =
+  /^(도토리|솔방울|연잎|나뭇잎|조약돌|자갈|잔디|이끼|꽃잎|들꽃|갈대|버들|무명|비단|삼베|모시|한지|종이|나무|대나무|토기|청자|백자|자개|수정|구리|옥돌|호박)/u;
+
+const KOREAN_GENERATED_COMPOUND_ALLOWED_STANDALONE = new Set([
+  "도토리",
+  "솔방울",
+  "연잎",
+  "나뭇잎",
+  "호박",
+  "대나무",
+  "조약돌",
+]);
+
+const KOREAN_UNAPPROVED_LOANWORD_PATTERN =
+  /(화이트|블랙|레드|그린|스퀘어|플레인|로컬|글로벌|럭셔리|내추럴|스포티|미니멀|플라워|스카이|아이스|스노클|슬레드|클로저|트위스트|리스트|리퀴드|트렌디|소프트|솔리드|심플|다크|오가닉|어쿠스틱|엘레강스|컨셉|커스텀|프리미엄|에디션|패키지|텍스처|클리너|스테이지|플래시|리모컨|노트북|헤드폰|이어폰|스마트|디지털|비주얼|이미지|그래픽|사운드|뮤직|라이브|게이트|업그레이드)/u;
+
+const KOREAN_ALLOWED_LOANWORDS = new Set([
+  "테이블",
+  "테이프",
+  "스카프",
+  "포스터",
+  "스티커",
+  "아이스크림",
+  "피스타치오",
+  "디저트",
+  "피아노",
+  "테니스",
+  "마라톤",
+  "콘서트",
+  "클래식",
+  "머그잔",
+  "프라이팬",
+  "시리얼",
+  "티슈",
+  "에코백",
+  "토트백",
+]);
+
 const GUIDE_REVIEWED_BLOCKLISTS = {
   english: ENGLISH_BLOCKED_TERMS,
   korean: KOREAN_BLOCKED_TERMS,
@@ -617,6 +669,78 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
       }
 
       if (language === "korean") {
+        if (
+          KOREAN_GENERATED_COMPOUND_ROOT_PATTERN.test(word) &&
+          [...word].length >= 4 &&
+          !KOREAN_GENERATED_COMPOUND_ALLOWED_STANDALONE.has(word)
+        ) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "korean-generated-material-compound",
+              detail:
+                "Korean entries should avoid generated material/nature compounds",
+            }),
+          );
+        }
+
+        if (KOREAN_POETIC_ADJECTIVE_PATTERN.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "korean-poetic-adjective-compound",
+              detail:
+                "Korean entries should avoid poetic adjective compounds in public address words",
+            }),
+          );
+        }
+
+        if ([...word].length === 1 && !KOREAN_ALLOWED_ONE_SYLLABLE.has(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "korean-weak-one-syllable",
+              detail:
+                "Korean one-syllable entries need explicit review and should be familiar standalone nouns",
+            }),
+          );
+        }
+
+        if ([...word].length >= 6) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "korean-too-long",
+              detail:
+                "Korean entries should stay short enough for readable share URLs",
+            }),
+          );
+        }
+
+        if (
+          KOREAN_UNAPPROVED_LOANWORD_PATTERN.test(word) &&
+          !KOREAN_ALLOWED_LOANWORDS.has(word)
+        ) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "korean-unapproved-loanword",
+              detail:
+                "Korean loanword-style entries should be reviewed allowlist items, not style or product jargon",
+            }),
+          );
+        }
+
         if (/[채체]반/.test(word)) {
           violations.push(
             makeViolation({

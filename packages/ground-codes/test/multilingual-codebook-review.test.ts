@@ -1109,7 +1109,6 @@ describe("reviewed multilingual codebooks", () => {
       "그릇장",
       "찬장",
       "찻숟가락",
-      "디저트숟가락",
       "과일접시",
       "샐러드볼",
       "빵칼",

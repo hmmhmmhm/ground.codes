@@ -155,8 +155,10 @@ a test blocklist.
 - Review every one-syllable entry manually unless already allowlisted.
 - One-syllable entries can stay when they are familiar, neutral standalone
   nouns such as `물`, `빛`, `별`, `꽃`, `숲`, `쌀`, `밥`, `떡`, `솜`, `꿀`,
-  `깨`, or `벼`. Reject one-syllable entries that can sound like profanity,
-  insults, clipped stems, or ambiguous fragments; for example, reject `잣`.
+  `깨`, `벼`, `색`, `무`, `소`, `밀`, `팥`, `차`, `문`, `담`, `창`, `감`,
+  `비`, `실`, `철`, `양`, `돛`, `벽`, or `탕`. Reject one-syllable entries
+  that can sound like profanity, insults, clipped stems, or ambiguous
+  fragments; for example, reject `잣`, `정`, `전`, `안`, `평`, and `대`.
 - Prefer familiar nature, food, and household nouns such as `도토리`, `솔방울`,
   `밤송이`, `호박`, `연잎`, `나뭇잎`, `보리쌀`, `콩알`, `팥알`, `항아리`,
   `소쿠리`, `바구니`, `방석`, `돗자리`, `찻잔`, and `책갈피`.
@@ -173,7 +175,20 @@ a test blocklist.
   Reject invented material/nature/object compounds such as `도토리토리`,
   `도토리걸이`, `토기묶음`, `자개쌀독`, `호박자`, `솔방울묶음`,
   `솔방울꾸러미`, `솔방울꼬챙이`, `연잎목판`, `대나무빗살`,
-  `나무광목포`, `비단토리`, `정겨운물결`, and `호박쌀독`.
+  `나무광목포`, `비단토리`, `정겨운물결`, and `호박쌀독`. Remove recurring
+  material/nature root compounds when they are not settled standalone words.
+  Roots that need strict cleanup include `도토리`, `솔방울`, `연잎`,
+  `나뭇잎`, `조약돌`, `자갈`, `잔디`, `이끼`, `꽃잎`, `들꽃`, `갈대`,
+  `버들`, `무명`, `비단`, `삼베`, `모시`, `한지`, `종이`, `나무`,
+  `대나무`, `토기`, `청자`, `백자`, `자개`, `수정`, `구리`, `옥돌`,
+  and `호박`; keep only reviewed standalone words such as `도토리`,
+  `솔방울`, `연잎`, `나뭇잎`, `호박`, `대나무`, and `조약돌`.
+- Avoid poetic adjective compounds such as `정겨운도토리`, `푸른물빛`,
+  `고운나래`, `둥근보자기`, `차분한샘물`, `은빛마당`, and `맑은들녘`.
+  These read like generated slogans rather than stable address words.
+- Keep Korean code words at five Hangul syllables or fewer unless there is a
+  reviewed compatibility reason. Longer entries such as `디저트숟가락`,
+  `솔방울두루마리`, and `조약돌반짇고리` make shared URLs harder to scan.
 - Reject entries that look or sound like misspellings of another entry. Apply a
   pronunciation-similarity pass for common Korean confusion pairs such as
   `채/체` and `개/게`; when two entries collide, keep the more familiar and less
@@ -192,6 +207,10 @@ a test blocklist.
 - Be strict with plant, herb, instrument, textile, game, and religious loanwords;
   only keep reviewed exceptions that are everyday words rather than specialist
   terms.
+- Treat loanword-like style, product, software, and marketing fragments as
+  rejected unless the exact word is on the reviewed everyday allowlist. Reject
+  fragments such as `화이트`, `블랙`, `글로벌`, `럭셔리`, `스마트`, `디지털`,
+  `그래픽`, `사운드`, and `업그레이드` when they appear in generated entries.
 - Reject rare plant names and obscure loanwords such as `플록스`, and reject
   verb-derived action labels such as `섞기` unless they are established object
   nouns in everyday Korean.
