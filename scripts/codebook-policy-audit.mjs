@@ -411,6 +411,18 @@ const SPANISH_BLOCKED_TERMS = [
   "Violencia",
 ];
 
+const ENGLISH_GENERATED_COMPOUND_PATTERN =
+  /^(Amber|Alder|Apricot|Ash|Bamboo|Basalt|Beech|Birch|Cedar|Clover|Cobalt|Copper|Cotton|Crystal|Elm|Fern|Flax|Fruit|Gold|Granite|Hazel|Heather|Ivory|Jade|Juniper|Larch|Maple|Oak|Pine|River|Tea|Vine|Willow|Bright|Sun|Wind|Moss|Lake|Grove|Blossom)(awl|basin|basket|basketry|bead|beaker|bench|binder|block|board|bobbin|bowl|broom|brush|buckle|caddy|case|charm|crate|creel|crock|cup|dibber|dipper|drainer|gimlet|hamper|ladle|loom|mortar|napkin|pestle|pitcher|planter|pot|punnet|quilt|rasp|rod|satchel|saucer|sifter|tassel|tile|toggle|tote|tray|trivet|trug|tumbler|vessel|brook|field|haven|ridge|stone|vale|fall|water|leaf|wood|garden|path|pond|meadow|crest|branch|breeze|sprout|trail)$/u;
+
+const SPANISH_GENERATED_COMPOUND_PATTERN =
+  /^(Abedul|Abeto|Acebo|Acero|Agata|Alamo|Albahaca|Alcornoque|Alga|Algodon|Almendra|Aloe|Ambar|Arcilla|Arena|Avellana|Azahar|Bambu|Barro|Brezo|Bronce|Cacao|Cafe|Calabaza|Canela|Cerezo|Cobre|Coral|Cristal|Encina|Esparto|Fresno|Granito|Haya|Helecho|Hierro|Higo|Jade|Junco|Laurel|Lino|Madera|Marmol|Menta|Mimbre|Nogal|Olivo|Paja|Pino|Roble|Romero|Sauce|Tomillo|Trigo|Vid|Yute)(abanico|anillo|asa|azulejo|bandeja|banco|barreno|baston|baul|bol|bolsa|botella|boton|brocha|caja|cajon|canasta|candil|cazo|cepillo|cesto|cinta|copa|cordel|cuenco|cuchara|cubo|cuna|dedal|estante|estera|etiqueta|frasco|gancho|jarra|jarron|lampara|lienzo|maceta|mango|manta|marco|mazo|mortero|olla|paleta|palo|pano|peine|percha|pieza|pinza|placa|plato|regla|saco|sarten|sello|soporte|tabla|tablon|tarro|taza|tejido|telar|tijera|tinaja|tira|torno|trenza|vasija|vaso|vela|varilla|cuerda|cucharita|escobilla|cazuela|criba|tamiz|regadera|cubeta|palillo|costal|morral|boceto|canutillo|carrete|dedalera|hilera|jofaina|lebrillo)$/u;
+
+const CHINESE_GENERATED_COMPOUND_PATTERN =
+  /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
+
+const JAPANESE_GENERATED_COMPOUND_PATTERN =
+  /^(き|すな|たけ|つた|かみ|ぬの|いと|すぎ|まめ|こめ|はな|くさ|あさ|きぬ|めのう|ひのき|もめん|はっぱ|もみじ|こはく|ひすい|ふじ|つち|よし|まつ|とう|たま|わら)(こ)?(とって|うけ|ぼう|こもの|はたき|こいた|こだい|こつぼ|さじ|すくい|めじるし|おけ|ふた|わく|はけ|くし|つつ|はこ|うちわ|ざる|へら|べら|つまみ|かご|かざり|とめ|いため|たば|かなぐ|ふだ|かさ|ひっかけ|ひきだし|づつみ|はりばこ|いとまき|おはじき|ちぎりえ|まめざら|ちゃたく|こざいく)$/u;
+
 const KOREAN_ALLOWED_ONE_SYLLABLE = new Set(
   `
     물 빛 별 꽃 숲 쌀 밥 떡 솜 꿀 깨 벼 밤 봄 달 옷 천 흙 삽 배 귤 논
@@ -628,6 +640,18 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
             }),
           );
         }
+        if (ENGLISH_GENERATED_COMPOUND_PATTERN.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "english-generated-material-compound",
+              detail:
+                "English entries should avoid generated material/nature compounds",
+            }),
+          );
+        }
       }
 
       if (language === "spanish") {
@@ -643,7 +667,7 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
             }),
           );
         }
-        if (word.length > 14) {
+        if (word.length > 12) {
           violations.push(
             makeViolation({
               language,
@@ -651,6 +675,60 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               word,
               rule: "spanish-too-long",
               detail: "Spanish entries should stay short for URL readability",
+            }),
+          );
+        }
+        if (SPANISH_GENERATED_COMPOUND_PATTERN.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "spanish-generated-material-compound",
+              detail:
+                "Spanish entries should avoid fused generated material/object compounds",
+            }),
+          );
+        }
+      }
+
+      if (language === "chinese") {
+        if (CHINESE_GENERATED_COMPOUND_PATTERN.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "chinese-generated-material-compound",
+              detail:
+                "Chinese entries should avoid generated material/object compounds",
+            }),
+          );
+        }
+      }
+
+      if (language === "japanese") {
+        if ([...word].length > 6) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "japanese-too-long",
+              detail:
+                "Japanese entries should stay short enough for readable share URLs",
+            }),
+          );
+        }
+        if (JAPANESE_GENERATED_COMPOUND_PATTERN.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "japanese-generated-material-compound",
+              detail:
+                "Japanese entries should avoid generated material/object compounds",
             }),
           );
         }

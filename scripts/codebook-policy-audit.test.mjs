@@ -146,4 +146,54 @@ describe("codebook policy audit", () => {
       assert.equal(actual.has(`${word}:${rule}`), true, `${word}: ${rule}`);
     }
   });
+
+  test("flags generated cleanup patterns outside Korean codebooks", () => {
+    const { violations } = auditCodebooks({
+      english: [
+        "Ambercreel",
+        ...Array.from(
+          { length: EXPECTED_COUNTS.english - 1 },
+          (_, index) => `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+        ),
+      ],
+      korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
+      chinese: [
+        "木小筐",
+        ...Array.from(
+          { length: EXPECTED_COUNTS.chinese - 1 },
+          (_, index) => `词${index}`,
+        ),
+      ],
+      japanese: [
+        "ひのきひきだし",
+        ...Array.from(
+          { length: EXPECTED_COUNTS.japanese - 1 },
+          (_, index) => `ことば${index}`,
+        ),
+      ],
+      spanish: [
+        "Abedulabanico",
+        "Abeduldedalera",
+        ...Array.from(
+          { length: EXPECTED_COUNTS.spanish - 2 },
+          (_, index) => `Palabra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+        ),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    for (const [word, rule] of [
+      ["Ambercreel", "english-generated-material-compound"],
+      ["Abedulabanico", "spanish-generated-material-compound"],
+      ["Abeduldedalera", "spanish-too-long"],
+      ["木小筐", "chinese-generated-material-compound"],
+      ["ひのきひきだし", "japanese-generated-material-compound"],
+      ["ひのきひきだし", "japanese-too-long"],
+    ]) {
+      assert.equal(actual.has(`${word}:${rule}`), true, `${word}: ${rule}`);
+    }
+  });
 });

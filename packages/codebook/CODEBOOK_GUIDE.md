@@ -148,6 +148,9 @@ a test blocklist.
   `sch`, `rhythm`, and `corps`.
 - Be skeptical of coined-looking compounds ending in `brook`, `field`, `haven`,
   `ridge`, `stone`, `vale`, `fall`, `water`, or `leaf`.
+- Reject generated material/nature/object compounds such as `Ambercreel`,
+  `Granitebowl`, `Cottonhamper`, `Junipercase`, and `Apricottrug` unless the
+  exact word is a familiar standalone English noun.
 
 ### Korean
 
@@ -227,6 +230,9 @@ a test blocklist.
   `岭`, `园`, `港`, `塔`, `城`, and `村` when they create place-like labels.
 - Reject Chinese and global brands, apps, platforms, and transliterated foreign
   product names.
+- Reject generated material/object pairings such as `木小筐`, `梅小盒`,
+  `竹小匣`, `棉小篮`, and `草刷` when they read like template output rather than
+  stable everyday words.
 
 ### Japanese
 
@@ -237,6 +243,19 @@ a test blocklist.
 - Reject malformed adjective stems, clipped readings, typo-like variants, and
   adult, gambling, medical, political, religious, legal, military, violent, or
   risky terms.
+- Keep Japanese entries at six kana or fewer unless a specific reviewed
+  compatibility reason exists.
+- Reject generated material/object compounds such as `きこつつ`,
+  `かみめじるし`, `ひのきひきだし`, and `もめんこざいく`.
+
+### Spanish
+
+- Prefer short ASCII title-case Spanish common nouns for URL readability.
+- Keep Spanish entries at twelve letters or fewer unless a reviewed
+  compatibility reason exists.
+- Reject fused generated material/object compounds such as `Abedulabanico`,
+  `Abetocucharita`, `Albahacacordel`, and `Algodonpalillo`; Spanish code words
+  should not look like template roots glued to object names.
 
 ## Automated Checks
 
