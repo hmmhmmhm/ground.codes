@@ -21,14 +21,14 @@ Before changing a codebook:
 
 Current distributed word counts:
 
-| Language | Count | Source file |
-| --- | ---: | --- |
-| English | 6000 | `codebook-dist/english.json` |
-| Korean | 5630 | `codebook-dist/korean.json` |
-| Chinese | 5140 | `codebook-dist/chinese.json` |
-| Japanese | 5000 | `codebook-dist/japanese.json` |
-| Spanish | 5000 | `codebook-dist/spanish.json` |
-| French | 5000 | `codebook-dist/french.json` |
+| Language | Count | Source file                   |
+| -------- | ----: | ----------------------------- |
+| English  |  6000 | `codebook-dist/english.json`  |
+| Korean   |  5630 | `codebook-dist/korean.json`   |
+| Chinese  |  5140 | `codebook-dist/chinese.json`  |
+| Japanese |  5000 | `codebook-dist/japanese.json` |
+| Spanish  |  5000 | `codebook-dist/spanish.json`  |
+| French   |  5000 | `codebook-dist/french.json`   |
 
 ## Current Word Type Inventory
 
@@ -49,26 +49,26 @@ counted once using this precedence:
 
 Current inventory:
 
-| Language | Type | Count | Share | Examples |
-| --- | --- | ---: | ---: | --- |
-| English | Recognized compound | 1760 | 29.3% | `Handbag`, `Dewdrop`, `Headlamp`, `Feltmat`, `Applebox` |
-| English | Short standalone | 465 | 7.8% | `Dawn`, `Dune`, `Fern`, `Leaf`, `Lily` |
-| English | Other standalone or unclassified | 3775 | 62.9% | `Acorn`, `Alder`, `Arbor`, `Aspen`, `Aster` |
-| Korean | Recognized compound | 3314 | 58.9% | `안방`, `사과상자`, `나무병`, `사과바구니`, `책받침` |
-| Korean | Short standalone | 87 | 1.5% | `빛`, `별`, `색`, `물`, `무` |
-| Korean | Other standalone or unclassified | 2229 | 39.6% | `손전등`, `현관문`, `테이블`, `구두주걱`, `연필깎이` |
-| Chinese | Recognized compound | 1528 | 29.7% | `苹果盒`, `苹果袋`, `苹果杯`, `青叶`, `青草` |
-| Chinese | Short standalone | 798 | 15.5% | `狮`, `声`, `米`, `麦`, `豆` |
-| Chinese | Other standalone or unclassified | 2814 | 54.7% | `木杆`, `竹签`, `芦坯`, `木铲`, `青绳` |
-| Japanese | Recognized compound | 1068 | 21.4% | `りんごはこ`, `りんごかご`, `りんごさら`, `りんごつぼ`, `りんごなべ` |
-| Japanese | Short standalone | 371 | 7.4% | `いえ`, `すき`, `かい`, `やる`, `つぎ` |
-| Japanese | Other standalone or unclassified | 3561 | 71.2% | `あさかけ`, `はなし`, `おもう`, `かんがえ`, `かんじ` |
-| Spanish | Recognized compound | 2925 | 58.5% | `Papayatapa`, `Papayabote`, `Papayalata`, `Papayaolla`, `Papayacopa` |
-| Spanish | Short standalone | 280 | 5.6% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe` |
-| Spanish | Other standalone or unclassified | 1795 | 35.9% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto` |
-| French | Recognized compound | 2423 | 48.5% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri` |
-| French | Short standalone | 25 | 0.5% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois` |
-| French | Other standalone or unclassified | 2552 | 51.0% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau` |
+| Language | Type                             | Count | Share | Examples                                                             |
+| -------- | -------------------------------- | ----: | ----: | -------------------------------------------------------------------- |
+| English  | Recognized compound              |  1760 | 29.3% | `Handbag`, `Dewdrop`, `Headlamp`, `Feltmat`, `Applebox`              |
+| English  | Short standalone                 |   465 |  7.8% | `Dawn`, `Dune`, `Fern`, `Leaf`, `Lily`                               |
+| English  | Other standalone or unclassified |  3775 | 62.9% | `Acorn`, `Alder`, `Arbor`, `Aspen`, `Aster`                          |
+| Korean   | Recognized compound              |  3314 | 58.9% | `안방`, `사과상자`, `나무병`, `사과바구니`, `책받침`                 |
+| Korean   | Short standalone                 |    87 |  1.5% | `빛`, `별`, `색`, `물`, `무`                                         |
+| Korean   | Other standalone or unclassified |  2229 | 39.6% | `손전등`, `현관문`, `테이블`, `구두주걱`, `연필깎이`                 |
+| Chinese  | Recognized compound              |  1528 | 29.7% | `苹果盒`, `苹果袋`, `苹果杯`, `青叶`, `青草`                         |
+| Chinese  | Short standalone                 |   798 | 15.5% | `狮`, `声`, `米`, `麦`, `豆`                                         |
+| Chinese  | Other standalone or unclassified |  2814 | 54.7% | `木杆`, `竹签`, `芦坯`, `木铲`, `青绳`                               |
+| Japanese | Recognized compound              |  1068 | 21.4% | `りんごはこ`, `りんごかご`, `りんごさら`, `りんごつぼ`, `りんごなべ` |
+| Japanese | Short standalone                 |   371 |  7.4% | `いえ`, `すき`, `かい`, `やる`, `つぎ`                               |
+| Japanese | Other standalone or unclassified |  3561 | 71.2% | `あさかけ`, `はなし`, `おもう`, `かんがえ`, `かんじ`                 |
+| Spanish  | Recognized compound              |  2925 | 58.5% | `Papayatapa`, `Papayabote`, `Papayalata`, `Papayaolla`, `Papayacopa` |
+| Spanish  | Short standalone                 |   280 |  5.6% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe`                               |
+| Spanish  | Other standalone or unclassified |  1795 | 35.9% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto`                 |
+| French   | Recognized compound              |  2384 | 47.7% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
+| French   | Short standalone                 |    48 |  1.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
+| French   | Other standalone or unclassified |  2568 | 51.4% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
 
 Review implications:
 
@@ -80,10 +80,11 @@ Review implications:
 - Chinese, English, and Japanese have lower recognized-compound shares, but the
   unclassified bucket still needs human review because the script intentionally
   avoids broad, risky inference.
-- French is initialized below the Korean and Spanish compound share by mixing a
-  reviewed BIP39-derived standalone seed with project-curated nouns and bounded
-  compounds. Continue replacing weak fused compounds with natural French
-  standalone words as review coverage grows.
+- French is below the Korean and Spanish compound share after the first
+  post-launch cleanup pass. That pass removed reviewed sensitive, abstract, and
+  verb-like BIP39 seed terms, then replaced them with concrete standalone French
+  nouns. Continue replacing weak fused compounds with natural French standalone
+  words as review coverage grows.
 
 ## Product Principles
 
@@ -120,15 +121,15 @@ Good categories:
 Use examples to calibrate review decisions. The examples below describe the
 reasoning pattern; they are not a request to add the exact accepted examples.
 
-| Candidate pattern | Decision | Reason |
-| --- | --- | --- |
-| `basket`, `바구니`, `竹篮`, `かご` | Accept when common, neutral, concrete, and naturally written in the target language. | The word is readable in a public place label and has low semantic risk. |
-| `cloud`, `구름`, `云朵`, `くも` | Accept when the meaning is broad, familiar, and not tied to a sensitive domain. | Nature words are usually safe unless they are place names, brands, or idioms with negative force. |
-| `Seoul`, `서울`, `东京`, `とうきょう` | Reject when the word is a place name, even if ordinary users know it well. | Ground Codes already use region labels; coordinate payload words should not add extra geography. |
-| `Poker`, `슬롯`, `彩票`, `ぱちんこ` | Reject when tied to gambling, betting, or games of chance. | Codes must not create embarrassing or regulated-domain associations. |
-| `Clinic`, `당뇨`, `药`, `ちりょう` | Reject when medical, disease, medication, diagnosis, or treatment related. | A medical-looking address can be alarming or inappropriate in unrelated locations. |
-| `Samsung`, `카카오`, `腾讯`, `やふおく` | Reject when a brand, platform, app, service, or product. | Brand terms create trademark, endorsement, and freshness problems. |
-| `프로`, `시뮬`, `ぐぐ`, `foo` | Reject when clipped, generated-looking, foreign, or not a stable standalone word. | Fragment-like entries make codes look broken and reduce trust. |
+| Candidate pattern                       | Decision                                                                             | Reason                                                                                            |
+| --------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `basket`, `바구니`, `竹篮`, `かご`      | Accept when common, neutral, concrete, and naturally written in the target language. | The word is readable in a public place label and has low semantic risk.                           |
+| `cloud`, `구름`, `云朵`, `くも`         | Accept when the meaning is broad, familiar, and not tied to a sensitive domain.      | Nature words are usually safe unless they are place names, brands, or idioms with negative force. |
+| `Seoul`, `서울`, `东京`, `とうきょう`   | Reject when the word is a place name, even if ordinary users know it well.           | Ground Codes already use region labels; coordinate payload words should not add extra geography.  |
+| `Poker`, `슬롯`, `彩票`, `ぱちんこ`     | Reject when tied to gambling, betting, or games of chance.                           | Codes must not create embarrassing or regulated-domain associations.                              |
+| `Clinic`, `당뇨`, `药`, `ちりょう`      | Reject when medical, disease, medication, diagnosis, or treatment related.           | A medical-looking address can be alarming or inappropriate in unrelated locations.                |
+| `Samsung`, `카카오`, `腾讯`, `やふおく` | Reject when a brand, platform, app, service, or product.                             | Brand terms create trademark, endorsement, and freshness problems.                                |
+| `프로`, `시뮬`, `ぐぐ`, `foo`           | Reject when clipped, generated-looking, foreign, or not a stable standalone word.    | Fragment-like entries make codes look broken and reduce trust.                                    |
 
 When in doubt, reject the candidate and pick a simpler neutral replacement.
 The codebook has enough surface area that marginal words are not worth keeping.
@@ -323,14 +324,25 @@ a test blocklist.
   violent, political, religious, and adult terms. The seed improves
   pronunciation and copying quality, but it is not a substitute for product
   review.
+- Reject abstract, negative, or action-like BIP39 seed words when they feel like
+  commands or error states in a public address. Reviewed examples include
+  `Abdiquer`, `Anxieux`, `Censurer`, `Erreur`, `Fatal`, `Injecter`, `Morsure`,
+  `Offenser`, `Suspect`, `Absence`, `Analyse`, `Impact`, `Systeme`,
+  `Travail`, `Abaisser`, `Accepter`, `Arriver`, `Chercher`, `Sortir`, and
+  `Terminer`.
 - Prefer concrete everyday nouns such as `Amande`, `Bocal`, `Panier`,
-  `Tilleul`, and `Violette`.
+  `Tilleul`, `Violette`, `Accordeon`, `Artichaut`, `Canape`, `Jonquille`,
+  and `Toboggan`.
 - Generated nature/material/object compounds may be used to preserve count, but
-  they should stay below the Korean and Spanish compound share and be replaced
-  over time with natural standalone French entries.
+  they should stay below the Korean and Spanish compound share, should not
+  exceed the French saturation limit enforced by `scripts/codebook-policy-audit.mjs`,
+  and should be replaced over time with natural standalone French entries.
 - Reject terms that are risky in a public address, including `Sexe`, `Casino`,
   `Arme`, `Guerre`, `Drogue`, `Medecin`, `Politique`, `Religion`, `Crime`,
   `Mort`, and `Violence`.
+- For codebook-only French cleanup, run
+  `node scripts/generate-french-support.mjs codebook-only` so localized geoint
+  data and embedded region indexes do not churn when labels are unchanged.
 
 ## Automated Checks
 

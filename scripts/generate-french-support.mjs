@@ -3,11 +3,14 @@ import { createRequire } from "node:module";
 import path from "node:path";
 
 const root = new URL("../", import.meta.url);
-const geointRequire = createRequire(new URL("../packages/geoint/", import.meta.url));
+const geointRequire = createRequire(
+  new URL("../packages/geoint/", import.meta.url),
+);
 const { default: KDBush } = await import(geointRequire.resolve("kdbush"));
 const { Level } = await import(geointRequire.resolve("level"));
 
-const readJson = (path) => JSON.parse(readFileSync(new URL(path, root), "utf8"));
+const readJson = (path) =>
+  JSON.parse(readFileSync(new URL(path, root), "utf8"));
 const writeJson = (path, value) =>
   writeFileSync(new URL(path, root), `${JSON.stringify(value, null, 2)}\n`);
 
@@ -266,6 +269,340 @@ const standaloneWords = [
   "Volet",
 ];
 
+const supplementalStandaloneWords = [
+  "Accordeon",
+  "Accoudoir",
+  "Agrafe",
+  "Agneau",
+  "Agrume",
+  "Aimant",
+  "Aigrette",
+  "Airelle",
+  "Alouette",
+  "Ananas",
+  "Alpage",
+  "Amulette",
+  "Anchois",
+  "Anguille",
+  "Anse",
+  "Annuaire",
+  "Arbalete",
+  "Arrosoir",
+  "Artichaut",
+  "Asperge",
+  "Aubergine",
+  "Avocat",
+  "Bac",
+  "Baie",
+  "Baignoire",
+  "Balise",
+  "Balancoire",
+  "Bambou",
+  "Bandana",
+  "Banquette",
+  "Baratte",
+  "Baril",
+  "Bassine",
+  "Bec",
+  "Beignet",
+  "Bergamote",
+  "Betterave",
+  "Biche",
+  "Blette",
+  "Bleuet",
+  "Bocage",
+  "Boiserie",
+  "Bonbonniere",
+  "Bonnet",
+  "Bouchon",
+  "Bouilloire",
+  "Bouleau",
+  "Bouture",
+  "Bracelet",
+  "Branchette",
+  "Brindille",
+  "Briquette",
+  "Broderie",
+  "Brouette",
+  "Bruine",
+  "Buvard",
+  "Cabas",
+  "Cabillaud",
+  "Cafe",
+  "Caille",
+  "Canard",
+  "Canneberge",
+  "Capeline",
+  "Capucine",
+  "Caravane",
+  "Carnet",
+  "Carreau",
+  "Casserole",
+  "Cassis",
+  "Castor",
+  "Cerfeuil",
+  "Cerf",
+  "Chanterelle",
+  "Chardon",
+  "Chataigne",
+  "Chaussette",
+  "Chaudron",
+  "Chemise",
+  "Chenil",
+  "Cheval",
+  "Chevet",
+  "Chevre",
+  "Chevreuil",
+  "Chien",
+  "Chou",
+  "Ciboule",
+  "Ciboulette",
+  "Cigale",
+  "Citrouille",
+  "Classeur",
+  "Clavier",
+  "Clairevoie",
+  "Cloison",
+  "Clochette",
+  "Clementine",
+  "Colza",
+  "Compotier",
+  "Confiture",
+  "Corail",
+  "Cornet",
+  "Cormier",
+  "Couteau",
+  "Couette",
+  "Courge",
+  "Courgette",
+  "Couscous",
+  "Cresson",
+  "Crevette",
+  "Crayon",
+  "Cygne",
+  "Dattier",
+  "Dentelle",
+  "Echalote",
+  "Eglantine",
+  "Epeautre",
+  "Ecureuil",
+  "Echarpe",
+  "Eponge",
+  "Estragon",
+  "Faisselle",
+  "Faisan",
+  "Fenouil",
+  "Feutre",
+  "Flanelle",
+  "Fleurette",
+  "Flute",
+  "Fourche",
+  "Fourneau",
+  "Foulard",
+  "Furet",
+  "Futaie",
+  "Gant",
+  "Gaufre",
+  "Genet",
+  "Gilet",
+  "Girofle",
+  "Glycine",
+  "Goujon",
+  "Gourde",
+  "Grive",
+  "Haricot",
+  "Hamster",
+  "Herisson",
+  "Hirondelle",
+  "Horloge",
+  "Houblon",
+  "Jambon",
+  "Jujube",
+  "Jupe",
+  "Lacet",
+  "Laitue",
+  "Lambris",
+  "Lapin",
+  "Lentille",
+  "Lezard",
+  "Lilas",
+  "Liseron",
+  "Libellule",
+  "Lievre",
+  "Loutre",
+  "Luciole",
+  "Loupe",
+  "Manteau",
+  "Marmite",
+  "Melisse",
+  "Merle",
+  "Mirabelle",
+  "Moineau",
+  "Mulot",
+  "Muscade",
+  "Mouchoir",
+  "Nacelle",
+  "Navet",
+  "Neflier",
+  "Oignon",
+  "Orange",
+  "Oreiller",
+  "Oseille",
+  "Orvet",
+  "Palet",
+  "Palette",
+  "Panais",
+  "Pantalon",
+  "Paon",
+  "Pastille",
+  "Patate",
+  "Peinture",
+  "Pelote",
+  "Perche",
+  "Pipeau",
+  "Pivoine",
+  "Pivert",
+  "Poireau",
+  "Poelon",
+  "Poivron",
+  "Pois",
+  "Poule",
+  "Potiron",
+  "Poterie",
+  "Poussette",
+  "Prunelle",
+  "Raifort",
+  "Radis",
+  "Rameau",
+  "Ramequin",
+  "Renard",
+  "Rhubarbe",
+  "Robinet",
+  "Ronce",
+  "Roseraie",
+  "Salopette",
+  "Sarriette",
+  "Saumon",
+  "Savon",
+  "Scie",
+  "Sirop",
+  "Sorbier",
+  "Tabouret",
+  "Tapis",
+  "Tartelette",
+  "Terrine",
+  "Tisane",
+  "Tomme",
+  "Tomate",
+  "Tonnelet",
+  "Toupie",
+  "Tricot",
+  "Truite",
+  "Tussilage",
+  "Ustensile",
+  "Valise",
+  "Vannerie",
+  "Velours",
+  "Violette",
+  "Viorne",
+  "Zeste",
+];
+
+const additionalSupplementalStandaloneWords = [
+  "Abricot",
+  "Acacia",
+  "Ail",
+  "Allee",
+  "Alisier",
+  "Ampoule",
+  "Ancolie",
+  "Anorak",
+  "Arcade",
+  "Autocar",
+  "Basilic",
+  "Beret",
+  "Bigorneau",
+  "Ble",
+  "Bottine",
+  "Brocoli",
+  "Bruyere",
+  "Cabine",
+  "Cadran",
+  "Cannelle",
+  "Canape",
+  "Caramel",
+  "Carillon",
+  "Cartable",
+  "Celeri",
+  "Cerceau",
+  "Charrette",
+  "Chausson",
+  "Clarinette",
+  "Coquelicot",
+  "Couronne",
+  "Cumin",
+  "Crepiere",
+  "Dahlia",
+  "Domino",
+  "Epinard",
+  "Erable",
+  "Escabeau",
+  "Fauteuil",
+  "Framboise",
+  "Gaufrier",
+  "Geranium",
+  "Glaieul",
+  "Gondole",
+  "Gouttiere",
+  "Harpe",
+  "Jacinthe",
+  "Jonquille",
+  "Kiwi",
+  "Lac",
+  "Limace",
+  "Lis",
+  "Lys",
+  "Mandarine",
+  "Mer",
+  "Meringue",
+  "Navette",
+  "Noiseraie",
+  "Olive",
+  "Origan",
+  "Ortie",
+  "Pagaie",
+  "Pamplemousse",
+  "Patisserie",
+  "Peche",
+  "Pedalo",
+  "Persil",
+  "Pissenlit",
+  "Poivriere",
+  "Pomelo",
+  "Pomme",
+  "Potimarron",
+  "Pullover",
+  "Ravier",
+  "Reglette",
+  "Ricotta",
+  "Riz",
+  "Romarin",
+  "Sel",
+  "Serpette",
+  "Son",
+  "Sorbet",
+  "Soupiere",
+  "Tambourin",
+  "Tapisserie",
+  "Tartine",
+  "The",
+  "Toboggan",
+  "Tourte",
+  "Vareuse",
+  "Verrine",
+  "Yaourt",
+];
+
 const prefixes = [
   "Abricot",
   "Acacia",
@@ -429,20 +766,145 @@ const suffixes = [
   "volet",
 ];
 
+const reviewedFrenchVerbRejects = new Set(
+  `
+    Adjuger Affubler Agencer Agrafer Aliener Alleger Allouer Amenager Amorcer
+    Aneantir Aplanir Arpenter Aspirer Asservir Associer Assurer Attirer
+    Attraper Augurer Avaler Avancer Aviser Avouer Bafouer Balancer Bavarder
+    Blanchir Blinder Bloquer Boiser Bondir Bonifier Bricoler Broder Bronzer
+    Butiner Calculer Calmer Capter Caresser Causer Cerner Cesser Chavirer
+    Chercher Choisir Cimenter Cintrer Circuler Claquer Cligner Codifier
+    Cogner Coiffer Coincer Colmater Conduire Confier Congeler Couvrir Creuser
+    Croquer Cultiver Debattre Debiter Deborder Decaler Decider Declarer
+    Decorer Decrire Degager Demander Dessiner Devenir Deviner Douter Eclairer
+    Ecouter Effacer Egarer Emporter Enlever Envoyer Essayer Eviter Exister
+    Explorer Exposer Fermer Filtrer Forcer Fouiller Frapper Gagner Garantir
+    Glisser Gonfler Grimper Hesiter Ignorer Imiter Imposer Imprimer Informer
+    Inspirer Inventer Inviter Isoler Jongler Laisser Liberer Lister Lutter
+    Nettoyer Observer Occuper Offrir Parler Partager Plonger Proteger Quitter
+    Raconter Recycler Remplir Rester Sauter Separer Sortir Tailler Terminer
+    Toucher Tricoter Varier Verser
+  `
+    .trim()
+    .split(/\s+/),
+);
+
 const blockedCodebookWords = new Set([
+  "Abaisser",
+  "Abdiquer",
+  "Abolir",
+  "Aborder",
+  "Aboutir",
+  "Aboyer",
+  "Abrasif",
+  "Abreuver",
+  "Abriter",
+  "Abroger",
+  "Abrupt",
+  "Absence",
+  "Absolu",
+  "Absurde",
+  "Abusif",
+  "Accabler",
+  "Accepter",
+  "Acclamer",
+  "Accuser",
+  "Acerbe",
+  "Acheter",
+  "Acquerir",
+  "Actuel",
+  "Admettre",
+  "Admirer",
+  "Adopter",
+  "Adorer",
+  "Adoucir",
+  "Affecter",
+  "Affreux",
+  "Agacer",
+  "Agiter",
+  "Ajouter",
+  "Ajuster",
   "Alcool",
+  "Alerte",
+  "Allumer",
+  "Alourdir",
+  "Amertume",
+  "Amour",
+  "Analyse",
+  "Annexer",
+  "Anomalie",
+  "Anormal",
+  "Anxieux",
+  "Apaiser",
+  "Appeler",
+  "Apporter",
+  "Appuyer",
   "Arme",
+  "Arracher",
+  "Arriver",
+  "Arroser",
+  "Aspect",
+  "Atroce",
+  "Avenir",
+  "Aveugle",
+  "Avide",
+  "Bizarre",
+  "Bobard",
+  "Bonheur",
+  "Bonus",
   "Casino",
+  "Caution",
+  "Censurer",
+  "Cerveau",
+  "Cohesion",
+  "Contact",
   "Crime",
+  "Crediter",
+  "Critere",
+  "Cycle",
+  "Defensif",
+  "Distance",
+  "Domaine",
   "Drogue",
+  "Effectif",
+  "Enfermer",
+  "Erreur",
+  "Exemple",
+  "Exiler",
+  "Fatal",
+  "Fortune",
+  "Fureur",
+  "Furieux",
+  "Fusion",
   "Guerre",
   "Haine",
+  "Horde",
+  "Impact",
+  "Indice",
+  "Injecter",
+  "Inutile",
+  "Logique",
   "Maladie",
   "Medecin",
+  "Morsure",
   "Mort",
+  "Offenser",
+  "Opinion",
   "Politique",
+  "Position",
+  "Question",
   "Religion",
+  "Resultat",
+  "Service",
   "Sexe",
+  "Sombre",
+  "Suspect",
+  "Systeme",
+  "Theorie",
+  "Travail",
+  "Union",
+  "Usage",
+  "Vexer",
   "Violence",
   "Vin",
 ]);
@@ -460,6 +922,7 @@ const buildFrenchCodebook = () => {
     if (!/^[A-Z][a-z]+$/.test(candidate)) return;
     if (candidate.length > 12) return;
     if (blockedCodebookWords.has(candidate)) return;
+    if (reviewedFrenchVerbRejects.has(candidate)) return;
     if (seen.has(candidate)) return;
     seen.add(candidate);
     words.push(candidate);
@@ -467,6 +930,8 @@ const buildFrenchCodebook = () => {
 
   for (const word of standaloneWords) add(word);
   for (const word of bip39SeedWords) add(word);
+  for (const word of supplementalStandaloneWords) add(word);
+  for (const word of additionalSupplementalStandaloneWords) add(word);
 
   for (const suffix of suffixes) {
     for (const prefix of prefixes) {
@@ -485,33 +950,33 @@ const buildFrenchCodebook = () => {
 
 const earthNameOverridesByCode = new Map(
   Object.entries({
-    "1835848": "Seoul",
-    "1850147": "Tokyo",
-    "1816670": "Pekin",
-    "2988507": "Paris",
-    "5128581": "New York",
-    "2643743": "Londres",
-    "2950159": "Berlin",
-    "3169070": "Rome",
-    "3530597": "Mexico",
-    "2147714": "Sydney",
-    "5368361": "Los Angeles",
-    "1880252": "Singapour",
-    "292223": "Dubai",
-    "745044": "Istanbul",
-    "3451190": "Rio",
-    "3435910": "Buenos Aires",
-    "360630": "Le Caire",
-    "3369157": "Le Cap",
-    "1275339": "Bombay",
-    "1273294": "Delhi",
-    "1609350": "Bangkok",
-    "1796236": "Shanghai",
-    "1819729": "Hong Kong",
-    "6167865": "Toronto",
-    "6077243": "Montreal",
-    "6094817": "Ottawa",
-    "6173331": "Vancouver",
+    1835848: "Seoul",
+    1850147: "Tokyo",
+    1816670: "Pekin",
+    2988507: "Paris",
+    5128581: "New York",
+    2643743: "Londres",
+    2950159: "Berlin",
+    3169070: "Rome",
+    3530597: "Mexico",
+    2147714: "Sydney",
+    5368361: "Los Angeles",
+    1880252: "Singapour",
+    292223: "Dubai",
+    745044: "Istanbul",
+    3451190: "Rio",
+    3435910: "Buenos Aires",
+    360630: "Le Caire",
+    3369157: "Le Cap",
+    1275339: "Bombay",
+    1273294: "Delhi",
+    1609350: "Bangkok",
+    1796236: "Shanghai",
+    1819729: "Hong Kong",
+    6167865: "Toronto",
+    6077243: "Montreal",
+    6094817: "Ottawa",
+    6173331: "Vancouver",
   }),
 );
 
@@ -550,10 +1015,14 @@ const translateRegion3Name = (row) => {
   }
 
   if (row.source === "natural-earth-marine") {
-    const marineGridMatch = name.match(/^(.+) (Sea|Ocean|Bay|Gulf|Channel|Strait|Sound|Basin|Ridge|Plateau|Rise|Trench|Bank) (\d+)$/);
+    const marineGridMatch = name.match(
+      /^(.+) (Sea|Ocean|Bay|Gulf|Channel|Strait|Sound|Basin|Ridge|Plateau|Rise|Trench|Bank) (\d+)$/,
+    );
     if (marineGridMatch) {
       const [, base, term, index] = marineGridMatch;
-      return normalizeAscii(`${marineTerms.get(term) ?? term} ${base} ${index}`);
+      return normalizeAscii(
+        `${marineTerms.get(term) ?? term} ${base} ${index}`,
+      );
     }
 
     for (const [english, french] of marineTerms) {
@@ -660,7 +1129,10 @@ const translatePlanetaryName = (name) => {
   for (const [pattern, replacement] of planetaryTerms) {
     translated = translated.replace(pattern, replacement);
   }
-  translated = translated.replace(/^([A-Za-z]+) Cratere( \d+)?$/, "Cratere $1$2");
+  translated = translated.replace(
+    /^([A-Za-z]+) Cratere( \d+)?$/,
+    "Cratere $1$2",
+  );
   return normalizeAscii(translated);
 };
 
@@ -698,7 +1170,10 @@ const buildEmbeddedRegionDb = async (regionName) => {
   );
   const regionDbPath = new URL("packages/geoint/region-db/", root);
   const regionLevelDbPath = path.join(regionDbPath.pathname, regionName);
-  const regionKDBushPath = path.join(regionDbPath.pathname, `${regionName}.index`);
+  const regionKDBushPath = path.join(
+    regionDbPath.pathname,
+    `${regionName}.index`,
+  );
   const regionLevel = Number(regionName.split("-")[1]);
   const regions = JSON.parse(readFileSync(regionJsonPath, "utf8"));
 
@@ -712,7 +1187,10 @@ const buildEmbeddedRegionDb = async (regionName) => {
 
   for (const [index, region] of regions.entries()) {
     await db.put(`I-${index}`, JSON.stringify(region));
-    await db.put(`N-${regionLevel === 1 ? region.code : region.name}`, `I-${index}`);
+    await db.put(
+      `N-${regionLevel === 1 ? region.code : region.name}`,
+      `I-${index}`,
+    );
     kdbush.add(region.long, region.lat);
   }
 
@@ -721,40 +1199,47 @@ const buildEmbeddedRegionDb = async (regionName) => {
   writeFileSync(regionKDBushPath, Buffer.from(kdbush.data));
 };
 
+const mode = process.argv[2] ?? "all";
+if (!["all", "codebook-only"].includes(mode)) {
+  throw new Error(`Unsupported mode: ${mode}`);
+}
+
 writeJson("packages/codebook/codebook-dist/french.json", buildFrenchCodebook());
 
-buildLocalizedRows(
-  "packages/geoint/region-dist/region-2.json",
-  "packages/geoint/region-dist/region-2-french.json",
-  translateEarthRegionName,
-);
-buildLocalizedRows(
-  "packages/geoint/region-dist/region-3.json",
-  "packages/geoint/region-dist/region-3-french.json",
-  translateRegion3Name,
-);
-buildLocalizedRows(
-  "packages/geoint/region-dist/region-2-moon.json",
-  "packages/geoint/region-dist/region-2-moon-french.json",
-  (row) => translatePlanetaryName(row.name),
-);
-buildLocalizedRows(
-  "packages/geoint/region-dist/region-2-mars.json",
-  "packages/geoint/region-dist/region-2-mars-french.json",
-  (row) => translatePlanetaryName(row.name),
-);
-buildLocalizedRows(
-  "packages/geoint/region-dist/region-3-mars.json",
-  "packages/geoint/region-dist/region-3-mars-french.json",
-  (row) => translatePlanetaryName(row.name),
-);
+if (mode === "all") {
+  buildLocalizedRows(
+    "packages/geoint/region-dist/region-2.json",
+    "packages/geoint/region-dist/region-2-french.json",
+    translateEarthRegionName,
+  );
+  buildLocalizedRows(
+    "packages/geoint/region-dist/region-3.json",
+    "packages/geoint/region-dist/region-3-french.json",
+    translateRegion3Name,
+  );
+  buildLocalizedRows(
+    "packages/geoint/region-dist/region-2-moon.json",
+    "packages/geoint/region-dist/region-2-moon-french.json",
+    (row) => translatePlanetaryName(row.name),
+  );
+  buildLocalizedRows(
+    "packages/geoint/region-dist/region-2-mars.json",
+    "packages/geoint/region-dist/region-2-mars-french.json",
+    (row) => translatePlanetaryName(row.name),
+  );
+  buildLocalizedRows(
+    "packages/geoint/region-dist/region-3-mars.json",
+    "packages/geoint/region-dist/region-3-mars-french.json",
+    (row) => translatePlanetaryName(row.name),
+  );
 
-for (const regionName of [
-  "region-2-french",
-  "region-3-french",
-  "region-2-moon-french",
-  "region-2-mars-french",
-  "region-3-mars-french",
-]) {
-  await buildEmbeddedRegionDb(regionName);
+  for (const regionName of [
+    "region-2-french",
+    "region-3-french",
+    "region-2-moon-french",
+    "region-2-mars-french",
+    "region-3-mars-french",
+  ]) {
+    await buildEmbeddedRegionDb(regionName);
+  }
 }

@@ -455,22 +455,144 @@ const SPANISH_BLOCKED_TERMS = [
 ];
 
 const FRENCH_BLOCKED_TERMS = [
+  "Abaisser",
+  "Abdiquer",
+  "Abolir",
+  "Aborder",
+  "Aboutir",
+  "Aboyer",
+  "Abrasif",
+  "Abreuver",
+  "Abriter",
+  "Abroger",
+  "Abrupt",
+  "Absence",
+  "Absolu",
+  "Absurde",
+  "Abusif",
+  "Accabler",
+  "Accepter",
+  "Acclamer",
+  "Accuser",
+  "Acerbe",
+  "Acheter",
+  "Acquerir",
+  "Actuel",
+  "Admettre",
+  "Admirer",
+  "Adopter",
+  "Adorer",
+  "Adoucir",
+  "Affecter",
+  "Affreux",
+  "Agacer",
+  "Agiter",
+  "Ajouter",
+  "Ajuster",
   "Alcool",
+  "Alerte",
+  "Allumer",
+  "Alourdir",
+  "Amertume",
+  "Amour",
+  "Analyse",
+  "Annexer",
+  "Anomalie",
+  "Anormal",
+  "Anxieux",
+  "Apaiser",
+  "Appeler",
+  "Apporter",
+  "Appuyer",
   "Arme",
+  "Arracher",
+  "Arriver",
+  "Arroser",
+  "Aspect",
+  "Atroce",
+  "Avenir",
+  "Aveugle",
+  "Avide",
+  "Bizarre",
+  "Bobard",
+  "Bonheur",
+  "Bonus",
   "Casino",
+  "Caution",
+  "Censurer",
+  "Cerveau",
+  "Cohesion",
+  "Contact",
   "Crime",
+  "Crediter",
+  "Critere",
+  "Cycle",
+  "Defensif",
+  "Distance",
+  "Domaine",
   "Drogue",
+  "Effectif",
+  "Enfermer",
+  "Erreur",
+  "Exemple",
+  "Exiler",
+  "Fatal",
+  "Fortune",
+  "Fureur",
+  "Furieux",
+  "Fusion",
   "Guerre",
   "Haine",
+  "Horde",
+  "Impact",
+  "Indice",
+  "Injecter",
+  "Inutile",
+  "Logique",
   "Maladie",
   "Medecin",
+  "Morsure",
   "Mort",
+  "Offenser",
+  "Opinion",
   "Politique",
+  "Position",
+  "Question",
   "Religion",
+  "Resultat",
+  "Service",
   "Sexe",
+  "Sombre",
+  "Suspect",
+  "Systeme",
+  "Theorie",
+  "Travail",
+  "Union",
+  "Usage",
+  "Vexer",
   "Violence",
   "Vin",
 ];
+
+const FRENCH_VERB_REJECTS = `
+  Adjuger Affubler Agencer Agrafer Aliener Alleger Allouer Amenager Amorcer
+  Aneantir Aplanir Arpenter Aspirer Asservir Associer Assurer Attirer Attraper
+  Augurer Avaler Avancer Aviser Avouer Bafouer Balancer Bavarder Blanchir
+  Blinder Bloquer Boiser Bondir Bonifier Bricoler Broder Bronzer Butiner
+  Calculer Calmer Capter Caresser Causer Cerner Cesser Chavirer Chercher
+  Choisir Cimenter Cintrer Circuler Claquer Cligner Codifier Cogner Coiffer
+  Coincer Colmater Conduire Confier Congeler Couvrir Creuser Croquer Cultiver
+  Debattre Debiter Deborder Decaler Decider Declarer Decorer Decrire Degager
+  Demander Dessiner Devenir Deviner Douter Eclairer Ecouter Effacer Egarer
+  Emporter Enlever Envoyer Essayer Eviter Exister Explorer Exposer Fermer
+  Filtrer Forcer Fouiller Frapper Gagner Garantir Glisser Gonfler Grimper
+  Hesiter Ignorer Imiter Imposer Imprimer Informer Inspirer Inventer Inviter
+  Isoler Jongler Laisser Liberer Lister Lutter Nettoyer Observer Occuper Offrir
+  Parler Partager Plonger Proteger Quitter Raconter Recycler Remplir Rester
+  Sauter Separer Sortir Tailler Terminer Toucher Tricoter Varier Verser
+`
+  .trim()
+  .split(/\s+/);
 
 const ENGLISH_GENERATED_COMPOUND_PATTERN =
   /^(Amber|Alder|Apricot|Ash|Bamboo|Basalt|Beech|Birch|Cedar|Clover|Cobalt|Copper|Cotton|Crystal|Elm|Fern|Flax|Fruit|Gold|Granite|Hazel|Heather|Ivory|Jade|Juniper|Larch|Maple|Oak|Pine|River|Tea|Vine|Willow|Bright|Sun|Wind|Moss|Lake|Grove|Blossom)(awl|basin|basket|basketry|bead|beaker|bench|binder|block|board|bobbin|bowl|broom|brush|buckle|caddy|case|charm|crate|creel|crock|cup|dibber|dipper|drainer|gimlet|hamper|ladle|loom|mortar|napkin|pestle|pitcher|planter|pot|punnet|quilt|rasp|rod|satchel|saucer|sifter|tassel|tile|toggle|tote|tray|trivet|trug|tumbler|vessel|brook|field|haven|ridge|stone|vale|fall|water|leaf|wood|garden|path|pond|meadow|crest|branch|breeze|sprout|trail)$/u;
@@ -482,6 +604,10 @@ const SPANISH_TEMPLATE_COMPOUND_PATTERN =
   /^[A-Z][a-z]{3,}(?:abanico|anillo|aro|asa|azulejo|banco|bandeja|barreno|baston|baul|boceto|bol|bolsa|bote|botella|boton|brocha|caja|cajon|canasta|candil|carrete|cazo|cazuela|cepillo|cesta|cesto|cinta|copa|cordel|costal|criba|cuchara|cuerda|cuenco|cubo|cubeta|cuna|dado|dedal|estante|estera|etiqueta|ficha|flor|frasco|gancho|hilera|hoja|jarra|jarron|jofaina|lampara|lata|lebrillo|libro|lienzo|lona|luz|maceta|mango|manta|mapa|marco|mazo|mesa|miel|molde|morral|mortero|olla|pala|paleta|palillo|palo|pan|pano|peine|percha|pieza|pinza|placa|plato|red|regla|saco|sal|sarten|sello|silla|sol|soporte|tabla|tablon|tamiz|tapa|tarro|taza|tejido|telar|tijera|tinaja|tira|torno|trenza|tubo|vasija|vaso|vela|varilla)$/u;
 const SPANISH_COMPOUND_SATURATION_LIMIT = 2945;
 const SPANISH_REVIEWED_STANDALONE_WORDS = readReviewedSpanishStandaloneWords();
+
+const FRENCH_TEMPLATE_COMPOUND_PATTERN =
+  /^[A-Z][a-z]{3,}(?:abri|anse|arc|bague|balai|banc|bocal|boite|bol|borne|boule|brin|brosse|cache|cadre|caisse|canne|carafe|carte|casier|cloche|clou|corde|coupe|coussin|cruche|dalle|ecrin|etui|fagot|ficelle|fil|flacon|gobelet|grille|housse|jarre|lampe|louche|malle|manche|moule|nappe|panier|patere|peigne|pichet|pince|plaque|plateau|poche|poignee|pot|regle|rideau|ruban|sac|seau|tamis|tasse|tiroir|toile|vase|verre|volet)$/u;
+const FRENCH_COMPOUND_SATURATION_LIMIT = 2500;
 
 const CHINESE_GENERATED_COMPOUND_PATTERN =
   /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
@@ -547,7 +673,7 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
   chinese: CHINESE_BLOCKED_TERMS,
   japanese: JAPANESE_BLOCKED_TERMS,
   spanish: SPANISH_BLOCKED_TERMS,
-  french: FRENCH_BLOCKED_TERMS,
+  french: [...FRENCH_BLOCKED_TERMS, ...FRENCH_VERB_REJECTS],
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -632,9 +758,10 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
     }
 
     if (language === "spanish") {
-      const templateCompoundCount = words.filter((word) =>
-        !SPANISH_REVIEWED_STANDALONE_WORDS.has(word) &&
-        SPANISH_TEMPLATE_COMPOUND_PATTERN.test(word),
+      const templateCompoundCount = words.filter(
+        (word) =>
+          !SPANISH_REVIEWED_STANDALONE_WORDS.has(word) &&
+          SPANISH_TEMPLATE_COMPOUND_PATTERN.test(word),
       ).length;
 
       if (templateCompoundCount > SPANISH_COMPOUND_SATURATION_LIMIT) {
@@ -645,6 +772,24 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
             word: `${templateCompoundCount}`,
             rule: "spanish-compound-saturation",
             detail: `Spanish codebooks should not be saturated with fused template compounds; limit is ${SPANISH_COMPOUND_SATURATION_LIMIT}`,
+          }),
+        );
+      }
+    }
+
+    if (language === "french") {
+      const templateCompoundCount = words.filter((word) =>
+        FRENCH_TEMPLATE_COMPOUND_PATTERN.test(word),
+      ).length;
+
+      if (templateCompoundCount > FRENCH_COMPOUND_SATURATION_LIMIT) {
+        violations.push(
+          makeViolation({
+            language,
+            index: -1,
+            word: `${templateCompoundCount}`,
+            rule: "french-compound-saturation",
+            detail: `French codebooks should not be saturated with fused template compounds; limit is ${FRENCH_COMPOUND_SATURATION_LIMIT}`,
           }),
         );
       }

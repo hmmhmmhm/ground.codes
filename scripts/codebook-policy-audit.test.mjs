@@ -90,7 +90,8 @@ describe("codebook policy audit", () => {
           index: 1,
           word: "나무체반",
           rule: "korean-pronunciation-collision",
-          detail: 'Sounds like index 0 "나무채반" under Korean confusion groups',
+          detail:
+            'Sounds like index 0 "나무채반" under Korean confusion groups',
         },
       ],
     );
@@ -134,15 +135,15 @@ describe("codebook policy audit", () => {
     );
 
     for (const [word, rule] of [
-        ["조약돌광목포", "korean-generated-material-compound"],
-        ["정겨운도토리", "korean-poetic-adjective-compound"],
-        ["정", "korean-weak-one-syllable"],
-        ["솔방울두루마리", "korean-too-long"],
-        ["비화이트리스트", "korean-unapproved-loanword"],
-        ["포근한흙담", "korean-poetic-adjective-compound"],
-        ["색종이상자", "korean-generated-material-compound"],
-        ["면솔방울", "korean-generated-material-compound"],
-      ]) {
+      ["조약돌광목포", "korean-generated-material-compound"],
+      ["정겨운도토리", "korean-poetic-adjective-compound"],
+      ["정", "korean-weak-one-syllable"],
+      ["솔방울두루마리", "korean-too-long"],
+      ["비화이트리스트", "korean-unapproved-loanword"],
+      ["포근한흙담", "korean-poetic-adjective-compound"],
+      ["색종이상자", "korean-generated-material-compound"],
+      ["면솔방울", "korean-generated-material-compound"],
+    ]) {
       assert.equal(actual.has(`${word}:${rule}`), true, `${word}: ${rule}`);
     }
   });
@@ -153,7 +154,8 @@ describe("codebook policy audit", () => {
         "Ambercreel",
         ...Array.from(
           { length: EXPECTED_COUNTS.english - 1 },
-          (_, index) => `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+          (_, index) =>
+            `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
         ),
       ],
       korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
@@ -176,7 +178,8 @@ describe("codebook policy audit", () => {
         "Abeduldedalera",
         ...Array.from(
           { length: EXPECTED_COUNTS.spanish - 2 },
-          (_, index) => `Palabra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+          (_, index) =>
+            `Palabra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
         ),
       ],
     });
@@ -212,7 +215,8 @@ describe("codebook policy audit", () => {
     const { violations } = auditCodebooks({
       english: Array.from(
         { length: EXPECTED_COUNTS.english },
-        (_, index) => `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+        (_, index) =>
+          `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
       ),
       korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
       chinese: Array.from(
@@ -225,14 +229,58 @@ describe("codebook policy audit", () => {
       ),
       spanish: Array.from(
         { length: EXPECTED_COUNTS.spanish },
-        (_, index) => `${makePrefix(index)}${suffixes[index % suffixes.length]}`,
+        (_, index) =>
+          `${makePrefix(index)}${suffixes[index % suffixes.length]}`,
       ),
     });
 
     assert.equal(
-      violations.some(
-        (item) => item.rule === "spanish-compound-saturation",
+      violations.some((item) => item.rule === "spanish-compound-saturation"),
+      true,
+    );
+  });
+
+  test("flags French codebooks saturated with fused template compounds", () => {
+    const makePrefix = (index) => {
+      let value = index;
+      let letters = "";
+      for (let i = 0; i < 5; i += 1) {
+        letters = String.fromCharCode(97 + (value % 26)) + letters;
+        value = Math.floor(value / 26);
+      }
+      return `${letters[0].toUpperCase()}${letters.slice(1)}`;
+    };
+    const suffixes = ["abri", "bocal", "caisse", "panier", "tiroir"];
+
+    const { violations } = auditCodebooks({
+      english: Array.from(
+        { length: EXPECTED_COUNTS.english },
+        (_, index) =>
+          `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
       ),
+      korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
+      chinese: Array.from(
+        { length: EXPECTED_COUNTS.chinese },
+        (_, index) => `词${index}`,
+      ),
+      japanese: Array.from(
+        { length: EXPECTED_COUNTS.japanese },
+        (_, index) => `ことば${index}`,
+      ),
+      spanish: Array.from(
+        { length: EXPECTED_COUNTS.spanish },
+        (_, index) =>
+          `Palabra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      french: Array.from(
+        { length: EXPECTED_COUNTS.french },
+        (_, index) =>
+          `${makePrefix(index)}${suffixes[index % suffixes.length]}`,
+      ),
+    });
+
+    assert.equal(
+      violations.some((item) => item.rule === "french-compound-saturation"),
       true,
     );
   });
