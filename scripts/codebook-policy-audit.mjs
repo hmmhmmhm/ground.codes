@@ -672,7 +672,35 @@ const GERMAN_BLOCKED_TERMS = [
 
 const GERMAN_TEMPLATE_COMPOUND_PATTERN =
   /^[A-Z][a-z]{3,}(?:band|bank|becher|beet|beutel|blatt|blech|brett|bund|dose|eimer|faden|fass|feld|fliese|gabel|glas|griff|haken|hut|kachel|kanne|karton|kasten|kelle|kerze|kiste|klotz|knopf|korb|kranz|kreide|krug|lampe|leiste|mappe|matte|messer|nadel|papier|perle|pfanne|pfeife|pinsel|platte|polster|rahmen|riegel|ring|rohr|sack|schale|seil|sieb|sohle|spange|spatel|spiegel|spule|steg|stein|stift|tafel|tasche|tasse|tisch|topf|truhe|vlies|wagen)$/u;
-const GERMAN_COMPOUND_SATURATION_LIMIT = 4850;
+const GERMAN_COMPOUND_SATURATION_LIMIT = 3500;
+const GERMAN_AWKWARD_COMPOUNDS = new Set([
+  "Ackerfass",
+  "Ackerglas",
+  "Ackerhut",
+  "Ackerring",
+  "Ackerseil",
+  "Ackerwagen",
+  "Apfelpfeife",
+  "Apfelsohle",
+  "Blattblatt",
+  "Feldfeld",
+  "Grasvlies",
+  "Papierpapier",
+  "Roggenpfeife",
+  "Steinstein",
+]);
+const GERMAN_AWKWARD_COMPOUND_PATTERN =
+  /^(?:Acker|Bach|Feld|Garten|Gras)(?:dose|fass|glas|hut|ring|seil|vlies|wagen)$|^(?:Apfel|Birne|Beere|Bohne|Erbse|Feige|Kuerbis|Mandel|Nuss|Olive|Reis|Roggen|Weizen)(?:pfeife|riegel|sohle|spange|spule|vlies)$|^(?:Ahorn|Birken|Buchen|Eichen|Fichten|Tannen|Ulmen|Weiden|Zedern)(?:becher|dose|fass|glas|topf)$/u;
+
+const isAwkwardGermanCompound = (word) => {
+  if (GERMAN_AWKWARD_COMPOUNDS.has(word)) return true;
+  if (GERMAN_AWKWARD_COMPOUND_PATTERN.test(word)) return true;
+
+  const lower = word.toLowerCase();
+  if (lower.length % 2 !== 0) return false;
+  const half = lower.slice(0, lower.length / 2);
+  return half.length >= 4 && lower === `${half}${half}`;
+};
 
 const CHINESE_GENERATED_COMPOUND_PATTERN =
   /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
@@ -1034,6 +1062,18 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
       }
 
       if (language === "german") {
+        if (isAwkwardGermanCompound(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "german-awkward-generated-compound",
+              detail:
+                "German generated compounds should avoid self-duplication and implausible object pairings",
+            }),
+          );
+        }
         if (!/^[A-Z][a-z]+$/.test(word)) {
           violations.push(
             makeViolation({

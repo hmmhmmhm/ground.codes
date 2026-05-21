@@ -580,7 +580,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/3625"
   },
   {
-    "name": "Meer Sueden",
+    "name": "Suedmeer",
     "code": "ME",
     "lat": -47.7705,
     "long": 91.9854,
@@ -5528,7 +5528,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/113"
   },
   {
-    "name": "Meer Feuchte",
+    "name": "Meer der Feuchte",
     "code": "ME",
     "lat": -24.4785,
     "long": -38.5716,
@@ -5818,7 +5818,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/259"
   },
   {
-    "name": "Meer Nektar",
+    "name": "Nektarmeer",
     "code": "ME",
     "lat": -15.1852,
     "long": 34.6021,
@@ -5848,7 +5848,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/261"
   },
   {
-    "name": "Meer Heiterkeit",
+    "name": "Meer der Heiterkeit",
     "code": "ME",
     "lat": 27.2879,
     "long": 18.3596,
@@ -13076,7 +13076,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/2953"
   },
   {
-    "name": "See Traeume",
+    "name": "See der Traeume",
     "code": "LC",
     "lat": 37.5622,
     "long": 30.8046,
@@ -15046,7 +15046,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/3670"
   },
   {
-    "name": "Meer Krisen",
+    "name": "Krisenmeer",
     "code": "ME",
     "lat": 16.1774,
     "long": 59.1037,
@@ -15166,7 +15166,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/4673"
   },
   {
-    "name": "Meer Ruhe",
+    "name": "Meer der Ruhe",
     "code": "ME",
     "lat": 8.3487,
     "long": 30.8346,
@@ -15196,7 +15196,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/4674"
   },
   {
-    "name": "Meer Wolken",
+    "name": "Wolkenmeer",
     "code": "ME",
     "lat": -20.5894,
     "long": -17.2872,
@@ -15206,7 +15206,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/3684"
   },
   {
-    "name": "Meer Osten",
+    "name": "Ostmeer",
     "code": "ME",
     "lat": -19.8655,
     "long": -94.6703,
@@ -16606,7 +16606,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/4390"
   },
   {
-    "name": "Ozean Stuerme",
+    "name": "Ozean der Stuerme",
     "code": "OC",
     "lat": 20.6714,
     "long": -56.6774,
@@ -19376,7 +19376,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/5564"
   },
   {
-    "name": "Bucht Regenbogen",
+    "name": "Regenbogenbucht",
     "code": "SI",
     "lat": 45.0101,
     "long": -31.6653,
@@ -89486,7 +89486,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/14036"
   },
   {
-    "name": "Meer Kaelte",
+    "name": "Kaeltemeer",
     "code": "ME",
     "lat": 57.5923,
     "long": -0.0064,
@@ -89516,7 +89516,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/14038"
   },
   {
-    "name": "Meer Regen",
+    "name": "Regenmeer",
     "code": "ME",
     "lat": 34.7244,
     "long": -14.9086,

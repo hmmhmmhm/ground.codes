@@ -334,4 +334,55 @@ describe("codebook policy audit", () => {
       true,
     );
   });
+
+  test("flags awkward German generated compounds", () => {
+    const { violations } = auditCodebooks({
+      english: Array.from(
+        { length: EXPECTED_COUNTS.english },
+        (_, index) =>
+          `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
+      chinese: Array.from(
+        { length: EXPECTED_COUNTS.chinese },
+        (_, index) => `词${index}`,
+      ),
+      japanese: Array.from(
+        { length: EXPECTED_COUNTS.japanese },
+        (_, index) => `ことば${index}`,
+      ),
+      spanish: Array.from(
+        { length: EXPECTED_COUNTS.spanish },
+        (_, index) =>
+          `Palabra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      french: Array.from(
+        { length: EXPECTED_COUNTS.french },
+        (_, index) =>
+          `Mot${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      german: [
+        "Blattblatt",
+        "Ackerfass",
+        "Apfelpfeife",
+        ...Array.from(
+          { length: EXPECTED_COUNTS.german - 3 },
+          (_, index) =>
+            `Wort${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+        ),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    for (const word of ["Blattblatt", "Ackerfass", "Apfelpfeife"]) {
+      assert.equal(
+        actual.has(`${word}:german-awkward-generated-compound`),
+        true,
+        word,
+      );
+    }
+  });
 });

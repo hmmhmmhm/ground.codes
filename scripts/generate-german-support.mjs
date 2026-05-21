@@ -327,6 +327,32 @@ const prefixes = [
   "Zimt",
 ];
 
+const naturalCompoundSuffixes = [
+  "baum",
+  "bluete",
+  "duft",
+  "farbe",
+  "garten",
+  "grund",
+  "hain",
+  "hang",
+  "kern",
+  "knospe",
+  "laub",
+  "licht",
+  "pfad",
+  "platz",
+  "quelle",
+  "samen",
+  "schatten",
+  "spur",
+  "strauch",
+  "wald",
+  "weg",
+  "wiese",
+  "zweig",
+];
+
 const suffixes = [
   "band",
   "bank",
@@ -400,6 +426,39 @@ const suffixes = [
   "wagen",
 ];
 
+const awkwardGermanCompounds = new Set([
+  "Ackerfass",
+  "Ackerglas",
+  "Ackerhut",
+  "Ackerring",
+  "Ackerseil",
+  "Ackerwagen",
+  "Apfelpfeife",
+  "Apfelsohle",
+  "Blattblatt",
+  "Feldfeld",
+  "Grasvlies",
+  "Papierpapier",
+  "Roggenpfeife",
+  "Steinstein",
+]);
+
+const awkwardGermanCompoundPattern =
+  /^(?:Acker|Bach|Feld|Garten|Gras)(?:dose|fass|glas|hut|ring|seil|vlies|wagen)$|^(?:Apfel|Birne|Beere|Bohne|Erbse|Feige|Kuerbis|Mandel|Nuss|Olive|Reis|Roggen|Weizen)(?:pfeife|riegel|sohle|spange|spule|vlies)$|^(?:Ahorn|Birken|Buchen|Eichen|Fichten|Tannen|Ulmen|Weiden|Zedern)(?:becher|dose|fass|glas|topf)$/u;
+
+const isAwkwardGermanCompound = (word) => {
+  if (awkwardGermanCompounds.has(word)) return true;
+  if (awkwardGermanCompoundPattern.test(word)) return true;
+
+  const lower = word.toLowerCase();
+  if (lower.length % 2 === 0) {
+    const half = lower.slice(0, lower.length / 2);
+    if (half.length >= 4 && lower === `${half}${half}`) return true;
+  }
+
+  return false;
+};
+
 const blockedCodebookWords = new Set([
   "Abbauen",
   "Aendern",
@@ -458,12 +517,21 @@ const buildGermanCodebook = () => {
     if (!/^[A-Z][a-z]+$/.test(candidate)) return;
     if (candidate.length > 12) return;
     if (blockedCodebookWords.has(candidate)) return;
+    if (isAwkwardGermanCompound(candidate)) return;
     if (seen.has(candidate)) return;
     seen.add(candidate);
     words.push(candidate);
   };
 
   for (const word of standaloneWords) add(word);
+
+  for (const suffix of naturalCompoundSuffixes) {
+    for (const prefix of prefixes) {
+      add(`${prefix}${suffix}`);
+      if (words.length >= 5000) break;
+    }
+    if (words.length >= 5000) break;
+  }
 
   for (const suffix of suffixes) {
     for (const prefix of prefixes) {
@@ -548,6 +616,9 @@ const translateRegion3Name = (row) => {
     );
     if (marineGridMatch) {
       const [, base, term, index] = marineGridMatch;
+      if (term === "Sea" && /^[A-Z][A-Za-z]+$/.test(base)) {
+        return normalizeAscii(`${base}meer ${index}`);
+      }
       return normalizeAscii(
         `${base} ${marineTerms.get(term) ?? term} ${index}`,
       );
@@ -577,25 +648,25 @@ const translateRegion3Name = (row) => {
 };
 
 const planetaryPhraseOverrides = new Map([
-  ["Mare Tranquillitatis", "Meer Ruhe"],
-  ["Mare Serenitatis", "Meer Heiterkeit"],
-  ["Mare Imbrium", "Meer Regen"],
-  ["Mare Crisium", "Meer Krisen"],
-  ["Mare Nectaris", "Meer Nektar"],
-  ["Mare Nubium", "Meer Wolken"],
-  ["Mare Humorum", "Meer Feuchte"],
-  ["Mare Frigoris", "Meer Kaelte"],
-  ["Mare Orientale", "Meer Osten"],
-  ["Mare Australe", "Meer Sueden"],
-  ["Oceanus Procellarum", "Ozean Stuerme"],
-  ["Sinus Iridum", "Bucht Regenbogen"],
-  ["Lacus Somniorum", "See Traeume"],
-  ["Olympus Mons", "Olympus Berg"],
-  ["Elysium Mons", "Elysium Berg"],
-  ["Ascraeus Mons", "Ascraeus Berg"],
-  ["Arsia Mons", "Arsia Berg"],
-  ["Pavonis Mons", "Pavonis Berg"],
-  ["Valles Marineris", "Mariner Tal"],
+  ["Mare Tranquillitatis", "Meer der Ruhe"],
+  ["Mare Serenitatis", "Meer der Heiterkeit"],
+  ["Mare Imbrium", "Regenmeer"],
+  ["Mare Crisium", "Krisenmeer"],
+  ["Mare Nectaris", "Nektarmeer"],
+  ["Mare Nubium", "Wolkenmeer"],
+  ["Mare Humorum", "Meer der Feuchte"],
+  ["Mare Frigoris", "Kaeltemeer"],
+  ["Mare Orientale", "Ostmeer"],
+  ["Mare Australe", "Suedmeer"],
+  ["Oceanus Procellarum", "Ozean der Stuerme"],
+  ["Sinus Iridum", "Regenbogenbucht"],
+  ["Lacus Somniorum", "See der Traeume"],
+  ["Olympus Mons", "Olympusberg"],
+  ["Elysium Mons", "Elysiumberg"],
+  ["Ascraeus Mons", "Ascraeusberg"],
+  ["Arsia Mons", "Arsiaberg"],
+  ["Pavonis Mons", "Pavonisberg"],
+  ["Valles Marineris", "Mariner Taeler"],
   ["Hellas Planitia", "Hellas Ebene"],
   ["Utopia Planitia", "Utopia Ebene"],
   ["Amazonis Planitia", "Amazonis Ebene"],

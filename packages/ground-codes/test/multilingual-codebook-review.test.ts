@@ -25,6 +25,9 @@ const assertWordsPresent = (words: string[], expectedWords: string[]) => {
   );
 };
 
+const germanTemplateCompoundPattern =
+  /^[A-Z][a-z]{3,}(?:band|bank|becher|beet|beutel|blatt|blech|brett|bund|dose|eimer|faden|fass|feld|fliese|gabel|glas|griff|haken|hut|kachel|kanne|karton|kasten|kelle|kerze|kiste|klotz|knopf|korb|kranz|kreide|krug|lampe|leiste|mappe|matte|messer|nadel|papier|perle|pfanne|pfeife|pinsel|platte|polster|rahmen|riegel|ring|rohr|sack|schale|seil|sieb|sohle|spange|spatel|spiegel|spule|steg|stein|stift|tafel|tasche|tasse|tisch|topf|truhe|vlies|wagen)$/u;
+
 const assertCodebook = ({
   words,
   expectedLength,
@@ -1689,6 +1692,10 @@ describe("reviewed multilingual codebooks", () => {
       germanWords.filter((word) => word.length > 12),
       [],
     );
+    assert.ok(
+      germanWords.filter((word) => germanTemplateCompoundPattern.test(word))
+        .length <= 3500,
+    );
     assertWordsPresent(germanWords, [
       "Acker",
       "Apfel",
@@ -1742,6 +1749,20 @@ describe("reviewed multilingual codebooks", () => {
       "Suchen",
       "Tragen",
       "Wollen",
+      "Ackerfass",
+      "Ackerglas",
+      "Ackerhut",
+      "Ackerring",
+      "Ackerseil",
+      "Ackerwagen",
+      "Apfelpfeife",
+      "Apfelsohle",
+      "Blattblatt",
+      "Feldfeld",
+      "Grasvlies",
+      "Papierpapier",
+      "Roggenpfeife",
+      "Steinstein",
     ]);
   });
 });

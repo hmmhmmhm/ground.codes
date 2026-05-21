@@ -70,9 +70,9 @@ Current inventory:
 | French   | Recognized compound              |  2399 | 48.0% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
 | French   | Short standalone                 |    51 |  1.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
 | French   | Other standalone or unclassified |  2550 | 51.0% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
-| German   | Recognized compound              |  4789 | 95.8% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`       |
+| German   | Recognized compound              |  3255 | 65.1% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`       |
 | German   | Short standalone                 |    55 |  1.1% | `Anis`, `Aue`, `Bach`, `Bank`, `Beet`                                |
-| German   | Other standalone or unclassified |   156 |  3.1% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                         |
+| German   | Other standalone or unclassified |  1690 | 33.8% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                         |
 
 Review implications:
 
@@ -89,10 +89,9 @@ Review implications:
   verb-like BIP39 seed terms, then replaced them with concrete standalone French
   nouns. Continue replacing weak fused compounds with natural French standalone
   words as review coverage grows.
-- German intentionally starts as a high-compound codebook because ordinary
-  German public-address words can be readable compounds. Keep the template
-  saturation limit in place and replace awkward generated compounds with
-  reviewed everyday standalone nouns over time.
+- German now keeps template-style generated compounds below 70% and front-loads
+  more natural landscape and plant compounds. Continue replacing weak generated
+  compounds with reviewed everyday standalone nouns over time.
 
 ## Product Principles
 
@@ -364,6 +363,9 @@ a test blocklist.
 - German compounds may be used more heavily than French or Spanish because they
   are natural in German, but the generated template share must stay below the
   German saturation limit enforced by `scripts/codebook-policy-audit.mjs`.
+- Reject self-duplicating or implausible generated compounds such as
+  `Blattblatt`, `Feldfeld`, `Steinstein`, `Ackerfass`, `Ackerglas`,
+  `Apfelpfeife`, and `Apfelsohle`.
 - Reject terms that are risky or awkward in a public address, including `Sex`,
   `Casino`, `Waffe`, `Krieg`, `Droge`, `Arzt`, `Politik`, `Religion`,
   `Verbrechen`, `Tod`, `Gewalt`, `Angst`, `Fehler`, `Gefahr`, `Krankheit`,

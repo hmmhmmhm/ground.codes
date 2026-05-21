@@ -258,7 +258,7 @@ const olympusMonsJa = await info({
 
 const olympusMonsDe = await info({
   regionName: "region-2-mars-german",
-  name: "Olympus Berg",
+  name: "Olympusberg",
 });
 
 await load(["region-3-mars"]);

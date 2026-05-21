@@ -2565,7 +2565,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/3663"
   },
   {
-    "name": "Meer Sueden",
+    "name": "Suedmeer",
     "code": "AL",
     "lat": -59.7062,
     "long": -10,
@@ -9767,7 +9767,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/4199"
   },
   {
-    "name": "Olympus Berg",
+    "name": "Olympusberg",
     "code": "MO",
     "lat": 18.6528,
     "long": -133.8025,
@@ -9916,7 +9916,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/4258"
   },
   {
-    "name": "Pavonis Berg",
+    "name": "Pavonisberg",
     "code": "MO",
     "lat": 1.4801,
     "long": -112.9624,
@@ -10516,7 +10516,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/4663"
   },
   {
-    "name": "Arsia Berg",
+    "name": "Arsiaberg",
     "code": "MO",
     "lat": -8.2571,
     "long": -120.0925,
@@ -12756,7 +12756,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/6152"
   },
   {
-    "name": "Elysium Berg",
+    "name": "Elysiumberg",
     "code": "MO",
     "lat": 25.0232,
     "long": 147.2138,
@@ -13166,7 +13166,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/416"
   },
   {
-    "name": "Ascraeus Berg",
+    "name": "Ascraeusberg",
     "code": "MO",
     "lat": 11.9216,
     "long": -104.0808,
@@ -14125,7 +14125,7 @@
     "source": "http://planetarynames.wr.usgs.gov/Feature/1012"
   },
   {
-    "name": "Mariner Tal",
+    "name": "Mariner Taeler",
     "code": "VA",
     "lat": -14.0059,
     "long": -58.5877,

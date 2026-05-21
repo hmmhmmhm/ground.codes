@@ -15,12 +15,12 @@
       "planetary3DLabel": "3D-Globus",
       "switchToSatelliteWithRefresh": "Zur Satellitenkarte wechseln (Seite wird neu geladen)",
       "switchToRoadmapWithRefresh": "Zur normalen Karte wechseln (Seite wird neu geladen)",
-      "body": "Himmelskoerper",
+      "body": "Himmelskörper",
       "language": "Sprache",
       "fullscreen": "Vollbild umschalten",
       "enterFullscreen": "Vollbild starten",
       "exitFullscreen": "Vollbild beenden",
-      "resetRotation": "Kartendrehung zuruecksetzen"
+      "resetRotation": "Kartendrehung zurücksetzen"
     },
     "bodies": {
       "earth": "Erde",
@@ -29,7 +29,7 @@
     },
     "loading": "Wird geladen...",
     "coordinates": {
-      "title": "Koordinaten des ausgewaehlten Bereichs",
+      "title": "Koordinaten des ausgewählten Bereichs",
       "copy": "Kopieren",
       "share": "Teilen",
       "copied": "Ground Code kopiert",
@@ -42,7 +42,7 @@
       "placesHeading": "Orte",
       "groundCodesHeading": "Ground Codes",
       "noResults": "Kein passender Ground Code oder keine passende Region gefunden",
-      "unavailable": "Ground-Code-Suche ist voruebergehend nicht verfuegbar",
+      "unavailable": "Ground-Code-Suche ist vorübergehend nicht verfügbar",
       "error": "Suche fehlgeschlagen"
     },
     "groundCode": "Ground Code",
@@ -53,8 +53,8 @@
     "weather": {
       "weatherInfo": "Wetterinformationen",
       "temperature": "Temperatur",
-      "airQuality": "Luftqualitaet",
-      "clickForDetails": "Fuer detaillierte Wetterinformationen klicken"
+      "airQuality": "Luftqualität",
+      "clickForDetails": "Für detaillierte Wetterinformationen klicken"
     }
   },
   "weather": {
@@ -62,13 +62,13 @@
     "currentLocation": "Aktueller Standort",
     "temperature": "Temperatur",
     "current": "Aktuell",
-    "feelsLike": "Gefuehlt",
+    "feelsLike": "Gefühlt",
     "min": "Min",
     "max": "Max",
     "conditions": "Wetterbedingungen",
     "mainCondition": "Bedingung",
     "description": "Beschreibung",
-    "atmospheric": "Atmosphaerische Bedingungen",
+    "atmospheric": "Atmosphärische Bedingungen",
     "humidity": "Luftfeuchtigkeit",
     "pressure": "Luftdruck",
     "mainTypes": {
@@ -83,7 +83,7 @@
       "sand": "Sand",
       "dust": "Staub",
       "ash": "Asche",
-      "squall": "Boe",
+      "squall": "Bö",
       "tornado": "Tornado",
       "clear": "Klar",
       "clouds": "Wolken"
@@ -96,7 +96,7 @@
       "lightAir": "Leiser Zug",
       "lightBreeze": "Leichte Brise",
       "gentleBreeze": "Schwache Brise",
-      "moderateBreeze": "Maessige Brise",
+      "moderateBreeze": "Mäßige Brise",
       "freshBreeze": "Frische Brise",
       "strongBreeze": "Starke Brise",
       "highWind": "Starker Wind",
@@ -112,48 +112,48 @@
       "ne": "Nordost",
       "ene": "Ostnordost",
       "e": "Osten",
-      "ese": "Ostsuedost",
-      "se": "Suedost",
-      "sse": "Suedsuedost",
-      "s": "Sueden",
-      "ssw": "Suedsuedwest",
-      "sw": "Suedwest",
-      "wsw": "Westsuedwest",
+      "ese": "Ostsüdost",
+      "se": "Südost",
+      "sse": "Südsüdost",
+      "s": "Süden",
+      "ssw": "Südsüdwest",
+      "sw": "Südwest",
+      "wsw": "Westsüdwest",
       "w": "Westen",
       "wnw": "Westnordwest",
       "nw": "Nordwest",
       "nnw": "Nordnordwest"
     },
-    "noWeatherData": "Wetterdaten sind derzeit nicht verfuegbar"
+    "noWeatherData": "Wetterdaten sind derzeit nicht verfügbar"
   },
   "airQuality": {
-    "title": "Luftqualitaet",
+    "title": "Luftqualität",
     "updatedAt": "Aktualisiert um",
-    "indexes": "Luftqualitaetsindizes",
+    "indexes": "Luftqualitätsindizes",
     "pollutants": "Schadstoffe",
     "pollutant": "Schadstoff",
-    "fullName": "Vollstaendiger Name",
+    "fullName": "Vollständiger Name",
     "concentration": "Konzentration",
     "dominantPollutant": "Dominanter Schadstoff",
     "healthRecommendations": "Gesundheitsempfehlungen",
-    "generalPopulation": "Allgemeinbevoelkerung",
+    "generalPopulation": "Allgemeinbevölkerung",
     "children": "Kinder",
-    "elderly": "Aeltere Menschen",
+    "elderly": "Ältere Menschen",
     "sportsAndRecreation": "Sport und Freizeit",
     "lungDiseasePopulation": "Menschen mit Lungenerkrankung",
     "heartDiseasePopulation": "Menschen mit Herzerkrankung",
     "athletes": "Sportler",
     "pregnantWomen": "Schwangere",
-    "noAirQualityData": "Luftqualitaetsdaten sind derzeit nicht verfuegbar"
+    "noAirQualityData": "Luftqualitätsdaten sind derzeit nicht verfügbar"
   },
   "common": {
     "languageName": "Deutsch",
     "languageCode": "de",
-    "close": "Schliessen",
+    "close": "Schließen",
     "address": "Adresse",
     "phone": "Telefon",
-    "hours": "Oeffnungszeiten",
-    "openNow": "Jetzt geoeffnet",
+    "hours": "Öffnungszeiten",
+    "openNow": "Jetzt geöffnet",
     "closedNow": "Jetzt geschlossen",
     "website": "Website",
     "photos": "Fotos",
@@ -163,15 +163,15 @@
     "copyAddress": "Adresse kopieren",
     "call": "Anrufen",
     "addressCopied": "Adresse kopiert",
-    "viewFullImage": "Bild in voller Groesse ansehen",
+    "viewFullImage": "Bild in voller Größe ansehen",
     "loading": "Wird geladen...",
-    "unavailable": "Nicht verfuegbar",
+    "unavailable": "Nicht verfügbar",
     "copyGroundCode": "Ground Code kopieren",
     "groundCodeCopied": "Ground Code kopiert",
     "copyPhone": "Telefonnummer kopieren",
     "phoneCopied": "Telefonnummer kopiert",
     "error": {
-      "placeDetails": "Ortsdetails konnten nicht geladen werden. Bitte spaeter erneut versuchen."
+      "placeDetails": "Ortsdetails konnten nicht geladen werden. Bitte später erneut versuchen."
     }
   }
 }

@@ -353,13 +353,13 @@ describe("celestial bodies", () => {
       { lat: 8.35, lng: 30.84 },
       { body: "moon", regionLevel: 2, language: "german" },
     );
-    assert.match(moonCode, /^Meer Ruhe-/);
+    assert.match(moonCode, /^Meer der Ruhe-/);
 
     const marsCode = await encode(
       { lat: 18.6528, lng: 226.1975 },
       { body: "mars", regionLevel: 2, language: "german" },
     );
-    assert.match(marsCode, /^Olympus Berg-/);
+    assert.match(marsCode, /^Olympusberg-/);
 
     const marsFallback = await encode(
       { lat: 64.3, lng: -86.4 },
