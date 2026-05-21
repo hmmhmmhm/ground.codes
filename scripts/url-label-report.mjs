@@ -42,6 +42,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-german.json",
   ],
   [
+    "earth region-2 portuguese",
+    "portuguese",
+    "../packages/geoint/region-dist/region-2-portuguese.json",
+  ],
+  [
     "earth region-3 english",
     "english",
     "../packages/geoint/region-dist/region-3.json",
@@ -75,6 +80,11 @@ const DATASETS = [
     "earth region-3 german",
     "german",
     "../packages/geoint/region-dist/region-3-german.json",
+  ],
+  [
+    "earth region-3 portuguese",
+    "portuguese",
+    "../packages/geoint/region-dist/region-3-portuguese.json",
   ],
   [
     "moon region-2 english",
@@ -112,6 +122,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-moon-german.json",
   ],
   [
+    "moon region-2 portuguese",
+    "portuguese",
+    "../packages/geoint/region-dist/region-2-moon-portuguese.json",
+  ],
+  [
     "mars region-2 english",
     "english",
     "../packages/geoint/region-dist/region-2-mars.json",
@@ -145,6 +160,11 @@ const DATASETS = [
     "mars region-2 german",
     "german",
     "../packages/geoint/region-dist/region-2-mars-german.json",
+  ],
+  [
+    "mars region-2 portuguese",
+    "portuguese",
+    "../packages/geoint/region-dist/region-2-mars-portuguese.json",
   ],
   [
     "mars region-3 english",
@@ -181,6 +201,11 @@ const DATASETS = [
     "german",
     "../packages/geoint/region-dist/region-3-mars-german.json",
   ],
+  [
+    "mars region-3 portuguese",
+    "portuguese",
+    "../packages/geoint/region-dist/region-3-mars-portuguese.json",
+  ],
 ];
 
 const hasNonAscii = (value) => /[^\x20-\x7E]/.test(value);
@@ -189,7 +214,8 @@ const allowsLatinLabels = (language) =>
   language === "english" ||
   language === "spanish" ||
   language === "french" ||
-  language === "german";
+  language === "german" ||
+  language === "portuguese";
 const sampleLabels = (names, predicate) => names.filter(predicate).slice(0, 5);
 
 export const buildUrlLabelReport = (datasets) => {

@@ -21,15 +21,16 @@ Before changing a codebook:
 
 Current distributed word counts:
 
-| Language | Count | Source file                   |
-| -------- | ----: | ----------------------------- |
-| English  |  6000 | `codebook-dist/english.json`  |
-| Korean   |  5630 | `codebook-dist/korean.json`   |
-| Chinese  |  5140 | `codebook-dist/chinese.json`  |
-| Japanese |  5000 | `codebook-dist/japanese.json` |
-| Spanish  |  5000 | `codebook-dist/spanish.json`  |
-| French   |  5000 | `codebook-dist/french.json`   |
-| German   |  5000 | `codebook-dist/german.json`   |
+| Language   | Count | Source file                     |
+| ---------- | ----: | ------------------------------- |
+| English    |  6000 | `codebook-dist/english.json`    |
+| Korean     |  5630 | `codebook-dist/korean.json`     |
+| Chinese    |  5140 | `codebook-dist/chinese.json`    |
+| Japanese   |  5000 | `codebook-dist/japanese.json`   |
+| Spanish    |  5000 | `codebook-dist/spanish.json`    |
+| French     |  5000 | `codebook-dist/french.json`     |
+| German     |  5000 | `codebook-dist/german.json`     |
+| Portuguese |  5000 | `codebook-dist/portuguese.json` |
 
 ## Current Word Type Inventory
 
@@ -50,29 +51,32 @@ counted once using this precedence:
 
 Current inventory:
 
-| Language | Type                             | Count | Share | Examples                                                             |
-| -------- | -------------------------------- | ----: | ----: | -------------------------------------------------------------------- |
-| English  | Recognized compound              |  1760 | 29.3% | `Handbag`, `Dewdrop`, `Headlamp`, `Feltmat`, `Applebox`              |
-| English  | Short standalone                 |   465 |  7.8% | `Dawn`, `Dune`, `Fern`, `Leaf`, `Lily`                               |
-| English  | Other standalone or unclassified |  3775 | 62.9% | `Acorn`, `Alder`, `Arbor`, `Aspen`, `Aster`                          |
-| Korean   | Recognized compound              |  3314 | 58.9% | `안방`, `사과상자`, `나무병`, `사과바구니`, `책받침`                 |
-| Korean   | Short standalone                 |    87 |  1.5% | `빛`, `별`, `색`, `물`, `무`                                         |
-| Korean   | Other standalone or unclassified |  2229 | 39.6% | `손전등`, `현관문`, `테이블`, `구두주걱`, `연필깎이`                 |
-| Chinese  | Recognized compound              |  1528 | 29.7% | `苹果盒`, `苹果袋`, `苹果杯`, `青叶`, `青草`                         |
-| Chinese  | Short standalone                 |   798 | 15.5% | `狮`, `声`, `米`, `麦`, `豆`                                         |
-| Chinese  | Other standalone or unclassified |  2814 | 54.7% | `木杆`, `竹签`, `芦坯`, `木铲`, `青绳`                               |
-| Japanese | Recognized compound              |  1068 | 21.4% | `りんごはこ`, `りんごかご`, `りんごさら`, `りんごつぼ`, `りんごなべ` |
-| Japanese | Short standalone                 |   371 |  7.4% | `いえ`, `すき`, `かい`, `やる`, `つぎ`                               |
-| Japanese | Other standalone or unclassified |  3561 | 71.2% | `あさかけ`, `はなし`, `おもう`, `かんがえ`, `かんじ`                 |
-| Spanish  | Recognized compound              |  2925 | 58.5% | `Papayatapa`, `Papayabote`, `Papayalata`, `Papayaolla`, `Papayacopa` |
-| Spanish  | Short standalone                 |   280 |  5.6% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe`                               |
-| Spanish  | Other standalone or unclassified |  1795 | 35.9% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto`                 |
-| French   | Recognized compound              |  2399 | 48.0% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
-| French   | Short standalone                 |    51 |  1.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
-| French   | Other standalone or unclassified |  2550 | 51.0% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
-| German   | Recognized compound              |  3255 | 65.1% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`       |
-| German   | Short standalone                 |    55 |  1.1% | `Anis`, `Aue`, `Bach`, `Bank`, `Beet`                                |
-| German   | Other standalone or unclassified |  1690 | 33.8% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                         |
+| Language   | Type                             | Count | Share | Examples                                                             |
+| ---------- | -------------------------------- | ----: | ----: | -------------------------------------------------------------------- |
+| English    | Recognized compound              |  1760 | 29.3% | `Handbag`, `Dewdrop`, `Headlamp`, `Feltmat`, `Applebox`              |
+| English    | Short standalone                 |   465 |  7.8% | `Dawn`, `Dune`, `Fern`, `Leaf`, `Lily`                               |
+| English    | Other standalone or unclassified |  3775 | 62.9% | `Acorn`, `Alder`, `Arbor`, `Aspen`, `Aster`                          |
+| Korean     | Recognized compound              |  3314 | 58.9% | `안방`, `사과상자`, `나무병`, `사과바구니`, `책받침`                 |
+| Korean     | Short standalone                 |    87 |  1.5% | `빛`, `별`, `색`, `물`, `무`                                         |
+| Korean     | Other standalone or unclassified |  2229 | 39.6% | `손전등`, `현관문`, `테이블`, `구두주걱`, `연필깎이`                 |
+| Chinese    | Recognized compound              |  1528 | 29.7% | `苹果盒`, `苹果袋`, `苹果杯`, `青叶`, `青草`                         |
+| Chinese    | Short standalone                 |   798 | 15.5% | `狮`, `声`, `米`, `麦`, `豆`                                         |
+| Chinese    | Other standalone or unclassified |  2814 | 54.7% | `木杆`, `竹签`, `芦坯`, `木铲`, `青绳`                               |
+| Japanese   | Recognized compound              |  1068 | 21.4% | `りんごはこ`, `りんごかご`, `りんごさら`, `りんごつぼ`, `りんごなべ` |
+| Japanese   | Short standalone                 |   371 |  7.4% | `いえ`, `すき`, `かい`, `やる`, `つぎ`                               |
+| Japanese   | Other standalone or unclassified |  3561 | 71.2% | `あさかけ`, `はなし`, `おもう`, `かんがえ`, `かんじ`                 |
+| Spanish    | Recognized compound              |  2925 | 58.5% | `Papayatapa`, `Papayabote`, `Papayalata`, `Papayaolla`, `Papayacopa` |
+| Spanish    | Short standalone                 |   280 |  5.6% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe`                               |
+| Spanish    | Other standalone or unclassified |  1795 | 35.9% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto`                 |
+| French     | Recognized compound              |  2399 | 48.0% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
+| French     | Short standalone                 |    51 |  1.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
+| French     | Other standalone or unclassified |  2550 | 51.0% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
+| German     | Recognized compound              |  3255 | 65.1% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`       |
+| German     | Short standalone                 |    55 |  1.1% | `Anis`, `Aue`, `Bach`, `Bank`, `Beet`                                |
+| German     | Other standalone or unclassified |  1690 | 33.8% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                         |
+| Portuguese | Recognized compound              |  1590 | 31.8% | `Hortela`, `Acaciafolha`, `Acucarfolha`, `Aguafolha`, `Aloefolha`    |
+| Portuguese | Short standalone                 |     0 |  0.0% |                                                                      |
+| Portuguese | Other standalone or unclassified |  3410 | 68.2% | `Acacia`, `Acucar`, `Agata`, `Agua`, `Alecrim`                       |
 
 Review implications:
 
@@ -92,6 +96,9 @@ Review implications:
 - German now keeps template-style generated compounds below 70% and front-loads
   more natural landscape and plant compounds. Continue replacing weak generated
   compounds with reviewed everyday standalone nouns over time.
+- Portuguese starts with a low recognized-compound share and many concrete
+  standalone nouns. Keep it neutral and common across Lusophone regions, and do
+  not raise template-compound saturation while filling future review gaps.
 
 ## Product Principles
 
@@ -372,6 +379,29 @@ a test blocklist.
   `Problem`, `Risiko`, `Schmerz`, `Schuld`, `Sterben`, `Toeten`, `Verbot`,
   `Verlust`, `Zwang`, and common verb-like entries such as `Arbeiten`,
   `Denken`, `Gehen`, `Machen`, `Suchen`, and `Wollen`.
+
+### Portuguese
+
+- Prefer short ASCII title-case Portuguese words for URL readability. Normalize
+  accents in public code words, such as `Acucar`, `Arvore`, `Hortela`,
+  `Joia`, and `Sao`.
+- Keep Portuguese entries at twelve letters or fewer unless a reviewed
+  compatibility reason exists.
+- Use neutral common vocabulary that is understandable across Portuguese
+  variants. Avoid relying on regional slang or highly local Brazilian/European
+  forms when a common concrete noun is available.
+- Prefer concrete everyday nouns and natural landscape or plant words such as
+  `Acucar`, `Areia`, `Arvore`, `Cesto`, `Jardim`, and `Rio`.
+- Generated nature/material/object compounds may be used to preserve count, but
+  the template share must stay below the Portuguese saturation limit enforced by
+  `scripts/codebook-policy-audit.mjs`.
+- Reject self-duplicating or implausible generated compounds such as
+  `Folhafolha`, `Aguafita`, and `Riolivro`.
+- Reject terms that are risky or awkward in a public address, including `Sexo`,
+  `Casino`, `Aposta`, `Arma`, `Guerra`, `Droga`, `Medico`, `Politica`,
+  `Religiao`, `Crime`, `Morte`, `Violencia`, `Medo`, `Erro`, `Perigo`,
+  `Doenca`, `Problema`, `Risco`, `Dor`, `Culpa`, and common verb-like entries
+  such as `Fazer`, `Querer`, `Saber`, `Dizer`, `Poder`, and `Dever`.
 
 ## Automated Checks
 

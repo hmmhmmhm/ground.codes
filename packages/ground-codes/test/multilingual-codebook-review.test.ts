@@ -8,6 +8,7 @@ import koreanWords from "@repo/codebook/codebook-dist/korean.json";
 import spanishWords from "@repo/codebook/codebook-dist/spanish.json";
 import frenchWords from "@repo/codebook/codebook-dist/french.json";
 import germanWords from "@repo/codebook/codebook-dist/german.json";
+import portugueseWords from "@repo/codebook/codebook-dist/portuguese.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -27,6 +28,8 @@ const assertWordsPresent = (words: string[], expectedWords: string[]) => {
 
 const germanTemplateCompoundPattern =
   /^[A-Z][a-z]{3,}(?:band|bank|becher|beet|beutel|blatt|blech|brett|bund|dose|eimer|faden|fass|feld|fliese|gabel|glas|griff|haken|hut|kachel|kanne|karton|kasten|kelle|kerze|kiste|klotz|knopf|korb|kranz|kreide|krug|lampe|leiste|mappe|matte|messer|nadel|papier|perle|pfanne|pfeife|pinsel|platte|polster|rahmen|riegel|ring|rohr|sack|schale|seil|sieb|sohle|spange|spatel|spiegel|spule|steg|stein|stift|tafel|tasche|tasse|tisch|topf|truhe|vlies|wagen)$/u;
+const portugueseTemplateCompoundPattern =
+  /^[A-Z][a-z]{3,}(?:anel|banco|bandeja|bastao|bau|bolsa|botao|brocha|caixa|cesta|cesto|chave|copo|corda|cuba|cuia|escova|esteira|fita|folha|frasco|gancho|jarra|lata|livro|lona|luz|mapa|marco|mesa|pano|pote|prato|rede|saco|selo|suporte|tabua|tampa|tela|tigela|vaso|vela)$/u;
 
 const assertCodebook = ({
   words,
@@ -1763,6 +1766,66 @@ describe("reviewed multilingual codebooks", () => {
       "Papierpapier",
       "Roggenpfeife",
       "Steinstein",
+    ]);
+  });
+
+  test("keeps Portuguese codebook URL-safe and neutral", () => {
+    assert.equal(portugueseWords.length, 5000);
+    assert.equal(new Set(portugueseWords).size, portugueseWords.length);
+    assert.deepEqual(
+      portugueseWords.filter((word) => !/^[A-Z][a-z]+$/.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      portugueseWords.filter((word) => word.length > 12),
+      [],
+    );
+    assert.ok(
+      portugueseWords.filter((word) =>
+        portugueseTemplateCompoundPattern.test(word),
+      ).length <= 3500,
+    );
+    assertWordsPresent(portugueseWords, [
+      "Acucar",
+      "Areia",
+      "Arvore",
+      "Cesto",
+      "Jardim",
+      "Rio",
+    ]);
+    assertBlockedWordsAbsent(portugueseWords, [
+      "Sexo",
+      "Casino",
+      "Aposta",
+      "Arma",
+      "Guerra",
+      "Droga",
+      "Medico",
+      "Politica",
+      "Religiao",
+      "Crime",
+      "Morte",
+      "Violencia",
+      "Medo",
+      "Erro",
+      "Perigo",
+      "Odio",
+      "Doenca",
+      "Problema",
+      "Risco",
+      "Dor",
+      "Culpa",
+      "Morrer",
+      "Matar",
+      "Proibido",
+      "Perda",
+      "Obrigar",
+      "Fazer",
+      "Querer",
+      "Saber",
+      "Dizer",
+      "Poder",
+      "Dever",
     ]);
   });
 });

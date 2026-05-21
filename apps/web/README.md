@@ -95,7 +95,7 @@ Google Places search, POI details, weather, and user geolocation controls are
 Earth-only. Ground code encoding and the 3m grid remain available on Moon and
 Mars, with grid degree spacing adjusted for each body's radius. Ground code
 region prefixes and word payloads are available in English, Korean, Chinese,
-and Japanese.
+Japanese, Spanish, French, German, and Portuguese.
 
 Share URLs use encoded Ground Codes as the canonical address:
 

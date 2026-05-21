@@ -8,6 +8,7 @@ const CODEBOOK_FILES = {
   spanish: "../packages/codebook/codebook-dist/spanish.json",
   french: "../packages/codebook/codebook-dist/french.json",
   german: "../packages/codebook/codebook-dist/german.json",
+  portuguese: "../packages/codebook/codebook-dist/portuguese.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -421,6 +422,51 @@ const COMPOUND_SUFFIXES = {
     "vlies",
     "wagen",
   ],
+  portuguese: [
+    "anel",
+    "banco",
+    "bandeja",
+    "bastao",
+    "bau",
+    "bolsa",
+    "botao",
+    "brocha",
+    "caixa",
+    "cesta",
+    "cesto",
+    "chave",
+    "copo",
+    "corda",
+    "cuba",
+    "cuia",
+    "escova",
+    "esteira",
+    "fita",
+    "folha",
+    "frasco",
+    "gancho",
+    "jarra",
+    "lata",
+    "livro",
+    "lona",
+    "luz",
+    "mapa",
+    "marco",
+    "mesa",
+    "pano",
+    "pote",
+    "prato",
+    "rede",
+    "saco",
+    "selo",
+    "suporte",
+    "tabua",
+    "tampa",
+    "tela",
+    "tigela",
+    "vaso",
+    "vela",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -431,6 +477,7 @@ const LANGUAGE_LABELS = {
   spanish: "Spanish",
   french: "French",
   german: "German",
+  portuguese: "Portuguese",
 };
 
 const TYPE_LABELS = {

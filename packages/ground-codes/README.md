@@ -104,7 +104,7 @@ USGS/IAU Gazetteer of Planetary Nomenclature KML center-point downloads.
 - 🔤 **Simple and Memorable**: Just three words to identify any location precisely
 - 🌎 **Global Coverage**: Works anywhere in the world with a unique address
 - 📖 **Open Source**: MIT licensed and fully transparent implementation
-- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, Japanese, Spanish, and French word sets and region labels
+- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, Japanese, Spanish, French, German, and Portuguese word sets and region labels
 - 📏 **Variable Precision**: Offers three levels of precision (3m, 30cm, and 3cm) to suit different use cases
 
 ## 📚 API Reference
@@ -190,7 +190,8 @@ approximation so existing encoded strings remain stable. Moon currently uses
 `regionLevel: 2` official feature names. Mars uses official
 `regionLevel: 2` names first, then falls back to `regionLevel: 3` crater labels
 derived from the USGS Astrogeology Robbins V1 Crater Database when official
-names are sparse. English, Korean, Chinese, Japanese, Spanish, and French
+names are sparse. English, Korean, Chinese, Japanese, Spanish, French, German,
+and Portuguese
 planetary prefixes are available.
 
 Mars crater fallback names are intentionally human-readable. The raw Robbins
@@ -215,11 +216,21 @@ await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "spanish" });
 
 await encode({ lat: 64.3, lng: -86.4 }, { body: "mars", language: "french" });
 // "Cratere Bohar 2-..."
+
+await encode(
+  {
+    lat: 64.3,
+    lng: -86.4,
+  },
+  { body: "mars", language: "portuguese" },
+);
+// "Cratera Bohar 2-..."
 ```
 
-Japanese, Spanish, and French are supported for both region prefix labels and
-the coordinate word-set payload. Spanish and French URL labels are ASCII-only,
-so shared URLs remain readable while accent-insensitive search still works.
+Japanese, Spanish, French, German, and Portuguese are supported for both region
+prefix labels and the coordinate word-set payload. Latin URL labels are
+ASCII-only, so shared URLs remain readable while accent-insensitive search still
+works.
 
 Current Mars 0.25 degree sampling with official names plus crater fallback:
 

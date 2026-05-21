@@ -28,6 +28,9 @@ import marsFallbackFrenchRegions from "@ground-codes/geoint/region-dist/region-3
 import moonGermanRegions from "@ground-codes/geoint/region-dist/region-2-moon-german.json";
 import marsGermanRegions from "@ground-codes/geoint/region-dist/region-2-mars-german.json";
 import marsFallbackGermanRegions from "@ground-codes/geoint/region-dist/region-3-mars-german.json";
+import moonPortugueseRegions from "@ground-codes/geoint/region-dist/region-2-moon-portuguese.json";
+import marsPortugueseRegions from "@ground-codes/geoint/region-dist/region-2-mars-portuguese.json";
+import marsFallbackPortugueseRegions from "@ground-codes/geoint/region-dist/region-3-mars-portuguese.json";
 
 const assertClose = (actual: number, expected: number, tolerance: number) => {
   assert.ok(
@@ -69,12 +72,15 @@ describe("celestial bodies", () => {
     assertUniqueNames(marsFrenchRegions);
     assertUniqueNames(moonGermanRegions);
     assertUniqueNames(marsGermanRegions);
+    assertUniqueNames(moonPortugueseRegions);
+    assertUniqueNames(marsPortugueseRegions);
     assertUniqueNames(marsFallbackKoreanRegions);
     assertUniqueNames(marsFallbackChineseRegions);
     assertUniqueNames(marsFallbackJapaneseRegions);
     assertUniqueNames(marsFallbackSpanishRegions);
     assertUniqueNames(marsFallbackFrenchRegions);
     assertUniqueNames(marsFallbackGermanRegions);
+    assertUniqueNames(marsFallbackPortugueseRegions);
     assertNoLatinNames(moonKoreanRegions);
     assertNoLatinNames(marsKoreanRegions);
     assertNoLatinNames(marsFallbackKoreanRegions);
@@ -370,6 +376,39 @@ describe("celestial bodies", () => {
     const decoded = await decode(moonCode, {
       body: "moon",
       language: "german",
+    });
+    assertClose(decoded.lat, 8.35, 0.0002);
+    assertClose(decoded.lng, 30.84, 0.0002);
+  });
+
+  test("supports Portuguese Earth, Moon, and Mars labels", async () => {
+    const earthCode = await encode(
+      { lat: 37.566, lng: 126.978 },
+      { regionLevel: 2, language: "portuguese" },
+    );
+    assert.match(earthCode, /^Seul-[A-Z][A-Za-z]+/);
+
+    const moonCode = await encode(
+      { lat: 8.35, lng: 30.84 },
+      { body: "moon", regionLevel: 2, language: "portuguese" },
+    );
+    assert.match(moonCode, /^Mar da Tranquilidade-/);
+
+    const marsCode = await encode(
+      { lat: 18.6528, lng: 226.1975 },
+      { body: "mars", regionLevel: 2, language: "portuguese" },
+    );
+    assert.match(marsCode, /^Monte Olimpo-/);
+
+    const marsFallback = await encode(
+      { lat: 64.3, lng: -86.4 },
+      { body: "mars", regionLevel: 2, language: "portuguese" },
+    );
+    assert.match(marsFallback, /^Cratera [A-Za-z]+ \d+-/);
+
+    const decoded = await decode(moonCode, {
+      body: "moon",
+      language: "portuguese",
     });
     assertClose(decoded.lat, 8.35, 0.0002);
     assertClose(decoded.lng, 30.84, 0.0002);

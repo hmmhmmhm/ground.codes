@@ -71,6 +71,9 @@ export const useLanguage = () => {
         if (langCode === "de") {
           return "de";
         }
+        if (langCode === "pt") {
+          return "pt";
+        }
         return langCode;
       }
 

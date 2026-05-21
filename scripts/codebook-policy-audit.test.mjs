@@ -335,6 +335,61 @@ describe("codebook policy audit", () => {
     );
   });
 
+  test("flags Portuguese codebooks saturated with fused template compounds", () => {
+    const makePrefix = (index) => {
+      let value = index;
+      let letters = "";
+      for (let i = 0; i < 5; i += 1) {
+        letters = String.fromCharCode(97 + (value % 26)) + letters;
+        value = Math.floor(value / 26);
+      }
+      return `${letters[0].toUpperCase()}${letters.slice(1)}`;
+    };
+    const suffixes = ["caixa", "cesto", "pote", "prato", "vaso"];
+
+    const { violations } = auditCodebooks({
+      english: Array.from(
+        { length: EXPECTED_COUNTS.english },
+        (_, index) =>
+          `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
+      chinese: Array.from(
+        { length: EXPECTED_COUNTS.chinese },
+        (_, index) => `词${index}`,
+      ),
+      japanese: Array.from(
+        { length: EXPECTED_COUNTS.japanese },
+        (_, index) => `ことば${index}`,
+      ),
+      spanish: Array.from(
+        { length: EXPECTED_COUNTS.spanish },
+        (_, index) =>
+          `Palabra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      french: Array.from(
+        { length: EXPECTED_COUNTS.french },
+        (_, index) =>
+          `Mot${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      german: Array.from(
+        { length: EXPECTED_COUNTS.german },
+        (_, index) =>
+          `Wort${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      portuguese: Array.from(
+        { length: EXPECTED_COUNTS.portuguese },
+        (_, index) =>
+          `${makePrefix(index)}${suffixes[index % suffixes.length]}`,
+      ),
+    });
+
+    assert.equal(
+      violations.some((item) => item.rule === "portuguese-compound-saturation"),
+      true,
+    );
+  });
+
   test("flags awkward German generated compounds", () => {
     const { violations } = auditCodebooks({
       english: Array.from(
@@ -380,6 +435,62 @@ describe("codebook policy audit", () => {
     for (const word of ["Blattblatt", "Ackerfass", "Apfelpfeife"]) {
       assert.equal(
         actual.has(`${word}:german-awkward-generated-compound`),
+        true,
+        word,
+      );
+    }
+  });
+
+  test("flags awkward Portuguese generated compounds", () => {
+    const { violations } = auditCodebooks({
+      english: Array.from(
+        { length: EXPECTED_COUNTS.english },
+        (_, index) =>
+          `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
+      chinese: Array.from(
+        { length: EXPECTED_COUNTS.chinese },
+        (_, index) => `词${index}`,
+      ),
+      japanese: Array.from(
+        { length: EXPECTED_COUNTS.japanese },
+        (_, index) => `ことば${index}`,
+      ),
+      spanish: Array.from(
+        { length: EXPECTED_COUNTS.spanish },
+        (_, index) =>
+          `Palabra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      french: Array.from(
+        { length: EXPECTED_COUNTS.french },
+        (_, index) =>
+          `Mot${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      german: Array.from(
+        { length: EXPECTED_COUNTS.german },
+        (_, index) =>
+          `Wort${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      portuguese: [
+        "Folhafolha",
+        "Aguafita",
+        "Riolivro",
+        ...Array.from(
+          { length: EXPECTED_COUNTS.portuguese - 3 },
+          (_, index) =>
+            `Palavra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+        ),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    for (const word of ["Folhafolha", "Aguafita", "Riolivro"]) {
+      assert.equal(
+        actual.has(`${word}:portuguese-awkward-generated-compound`),
         true,
         word,
       );

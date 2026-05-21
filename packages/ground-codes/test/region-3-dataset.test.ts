@@ -24,6 +24,7 @@ const region2PathByLanguage: Record<string, string> = {
   spanish: "@ground-codes/geoint/region-dist/region-2-spanish.json",
   french: "@ground-codes/geoint/region-dist/region-2-french.json",
   german: "@ground-codes/geoint/region-dist/region-2-german.json",
+  portuguese: "@ground-codes/geoint/region-dist/region-2-portuguese.json",
 };
 
 const region3PathByLanguage: Record<string, string> = {
@@ -34,6 +35,7 @@ const region3PathByLanguage: Record<string, string> = {
   spanish: "@ground-codes/geoint/region-dist/region-3-spanish.json",
   french: "@ground-codes/geoint/region-dist/region-3-french.json",
   german: "@ground-codes/geoint/region-dist/region-3-german.json",
+  portuguese: "@ground-codes/geoint/region-dist/region-3-portuguese.json",
 };
 
 const languages = Object.keys(region3PathByLanguage);
@@ -63,9 +65,11 @@ describe("region-3 dataset", () => {
     const region2Spanish = readRows(region2PathByLanguage.spanish);
     const region2French = readRows(region2PathByLanguage.french);
     const region2German = readRows(region2PathByLanguage.german);
+    const region2Portuguese = readRows(region2PathByLanguage.portuguese);
     const region3Spanish = readRows(region3PathByLanguage.spanish);
     const region3French = readRows(region3PathByLanguage.french);
     const region3German = readRows(region3PathByLanguage.german);
+    const region3Portuguese = readRows(region3PathByLanguage.portuguese);
 
     assert.equal(findRegionNameByCode(region2Korean, "1847050"), "애월");
     assert.equal(
@@ -83,6 +87,12 @@ describe("region-3 dataset", () => {
     assert.equal(findRegionNameByCode(region2German, "1835848"), "Seoul");
     assert.equal(findRegionNameByCode(region2German, "2950159"), "Berlin");
     assert.equal(findRegionNameByCode(region3German, "OCN0"), "Rossmeer 1");
+    assert.equal(findRegionNameByCode(region2Portuguese, "1835848"), "Seul");
+    assert.equal(findRegionNameByCode(region2Portuguese, "2267057"), "Lisboa");
+    assert.equal(
+      findRegionNameByCode(region3Portuguese, "OCN0"),
+      "Mar de Ross 1",
+    );
 
     assert.deepEqual(
       region2Korean

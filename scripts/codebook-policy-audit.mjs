@@ -10,6 +10,7 @@ export const EXPECTED_COUNTS = {
   spanish: 5000,
   french: 5000,
   german: 5000,
+  portuguese: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -20,6 +21,7 @@ const CODEBOOK_FILES = {
   spanish: "../packages/codebook/codebook-dist/spanish.json",
   french: "../packages/codebook/codebook-dist/french.json",
   german: "../packages/codebook/codebook-dist/german.json",
+  portuguese: "../packages/codebook/codebook-dist/portuguese.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -702,6 +704,57 @@ const isAwkwardGermanCompound = (word) => {
   return half.length >= 4 && lower === `${half}${half}`;
 };
 
+const PORTUGUESE_BLOCKED_TERMS = [
+  "Aposta",
+  "Arma",
+  "Casino",
+  "Crime",
+  "Culpa",
+  "Dever",
+  "Dizer",
+  "Doenca",
+  "Dor",
+  "Droga",
+  "Erro",
+  "Fazer",
+  "Guerra",
+  "Matar",
+  "Medico",
+  "Medo",
+  "Morte",
+  "Morrer",
+  "Obrigar",
+  "Odio",
+  "Perda",
+  "Perigo",
+  "Poder",
+  "Politica",
+  "Problema",
+  "Proibido",
+  "Querer",
+  "Religiao",
+  "Risco",
+  "Saber",
+  "Sexo",
+  "Violencia",
+];
+
+const PORTUGUESE_TEMPLATE_COMPOUND_PATTERN =
+  /^[A-Z][a-z]{3,}(?:anel|banco|bandeja|bastao|bau|bolsa|botao|brocha|caixa|cesta|cesto|chave|copo|corda|cuba|cuia|escova|esteira|fita|folha|frasco|gancho|jarra|lata|livro|lona|luz|mapa|marco|mesa|pano|pote|prato|rede|saco|selo|suporte|tabua|tampa|tela|tigela|vaso|vela)$/u;
+const PORTUGUESE_COMPOUND_SATURATION_LIMIT = 3500;
+
+const PORTUGUESE_AWKWARD_COMPOUND_PATTERN =
+  /^(?:Agua|Areia|Barro|Lama|Rio|Riacho)(?:fita|lona|livro|mesa|pano|selo)$/u;
+
+const isAwkwardPortugueseCompound = (word) => {
+  if (PORTUGUESE_AWKWARD_COMPOUND_PATTERN.test(word)) return true;
+
+  const lower = word.toLowerCase();
+  if (lower.length % 2 !== 0) return false;
+  const half = lower.slice(0, lower.length / 2);
+  return half.length >= 4 && lower === `${half}${half}`;
+};
+
 const CHINESE_GENERATED_COMPOUND_PATTERN =
   /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
 
@@ -768,6 +821,7 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
   spanish: SPANISH_BLOCKED_TERMS,
   french: [...FRENCH_BLOCKED_TERMS, ...FRENCH_VERB_REJECTS],
   german: GERMAN_BLOCKED_TERMS,
+  portuguese: PORTUGUESE_BLOCKED_TERMS,
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -902,6 +956,24 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
             word: `${templateCompoundCount}`,
             rule: "german-compound-saturation",
             detail: `German codebooks should not be saturated with fused template compounds; limit is ${GERMAN_COMPOUND_SATURATION_LIMIT}`,
+          }),
+        );
+      }
+    }
+
+    if (language === "portuguese") {
+      const templateCompoundCount = words.filter((word) =>
+        PORTUGUESE_TEMPLATE_COMPOUND_PATTERN.test(word),
+      ).length;
+
+      if (templateCompoundCount > PORTUGUESE_COMPOUND_SATURATION_LIMIT) {
+        violations.push(
+          makeViolation({
+            language,
+            index: -1,
+            word: `${templateCompoundCount}`,
+            rule: "portuguese-compound-saturation",
+            detail: `Portuguese codebooks should not be saturated with fused template compounds; limit is ${PORTUGUESE_COMPOUND_SATURATION_LIMIT}`,
           }),
         );
       }
@@ -1094,6 +1166,45 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               word,
               rule: "german-too-long",
               detail: "German entries should stay short for URL readability",
+            }),
+          );
+        }
+      }
+
+      if (language === "portuguese") {
+        if (isAwkwardPortugueseCompound(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "portuguese-awkward-generated-compound",
+              detail:
+                "Portuguese generated compounds should avoid self-duplication and implausible object pairings",
+            }),
+          );
+        }
+        if (!/^[A-Z][a-z]+$/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "portuguese-shape",
+              detail:
+                "Portuguese URL codebook entries should use ASCII title-case words",
+            }),
+          );
+        }
+        if (word.length > 12) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "portuguese-too-long",
+              detail:
+                "Portuguese entries should stay short for URL readability",
             }),
           );
         }

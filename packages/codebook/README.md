@@ -29,6 +29,7 @@ The primary purpose of the Codebook is to provide a dictionary of words that can
 - 🇪🇸 **Spanish Codebook**: Contains 5,000 URL-safe curated words
 - 🇫🇷 **French Codebook**: Contains 5,000 URL-safe curated words
 - 🇩🇪 **German Codebook**: Contains 5,000 URL-safe curated words
+- 🇵🇹 **Portuguese Codebook**: Contains 5,000 URL-safe curated words
 
 ## 🤖 Word Generation Process
 
@@ -71,6 +72,7 @@ Current distributed word sets:
 - Spanish: 5,000 URL-safe words filtered to avoid generated compounds and sensitive terms
 - French: 5,000 URL-safe words seeded from reviewed French words and filtered BIP39-derived candidates
 - German: 5,000 URL-safe words seeded from reviewed German words and filtered compound candidates
+- Portuguese: 5,000 URL-safe words seeded from neutral concrete Portuguese nouns and filtered compound candidates
 
 ## ⚙️ Generation Commands
 
