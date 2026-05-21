@@ -423,10 +423,10 @@ const KOREAN_ALLOWED_ONE_SYLLABLE = new Set(
 );
 
 const KOREAN_POETIC_ADJECTIVE_PATTERN =
-  /^(정겨운|너른|푸른|따스한|고요한|소담한|새벽|밝은|고운|둥근|차분한|은빛|맑은)/u;
+  /^(정겨운|너른|푸른|따스한|고요한|소담한|포근한|새벽|밝은|고운|둥근|차분한|은빛|맑은)/u;
 
 const KOREAN_GENERATED_COMPOUND_ROOT_PATTERN =
-  /^(도토리|솔방울|연잎|나뭇잎|조약돌|자갈|잔디|이끼|꽃잎|들꽃|갈대|버들|무명|비단|삼베|모시|한지|종이|나무|대나무|토기|청자|백자|자개|수정|구리|옥돌|호박)/u;
+  /^(도토리|솔방울|연잎|나뭇잎|조약돌|자갈|잔디|이끼|꽃잎|들꽃|갈대|버들|무명|비단|삼베|모시|한지|종이|색종이|나무|대나무|토기|청자|백자|자개|수정|구리|옥돌|호박|면(?:솔방울|나뭇잎))/u;
 
 const KOREAN_GENERATED_COMPOUND_ALLOWED_STANDALONE = new Set([
   "도토리",

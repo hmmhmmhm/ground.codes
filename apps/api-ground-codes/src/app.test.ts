@@ -297,7 +297,7 @@ describe("Ground Codes API contract", () => {
   test("search resolves longer localized Moon and Mars ground codes", async () => {
     for (const sample of [
       {
-        query: "고요의 바다-안방-모시풍경",
+        query: "고요의 바다-안방-구두솔가방",
         body: "moon",
       },
       {

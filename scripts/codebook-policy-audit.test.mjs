@@ -108,7 +108,10 @@ describe("codebook policy audit", () => {
         "정",
         "솔방울두루마리",
         "비화이트리스트",
-        ...makeHangulFixtures(EXPECTED_COUNTS.korean - 5),
+        "포근한흙담",
+        "색종이상자",
+        "면솔방울",
+        ...makeHangulFixtures(EXPECTED_COUNTS.korean - 8),
       ],
       chinese: Array.from(
         { length: EXPECTED_COUNTS.chinese },
@@ -136,6 +139,9 @@ describe("codebook policy audit", () => {
         ["정", "korean-weak-one-syllable"],
         ["솔방울두루마리", "korean-too-long"],
         ["비화이트리스트", "korean-unapproved-loanword"],
+        ["포근한흙담", "korean-poetic-adjective-compound"],
+        ["색종이상자", "korean-generated-material-compound"],
+        ["면솔방울", "korean-generated-material-compound"],
       ]) {
       assert.equal(actual.has(`${word}:${rule}`), true, `${word}: ${rule}`);
     }

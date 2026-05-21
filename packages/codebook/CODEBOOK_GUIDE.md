@@ -180,12 +180,15 @@ a test blocklist.
   Roots that need strict cleanup include `도토리`, `솔방울`, `연잎`,
   `나뭇잎`, `조약돌`, `자갈`, `잔디`, `이끼`, `꽃잎`, `들꽃`, `갈대`,
   `버들`, `무명`, `비단`, `삼베`, `모시`, `한지`, `종이`, `나무`,
-  `대나무`, `토기`, `청자`, `백자`, `자개`, `수정`, `구리`, `옥돌`,
-  and `호박`; keep only reviewed standalone words such as `도토리`,
-  `솔방울`, `연잎`, `나뭇잎`, `호박`, `대나무`, and `조약돌`.
+  `색종이`, `대나무`, `토기`, `청자`, `백자`, `자개`, `수정`, `구리`,
+  `옥돌`, and `호박`; keep only reviewed standalone words such as `도토리`,
+  `솔방울`, `연잎`, `나뭇잎`, `호박`, `대나무`, and `조약돌`. Treat
+  leftover generated pairings such as `면솔방울` and `면나뭇잎` as rejected
+  even when they do not start with a listed root.
 - Avoid poetic adjective compounds such as `정겨운도토리`, `푸른물빛`,
-  `고운나래`, `둥근보자기`, `차분한샘물`, `은빛마당`, and `맑은들녘`.
-  These read like generated slogans rather than stable address words.
+  `고운나래`, `둥근보자기`, `차분한샘물`, `포근한흙담`, `은빛마당`,
+  and `맑은들녘`. These read like generated slogans rather than stable
+  address words.
 - Keep Korean code words at five Hangul syllables or fewer unless there is a
   reviewed compatibility reason. Longer entries such as `디저트숟가락`,
   `솔방울두루마리`, and `조약돌반짇고리` make shared URLs harder to scan.
