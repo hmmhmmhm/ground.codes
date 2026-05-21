@@ -807,6 +807,7 @@ const INDONESIAN_AWKWARD_ADJECTIVE_PREFIXES = [
   "Gelas",
   "Gula",
   "Hutan",
+  "Karet",
   "Kerang",
   "Kertas",
   "Lantai",
@@ -890,6 +891,7 @@ const INDONESIAN_AWKWARD_OBJECT_PREFIXES = [
   "Kelapa",
   "Laut",
   "Ombak",
+  "Sikat",
   "Wadah",
   "Warna",
   "Zaitun",
@@ -963,6 +965,8 @@ const INDONESIAN_AWKWARD_UNIVERSAL_OBJECT_SUFFIXES = [
   "guci",
 ];
 
+const INDONESIAN_ALLOWED_SELF_REPEATING_WORDS = new Set(["Cincin"]);
+
 const hasGeneratedPair = (word, prefixes, suffixes) =>
   prefixes.some((prefix) =>
     suffixes.some((suffix) => word === `${prefix}${suffix}`),
@@ -1002,6 +1006,7 @@ const isAwkwardIndonesianCompound = (word) => {
 
   const lower = word.toLowerCase();
   if (lower.length % 2 !== 0) return false;
+  if (INDONESIAN_ALLOWED_SELF_REPEATING_WORDS.has(word)) return false;
   const half = lower.slice(0, lower.length / 2);
   return half.length >= 3 && lower === `${half}${half}`;
 };

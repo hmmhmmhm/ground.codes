@@ -78,9 +78,9 @@ Current inventory:
 | Portuguese | Recognized compound              |  1424 | 28.5% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
 | Portuguese | Short standalone                 |    58 |  1.2% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
 | Portuguese | Other standalone or unclassified |  3518 | 70.4% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
-| Indonesian | Recognized compound              |  4638 | 92.8% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
-| Indonesian | Short standalone                 |    61 |  1.2% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
-| Indonesian | Other standalone or unclassified |   301 |  6.0% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
+| Indonesian | Recognized compound              |  4492 | 89.8% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
+| Indonesian | Short standalone                 |    76 |  1.5% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
+| Indonesian | Other standalone or unclassified |   432 |  8.6% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
 
 Review implications:
 
@@ -104,13 +104,15 @@ Review implications:
   which removed Spanish-like entries, proper-name risks, and weak generated
   compounds. Keep it neutral and common across Lusophone regions, and do not
   raise template-compound saturation while filling future review gaps.
-- Indonesian quality v4 replaces Malay-leaning `Halia` with `Jahe`, keeps
+- Indonesian quality v5 replaces Malay-leaning `Halia` with `Jahe`, keeps
   `Pepaya` instead of `Papaya`, adds more everyday standalone nouns, and blocks
   weak fused pairings such as `Emaskuning`, `Garamwangi`, `Gulabening`,
   `Awankaleng`, `Bambubilik`, and `Tomatcawan`-style material/object
   combinations. The generator now prefers a larger adjective-composition pool
-  before falling back to object pairings. Continue replacing generated
-  compounds with reviewed standalone Indonesian nouns as coverage grows.
+  before falling back to object pairings. The latest standalone batch adds
+  reviewed everyday words such as `Cahaya`, `Cemara`, `Kawah`, `Lentera`,
+  `Sambal`, `Sepeda`, and `Toples`. Continue replacing generated compounds
+  with reviewed standalone Indonesian nouns as coverage grows.
 
 ## Product Principles
 
