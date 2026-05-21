@@ -28,6 +28,7 @@ The primary purpose of the Codebook is to provide a dictionary of words that can
 - 🇯🇵 **Japanese Codebook**: Contains 5,000 frequency-guided hiragana words
 - 🇪🇸 **Spanish Codebook**: Contains 5,000 URL-safe curated words
 - 🇫🇷 **French Codebook**: Contains 5,000 URL-safe curated words
+- 🇩🇪 **German Codebook**: Contains 5,000 URL-safe curated words
 
 ## 🤖 Word Generation Process
 
@@ -69,6 +70,7 @@ Current distributed word sets:
 - Japanese: 5,000 frequency-guided hiragana words filtered to avoid generated compounds and sensitive terms
 - Spanish: 5,000 URL-safe words filtered to avoid generated compounds and sensitive terms
 - French: 5,000 URL-safe words seeded from reviewed French words and filtered BIP39-derived candidates
+- German: 5,000 URL-safe words seeded from reviewed German words and filtered compound candidates
 
 ## ⚙️ Generation Commands
 

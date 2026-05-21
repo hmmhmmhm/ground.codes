@@ -1,58 +1,213 @@
 import { appendFileSync, readFileSync } from "node:fs";
 
 const DATASETS = [
-  ["earth region-1 english", "english", "../packages/geoint/region-dist/region-1.json"],
-  ["earth region-2 english", "english", "../packages/geoint/region-dist/region-2.json"],
-  ["earth region-2 korean", "korean", "../packages/geoint/region-dist/region-2-korean.json"],
-  ["earth region-2 chinese", "chinese", "../packages/geoint/region-dist/region-2-chinese.json"],
-  ["earth region-2 japanese", "japanese", "../packages/geoint/region-dist/region-2-japanese.json"],
-  ["earth region-2 spanish", "spanish", "../packages/geoint/region-dist/region-2-spanish.json"],
-  ["earth region-2 french", "french", "../packages/geoint/region-dist/region-2-french.json"],
-  ["earth region-3 english", "english", "../packages/geoint/region-dist/region-3.json"],
-  ["earth region-3 korean", "korean", "../packages/geoint/region-dist/region-3-korean.json"],
-  ["earth region-3 chinese", "chinese", "../packages/geoint/region-dist/region-3-chinese.json"],
-  ["earth region-3 japanese", "japanese", "../packages/geoint/region-dist/region-3-japanese.json"],
-  ["earth region-3 spanish", "spanish", "../packages/geoint/region-dist/region-3-spanish.json"],
-  ["earth region-3 french", "french", "../packages/geoint/region-dist/region-3-french.json"],
-  ["moon region-2 english", "english", "../packages/geoint/region-dist/region-2-moon.json"],
-  ["moon region-2 korean", "korean", "../packages/geoint/region-dist/region-2-moon-korean.json"],
-  ["moon region-2 chinese", "chinese", "../packages/geoint/region-dist/region-2-moon-chinese.json"],
-  ["moon region-2 japanese", "japanese", "../packages/geoint/region-dist/region-2-moon-japanese.json"],
-  ["moon region-2 spanish", "spanish", "../packages/geoint/region-dist/region-2-moon-spanish.json"],
-  ["moon region-2 french", "french", "../packages/geoint/region-dist/region-2-moon-french.json"],
-  ["mars region-2 english", "english", "../packages/geoint/region-dist/region-2-mars.json"],
-  ["mars region-2 korean", "korean", "../packages/geoint/region-dist/region-2-mars-korean.json"],
-  ["mars region-2 chinese", "chinese", "../packages/geoint/region-dist/region-2-mars-chinese.json"],
-  ["mars region-2 japanese", "japanese", "../packages/geoint/region-dist/region-2-mars-japanese.json"],
-  ["mars region-2 spanish", "spanish", "../packages/geoint/region-dist/region-2-mars-spanish.json"],
-  ["mars region-2 french", "french", "../packages/geoint/region-dist/region-2-mars-french.json"],
-  ["mars region-3 english", "english", "../packages/geoint/region-dist/region-3-mars.json"],
-  ["mars region-3 korean", "korean", "../packages/geoint/region-dist/region-3-mars-korean.json"],
-  ["mars region-3 chinese", "chinese", "../packages/geoint/region-dist/region-3-mars-chinese.json"],
-  ["mars region-3 japanese", "japanese", "../packages/geoint/region-dist/region-3-mars-japanese.json"],
-  ["mars region-3 spanish", "spanish", "../packages/geoint/region-dist/region-3-mars-spanish.json"],
-  ["mars region-3 french", "french", "../packages/geoint/region-dist/region-3-mars-french.json"],
+  [
+    "earth region-1 english",
+    "english",
+    "../packages/geoint/region-dist/region-1.json",
+  ],
+  [
+    "earth region-2 english",
+    "english",
+    "../packages/geoint/region-dist/region-2.json",
+  ],
+  [
+    "earth region-2 korean",
+    "korean",
+    "../packages/geoint/region-dist/region-2-korean.json",
+  ],
+  [
+    "earth region-2 chinese",
+    "chinese",
+    "../packages/geoint/region-dist/region-2-chinese.json",
+  ],
+  [
+    "earth region-2 japanese",
+    "japanese",
+    "../packages/geoint/region-dist/region-2-japanese.json",
+  ],
+  [
+    "earth region-2 spanish",
+    "spanish",
+    "../packages/geoint/region-dist/region-2-spanish.json",
+  ],
+  [
+    "earth region-2 french",
+    "french",
+    "../packages/geoint/region-dist/region-2-french.json",
+  ],
+  [
+    "earth region-2 german",
+    "german",
+    "../packages/geoint/region-dist/region-2-german.json",
+  ],
+  [
+    "earth region-3 english",
+    "english",
+    "../packages/geoint/region-dist/region-3.json",
+  ],
+  [
+    "earth region-3 korean",
+    "korean",
+    "../packages/geoint/region-dist/region-3-korean.json",
+  ],
+  [
+    "earth region-3 chinese",
+    "chinese",
+    "../packages/geoint/region-dist/region-3-chinese.json",
+  ],
+  [
+    "earth region-3 japanese",
+    "japanese",
+    "../packages/geoint/region-dist/region-3-japanese.json",
+  ],
+  [
+    "earth region-3 spanish",
+    "spanish",
+    "../packages/geoint/region-dist/region-3-spanish.json",
+  ],
+  [
+    "earth region-3 french",
+    "french",
+    "../packages/geoint/region-dist/region-3-french.json",
+  ],
+  [
+    "earth region-3 german",
+    "german",
+    "../packages/geoint/region-dist/region-3-german.json",
+  ],
+  [
+    "moon region-2 english",
+    "english",
+    "../packages/geoint/region-dist/region-2-moon.json",
+  ],
+  [
+    "moon region-2 korean",
+    "korean",
+    "../packages/geoint/region-dist/region-2-moon-korean.json",
+  ],
+  [
+    "moon region-2 chinese",
+    "chinese",
+    "../packages/geoint/region-dist/region-2-moon-chinese.json",
+  ],
+  [
+    "moon region-2 japanese",
+    "japanese",
+    "../packages/geoint/region-dist/region-2-moon-japanese.json",
+  ],
+  [
+    "moon region-2 spanish",
+    "spanish",
+    "../packages/geoint/region-dist/region-2-moon-spanish.json",
+  ],
+  [
+    "moon region-2 french",
+    "french",
+    "../packages/geoint/region-dist/region-2-moon-french.json",
+  ],
+  [
+    "moon region-2 german",
+    "german",
+    "../packages/geoint/region-dist/region-2-moon-german.json",
+  ],
+  [
+    "mars region-2 english",
+    "english",
+    "../packages/geoint/region-dist/region-2-mars.json",
+  ],
+  [
+    "mars region-2 korean",
+    "korean",
+    "../packages/geoint/region-dist/region-2-mars-korean.json",
+  ],
+  [
+    "mars region-2 chinese",
+    "chinese",
+    "../packages/geoint/region-dist/region-2-mars-chinese.json",
+  ],
+  [
+    "mars region-2 japanese",
+    "japanese",
+    "../packages/geoint/region-dist/region-2-mars-japanese.json",
+  ],
+  [
+    "mars region-2 spanish",
+    "spanish",
+    "../packages/geoint/region-dist/region-2-mars-spanish.json",
+  ],
+  [
+    "mars region-2 french",
+    "french",
+    "../packages/geoint/region-dist/region-2-mars-french.json",
+  ],
+  [
+    "mars region-2 german",
+    "german",
+    "../packages/geoint/region-dist/region-2-mars-german.json",
+  ],
+  [
+    "mars region-3 english",
+    "english",
+    "../packages/geoint/region-dist/region-3-mars.json",
+  ],
+  [
+    "mars region-3 korean",
+    "korean",
+    "../packages/geoint/region-dist/region-3-mars-korean.json",
+  ],
+  [
+    "mars region-3 chinese",
+    "chinese",
+    "../packages/geoint/region-dist/region-3-mars-chinese.json",
+  ],
+  [
+    "mars region-3 japanese",
+    "japanese",
+    "../packages/geoint/region-dist/region-3-mars-japanese.json",
+  ],
+  [
+    "mars region-3 spanish",
+    "spanish",
+    "../packages/geoint/region-dist/region-3-mars-spanish.json",
+  ],
+  [
+    "mars region-3 french",
+    "french",
+    "../packages/geoint/region-dist/region-3-mars-french.json",
+  ],
+  [
+    "mars region-3 german",
+    "german",
+    "../packages/geoint/region-dist/region-3-mars-german.json",
+  ],
 ];
 
 const hasNonAscii = (value) => /[^\x20-\x7E]/.test(value);
 const hasLatin = (value) => /[A-Za-z]/.test(value);
 const allowsLatinLabels = (language) =>
-  language === "english" || language === "spanish" || language === "french";
+  language === "english" ||
+  language === "spanish" ||
+  language === "french" ||
+  language === "german";
 const sampleLabels = (names, predicate) => names.filter(predicate).slice(0, 5);
 
 export const buildUrlLabelReport = (datasets) => {
   const reportDatasets = datasets.map(({ name, language, rows }) => {
     const names = rows.map((row) => String(row.name ?? ""));
-    const englishNonAsciiSamples =
-      allowsLatinLabels(language) ? sampleLabels(names, hasNonAscii) : [];
-    const localizedLatinSamples =
-      allowsLatinLabels(language) ? [] : sampleLabels(names, hasLatin);
+    const englishNonAsciiSamples = allowsLatinLabels(language)
+      ? sampleLabels(names, hasNonAscii)
+      : [];
+    const localizedLatinSamples = allowsLatinLabels(language)
+      ? []
+      : sampleLabels(names, hasLatin);
 
     return {
       name,
       rows: rows.length,
-      englishNonAscii:
-        allowsLatinLabels(language) ? names.filter(hasNonAscii).length : 0,
+      englishNonAscii: allowsLatinLabels(language)
+        ? names.filter(hasNonAscii).length
+        : 0,
       localizedLatin: allowsLatinLabels(language)
         ? 0
         : names.filter(hasLatin).length,

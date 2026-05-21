@@ -284,4 +284,54 @@ describe("codebook policy audit", () => {
       true,
     );
   });
+
+  test("flags German codebooks saturated with fused template compounds", () => {
+    const makePrefix = (index) => {
+      let value = index;
+      let letters = "";
+      for (let i = 0; i < 5; i += 1) {
+        letters = String.fromCharCode(97 + (value % 26)) + letters;
+        value = Math.floor(value / 26);
+      }
+      return `${letters[0].toUpperCase()}${letters.slice(1)}`;
+    };
+    const suffixes = ["bank", "becher", "kasten", "korb", "tasche"];
+
+    const { violations } = auditCodebooks({
+      english: Array.from(
+        { length: EXPECTED_COUNTS.english },
+        (_, index) =>
+          `Word${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      korean: makeHangulFixtures(EXPECTED_COUNTS.korean),
+      chinese: Array.from(
+        { length: EXPECTED_COUNTS.chinese },
+        (_, index) => `词${index}`,
+      ),
+      japanese: Array.from(
+        { length: EXPECTED_COUNTS.japanese },
+        (_, index) => `ことば${index}`,
+      ),
+      spanish: Array.from(
+        { length: EXPECTED_COUNTS.spanish },
+        (_, index) =>
+          `Palabra${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      french: Array.from(
+        { length: EXPECTED_COUNTS.french },
+        (_, index) =>
+          `Mot${String.fromCharCode(65 + (index % 26))}${"a".repeat(Math.floor(index / 26) + 1)}`,
+      ),
+      german: Array.from(
+        { length: EXPECTED_COUNTS.german },
+        (_, index) =>
+          `${makePrefix(index)}${suffixes[index % suffixes.length]}`,
+      ),
+    });
+
+    assert.equal(
+      violations.some((item) => item.rule === "german-compound-saturation"),
+      true,
+    );
+  });
 });

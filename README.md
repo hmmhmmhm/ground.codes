@@ -13,7 +13,7 @@
 
 Ground Codes is a coordinate-based addressing system that allows you to pinpoint any location in the world using just a region name and two words (e.g., "Yongsan-Happiness-Smile"). It leverages geographic coordinate systems (GCS) to provide a user-friendly alternative to traditional latitude and longitude coordinates.
 
-And Ground Codes is a **multi-planetary addressing system** 🪐 that aims to provide a universal coordinate-based solution across celestial bodies. Currently operational on Earth, it will soon expand to support Mars and the Moon as part of its vision for a comprehensive multi-planetary address framework.
+And Ground Codes is a **multi-planetary addressing system** 🪐 that provides a universal coordinate-based solution across celestial bodies. It currently supports Earth, the Moon, and Mars.
 
 > [!WARNING]
 > ⚠️ ground.codes is an ongoing project and has not yet reached completion.
@@ -32,16 +32,16 @@ And Ground Codes is a **multi-planetary addressing system** 🪐 that aims to pr
 - 🧠 **Simple and Memorable**: Just three words to identify any location precisely
 - 🌎 **Global Coverage**: Works anywhere in the world with a unique address
 - 🔓 **Open Source**: MIT licensed and fully transparent implementation
-- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, and Japanese, with plans to expand to 60 languages
+- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, Japanese, Spanish, French, and German, with plans to expand to 60 languages
 - 🎯 **Variable Precision**: Offers three levels of precision (3m, 30cm, and 3cm) to suit different use cases
 
 ## 📊 Comparison with Similar Services
 
-| Service | Format | License | Precision | Global Usage | Multilingual Support |
-|---------|--------|---------|-----------|--------------|----------------------|
-| 🌍 **Ground Codes** | Yongsan-Happiness-Smile | ✅ MIT License (Free) | 1. 3 meters (standard)<br>2. 30cm<br>3. 3cm | ✅ Yes | 🌐 English, Korean, Chinese, Japanese (expanding to 60 languages) |
-| 🔍 **Google Plus Code** | HX2F+J8 | ⚠️ No License (Free) | 3.5 meters | ⚠️ Limited (requires 4 additional characters for global use, e.g., **8Q94HX2F+J8**) | 🇬🇧 English only |
-| 🔤 **What 3 Words** | ///teacher.awaken.days | 💰 Proprietary (Paid) | 3 meters | ✅ Yes | 🌐 60 languages |
+| Service                 | Format                  | License               | Precision                                   | Global Usage                                                                        | Multilingual Support                                                                       |
+| ----------------------- | ----------------------- | --------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| 🌍 **Ground Codes**     | Yongsan-Happiness-Smile | ✅ MIT License (Free) | 1. 3 meters (standard)<br>2. 30cm<br>3. 3cm | ✅ Yes                                                                              | 🌐 English, Korean, Chinese, Japanese, Spanish, French, German (expanding to 60 languages) |
+| 🔍 **Google Plus Code** | HX2F+J8                 | ⚠️ No License (Free)  | 3.5 meters                                  | ⚠️ Limited (requires 4 additional characters for global use, e.g., **8Q94HX2F+J8**) | 🇬🇧 English only                                                                            |
+| 🔤 **What 3 Words**     | ///teacher.awaken.days  | 💰 Proprietary (Paid) | 3 meters                                    | ✅ Yes                                                                              | 🌐 60 languages                                                                            |
 
 ## 💪 Advantages Over Existing Services
 

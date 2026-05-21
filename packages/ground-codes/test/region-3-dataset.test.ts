@@ -1,32 +1,7 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { describe, test } from "node:test";
-
-// @ts-ignore
-import region1 from "@ground-codes/geoint/region-dist/region-1.json";
-// @ts-ignore
-import region2Chinese from "@ground-codes/geoint/region-dist/region-2-chinese.json";
-// @ts-ignore
-import region2English from "@ground-codes/geoint/region-dist/region-2.json";
-// @ts-ignore
-import region2Korean from "@ground-codes/geoint/region-dist/region-2-korean.json";
-// @ts-ignore
-import region2Japanese from "@ground-codes/geoint/region-dist/region-2-japanese.json";
-// @ts-ignore
-import region2Spanish from "@ground-codes/geoint/region-dist/region-2-spanish.json";
-// @ts-ignore
-import region2French from "@ground-codes/geoint/region-dist/region-2-french.json";
-// @ts-ignore
-import region3Chinese from "@ground-codes/geoint/region-dist/region-3-chinese.json";
-// @ts-ignore
-import region3English from "@ground-codes/geoint/region-dist/region-3.json";
-// @ts-ignore
-import region3Korean from "@ground-codes/geoint/region-dist/region-3-korean.json";
-// @ts-ignore
-import region3Japanese from "@ground-codes/geoint/region-dist/region-3-japanese.json";
-// @ts-ignore
-import region3Spanish from "@ground-codes/geoint/region-dist/region-3-spanish.json";
-// @ts-ignore
-import region3French from "@ground-codes/geoint/region-dist/region-3-french.json";
 
 type Region3Row = {
   name: string;
@@ -34,34 +9,45 @@ type Region3Row = {
   source?: string;
 };
 
-const datasets: Array<[string, Region3Row[]]> = [
-  ["english", region3English],
-  ["korean", region3Korean],
-  ["chinese", region3Chinese],
-  ["japanese", region3Japanese],
-  ["spanish", region3Spanish],
-  ["french", region3French],
-];
-const region2ByLanguage: Record<string, Region3Row[]> = {
-  english: region2English,
-  korean: region2Korean,
-  chinese: region2Chinese,
-  japanese: region2Japanese,
-  spanish: region2Spanish,
-  french: region2French,
+const require = createRequire(import.meta.url);
+
+const readRows = (modulePath: string) =>
+  JSON.parse(readFileSync(require.resolve(modulePath), "utf8")) as Region3Row[];
+
+const region1Path = "@ground-codes/geoint/region-dist/region-1.json";
+
+const region2PathByLanguage: Record<string, string> = {
+  english: "@ground-codes/geoint/region-dist/region-2.json",
+  korean: "@ground-codes/geoint/region-dist/region-2-korean.json",
+  chinese: "@ground-codes/geoint/region-dist/region-2-chinese.json",
+  japanese: "@ground-codes/geoint/region-dist/region-2-japanese.json",
+  spanish: "@ground-codes/geoint/region-dist/region-2-spanish.json",
+  french: "@ground-codes/geoint/region-dist/region-2-french.json",
+  german: "@ground-codes/geoint/region-dist/region-2-german.json",
 };
 
-const englishDatasets: Array<[string, Region3Row[]]> = [
-  ["region-1", region1],
-  ["region-2", region2English],
-  ["region-3", region3English],
-];
+const region3PathByLanguage: Record<string, string> = {
+  english: "@ground-codes/geoint/region-dist/region-3.json",
+  korean: "@ground-codes/geoint/region-dist/region-3-korean.json",
+  chinese: "@ground-codes/geoint/region-dist/region-3-chinese.json",
+  japanese: "@ground-codes/geoint/region-dist/region-3-japanese.json",
+  spanish: "@ground-codes/geoint/region-dist/region-3-spanish.json",
+  french: "@ground-codes/geoint/region-dist/region-3-french.json",
+  german: "@ground-codes/geoint/region-dist/region-3-german.json",
+};
+
+const languages = Object.keys(region3PathByLanguage);
 
 const findRegionNameByCode = (rows: Region3Row[], code: string) =>
   rows.find((row) => row.code === code)?.name;
 
 describe("region-3 dataset", () => {
   test("keeps English earth region names ASCII-only for readable URLs", () => {
+    const englishDatasets: Array<[string, Region3Row[]]> = [
+      ["region-1", readRows(region1Path)],
+      ["region-2", readRows(region2PathByLanguage.english)],
+      ["region-3", readRows(region3PathByLanguage.english)],
+    ];
     const nonAsciiNames = englishDatasets.flatMap(([datasetName, rows]) =>
       rows
         .filter((row) => /[^\x20-\x7E]/.test(row.name))
@@ -72,6 +58,15 @@ describe("region-3 dataset", () => {
   });
 
   test("keeps reviewed localized earth region names translated", () => {
+    const region2Korean = readRows(region2PathByLanguage.korean);
+    const region2Chinese = readRows(region2PathByLanguage.chinese);
+    const region2Spanish = readRows(region2PathByLanguage.spanish);
+    const region2French = readRows(region2PathByLanguage.french);
+    const region2German = readRows(region2PathByLanguage.german);
+    const region3Spanish = readRows(region3PathByLanguage.spanish);
+    const region3French = readRows(region3PathByLanguage.french);
+    const region3German = readRows(region3PathByLanguage.german);
+
     assert.equal(findRegionNameByCode(region2Korean, "1847050"), "애월");
     assert.equal(
       findRegionNameByCode(region2Korean, "1546102"),
@@ -85,6 +80,9 @@ describe("region-3 dataset", () => {
     assert.equal(findRegionNameByCode(region3Spanish, "OCN0"), "Mar Ross 1");
     assert.equal(findRegionNameByCode(region2French, "1835848"), "Seoul");
     assert.equal(findRegionNameByCode(region3French, "OCN0"), "Mer Ross 1");
+    assert.equal(findRegionNameByCode(region2German, "1835848"), "Seoul");
+    assert.equal(findRegionNameByCode(region2German, "2950159"), "Berlin");
+    assert.equal(findRegionNameByCode(region3German, "OCN0"), "Ross Meer 1");
 
     assert.deepEqual(
       region2Korean
@@ -101,14 +99,17 @@ describe("region-3 dataset", () => {
   });
 
   test("keeps Japanese earth region names free of Latin fallback fragments", () => {
+    const region2Japanese = readRows(region2PathByLanguage.japanese);
+
     assert.deepEqual(
       region2Japanese.filter((row) => /[A-Za-z]/.test(row.name)),
       [],
     );
   });
 
-  for (const [language, rows] of datasets) {
+  for (const language of languages) {
     test(`${language} names are short, URL-safe, and unique`, () => {
+      const rows = readRows(region3PathByLanguage[language]);
       const names = rows.map((row) => row.name);
       const normalizedNames = names.map((name) => name.toLowerCase());
 
@@ -118,6 +119,7 @@ describe("region-3 dataset", () => {
     });
 
     test(`${language} ocean grid names use decimal suffixes`, () => {
+      const rows = readRows(region3PathByLanguage[language]);
       const oceanRows = rows.filter(
         (row) => row.source === "natural-earth-marine",
       );
@@ -130,6 +132,7 @@ describe("region-3 dataset", () => {
     });
 
     test(`${language} antarctic grid names use decimal suffixes`, () => {
+      const rows = readRows(region3PathByLanguage[language]);
       const antarcticGridRows = rows.filter(
         (row) => row.source === "synthetic-antarctic-grid",
       );
@@ -142,6 +145,7 @@ describe("region-3 dataset", () => {
     });
 
     test(`${language} arctic grid names use decimal suffixes`, () => {
+      const rows = readRows(region3PathByLanguage[language]);
       const arcticGridRows = rows.filter(
         (row) => row.source === "synthetic-arctic-grid",
       );
@@ -154,6 +158,7 @@ describe("region-3 dataset", () => {
     });
 
     test(`${language} sahara grid names use decimal suffixes`, () => {
+      const rows = readRows(region3PathByLanguage[language]);
       const saharaGridRows = rows.filter(
         (row) => row.source === "synthetic-sahara-grid",
       );
@@ -166,6 +171,7 @@ describe("region-3 dataset", () => {
     });
 
     test(`${language} named gap labels are present`, () => {
+      const rows = readRows(region3PathByLanguage[language]);
       const namedGapRows = rows.filter(
         (row) => row.source === "synthetic-named-gap",
       );
@@ -174,14 +180,15 @@ describe("region-3 dataset", () => {
     });
 
     test(`${language} named gap labels do not collide with lookup keys`, () => {
+      const rows = readRows(region3PathByLanguage[language]);
       const namedGapRows = rows.filter(
         (row) => row.source === "synthetic-named-gap",
       );
       const existingKeys = new Set<string>();
 
       for (const row of [
-        ...region1,
-        ...region2ByLanguage[language],
+        ...readRows(region1Path),
+        ...readRows(region2PathByLanguage[language]),
         ...rows.filter((row) => row.source !== "synthetic-named-gap"),
       ]) {
         existingKeys.add(String(row.name ?? "").toLowerCase());

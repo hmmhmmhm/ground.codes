@@ -88,6 +88,14 @@ const loadRegions = async (
           );
         return module.default as Region[];
       }
+      if (normalizedLanguage === "german") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-2-moon-german.json"
+          );
+        return module.default as Region[];
+      }
       const module =
         // @ts-ignore
         await import("@ground-codes/geoint/region-dist/region-2-moon.json");
@@ -136,6 +144,14 @@ const loadRegions = async (
             );
           return module.default as Region[];
         }
+        if (normalizedLanguage === "german") {
+          const module =
+            // @ts-ignore
+            await import(
+              "@ground-codes/geoint/region-dist/region-3-mars-german.json"
+            );
+          return module.default as Region[];
+        }
         const module =
           // @ts-ignore
           await import("@ground-codes/geoint/region-dist/region-3-mars.json");
@@ -180,6 +196,14 @@ const loadRegions = async (
           // @ts-ignore
           await import(
             "@ground-codes/geoint/region-dist/region-2-mars-french.json"
+          );
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "german") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-2-mars-german.json"
           );
         return module.default as Region[];
       }
@@ -236,9 +260,13 @@ const loadRegions = async (
       if (normalizedLanguage === "french") {
         const module =
           // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-french.json"
-          );
+          await import("@ground-codes/geoint/region-dist/region-2-french.json");
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "german") {
+        const module =
+          // @ts-ignore
+          await import("@ground-codes/geoint/region-dist/region-2-german.json");
         return module.default as Region[];
       }
       throw new Error(`Invalid language: ${language}`);
@@ -284,9 +312,13 @@ const loadRegions = async (
       if (normalizedLanguage === "french") {
         const module =
           // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-3-french.json"
-          );
+          await import("@ground-codes/geoint/region-dist/region-3-french.json");
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "german") {
+        const module =
+          // @ts-ignore
+          await import("@ground-codes/geoint/region-dist/region-3-german.json");
         return module.default as Region[];
       }
       throw new Error(`Invalid language: ${language}`);

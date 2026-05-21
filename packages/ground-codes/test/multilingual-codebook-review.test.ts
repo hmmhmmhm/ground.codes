@@ -7,6 +7,7 @@ import japaneseWords from "@repo/codebook/codebook-dist/japanese.json";
 import koreanWords from "@repo/codebook/codebook-dist/korean.json";
 import spanishWords from "@repo/codebook/codebook-dist/spanish.json";
 import frenchWords from "@repo/codebook/codebook-dist/french.json";
+import germanWords from "@repo/codebook/codebook-dist/german.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -1674,6 +1675,73 @@ describe("reviewed multilingual codebooks", () => {
       "Pouvoir",
       "Purifier",
       "Vouloir",
+    ]);
+  });
+
+  test("keeps German codebook URL-safe and neutral", () => {
+    assert.equal(germanWords.length, 5000);
+    assert.equal(new Set(germanWords).size, germanWords.length);
+    assert.deepEqual(
+      germanWords.filter((word) => !/^[A-Z][a-z]+$/.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      germanWords.filter((word) => word.length > 12),
+      [],
+    );
+    assertWordsPresent(germanWords, [
+      "Acker",
+      "Apfel",
+      "Bach",
+      "Korb",
+      "Wiese",
+    ]);
+    assertBlockedWordsAbsent(germanWords, [
+      "Sex",
+      "Casino",
+      "Waffe",
+      "Krieg",
+      "Droge",
+      "Arzt",
+      "Politik",
+      "Religion",
+      "Verbrechen",
+      "Tod",
+      "Gewalt",
+      "Angst",
+      "Fehler",
+      "Gefahr",
+      "Hass",
+      "Krankheit",
+      "Problem",
+      "Risiko",
+      "Schmerz",
+      "Schuld",
+      "Sterben",
+      "Toeten",
+      "Verbot",
+      "Verlust",
+      "Zwang",
+      "Abbauen",
+      "Aendern",
+      "Anfangen",
+      "Arbeiten",
+      "Besuchen",
+      "Bleiben",
+      "Denken",
+      "Fragen",
+      "Gehen",
+      "Kaufen",
+      "Koennen",
+      "Laufen",
+      "Machen",
+      "Muessen",
+      "Sagen",
+      "Sehen",
+      "Sollen",
+      "Suchen",
+      "Tragen",
+      "Wollen",
     ]);
   });
 });

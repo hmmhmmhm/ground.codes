@@ -29,6 +29,7 @@ Current distributed word counts:
 | Japanese |  5000 | `codebook-dist/japanese.json` |
 | Spanish  |  5000 | `codebook-dist/spanish.json`  |
 | French   |  5000 | `codebook-dist/french.json`   |
+| German   |  5000 | `codebook-dist/german.json`   |
 
 ## Current Word Type Inventory
 
@@ -69,6 +70,9 @@ Current inventory:
 | French   | Recognized compound              |  2399 | 48.0% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
 | French   | Short standalone                 |    51 |  1.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
 | French   | Other standalone or unclassified |  2550 | 51.0% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
+| German   | Recognized compound              |  4789 | 95.8% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`       |
+| German   | Short standalone                 |    55 |  1.1% | `Anis`, `Aue`, `Bach`, `Bank`, `Beet`                                |
+| German   | Other standalone or unclassified |   156 |  3.1% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                         |
 
 Review implications:
 
@@ -85,6 +89,10 @@ Review implications:
   verb-like BIP39 seed terms, then replaced them with concrete standalone French
   nouns. Continue replacing weak fused compounds with natural French standalone
   words as review coverage grows.
+- German intentionally starts as a high-compound codebook because ordinary
+  German public-address words can be readable compounds. Keep the template
+  saturation limit in place and replace awkward generated compounds with
+  reviewed everyday standalone nouns over time.
 
 ## Product Principles
 
@@ -343,6 +351,25 @@ a test blocklist.
 - For codebook-only French cleanup, run
   `node scripts/generate-french-support.mjs codebook-only` so localized geoint
   data and embedded region indexes do not churn when labels are unchanged.
+
+### German
+
+- Prefer short ASCII title-case German words for URL readability. Normalize
+  public code words with German transliteration: `Ae`, `Oe`, `Ue`, and `ss`,
+  such as `Kuerbis`, `Laerche`, and `Schuessel`.
+- Keep German entries at twelve letters or fewer unless a reviewed
+  compatibility reason exists.
+- Prefer concrete everyday nouns and readable compounds such as `Acker`,
+  `Apfel`, `Bach`, `Korb`, `Wiese`, `Apfelkorb`, and `Birkenbank`.
+- German compounds may be used more heavily than French or Spanish because they
+  are natural in German, but the generated template share must stay below the
+  German saturation limit enforced by `scripts/codebook-policy-audit.mjs`.
+- Reject terms that are risky or awkward in a public address, including `Sex`,
+  `Casino`, `Waffe`, `Krieg`, `Droge`, `Arzt`, `Politik`, `Religion`,
+  `Verbrechen`, `Tod`, `Gewalt`, `Angst`, `Fehler`, `Gefahr`, `Krankheit`,
+  `Problem`, `Risiko`, `Schmerz`, `Schuld`, `Sterben`, `Toeten`, `Verbot`,
+  `Verlust`, `Zwang`, and common verb-like entries such as `Arbeiten`,
+  `Denken`, `Gehen`, `Machen`, `Suchen`, and `Wollen`.
 
 ## Automated Checks
 

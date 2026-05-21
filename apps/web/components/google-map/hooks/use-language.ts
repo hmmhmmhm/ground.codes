@@ -68,6 +68,9 @@ export const useLanguage = () => {
         if (langCode === "es") {
           return "es";
         }
+        if (langCode === "de") {
+          return "de";
+        }
         return langCode;
       }
 

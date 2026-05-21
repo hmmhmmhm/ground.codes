@@ -6,7 +6,8 @@ export type SupportedLanguage =
   | "chinese"
   | "japanese"
   | "spanish"
-  | "french";
+  | "french"
+  | "german";
 
 export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   english: 6000,
@@ -15,6 +16,7 @@ export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   japanese: 5000,
   spanish: 5000,
   french: 5000,
+  german: 5000,
 };
 
 const loadWordSet = async (language: SupportedLanguage) => {
@@ -41,6 +43,10 @@ const loadWordSet = async (language: SupportedLanguage) => {
   } else if (language.toLowerCase() === "french") {
     // @ts-ignore
     return (await import("@repo/codebook/codebook-dist/french.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "german") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/german.json"))
       .default as string[];
   }
 

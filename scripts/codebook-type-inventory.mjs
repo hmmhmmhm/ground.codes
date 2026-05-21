@@ -7,6 +7,7 @@ const CODEBOOK_FILES = {
   japanese: "../packages/codebook/codebook-dist/japanese.json",
   spanish: "../packages/codebook/codebook-dist/spanish.json",
   french: "../packages/codebook/codebook-dist/french.json",
+  german: "../packages/codebook/codebook-dist/german.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -348,6 +349,78 @@ const COMPOUND_SUFFIXES = {
     "verre",
     "volet",
   ],
+  german: [
+    "band",
+    "bank",
+    "becher",
+    "beet",
+    "beutel",
+    "blatt",
+    "blech",
+    "brett",
+    "bund",
+    "dose",
+    "eimer",
+    "faden",
+    "fass",
+    "feld",
+    "fliese",
+    "gabel",
+    "glas",
+    "griff",
+    "haken",
+    "hut",
+    "kachel",
+    "kanne",
+    "karton",
+    "kasten",
+    "kelle",
+    "kerze",
+    "kiste",
+    "klotz",
+    "knopf",
+    "korb",
+    "kranz",
+    "kreide",
+    "krug",
+    "lampe",
+    "leiste",
+    "mappe",
+    "matte",
+    "messer",
+    "nadel",
+    "papier",
+    "perle",
+    "pfanne",
+    "pfeife",
+    "pinsel",
+    "platte",
+    "polster",
+    "rahmen",
+    "riegel",
+    "ring",
+    "rohr",
+    "sack",
+    "schale",
+    "seil",
+    "sieb",
+    "sohle",
+    "spange",
+    "spatel",
+    "spiegel",
+    "spule",
+    "steg",
+    "stein",
+    "stift",
+    "tafel",
+    "tasche",
+    "tasse",
+    "tisch",
+    "topf",
+    "truhe",
+    "vlies",
+    "wagen",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -357,6 +430,7 @@ const LANGUAGE_LABELS = {
   japanese: "Japanese",
   spanish: "Spanish",
   french: "French",
+  german: "German",
 };
 
 const TYPE_LABELS = {
@@ -366,14 +440,21 @@ const TYPE_LABELS = {
 };
 
 const readCodebook = (language) =>
-  JSON.parse(readFileSync(new URL(CODEBOOK_FILES[language], import.meta.url), "utf8"));
+  JSON.parse(
+    readFileSync(new URL(CODEBOOK_FILES[language], import.meta.url), "utf8"),
+  );
 
 const characterLength = (word) => [...word].length;
 
 const isShortStandalone = (language, word) => {
   const length = characterLength(word);
 
-  if (language === "english" || language === "spanish" || language === "french") {
+  if (
+    language === "english" ||
+    language === "spanish" ||
+    language === "french" ||
+    language === "german"
+  ) {
     return length <= 4;
   }
 
@@ -389,7 +470,11 @@ const minPrefixLength = (language) => {
     return 1;
   }
 
-  if (language === "spanish" || language === "french") {
+  if (
+    language === "spanish" ||
+    language === "french" ||
+    language === "german"
+  ) {
     return 4;
   }
 
@@ -397,7 +482,12 @@ const minPrefixLength = (language) => {
 };
 
 const normalizeForSuffix = (language, word) => {
-  if (language === "english" || language === "spanish" || language === "french") {
+  if (
+    language === "english" ||
+    language === "spanish" ||
+    language === "french" ||
+    language === "german"
+  ) {
     return word.toLowerCase();
   }
 
@@ -405,10 +495,7 @@ const normalizeForSuffix = (language, word) => {
 };
 
 const findCompoundSuffix = (language, word) => {
-  if (
-    language === "spanish" &&
-    SPANISH_REVIEWED_STANDALONE_WORDS.has(word)
-  ) {
+  if (language === "spanish" && SPANISH_REVIEWED_STANDALONE_WORDS.has(word)) {
     return undefined;
   }
 
@@ -461,7 +548,8 @@ export const buildTypeInventory = () => {
   });
 };
 
-const formatPercent = (count, total) => `${((count / total) * 100).toFixed(1)}%`;
+const formatPercent = (count, total) =>
+  `${((count / total) * 100).toFixed(1)}%`;
 
 const formatExamples = (examples) => examples.join(", ");
 
@@ -472,7 +560,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   console.log("| --- | --- | ---: | ---: | --- |");
 
   for (const row of rows) {
-    for (const key of ["recognizedCompound", "shortStandalone", "otherStandalone"]) {
+    for (const key of [
+      "recognizedCompound",
+      "shortStandalone",
+      "otherStandalone",
+    ]) {
       console.log(
         `| ${row.label} | ${TYPE_LABELS[key]} | ${row.counts[key]} | ${formatPercent(
           row.counts[key],

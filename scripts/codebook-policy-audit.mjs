@@ -9,6 +9,7 @@ export const EXPECTED_COUNTS = {
   japanese: 5000,
   spanish: 5000,
   french: 5000,
+  german: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -18,6 +19,7 @@ const CODEBOOK_FILES = {
   japanese: "../packages/codebook/codebook-dist/japanese.json",
   spanish: "../packages/codebook/codebook-dist/spanish.json",
   french: "../packages/codebook/codebook-dist/french.json",
+  german: "../packages/codebook/codebook-dist/german.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -620,6 +622,58 @@ const FRENCH_TEMPLATE_COMPOUND_PATTERN =
   /^[A-Z][a-z]{3,}(?:abri|anse|arc|bague|balai|banc|bocal|boite|bol|borne|boule|brin|brosse|cache|cadre|caisse|canne|carafe|carte|casier|cloche|clou|corde|coupe|coussin|cruche|dalle|ecrin|etui|fagot|ficelle|fil|flacon|gobelet|grille|housse|jarre|lampe|louche|malle|manche|moule|nappe|panier|patere|peigne|pichet|pince|plaque|plateau|poche|poignee|pot|regle|rideau|ruban|sac|seau|tamis|tasse|tiroir|toile|vase|verre|volet)$/u;
 const FRENCH_COMPOUND_SATURATION_LIMIT = 2500;
 
+const GERMAN_BLOCKED_TERMS = [
+  "Abbauen",
+  "Aendern",
+  "Anfangen",
+  "Angst",
+  "Arbeiten",
+  "Arzt",
+  "Besuchen",
+  "Bleiben",
+  "Casino",
+  "Denken",
+  "Droge",
+  "Fehler",
+  "Fragen",
+  "Gefahr",
+  "Gehen",
+  "Gewalt",
+  "Hass",
+  "Kaufen",
+  "Koennen",
+  "Krankheit",
+  "Krieg",
+  "Laufen",
+  "Machen",
+  "Muessen",
+  "Politik",
+  "Problem",
+  "Religion",
+  "Risiko",
+  "Sagen",
+  "Schmerz",
+  "Schuld",
+  "Sehen",
+  "Sex",
+  "Sollen",
+  "Sterben",
+  "Suchen",
+  "Tod",
+  "Toeten",
+  "Tragen",
+  "Verbot",
+  "Verbrechen",
+  "Verlust",
+  "Waffe",
+  "Wollen",
+  "Zwang",
+];
+
+const GERMAN_TEMPLATE_COMPOUND_PATTERN =
+  /^[A-Z][a-z]{3,}(?:band|bank|becher|beet|beutel|blatt|blech|brett|bund|dose|eimer|faden|fass|feld|fliese|gabel|glas|griff|haken|hut|kachel|kanne|karton|kasten|kelle|kerze|kiste|klotz|knopf|korb|kranz|kreide|krug|lampe|leiste|mappe|matte|messer|nadel|papier|perle|pfanne|pfeife|pinsel|platte|polster|rahmen|riegel|ring|rohr|sack|schale|seil|sieb|sohle|spange|spatel|spiegel|spule|steg|stein|stift|tafel|tasche|tasse|tisch|topf|truhe|vlies|wagen)$/u;
+const GERMAN_COMPOUND_SATURATION_LIMIT = 4850;
+
 const CHINESE_GENERATED_COMPOUND_PATTERN =
   /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
 
@@ -685,6 +739,7 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
   japanese: JAPANESE_BLOCKED_TERMS,
   spanish: SPANISH_BLOCKED_TERMS,
   french: [...FRENCH_BLOCKED_TERMS, ...FRENCH_VERB_REJECTS],
+  german: GERMAN_BLOCKED_TERMS,
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -801,6 +856,24 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
             word: `${templateCompoundCount}`,
             rule: "french-compound-saturation",
             detail: `French codebooks should not be saturated with fused template compounds; limit is ${FRENCH_COMPOUND_SATURATION_LIMIT}`,
+          }),
+        );
+      }
+    }
+
+    if (language === "german") {
+      const templateCompoundCount = words.filter((word) =>
+        GERMAN_TEMPLATE_COMPOUND_PATTERN.test(word),
+      ).length;
+
+      if (templateCompoundCount > GERMAN_COMPOUND_SATURATION_LIMIT) {
+        violations.push(
+          makeViolation({
+            language,
+            index: -1,
+            word: `${templateCompoundCount}`,
+            rule: "german-compound-saturation",
+            detail: `German codebooks should not be saturated with fused template compounds; limit is ${GERMAN_COMPOUND_SATURATION_LIMIT}`,
           }),
         );
       }
@@ -955,6 +1028,32 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               word,
               rule: "french-too-long",
               detail: "French entries should stay short for URL readability",
+            }),
+          );
+        }
+      }
+
+      if (language === "german") {
+        if (!/^[A-Z][a-z]+$/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "german-shape",
+              detail:
+                "German URL codebook entries should use ASCII title-case words",
+            }),
+          );
+        }
+        if (word.length > 12) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "german-too-long",
+              detail: "German entries should stay short for URL readability",
             }),
           );
         }
