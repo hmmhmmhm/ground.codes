@@ -11,6 +11,7 @@ describe("codebook authoring guide", () => {
     for (const heading of [
       "# Codebook Authoring Guide",
       "## Quick Start",
+      "## Current Word Type Inventory",
       "## Product Principles",
       "## Accepted Words",
       "## Rejected Words",

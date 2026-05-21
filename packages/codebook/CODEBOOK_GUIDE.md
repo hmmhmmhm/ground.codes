@@ -29,6 +29,54 @@ Current distributed word counts:
 | Japanese | 5000 | `codebook-dist/japanese.json` |
 | Spanish | 5000 | `codebook-dist/spanish.json` |
 
+## Current Word Type Inventory
+
+Use `node scripts/codebook-type-inventory.mjs` from the repository root to
+regenerate this inventory after changing a distributed codebook.
+
+The inventory is a maintenance heuristic, not a linguistic proof. Each entry is
+counted once using this precedence:
+
+1. Recognized compound: the word ends with a reviewed object/nature suffix for
+   the language, such as `box`, `상자`, `盒`, `はこ`, or `caja`, and has a
+   non-empty prefix.
+2. Short standalone: English or Spanish entries of four characters or fewer,
+   one-syllable Korean entries, one-character Chinese entries, or Japanese
+   entries of two kana or fewer.
+3. Other standalone or unclassified: entries that do not match the above
+   repeatable shapes.
+
+Current inventory:
+
+| Language | Type | Count | Share | Examples |
+| --- | --- | ---: | ---: | --- |
+| English | Recognized compound | 1760 | 29.3% | `Handbag`, `Dewdrop`, `Headlamp`, `Feltmat`, `Applebox` |
+| English | Short standalone | 465 | 7.8% | `Dawn`, `Dune`, `Fern`, `Leaf`, `Lily` |
+| English | Other standalone or unclassified | 3775 | 62.9% | `Acorn`, `Alder`, `Arbor`, `Aspen`, `Aster` |
+| Korean | Recognized compound | 3314 | 58.9% | `안방`, `사과상자`, `나무병`, `사과바구니`, `책받침` |
+| Korean | Short standalone | 87 | 1.5% | `빛`, `별`, `색`, `물`, `무` |
+| Korean | Other standalone or unclassified | 2229 | 39.6% | `손전등`, `현관문`, `테이블`, `구두주걱`, `연필깎이` |
+| Chinese | Recognized compound | 1528 | 29.7% | `苹果盒`, `苹果袋`, `苹果杯`, `青叶`, `青草` |
+| Chinese | Short standalone | 798 | 15.5% | `狮`, `声`, `米`, `麦`, `豆` |
+| Chinese | Other standalone or unclassified | 2814 | 54.7% | `木杆`, `竹签`, `芦坯`, `木铲`, `青绳` |
+| Japanese | Recognized compound | 1068 | 21.4% | `りんごはこ`, `りんごかご`, `りんごさら`, `りんごつぼ`, `りんごなべ` |
+| Japanese | Short standalone | 371 | 7.4% | `いえ`, `すき`, `かい`, `やる`, `つぎ` |
+| Japanese | Other standalone or unclassified | 3561 | 71.2% | `あさかけ`, `はなし`, `おもう`, `かんがえ`, `かんじ` |
+| Spanish | Recognized compound | 5000 | 100.0% | `Manzanacaja`, `Manzanabolsa`, `Manzanataza`, `Manzanavaso`, `Manzanaplato` |
+| Spanish | Short standalone | 0 | 0.0% | |
+| Spanish | Other standalone or unclassified | 0 | 0.0% | |
+
+Review implications:
+
+- Spanish is currently entirely compound-shaped. Future Spanish cleanup should
+  add reviewed standalone common nouns and reduce fused template compounds
+  without changing indexes casually.
+- Korean has the highest mixed compound load after Spanish. Keep reducing
+  weak material/object compounds, but preserve settled everyday compounds.
+- Chinese, English, and Japanese have lower recognized-compound shares, but the
+  unclassified bucket still needs human review because the script intentionally
+  avoids broad, risky inference.
+
 ## Product Principles
 
 - Codes must feel neutral when attached to a real place.
