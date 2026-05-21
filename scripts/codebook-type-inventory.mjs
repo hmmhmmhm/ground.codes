@@ -8,6 +8,25 @@ const CODEBOOK_FILES = {
   spanish: "../packages/codebook/codebook-dist/spanish.json",
 };
 
+const SPANISH_REVIEW_FILES = [
+  "../packages/codebook/codebook-dataset/spanish/standalone-review-2026-05-21.md",
+];
+
+const readReviewedSpanishStandaloneWords = () => {
+  const words = new Set();
+
+  for (const path of SPANISH_REVIEW_FILES) {
+    const text = readFileSync(new URL(path, import.meta.url), "utf8");
+    for (const match of text.matchAll(/`([A-Z][a-z]+)`/g)) {
+      words.add(match[1]);
+    }
+  }
+
+  return words;
+};
+
+const SPANISH_REVIEWED_STANDALONE_WORDS = readReviewedSpanishStandaloneWords();
+
 const COMPOUND_SUFFIXES = {
   english: [
     "bag",
@@ -317,6 +336,13 @@ const normalizeForSuffix = (language, word) => {
 };
 
 const findCompoundSuffix = (language, word) => {
+  if (
+    language === "spanish" &&
+    SPANISH_REVIEWED_STANDALONE_WORDS.has(word)
+  ) {
+    return undefined;
+  }
+
   const normalized = normalizeForSuffix(language, word);
   const suffixes = COMPOUND_SUFFIXES[language];
   const minPrefix = minPrefixLength(language);

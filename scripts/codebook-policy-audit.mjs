@@ -18,6 +18,23 @@ const CODEBOOK_FILES = {
   spanish: "../packages/codebook/codebook-dist/spanish.json",
 };
 
+const SPANISH_REVIEW_FILES = [
+  "../packages/codebook/codebook-dataset/spanish/standalone-review-2026-05-21.md",
+];
+
+const readReviewedSpanishStandaloneWords = () => {
+  const words = new Set();
+
+  for (const path of SPANISH_REVIEW_FILES) {
+    const text = readFileSync(new URL(path, import.meta.url), "utf8");
+    for (const match of text.matchAll(/`([A-Z][a-z]+)`/g)) {
+      words.add(match[1]);
+    }
+  }
+
+  return words;
+};
+
 const ENGLISH_BLOCKED_TERMS = [
   "Rough",
   "Bought",
@@ -419,7 +436,8 @@ const SPANISH_GENERATED_COMPOUND_PATTERN =
 
 const SPANISH_TEMPLATE_COMPOUND_PATTERN =
   /^[A-Z][a-z]{3,}(?:abanico|anillo|aro|asa|azulejo|banco|bandeja|barreno|baston|baul|boceto|bol|bolsa|bote|botella|boton|brocha|caja|cajon|canasta|candil|carrete|cazo|cazuela|cepillo|cesta|cesto|cinta|copa|cordel|costal|criba|cuchara|cuerda|cuenco|cubo|cubeta|cuna|dado|dedal|estante|estera|etiqueta|ficha|flor|frasco|gancho|hilera|hoja|jarra|jarron|jofaina|lampara|lata|lebrillo|libro|lienzo|lona|luz|maceta|mango|manta|mapa|marco|mazo|mesa|miel|molde|morral|mortero|olla|pala|paleta|palillo|palo|pan|pano|peine|percha|pieza|pinza|placa|plato|red|regla|saco|sal|sarten|sello|silla|sol|soporte|tabla|tablon|tamiz|tapa|tarro|taza|tejido|telar|tijera|tinaja|tira|torno|trenza|tubo|vasija|vaso|vela|varilla)$/u;
-const SPANISH_COMPOUND_SATURATION_LIMIT = 4750;
+const SPANISH_COMPOUND_SATURATION_LIMIT = 4250;
+const SPANISH_REVIEWED_STANDALONE_WORDS = readReviewedSpanishStandaloneWords();
 
 const CHINESE_GENERATED_COMPOUND_PATTERN =
   /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
@@ -570,6 +588,7 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
 
     if (language === "spanish") {
       const templateCompoundCount = words.filter((word) =>
+        !SPANISH_REVIEWED_STANDALONE_WORDS.has(word) &&
         SPANISH_TEMPLATE_COMPOUND_PATTERN.test(word),
       ).length;
 
