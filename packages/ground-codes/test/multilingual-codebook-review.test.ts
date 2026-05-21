@@ -1669,6 +1669,11 @@ describe("reviewed multilingual codebooks", () => {
       "Arracher",
       "Arriver",
       "Arroser",
+      "Prevoir",
+      "Priver",
+      "Pouvoir",
+      "Purifier",
+      "Vouloir",
     ]);
   });
 });

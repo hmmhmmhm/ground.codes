@@ -66,9 +66,9 @@ Current inventory:
 | Spanish  | Recognized compound              |  2925 | 58.5% | `Papayatapa`, `Papayabote`, `Papayalata`, `Papayaolla`, `Papayacopa` |
 | Spanish  | Short standalone                 |   280 |  5.6% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe`                               |
 | Spanish  | Other standalone or unclassified |  1795 | 35.9% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto`                 |
-| French   | Recognized compound              |  2384 | 47.7% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
-| French   | Short standalone                 |    48 |  1.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
-| French   | Other standalone or unclassified |  2568 | 51.4% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
+| French   | Recognized compound              |  2399 | 48.0% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
+| French   | Short standalone                 |    51 |  1.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
+| French   | Other standalone or unclassified |  2550 | 51.0% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
 
 Review implications:
 

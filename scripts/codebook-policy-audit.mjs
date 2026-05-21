@@ -558,6 +558,10 @@ const FRENCH_BLOCKED_TERMS = [
   "Politique",
   "Position",
   "Question",
+  "Probleme",
+  "Public",
+  "Punitif",
+  "Querelle",
   "Religion",
   "Resultat",
   "Service",
@@ -590,6 +594,13 @@ const FRENCH_VERB_REJECTS = `
   Isoler Jongler Laisser Liberer Lister Lutter Nettoyer Observer Occuper Offrir
   Parler Partager Plonger Proteger Quitter Raconter Recycler Remplir Rester
   Sauter Separer Sortir Tailler Terminer Toucher Tricoter Varier Verser
+  Predire Prevoir Proceder Projeter Promener Puiser Ralentir Ramasser Ratisser
+  Ravager Rayonner Reagir Realiser Reanimer Recevoir Reciter Reclamer Recolter
+  Recruter Reculer Rediger Redouter Refaire Reformer Reiterer Rejeter Rejouer
+  Relever Remonter Remuer Renifler Renoncer Rentrer Replier Reporter Resoudre
+  Retablir Retenir Retomber Retracer Reussir Revivre Rigoler Rincer Riposter
+  Rompre Ruiner Saisir Saluer Somnoler Priver Purifier Soulever Soutirer
+  Stipuler Subvenir Suggerer Supplier Surmener Pouvoir Vouloir
 `
   .trim()
   .split(/\s+/);

@@ -603,6 +603,63 @@ const additionalSupplementalStandaloneWords = [
   "Yaourt",
 ];
 
+const finalSupplementalStandaloneWords = [
+  "Ajonc",
+  "Alose",
+  "Badiane",
+  "Bambin",
+  "Bardeau",
+  "Bavette",
+  "Biscotte",
+  "Blinis",
+  "Bolet",
+  "Bretzel",
+  "Calisson",
+  "Camomille",
+  "Carpe",
+  "Cassette",
+  "Chicoree",
+  "Chouette",
+  "Colibri",
+  "Commode",
+  "Coquillage",
+  "Coupelle",
+  "Cressonniere",
+  "Crocus",
+  "Cuisiniere",
+  "Eglantier",
+  "Eider",
+  "Endive",
+  "Faucon",
+  "Fleuret",
+  "Freesia",
+  "Gaufrette",
+  "Geai",
+  "Groseillier",
+  "Hibiscus",
+  "Hortensia",
+  "Jardiniere",
+  "Kaki",
+  "Lavabo",
+  "Mache",
+  "Magnolia",
+  "Mouette",
+  "Muflier",
+  "Orme",
+  "Pavot",
+  "Perruche",
+  "Pistache",
+  "Primevere",
+  "Quetsche",
+  "Raclette",
+  "Raisin",
+  "Ravioli",
+  "Salsifis",
+  "Sarcelle",
+  "Seringat",
+  "Tourteau",
+];
+
 const prefixes = [
   "Abricot",
   "Acacia",
@@ -784,6 +841,14 @@ const reviewedFrenchVerbRejects = new Set(
     Nettoyer Observer Occuper Offrir Parler Partager Plonger Proteger Quitter
     Raconter Recycler Remplir Rester Sauter Separer Sortir Tailler Terminer
     Toucher Tricoter Varier Verser
+    Predire Prevoir Proceder Projeter Promener Puiser Ralentir Ramasser
+    Ratisser Ravager Rayonner Reagir Realiser Reanimer Recevoir Reciter
+    Reclamer Recolter Recruter Reculer Rediger Redouter Refaire Reformer
+    Reiterer Rejeter Rejouer Relever Remonter Remuer Renifler Renoncer Rentrer
+    Replier Reporter Resoudre Retablir Retenir Retomber Retracer Reussir
+    Revivre Rigoler Rincer Riposter Rompre Ruiner Saisir Saluer Somnoler
+    Priver Purifier Soulever Soutirer Stipuler Subvenir Suggerer Supplier
+    Surmener Pouvoir Vouloir
   `
     .trim()
     .split(/\s+/),
@@ -893,6 +958,10 @@ const blockedCodebookWords = new Set([
   "Politique",
   "Position",
   "Question",
+  "Probleme",
+  "Public",
+  "Punitif",
+  "Querelle",
   "Religion",
   "Resultat",
   "Service",
@@ -932,6 +1001,7 @@ const buildFrenchCodebook = () => {
   for (const word of bip39SeedWords) add(word);
   for (const word of supplementalStandaloneWords) add(word);
   for (const word of additionalSupplementalStandaloneWords) add(word);
+  for (const word of finalSupplementalStandaloneWords) add(word);
 
   for (const suffix of suffixes) {
     for (const prefix of prefixes) {
