@@ -74,9 +74,9 @@ Current inventory:
 | German     | Recognized compound              |  3255 | 65.1% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`       |
 | German     | Short standalone                 |    55 |  1.1% | `Anis`, `Aue`, `Bach`, `Bank`, `Beet`                                |
 | German     | Other standalone or unclassified |  1690 | 33.8% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                         |
-| Portuguese | Recognized compound              |  1590 | 31.8% | `Hortela`, `Acaciafolha`, `Acucarfolha`, `Aguafolha`, `Aloefolha`    |
-| Portuguese | Short standalone                 |     0 |  0.0% |                                                                      |
-| Portuguese | Other standalone or unclassified |  3410 | 68.2% | `Acacia`, `Acucar`, `Agata`, `Agua`, `Alecrim`                       |
+| Portuguese | Recognized compound              |  1424 | 28.5% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
+| Portuguese | Short standalone                 |    58 |  1.2% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
+| Portuguese | Other standalone or unclassified |  3518 | 70.4% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
 
 Review implications:
 
@@ -96,9 +96,10 @@ Review implications:
 - German now keeps template-style generated compounds below 70% and front-loads
   more natural landscape and plant compounds. Continue replacing weak generated
   compounds with reviewed everyday standalone nouns over time.
-- Portuguese starts with a low recognized-compound share and many concrete
-  standalone nouns. Keep it neutral and common across Lusophone regions, and do
-  not raise template-compound saturation while filling future review gaps.
+- Portuguese keeps a low recognized-compound share after the quality v2 cleanup,
+  which removed Spanish-like entries, proper-name risks, and weak generated
+  compounds. Keep it neutral and common across Lusophone regions, and do not
+  raise template-compound saturation while filling future review gaps.
 
 ## Product Principles
 
@@ -391,12 +392,16 @@ a test blocklist.
   variants. Avoid relying on regional slang or highly local Brazilian/European
   forms when a common concrete noun is available.
 - Prefer concrete everyday nouns and natural landscape or plant words such as
-  `Acucar`, `Areia`, `Arvore`, `Cesto`, `Jardim`, and `Rio`.
+  `Acucar`, `Amendoa`, `Areia`, `Arvore`, `Avela`, `Casa`, `Cesto`, `Jardim`,
+  `Pao`, and `Rio`.
 - Generated nature/material/object compounds may be used to preserve count, but
   the template share must stay below the Portuguese saturation limit enforced by
   `scripts/codebook-policy-audit.mjs`.
 - Reject self-duplicating or implausible generated compounds such as
-  `Folhafolha`, `Aguafita`, and `Riolivro`.
+  `Folhafolha`, `Aguafita`, `Riolivro`, `Acucarfolha`, `Aguafolha`,
+  `Acucarbanco`, `Aguabanco`, `Arvorebranco`, `Folhabranco`, and `Luzbranco`.
+- Reject Spanish-like or proper-name risks such as `Almendra`, `Avelan`,
+  `Basilio`, `Betula`, `Roble`, and `Yute`.
 - Reject terms that are risky or awkward in a public address, including `Sexo`,
   `Casino`, `Aposta`, `Arma`, `Guerra`, `Droga`, `Medico`, `Politica`,
   `Religiao`, `Crime`, `Morte`, `Violencia`, `Medo`, `Erro`, `Perigo`,

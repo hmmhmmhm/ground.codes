@@ -1,0 +1,19 @@
+import assert from "node:assert/strict";
+import { describe, test } from "node:test";
+
+import { buildTypeInventory } from "./codebook-type-inventory.mjs";
+
+describe("codebook type inventory", () => {
+  test("classifies Portuguese standalone words without suffix false positives", () => {
+    const portuguese = buildTypeInventory().find(
+      (row) => row.language === "portuguese",
+    );
+
+    assert.ok(portuguese);
+    assert.ok(portuguese.counts.shortStandalone > 0);
+    assert.equal(
+      portuguese.examples.recognizedCompound.includes("Hortela"),
+      false,
+    );
+  });
+});

@@ -462,7 +462,6 @@ const COMPOUND_SUFFIXES = {
     "suporte",
     "tabua",
     "tampa",
-    "tela",
     "tigela",
     "vaso",
     "vela",
@@ -500,7 +499,8 @@ const isShortStandalone = (language, word) => {
     language === "english" ||
     language === "spanish" ||
     language === "french" ||
-    language === "german"
+    language === "german" ||
+    language === "portuguese"
   ) {
     return length <= 4;
   }
@@ -520,7 +520,8 @@ const minPrefixLength = (language) => {
   if (
     language === "spanish" ||
     language === "french" ||
-    language === "german"
+    language === "german" ||
+    language === "portuguese"
   ) {
     return 4;
   }
@@ -533,7 +534,8 @@ const normalizeForSuffix = (language, word) => {
     language === "english" ||
     language === "spanish" ||
     language === "french" ||
-    language === "german"
+    language === "german" ||
+    language === "portuguese"
   ) {
     return word.toLowerCase();
   }

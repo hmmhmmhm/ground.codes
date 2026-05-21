@@ -705,8 +705,17 @@ const isAwkwardGermanCompound = (word) => {
 };
 
 const PORTUGUESE_BLOCKED_TERMS = [
+  "Acucarbanco",
+  "Acucarfolha",
+  "Aguabanco",
+  "Aguafolha",
+  "Almendra",
+  "Arvorebranco",
+  "Avelan",
   "Aposta",
   "Arma",
+  "Basilio",
+  "Betula",
   "Casino",
   "Crime",
   "Culpa",
@@ -734,9 +743,11 @@ const PORTUGUESE_BLOCKED_TERMS = [
   "Querer",
   "Religiao",
   "Risco",
+  "Roble",
   "Saber",
   "Sexo",
   "Violencia",
+  "Yute",
 ];
 
 const PORTUGUESE_TEMPLATE_COMPOUND_PATTERN =
@@ -744,7 +755,7 @@ const PORTUGUESE_TEMPLATE_COMPOUND_PATTERN =
 const PORTUGUESE_COMPOUND_SATURATION_LIMIT = 3500;
 
 const PORTUGUESE_AWKWARD_COMPOUND_PATTERN =
-  /^(?:Agua|Areia|Barro|Lama|Rio|Riacho)(?:fita|lona|livro|mesa|pano|selo)$/u;
+  /^(?:Acucar|Agua|Areia|Barro|Lama|Rio|Riacho)(?:banco|fita|folha|lona|livro|mesa|pano|selo)$|^(?:Arvore|Folha|Luz)branco$/u;
 
 const isAwkwardPortugueseCompound = (word) => {
   if (PORTUGUESE_AWKWARD_COMPOUND_PATTERN.test(word)) return true;
