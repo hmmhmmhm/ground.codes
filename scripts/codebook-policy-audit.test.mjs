@@ -895,4 +895,51 @@ describe("codebook policy audit", () => {
     assert.equal(actual.has("जल-घर:hindi-url-safety"), true);
     assert.equal(actual.has("कमलफूलकमलफूलघड़ा:hindi-too-long"), true);
   });
+
+  test("flags awkward Hindi generated compounds", () => {
+    const { violations } = auditCodebooks({
+      hindi: [
+        "किताबमाटी",
+        "घड़ास्टेशन",
+        "दीपकसड़क",
+        "मोहल्लाकुर्सी",
+        "मोहल्लातवा",
+        "थालीकुर्सी",
+        "कटोरामेज",
+        "प्यालास्टेशन",
+        "डिब्बासड़क",
+        "मीठानमक",
+        "मीठाप्याज",
+        "ताजाकुर्सी",
+        "गमलारोटी",
+        ...makeHindiFixtures(EXPECTED_COUNTS.hindi - 13),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    for (const word of [
+      "किताबमाटी",
+      "घड़ास्टेशन",
+      "दीपकसड़क",
+      "मोहल्लाकुर्सी",
+      "मोहल्लातवा",
+      "थालीकुर्सी",
+      "कटोरामेज",
+      "प्यालास्टेशन",
+      "डिब्बासड़क",
+      "मीठानमक",
+      "मीठाप्याज",
+      "ताजाकुर्सी",
+      "गमलारोटी",
+    ]) {
+      assert.equal(
+        actual.has(`${word}:hindi-awkward-generated-compound`),
+        true,
+        word,
+      );
+    }
+  });
 });

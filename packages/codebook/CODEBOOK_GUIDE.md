@@ -90,9 +90,9 @@ Current inventory:
 | Vietnamese | Recognized compound              |   190 |  3.8% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `đồnghồ`               |
 | Vietnamese | Short standalone                 |   265 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
 | Vietnamese | Other standalone or unclassified |  4545 | 90.9% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
-| Hindi      | Recognized compound              |  3373 | 67.5% | `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`, `लकड़ीकुर्सी`     |
-| Hindi      | Short standalone                 |   103 |  2.1% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
-| Hindi      | Other standalone or unclassified |  1524 | 30.5% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
+| Hindi      | Recognized compound              |  2172 | 43.4% | `चावलदान`, `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`         |
+| Hindi      | Short standalone                 |   174 |  3.5% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
+| Hindi      | Other standalone or unclassified |  2654 | 53.1% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
 
 Review implications:
 
@@ -143,9 +143,11 @@ Review implications:
   avoids broad place mood/color templates such as `vườnnắng`, `ruộnggió`,
   `đồngmát`, and `bãivàng` in favor of concrete place terms.
 - Hindi uses native Devanagari in public code words instead of ASCII
-  transliteration. The initial set favors familiar everyday nouns and
-  transparent compounds such as `कमलफूल`, `चायपत्ती`, `दीयाबत्ती`,
-  `किताबघर`, `नदीघाट`, and `आमबाग`. Keep replacing broad generated pairings
+  transliteration. The v2 cleanup reduces broad generated compounds from the
+  initial set, blocks object/material and object/place templates such as
+  `किताबमाटी`, `घड़ास्टेशन`, `दीपकसड़क`, and `मोहल्लाकुर्सी`, and favors
+  everyday standalone nouns plus narrower food, material/object, and
+  place-feature compounds. Keep replacing remaining broad descriptor compounds
   with reviewed standalone Hindi nouns as coverage grows.
 
 ## Product Principles
@@ -567,6 +569,12 @@ a test blocklist.
   public labels, for example `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`,
   `बांसटोकरी`, `नदीघाट`, and `गांवसड़क`. Avoid broad adjective templates and
   repeated color/object generation when the result feels mechanical.
+- Reject broad object/material, object/place, place/object, and implausible
+  food-descriptor templates that feel generated rather than lexical. Current
+  reviewed rejects include `किताबमाटी`, `घड़ास्टेशन`, `दीपकसड़क`,
+  `मोहल्लाकुर्सी`, `मोहल्लातवा`, `थालीकुर्सी`, `कटोरामेज`,
+  `प्यालास्टेशन`, `डिब्बासड़क`, `मीठानमक`, `मीठाप्याज`, `ताजाकुर्सी`, and
+  `गमलारोटी`.
 - Reject sensitive or low-trust terms around gambling, drugs, weapons,
   politics, religion, debt, illness, death, alcohol, blood, prison, killing,
   and sex. Current reviewed rejects include `शराब`, `जुआ`, `नशा`, `हथियार`,
