@@ -813,6 +813,7 @@ const INDONESIAN_AWKWARD_ADJECTIVE_PREFIXES = [
   "Lantai",
   "Laut",
   "Lidi",
+  "Merica",
   "Ombak",
   "Panci",
   "Papan",
@@ -820,11 +821,14 @@ const INDONESIAN_AWKWARD_ADJECTIVE_PREFIXES = [
   "Perak",
   "Pot",
   "Rotan",
+  "Sagu",
+  "Sikat",
   "Topi",
   "Wadah",
 ];
 
 const INDONESIAN_AWKWARD_ADJECTIVE_SUFFIXES = [
+  "angin",
   "awan",
   "bagus",
   "baru",
@@ -891,6 +895,7 @@ const INDONESIAN_AWKWARD_OBJECT_PREFIXES = [
   "Kelapa",
   "Laut",
   "Ombak",
+  "Pita",
   "Sikat",
   "Wadah",
   "Warna",

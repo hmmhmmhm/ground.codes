@@ -722,6 +722,7 @@ const awkwardAdjectivePrefixes = [
   "Lantai",
   "Laut",
   "Lidi",
+  "Merica",
   "Ombak",
   "Panci",
   "Papan",
@@ -729,11 +730,14 @@ const awkwardAdjectivePrefixes = [
   "Perak",
   "Pot",
   "Rotan",
+  "Sagu",
+  "Sikat",
   "Topi",
   "Wadah",
 ];
 
 const awkwardAdjectiveSuffixes = [
+  "angin",
   "awan",
   "bagus",
   "baru",
@@ -800,6 +804,7 @@ const awkwardObjectPrefixes = [
   "Kelapa",
   "Laut",
   "Ombak",
+  "Pita",
   "Sikat",
   "Wadah",
   "Warna",

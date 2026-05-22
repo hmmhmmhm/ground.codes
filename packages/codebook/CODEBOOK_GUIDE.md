@@ -78,9 +78,9 @@ Current inventory:
 | Portuguese | Recognized compound              |  1424 | 28.5% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
 | Portuguese | Short standalone                 |    58 |  1.2% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
 | Portuguese | Other standalone or unclassified |  3518 | 70.4% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
-| Indonesian | Recognized compound              |  4492 | 89.8% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
+| Indonesian | Recognized compound              |  4487 | 89.7% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
 | Indonesian | Short standalone                 |    76 |  1.5% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
-| Indonesian | Other standalone or unclassified |   432 |  8.6% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
+| Indonesian | Other standalone or unclassified |   437 |  8.7% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
 
 Review implications:
 
@@ -104,7 +104,7 @@ Review implications:
   which removed Spanish-like entries, proper-name risks, and weak generated
   compounds. Keep it neutral and common across Lusophone regions, and do not
   raise template-compound saturation while filling future review gaps.
-- Indonesian quality v5 replaces Malay-leaning `Halia` with `Jahe`, keeps
+- Indonesian quality v6 replaces Malay-leaning `Halia` with `Jahe`, keeps
   `Pepaya` instead of `Papaya`, adds more everyday standalone nouns, and blocks
   weak fused pairings such as `Emaskuning`, `Garamwangi`, `Gulabening`,
   `Awankaleng`, `Bambubilik`, and `Tomatcawan`-style material/object
