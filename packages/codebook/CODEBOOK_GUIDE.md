@@ -86,9 +86,9 @@ Current inventory:
 | Thai       | Recognized compound              |   929 | 18.6% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                          |
 | Thai       | Short standalone                 |    90 |  1.8% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                      |
 | Thai       | Other standalone or unclassified |  3981 | 79.6% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                              |
-| Vietnamese | Recognized compound              |   185 |  3.7% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `đồnghồ`               |
-| Vietnamese | Short standalone                 |   263 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
-| Vietnamese | Other standalone or unclassified |  4552 | 91.0% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
+| Vietnamese | Recognized compound              |   190 |  3.8% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `đồnghồ`               |
+| Vietnamese | Short standalone                 |   265 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
+| Vietnamese | Other standalone or unclassified |  4545 | 90.9% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
 
 Review implications:
 
@@ -135,7 +135,9 @@ Review implications:
   `hoasen`, and `chuônggió`, while blocking sensitive terms and broad generated
   adjective pairings such as `nướccao`, `lửacao`, `nhàcao`, `vườncao`,
   `xanhxanh`, implausible fused noun pairs such as `khoaiđèn`, and repetitive
-  object color templates such as `hộpxanh`, `bútvàng`, and `cốcđen`.
+  object color templates such as `hộpxanh`, `bútvàng`, and `cốcđen`. It also
+  avoids broad place mood/color templates such as `vườnnắng`, `ruộnggió`,
+  `đồngmát`, and `bãivàng` in favor of concrete place terms.
 
 ## Product Principles
 
@@ -522,7 +524,10 @@ a test blocklist.
   `ruộngthuyền`. Limit color templates to categories where color is a natural
   descriptor; prefer exact everyday terms such as `đồnghồ`, `máyảnh`,
   `cầuthang`, `sânkhấu`, `bánhcuốn`, and `búnchả` over broad object-color
-  generation.
+  generation. For place vocabulary, prefer concrete labels such as `cánhđồng`,
+  `đồichè`, `rừngtrúc`, `lốimòn`, `đìnhlàng`, `bờkênh`, and `đầmsen` over
+  broad place-state templates such as `vườnnắng`, `ruộnggió`, `đồngmát`, or
+  `bãivàng`.
 - Reject sensitive or low-trust terms around gambling, drugs, weapons,
   politics, religion, debt, illness, death, alcohol, tobacco, blood, prison,
   killing, and sex. Current reviewed rejects include `cờbạc`, `matúy`,

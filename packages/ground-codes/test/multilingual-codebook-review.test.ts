@@ -2084,6 +2084,16 @@ describe("reviewed multilingual codebooks", () => {
       "túixách",
       "bánhcuốn",
       "búnchả",
+      "cánhđồng",
+      "đồichè",
+      "rừngtrúc",
+      "lốimòn",
+      "đìnhlàng",
+      "sânđình",
+      "chòilá",
+      "bờkênh",
+      "đầmsen",
+      "vườnổi",
     ]);
     assertBlockedWordsAbsent(vietnameseWords, [
       "cờbạc",
@@ -2122,6 +2132,16 @@ describe("reviewed multilingual codebooks", () => {
       "lụahồng",
       "đènđen",
       "bìnhnâu",
+      "vườnnắng",
+      "ruộnggió",
+      "đồngmát",
+      "bãivàng",
+      "sânxanh",
+      "núimát",
+      "đồinắng",
+      "aomát",
+      "hồxanh",
+      "sôngmát",
     ]);
   });
 });
