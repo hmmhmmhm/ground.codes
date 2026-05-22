@@ -32,6 +32,7 @@ Current distributed word counts:
 | German     |  5000 | `codebook-dist/german.json`     |
 | Portuguese |  5000 | `codebook-dist/portuguese.json` |
 | Indonesian |  5000 | `codebook-dist/indonesian.json` |
+| Thai       |  5000 | `codebook-dist/thai.json`       |
 
 ## Current Word Type Inventory
 
@@ -81,6 +82,9 @@ Current inventory:
 | Indonesian | Recognized compound              |  3850 | 77.0% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
 | Indonesian | Short standalone                 |   191 |  3.8% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
 | Indonesian | Other standalone or unclassified |   959 | 19.2% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
+| Thai       | Recognized compound              |   789 | 15.8% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                         |
+| Thai       | Short standalone                 |    68 |  1.4% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                      |
+| Thai       | Other standalone or unclassified |  4143 | 82.9% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                              |
 
 Review implications:
 
@@ -115,6 +119,11 @@ Review implications:
   `Daster`, `Gedung`, `Gendang`, `Ponsel`, and `Radio`. Continue replacing
   generated compounds with reviewed standalone Indonesian nouns as coverage
   grows.
+- Thai uses native Thai script in public code words instead of ASCII
+  transliteration. The first release is intentionally dominated by concrete
+  everyday nouns and short readable noun/adjective combinations, with a much
+  lower recognized-compound share than Indonesian. Continue growing reviewed
+  standalone Thai nouns before increasing template composition.
 
 ## Product Principles
 
@@ -451,6 +460,31 @@ a test blocklist.
 - Reject terms that are risky or awkward in a public address, including `Judi`,
   `Narkoba`, `Senjata`, `Seks`, `Politik`, `Korupsi`, `Racun`, `Mati`,
   `Sakit`, `Utang`, `Benci`, `Bohong`, `Jahat`, `Kalah`, and `Salah`.
+
+### Thai
+
+- Prefer common Thai nouns written in Thai script. Do not transliterate Thai
+  code words to ASCII; Thai URLs are expected to remain human-readable before
+  browser percent-encoding.
+- Keep Thai entries at twelve Unicode code points or fewer unless a reviewed
+  compatibility reason exists. Short standalone words such as `น้ำ`, `ไฟ`,
+  `ดิน`, `หิน`, `บ้าน`, `สวน`, `ข้าว`, `ทะเล`, `ภูเขา`, and `ตะกร้า` are
+  preferred.
+- Use familiar concrete vocabulary from nature, household objects, food,
+  materials, transport, and simple public-place nouns. Avoid specialist terms,
+  archaic vocabulary, formal bureaucratic language, and uncommon regionalisms.
+- Thai compounds are allowed only when they remain readable as ordinary public
+  address words. Prefer natural compounds such as `ใบไม้`, `ดอกไม้`, `แม่น้ำ`,
+  and `โคมไฟ`; generated noun/adjective or noun/noun combinations are fallback
+  material and should be replaced with reviewed standalone nouns over time.
+- Reject sensitive or low-trust terms around gambling, drugs, weapons, sex,
+  debt, illness, death, hate, fraud, politics, religion, and failure. Current
+  reviewed rejects include `พนัน`, `ยาเสพติด`, `อาวุธ`, `การเมือง`, `ศาสนา`,
+  `หนี้`, `ป่วย`, `ตาย`, `เกลียด`, `โกง`, `หลอก`, `แพ้`, and `ผิด`.
+- Region labels should localize stable terrain descriptors for readability
+  while preserving proper names where possible, for example `Mare
+  Tranquillitatis` -> `ทะเลแห่งความสงบ`, `Olympus Mons` -> `ภูเขาโอลิมปัส`,
+  and crater fallbacks as `หลุมอุกกาบาต...`.
 
 ## Automated Checks
 

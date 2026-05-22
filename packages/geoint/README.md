@@ -45,6 +45,7 @@ USGS/IAU Gazetteer of Planetary Nomenclature center-point KML downloads:
 - `region-2-moon-german.json`: 9,085 German-localized lunar feature labels
 - `region-2-moon-portuguese.json`: 9,085 Portuguese-localized lunar feature labels
 - `region-2-moon-indonesian.json`: 9,085 Indonesian-localized lunar feature labels
+- `region-2-moon-thai.json`: 9,085 Thai-localized lunar feature labels
 - `region-2-mars.json`: 2,047 approved martian feature center points
 - `region-2-mars-korean.json`: 2,047 Korean-localized martian feature labels
 - `region-2-mars-chinese.json`: 2,047 Chinese-localized martian feature labels
@@ -54,6 +55,7 @@ USGS/IAU Gazetteer of Planetary Nomenclature center-point KML downloads:
 - `region-2-mars-german.json`: 2,047 German-localized martian feature labels
 - `region-2-mars-portuguese.json`: 2,047 Portuguese-localized martian feature labels
 - `region-2-mars-indonesian.json`: 2,047 Indonesian-localized martian feature labels
+- `region-2-mars-thai.json`: 2,047 Thai-localized martian feature labels
 - `region-3-mars.json`: 24,380 Mars crater fallback labels derived from
   Robbins V1 craters with diameter >= 10 km
 - `region-3-mars-korean.json`: 24,380 Korean-localized Mars crater fallback labels
@@ -64,6 +66,7 @@ USGS/IAU Gazetteer of Planetary Nomenclature center-point KML downloads:
 - `region-3-mars-german.json`: 24,380 German-localized Mars crater fallback labels
 - `region-3-mars-portuguese.json`: 24,380 Portuguese-localized Mars crater fallback labels
 - `region-3-mars-indonesian.json`: 24,380 Indonesian-localized Mars crater fallback labels
+- `region-3-mars-thai.json`: 24,380 Thai-localized Mars crater fallback labels
 
 The `region-2` datasets store official English feature names, descriptor codes,
 latitude, east-positive longitude normalized to `[-180, 180]`, feature type,
@@ -169,6 +172,7 @@ This approach provides significant performance benefits:
 - 🌕 `region-2-moon-german.json`: Contains German-localized Moon feature labels
 - 🌕 `region-2-moon-portuguese.json`: Contains Portuguese-localized Moon feature labels
 - 🌕 `region-2-moon-indonesian.json`: Contains Indonesian-localized Moon feature labels
+- 🌕 `region-2-moon-thai.json`: Contains Thai-localized Moon feature labels
 - 🪐 `region-2-mars.json`: Contains Mars feature names from the USGS/IAU Gazetteer
 - 🪐 `region-2-mars-korean.json`: Contains Korean-localized Mars feature labels
 - 🪐 `region-2-mars-chinese.json`: Contains Chinese-localized Mars feature labels
@@ -178,6 +182,7 @@ This approach provides significant performance benefits:
 - 🪐 `region-2-mars-german.json`: Contains German-localized Mars feature labels
 - 🪐 `region-2-mars-portuguese.json`: Contains Portuguese-localized Mars feature labels
 - 🪐 `region-2-mars-indonesian.json`: Contains Indonesian-localized Mars feature labels
+- 🪐 `region-2-mars-thai.json`: Contains Thai-localized Mars feature labels
 - 🪐 `region-3-mars.json`: Contains Mars crater fallback labels derived from Robbins V1
 - 🪐 `region-3-mars-korean.json`: Contains Korean-localized Mars crater fallback labels
 - 🪐 `region-3-mars-chinese.json`: Contains Chinese-localized Mars crater fallback labels
@@ -187,6 +192,7 @@ This approach provides significant performance benefits:
 - 🪐 `region-3-mars-german.json`: Contains German-localized Mars crater fallback labels
 - 🪐 `region-3-mars-portuguese.json`: Contains Portuguese-localized Mars crater fallback labels
 - 🪐 `region-3-mars-indonesian.json`: Contains Indonesian-localized Mars crater fallback labels
+- 🪐 `region-3-mars-thai.json`: Contains Thai-localized Mars crater fallback labels
 - 🌊 `region-3.json`: Contains sparse global coverage labels for oceans, polar regions, deserts, and remote interiors
 - 🌐 `region-3-[language].json`: Contains localized region-3 names where translations are available
 - 🌐 `region-3-japanese.json`: Contains Japanese-localized sparse global coverage labels
@@ -194,6 +200,7 @@ This approach provides significant performance benefits:
 - 🌐 `region-3-german.json`: Contains German-localized sparse global coverage labels
 - 🌐 `region-3-portuguese.json`: Contains Portuguese-localized sparse global coverage labels
 - 🌐 `region-3-indonesian.json`: Contains Indonesian-localized sparse global coverage labels
+- 🌐 `region-3-thai.json`: Contains Thai-localized sparse global coverage labels
 
 Localized Earth region language audits are recorded under
 `region-dataset/region-language-audit-2026-05-10.md`.

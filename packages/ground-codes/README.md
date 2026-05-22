@@ -104,7 +104,7 @@ USGS/IAU Gazetteer of Planetary Nomenclature KML center-point downloads.
 - 🔤 **Simple and Memorable**: Just three words to identify any location precisely
 - 🌎 **Global Coverage**: Works anywhere in the world with a unique address
 - 📖 **Open Source**: MIT licensed and fully transparent implementation
-- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, Japanese, Spanish, French, German, Portuguese, and Indonesian word sets and region labels
+- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, Japanese, Spanish, French, German, Portuguese, Indonesian, and Thai word sets and region labels
 - 📏 **Variable Precision**: Offers three levels of precision (3m, 30cm, and 3cm) to suit different use cases
 
 ## 📚 API Reference
@@ -191,8 +191,7 @@ approximation so existing encoded strings remain stable. Moon currently uses
 `regionLevel: 2` names first, then falls back to `regionLevel: 3` crater labels
 derived from the USGS Astrogeology Robbins V1 Crater Database when official
 names are sparse. English, Korean, Chinese, Japanese, Spanish, French, German,
-Portuguese, and Indonesian
-planetary prefixes are available.
+Portuguese, Indonesian, and Thai planetary prefixes are available.
 
 Mars crater fallback names are intentionally human-readable. The raw Robbins
 crater ID is stored in `code` as `MCR-xx-yyyyyy`, while the visible name is based
@@ -234,12 +233,21 @@ await encode(
   { body: "mars", language: "indonesian" },
 );
 // "Kawah Bohar 2-..."
+
+await encode(
+  {
+    lat: 64.3,
+    lng: -86.4,
+  },
+  { body: "mars", language: "thai" },
+);
+// "หลุมอุกกาบาตโบฮาร์ 2-..."
 ```
 
-Japanese, Spanish, French, German, Portuguese, and Indonesian are supported for
-both region prefix labels and the coordinate word-set payload. Latin URL labels are
-ASCII-only, so shared URLs remain readable while accent-insensitive search still
-works.
+Japanese, Spanish, French, German, Portuguese, Indonesian, and Thai are
+supported for both region prefix labels and the coordinate word-set payload.
+Latin URL labels are ASCII-only, while Thai uses native Thai script so shared
+URLs remain readable before browser percent-encoding.
 
 Current Mars 0.25 degree sampling with official names plus crater fallback:
 

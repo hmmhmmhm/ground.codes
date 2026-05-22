@@ -14,4 +14,8 @@ describe("ground code language mapping", () => {
   test("maps Indonesian UI locale to Indonesian Ground Codes", () => {
     expect(getGroundCodeLanguage("id")).toBe("indonesian");
   });
+
+  test("maps Thai UI locale to Thai Ground Codes", () => {
+    expect(getGroundCodeLanguage("th")).toBe("thai");
+  });
 });

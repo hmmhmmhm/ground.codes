@@ -26,6 +26,7 @@ const region2PathByLanguage: Record<string, string> = {
   german: "@ground-codes/geoint/region-dist/region-2-german.json",
   portuguese: "@ground-codes/geoint/region-dist/region-2-portuguese.json",
   indonesian: "@ground-codes/geoint/region-dist/region-2-indonesian.json",
+  thai: "@ground-codes/geoint/region-dist/region-2-thai.json",
 };
 
 const region3PathByLanguage: Record<string, string> = {
@@ -38,6 +39,7 @@ const region3PathByLanguage: Record<string, string> = {
   german: "@ground-codes/geoint/region-dist/region-3-german.json",
   portuguese: "@ground-codes/geoint/region-dist/region-3-portuguese.json",
   indonesian: "@ground-codes/geoint/region-dist/region-3-indonesian.json",
+  thai: "@ground-codes/geoint/region-dist/region-3-thai.json",
 };
 
 const languages = Object.keys(region3PathByLanguage);
@@ -69,11 +71,13 @@ describe("region-3 dataset", () => {
     const region2German = readRows(region2PathByLanguage.german);
     const region2Portuguese = readRows(region2PathByLanguage.portuguese);
     const region2Indonesian = readRows(region2PathByLanguage.indonesian);
+    const region2Thai = readRows(region2PathByLanguage.thai);
     const region3Spanish = readRows(region3PathByLanguage.spanish);
     const region3French = readRows(region3PathByLanguage.french);
     const region3German = readRows(region3PathByLanguage.german);
     const region3Portuguese = readRows(region3PathByLanguage.portuguese);
     const region3Indonesian = readRows(region3PathByLanguage.indonesian);
+    const region3Thai = readRows(region3PathByLanguage.thai);
 
     assert.equal(findRegionNameByCode(region2Korean, "1847050"), "애월");
     assert.equal(
@@ -103,6 +107,9 @@ describe("region-3 dataset", () => {
       findRegionNameByCode(region3Indonesian, "OCN0"),
       "Laut Ross 1",
     );
+    assert.equal(findRegionNameByCode(region2Thai, "1609350"), "กรุงเทพมหานคร");
+    assert.equal(findRegionNameByCode(region2Thai, "1835848"), "โซล");
+    assert.equal(findRegionNameByCode(region3Thai, "OCN0"), "ทะเลรอสส์ 1");
 
     assert.deepEqual(
       region2Korean

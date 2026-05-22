@@ -12,6 +12,7 @@ export const EXPECTED_COUNTS = {
   german: 5000,
   portuguese: 5000,
   indonesian: 5000,
+  thai: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -24,6 +25,7 @@ const CODEBOOK_FILES = {
   german: "../packages/codebook/codebook-dist/german.json",
   portuguese: "../packages/codebook/codebook-dist/portuguese.json",
   indonesian: "../packages/codebook/codebook-dist/indonesian.json",
+  thai: "../packages/codebook/codebook-dist/thai.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -1084,6 +1086,21 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
   german: GERMAN_BLOCKED_TERMS,
   portuguese: PORTUGUESE_BLOCKED_TERMS,
   indonesian: INDONESIAN_BLOCKED_TERMS,
+  thai: [
+    "พนัน",
+    "ยาเสพติด",
+    "อาวุธ",
+    "การเมือง",
+    "ศาสนา",
+    "หนี้",
+    "ป่วย",
+    "ตาย",
+    "เกลียด",
+    "โกง",
+    "หลอก",
+    "แพ้",
+    "ผิด",
+  ],
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -1506,6 +1523,31 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               rule: "indonesian-too-long",
               detail:
                 "Indonesian entries should stay short for URL readability",
+            }),
+          );
+        }
+      }
+
+      if (language === "thai") {
+        if (!/^[\p{Script=Thai}]+$/u.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "thai-script",
+              detail: "Thai entries should be written in Thai script",
+            }),
+          );
+        }
+        if ([...word].length > 12) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "thai-too-long",
+              detail: "Thai entries should stay short for readable share URLs",
             }),
           );
         }

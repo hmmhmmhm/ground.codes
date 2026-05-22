@@ -10,6 +10,7 @@ const CODEBOOK_FILES = {
   german: "../packages/codebook/codebook-dist/german.json",
   portuguese: "../packages/codebook/codebook-dist/portuguese.json",
   indonesian: "../packages/codebook/codebook-dist/indonesian.json",
+  thai: "../packages/codebook/codebook-dist/thai.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -594,6 +595,85 @@ const COMPOUND_SUFFIXES = {
     "utuh",
     "wangi",
   ],
+  thai: [
+    "น้ำ",
+    "ไฟ",
+    "ลม",
+    "ดิน",
+    "หิน",
+    "ไม้",
+    "ใบ",
+    "ดอก",
+    "สวน",
+    "บ้าน",
+    "ข้าว",
+    "ปลา",
+    "นก",
+    "ผ้า",
+    "เหล็ก",
+    "แก้ว",
+    "เมฆ",
+    "ฝน",
+    "ดาว",
+    "ทะเล",
+    "ภูเขา",
+    "คลอง",
+    "เกาะ",
+    "ป่า",
+    "ไผ่",
+    "บัว",
+    "ตะกร้า",
+    "จาน",
+    "ชาม",
+    "ถ้วย",
+    "หม้อ",
+    "ช้อน",
+    "โต๊ะ",
+    "ตู้",
+    "เทียน",
+    "เข็ม",
+    "ด้าย",
+    "กลอง",
+    "ว่าว",
+    "ภาพ",
+    "สี",
+    "ขวด",
+    "กล่อง",
+    "ถาด",
+    "พรม",
+    "อิฐ",
+    "ทราย",
+    "รั้ว",
+    "ลาน",
+    "ทุ่ง",
+    "นา",
+    "บึง",
+    "หมอก",
+    "ราก",
+    "กิ่ง",
+    "ถั่ว",
+    "ชา",
+    "กาแฟ",
+    "นม",
+    "เต้าหู้",
+    "ใบเตย",
+    "มด",
+    "เต่า",
+    "ไก่",
+    "เป็ด",
+    "กุ้ง",
+    "ปู",
+    "หอย",
+    "ไข่",
+    "ครก",
+    "เข่ง",
+    "เตา",
+    "ป้าย",
+    "มุก",
+    "หยก",
+    "พลอย",
+    "หวาย",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -606,6 +686,7 @@ const LANGUAGE_LABELS = {
   german: "German",
   portuguese: "Portuguese",
   indonesian: "Indonesian",
+  thai: "Thai",
 };
 
 const TYPE_LABELS = {
@@ -635,6 +716,10 @@ const isShortStandalone = (language, word) => {
     return length <= 4;
   }
 
+  if (language === "thai") {
+    return length <= 3;
+  }
+
   if (language === "korean" || language === "chinese") {
     return length === 1;
   }
@@ -655,6 +740,10 @@ const minPrefixLength = (language) => {
     language === "indonesian"
   ) {
     return 4;
+  }
+
+  if (language === "thai") {
+    return 1;
   }
 
   return 3;

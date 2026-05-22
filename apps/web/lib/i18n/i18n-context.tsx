@@ -157,7 +157,9 @@ export const I18nProvider: React.FC<{
                 ? "Changer la langue actualisera la page et reinitialisera la vue actuelle. Continuer ?"
                 : locale === "id"
                   ? "Mengubah bahasa akan memuat ulang halaman dan mereset tampilan saat ini. Lanjutkan?"
-                  : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
+                  : locale === "th"
+                    ? "การเปลี่ยนภาษาจะโหลดหน้าใหม่และรีเซ็ตมุมมองปัจจุบัน ต้องการดำเนินการต่อหรือไม่?"
+                    : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
 
     const userConfirmed = window.confirm(confirmMessage);
 

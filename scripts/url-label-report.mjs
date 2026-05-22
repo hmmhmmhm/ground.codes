@@ -52,6 +52,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-indonesian.json",
   ],
   [
+    "earth region-2 thai",
+    "thai",
+    "../packages/geoint/region-dist/region-2-thai.json",
+  ],
+  [
     "earth region-3 english",
     "english",
     "../packages/geoint/region-dist/region-3.json",
@@ -95,6 +100,11 @@ const DATASETS = [
     "earth region-3 indonesian",
     "indonesian",
     "../packages/geoint/region-dist/region-3-indonesian.json",
+  ],
+  [
+    "earth region-3 thai",
+    "thai",
+    "../packages/geoint/region-dist/region-3-thai.json",
   ],
   [
     "moon region-2 english",
@@ -142,6 +152,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-moon-indonesian.json",
   ],
   [
+    "moon region-2 thai",
+    "thai",
+    "../packages/geoint/region-dist/region-2-moon-thai.json",
+  ],
+  [
     "mars region-2 english",
     "english",
     "../packages/geoint/region-dist/region-2-mars.json",
@@ -187,6 +202,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-mars-indonesian.json",
   ],
   [
+    "mars region-2 thai",
+    "thai",
+    "../packages/geoint/region-dist/region-2-mars-thai.json",
+  ],
+  [
     "mars region-3 english",
     "english",
     "../packages/geoint/region-dist/region-3-mars.json",
@@ -230,6 +250,11 @@ const DATASETS = [
     "mars region-3 indonesian",
     "indonesian",
     "../packages/geoint/region-dist/region-3-mars-indonesian.json",
+  ],
+  [
+    "mars region-3 thai",
+    "thai",
+    "../packages/geoint/region-dist/region-3-mars-thai.json",
   ],
 ];
 

@@ -25,6 +25,28 @@ const makeHangulFixtures = (count) => {
   throw new Error(`Unable to generate ${count} Hangul fixtures`);
 };
 
+const makeThaiFixtures = (count) => {
+  const lead = ["กา", "นา", "ดา", "มา", "บา", "สา", "ลา", "ชา", "ตา", "ปา"];
+  const middle = ["กุ", "นุ", "ดุ", "มุ", "บุ", "สุ", "ลุ", "ชุ", "ตุ", "ปุ"];
+  const tail = ["กี", "นี", "ดี", "มี", "บี", "สี", "ลี", "ชี", "ตี", "ปี"];
+  const words = [];
+
+  for (const a of lead) {
+    for (const b of middle) {
+      for (const c of tail) {
+        for (const d of lead) {
+          words.push(`${a}${b}${c}${d}`);
+          if (words.length === count) {
+            return words;
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error(`Unable to generate ${count} Thai fixtures`);
+};
+
 describe("codebook policy audit", () => {
   test("keeps distributed codebooks at the guide-approved counts", () => {
     const { summary } = auditCodebooks();
@@ -604,5 +626,24 @@ describe("codebook policy audit", () => {
         word,
       );
     }
+  });
+
+  test("flags Thai script, length, and reviewed blocklist issues", () => {
+    const { violations } = auditCodebooks({
+      thai: [
+        "พนัน",
+        "Thai",
+        "น้ำตาลหอมหวานใหม่",
+        ...makeThaiFixtures(EXPECTED_COUNTS.thai - 3),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    assert.equal(actual.has("พนัน:reviewed-blocklist"), true);
+    assert.equal(actual.has("Thai:thai-script"), true);
+    assert.equal(actual.has("น้ำตาลหอมหวานใหม่:thai-too-long"), true);
   });
 });

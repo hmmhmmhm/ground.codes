@@ -28,4 +28,13 @@ describe("codebook type inventory", () => {
     assert.ok(indonesian.counts.otherStandalone >= 950);
     assert.ok(indonesian.counts.recognizedCompound <= 4000);
   });
+
+  test("classifies Thai script standalone and compound entries", () => {
+    const thai = buildTypeInventory().find((row) => row.language === "thai");
+
+    assert.ok(thai);
+    assert.ok(thai.counts.shortStandalone > 0);
+    assert.ok(thai.counts.recognizedCompound > 0);
+    assert.ok(thai.counts.otherStandalone > thai.counts.recognizedCompound);
+  });
 });

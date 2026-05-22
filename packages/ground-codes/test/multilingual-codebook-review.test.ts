@@ -10,6 +10,7 @@ import frenchWords from "@repo/codebook/codebook-dist/french.json";
 import germanWords from "@repo/codebook/codebook-dist/german.json";
 import portugueseWords from "@repo/codebook/codebook-dist/portuguese.json";
 import indonesianWords from "@repo/codebook/codebook-dist/indonesian.json";
+import thaiWords from "@repo/codebook/codebook-dist/thai.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -1955,6 +1956,46 @@ describe("reviewed multilingual codebooks", () => {
       "Wadahbenda",
       "Warnakapas",
       "Zaitunkapas",
+    ]);
+  });
+
+  test("keeps Thai codebook URL-safe and neutral", () => {
+    assert.equal(thaiWords.length, 5000);
+    assert.equal(new Set(thaiWords).size, thaiWords.length);
+    assert.deepEqual(
+      thaiWords.filter((word) => !/^[\p{Script=Thai}]+$/u.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      thaiWords.filter((word) => [...word].length > 12),
+      [],
+    );
+    assertWordsPresent(thaiWords, [
+      "น้ำ",
+      "ไฟ",
+      "บ้าน",
+      "สวน",
+      "ดอกไม้",
+      "ข้าว",
+      "ตลาด",
+      "ภูเขา",
+      "ทะเล",
+      "แม่น้ำ",
+      "สะพาน",
+      "ตะกร้า",
+      "มะม่วง",
+      "มะพร้าว",
+      "ผ้าไหม",
+    ]);
+    assertBlockedWordsAbsent(thaiWords, [
+      "พนัน",
+      "ยาเสพติด",
+      "อาวุธ",
+      "การเมือง",
+      "ศาสนา",
+      "หนี้",
+      "ป่วย",
+      "ตาย",
     ]);
   });
 });

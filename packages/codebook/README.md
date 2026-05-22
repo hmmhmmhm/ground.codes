@@ -31,6 +31,7 @@ The primary purpose of the Codebook is to provide a dictionary of words that can
 - 🇩🇪 **German Codebook**: Contains 5,000 URL-safe curated words
 - 🇵🇹 **Portuguese Codebook**: Contains 5,000 URL-safe curated words
 - 🇮🇩 **Indonesian Codebook**: Contains 5,000 URL-safe curated words
+- 🇹🇭 **Thai Codebook**: Contains 5,000 Thai-script curated words
 
 ## 🤖 Word Generation Process
 
@@ -75,6 +76,7 @@ Current distributed word sets:
 - German: 5,000 URL-safe words seeded from reviewed German words and filtered compound candidates
 - Portuguese: 5,000 URL-safe words seeded from neutral concrete Portuguese nouns and filtered compound candidates
 - Indonesian: 5,000 URL-safe words seeded from neutral concrete Indonesian nouns and filtered weak fused-compound candidates
+- Thai: 5,000 native Thai-script words seeded from neutral concrete nouns and filtered sensitive candidates
 
 ## ⚙️ Generation Commands
 

@@ -101,6 +101,20 @@ await smoke.check("Indonesian Jakarta encode", async () => {
   );
 });
 
+await smoke.check("Thai Bangkok encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 13.7563,
+    lng: 100.5018,
+    language: "thai",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(
+    /^กรุงเทพมหานคร-/.test(code),
+    `expected Thai Bangkok code, got ${code}`,
+  );
+});
+
 await smoke.check("ASCII earth region data", async () => {
   const code = await postJson("/v1/encode", {
     lat: -82,
