@@ -2064,6 +2064,16 @@ describe("reviewed multilingual codebooks", () => {
       "giỏ",
       "đèn",
       "áodài",
+      "bánhmì",
+      "nónlá",
+      "hoasen",
+      "chuônggió",
+      "đènlồng",
+      "bìnhhoa",
+      "bànchải",
+      "cửasổ",
+      "bảnđồ",
+      "hộpbút",
     ]);
     assertBlockedWordsAbsent(vietnameseWords, [
       "cờbạc",
@@ -2082,6 +2092,18 @@ describe("reviewed multilingual codebooks", () => {
       "tù",
       "giết",
       "tìnhdục",
+      "nướccao",
+      "lửacao",
+      "nhàcao",
+      "vườncao",
+      "xanhxanh",
+      "hoacao",
+      "trecao",
+      "camcao",
+      "khoaiđèn",
+      "lácửa",
+      "lạchồ",
+      "chuôngbình",
     ]);
   });
 });

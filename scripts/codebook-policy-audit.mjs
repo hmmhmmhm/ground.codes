@@ -1007,9 +1007,7 @@ const isAwkwardIndonesianCompound = (word) => {
   ) {
     return true;
   }
-  if (
-    hasGeneratedSuffix(word, INDONESIAN_AWKWARD_UNIVERSAL_OBJECT_SUFFIXES)
-  ) {
+  if (hasGeneratedSuffix(word, INDONESIAN_AWKWARD_UNIVERSAL_OBJECT_SUFFIXES)) {
     return true;
   }
 
@@ -1058,6 +1056,43 @@ const isAwkwardThaiCompound = (word) =>
     THAI_AWKWARD_ATTRIBUTE_ROOTS,
     THAI_AWKWARD_ATTRIBUTE_SUFFIXES,
   );
+
+const VIETNAMESE_AWKWARD_EXACT_COMPOUNDS = new Set([
+  "nướccao",
+  "lửacao",
+  "nhàcao",
+  "vườncao",
+  "xanhxanh",
+  "hoacao",
+  "trecao",
+  "camcao",
+  "chimcao",
+  "khoaicao",
+  "lencao",
+  "sencao",
+  "thancao",
+  "tranhcao",
+  "khoaiđèn",
+  "lácửa",
+  "lạchồ",
+  "chuôngbình",
+  "ruộngthuyền",
+  "nắngcam",
+  "trăngđậu",
+  "bànchảitrắng",
+  "bànchảiđồng",
+  "gốiớt",
+  "chiếugạo",
+  "mànhbút",
+]);
+
+const isAwkwardVietnameseCompound = (word) => {
+  const lower = word.toLowerCase();
+  if (VIETNAMESE_AWKWARD_EXACT_COMPOUNDS.has(lower)) return true;
+  if (lower.length % 2 !== 0) return false;
+  const half = lower.slice(0, lower.length / 2);
+  return half.length >= 3 && lower === `${half}${half}`;
+};
 
 const CHINESE_GENERATED_COMPOUND_PATTERN =
   /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
@@ -1659,6 +1694,18 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
       }
 
       if (language === "vietnamese") {
+        if (isAwkwardVietnameseCompound(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "vietnamese-awkward-generated-compound",
+              detail:
+                "Vietnamese generated compounds should avoid broad adjective templates and implausible fused noun pairings",
+            }),
+          );
+        }
         if (!/^[\p{Script=Latin}\p{Mark}]+$/u.test(word)) {
           violations.push(
             makeViolation({

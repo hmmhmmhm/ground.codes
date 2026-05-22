@@ -48,8 +48,30 @@ const makeThaiFixtures = (count) => {
 };
 
 const makeVietnameseFixtures = (count) => {
-  const lead = ["lúa", "sen", "tre", "mây", "gạo", "hoa", "dừa", "núi", "sông", "biển"];
-  const tail = ["mát", "xanh", "vàng", "nhỏ", "sáng", "bền", "êm", "tươi", "thơm", "lành"];
+  const lead = [
+    "lúa",
+    "sen",
+    "tre",
+    "mây",
+    "gạo",
+    "hoa",
+    "dừa",
+    "núi",
+    "sông",
+    "biển",
+  ];
+  const tail = [
+    "mát",
+    "xanh",
+    "vàng",
+    "nhỏ",
+    "sáng",
+    "bền",
+    "êm",
+    "tươi",
+    "thơm",
+    "lành",
+  ];
   const words = [];
 
   for (const a of lead) {
@@ -724,5 +746,50 @@ describe("codebook policy audit", () => {
     assert.equal(actual.has("Ground1:vietnamese-script"), true);
     assert.equal(actual.has("nước-mát:vietnamese-url-safety"), true);
     assert.equal(actual.has("chuônggióhoasen:vietnamese-too-long"), true);
+  });
+
+  test("flags awkward Vietnamese generated compounds", () => {
+    const { violations } = auditCodebooks({
+      vietnamese: [
+        "nướccao",
+        "lửacao",
+        "nhàcao",
+        "vườncao",
+        "xanhxanh",
+        "hoacao",
+        "trecao",
+        "camcao",
+        "khoaiđèn",
+        "lácửa",
+        "lạchồ",
+        "chuôngbình",
+        ...makeVietnameseFixtures(EXPECTED_COUNTS.vietnamese - 12),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    for (const word of [
+      "nướccao",
+      "lửacao",
+      "nhàcao",
+      "vườncao",
+      "xanhxanh",
+      "hoacao",
+      "trecao",
+      "camcao",
+      "khoaiđèn",
+      "lácửa",
+      "lạchồ",
+      "chuôngbình",
+    ]) {
+      assert.equal(
+        actual.has(`${word}:vietnamese-awkward-generated-compound`),
+        true,
+        word,
+      );
+    }
   });
 });

@@ -83,12 +83,12 @@ Current inventory:
 | Indonesian | Recognized compound              |  3850 | 77.0% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
 | Indonesian | Short standalone                 |   191 |  3.8% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
 | Indonesian | Other standalone or unclassified |   959 | 19.2% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
-| Thai       | Recognized compound              |   929 | 18.6% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                         |
+| Thai       | Recognized compound              |   929 | 18.6% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                          |
 | Thai       | Short standalone                 |    90 |  1.8% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                      |
 | Thai       | Other standalone or unclassified |  3981 | 79.6% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                              |
-| Vietnamese | Recognized compound              |   798 | 16.0% | `nướccao`, `lửacao`, `nhàcao`, `vườncao`, `gạocao`                   |
-| Vietnamese | Short standalone                 |   175 |  3.5% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
-| Vietnamese | Other standalone or unclassified |  4027 | 80.5% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
+| Vietnamese | Recognized compound              |   161 |  3.2% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `chénmây`              |
+| Vietnamese | Short standalone                 |   266 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
+| Vietnamese | Other standalone or unclassified |  4573 | 91.5% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
 
 Review implications:
 
@@ -130,10 +130,11 @@ Review implications:
   `ปลาแบน`, and `ข้าวหนัก`. Continue growing reviewed standalone Thai nouns
   before increasing template composition.
 - Vietnamese keeps native Vietnamese diacritics in public code words instead of
-  ASCII-folding. The first full set favors short everyday nouns and transparent
-  fused tokens such as `áodài`, `càphê`, `hoasen`, and `chuônggió`, while
-  blocking sensitive terms around gambling, drugs, politics, religion, weapons,
-  illness, death, alcohol, tobacco, debt, sex, and violence.
+  ASCII-folding. The current set favors short everyday nouns, public-place
+  nouns, and transparent fused tokens such as `áodài`, `càphê`, `nónlá`,
+  `hoasen`, and `chuônggió`, while blocking sensitive terms and broad generated
+  adjective pairings such as `nướccao`, `lửacao`, `nhàcao`, `vườncao`,
+  `xanhxanh`, and implausible fused noun pairs such as `khoaiđèn`.
 
 ## Product Principles
 
@@ -514,6 +515,10 @@ a test blocklist.
   materials, transport, and public-place nouns. Avoid obscure Sino-Vietnamese
   abstractions, specialist technical vocabulary, proper names, and bureaucratic
   terms unless the term is a stable region label.
+- Prefer exact reviewed compounds and semantically narrow templates. Reject
+  broad adjective or noun templates that create unnatural labels such as
+  `nướccao`, `lửacao`, `xanhxanh`, `khoaiđèn`, `lácửa`, `chuôngbình`, or
+  `ruộngthuyền`.
 - Reject sensitive or low-trust terms around gambling, drugs, weapons,
   politics, religion, debt, illness, death, alcohol, tobacco, blood, prison,
   killing, and sex. Current reviewed rejects include `cờbạc`, `matúy`,
