@@ -12,6 +12,7 @@ const CODEBOOK_FILES = {
   indonesian: "../packages/codebook/codebook-dist/indonesian.json",
   thai: "../packages/codebook/codebook-dist/thai.json",
   vietnamese: "../packages/codebook/codebook-dist/vietnamese.json",
+  hindi: "../packages/codebook/codebook-dist/hindi.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -711,6 +712,75 @@ const COMPOUND_SUFFIXES = {
     "vịnh",
     "võng",
   ],
+  hindi: [
+    "घर",
+    "दान",
+    "घड़ा",
+    "कटोरा",
+    "थाली",
+    "प्याला",
+    "डिब्बा",
+    "टोकरी",
+    "रस्सी",
+    "चटाई",
+    "परदा",
+    "कपड़ा",
+    "कुर्सी",
+    "मेज",
+    "बर्तन",
+    "लोटा",
+    "मटका",
+    "तवा",
+    "बेलन",
+    "थैला",
+    "कंघी",
+    "घंटी",
+    "पतंग",
+    "नक्शा",
+    "पन्ना",
+    "बाग",
+    "घाट",
+    "चौक",
+    "रास्ता",
+    "सड़क",
+    "पुल",
+    "गली",
+    "आंगन",
+    "दुकान",
+    "बाजार",
+    "स्टैंड",
+    "स्टेशन",
+    "मेड़",
+    "किनारा",
+    "छाया",
+    "कुंज",
+    "मंडप",
+    "रोटी",
+    "दाल",
+    "चावल",
+    "पूड़ी",
+    "हलवा",
+    "लड्डू",
+    "पेड़ा",
+    "जलेबी",
+    "दूध",
+    "दही",
+    "घी",
+    "पनीर",
+    "मक्खन",
+    "मसाला",
+    "चटनी",
+    "अचार",
+    "लाल",
+    "नीला",
+    "हरा",
+    "पीला",
+    "सफेद",
+    "काला",
+    "गुलाबी",
+    "सुनहरा",
+    "रूपहला",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -725,6 +795,7 @@ const LANGUAGE_LABELS = {
   indonesian: "Indonesian",
   thai: "Thai",
   vietnamese: "Vietnamese",
+  hindi: "Hindi",
 };
 
 const TYPE_LABELS = {
@@ -750,12 +821,13 @@ const isShortStandalone = (language, word) => {
     language === "german" ||
     language === "portuguese" ||
     language === "indonesian" ||
-    language === "vietnamese"
+    language === "vietnamese" ||
+    language === "hindi"
   ) {
     return length <= 4;
   }
 
-  if (language === "thai") {
+  if (language === "thai" || language === "hindi") {
     return length <= 3;
   }
 
@@ -777,7 +849,8 @@ const minPrefixLength = (language) => {
     language === "german" ||
     language === "portuguese" ||
     language === "indonesian" ||
-    language === "vietnamese"
+    language === "vietnamese" ||
+    language === "hindi"
   ) {
     return 4;
   }

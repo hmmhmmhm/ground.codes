@@ -48,4 +48,13 @@ describe("codebook type inventory", () => {
     assert.ok(vietnamese.counts.recognizedCompound > 0);
     assert.ok(vietnamese.counts.otherStandalone > 0);
   });
+
+  test("classifies Hindi standalone and Devanagari compound entries", () => {
+    const hindi = buildTypeInventory().find((row) => row.language === "hindi");
+
+    assert.ok(hindi);
+    assert.ok(hindi.counts.shortStandalone > 0);
+    assert.ok(hindi.counts.recognizedCompound > 0);
+    assert.ok(hindi.counts.otherStandalone > 0);
+  });
 });

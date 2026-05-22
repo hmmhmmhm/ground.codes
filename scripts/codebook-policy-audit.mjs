@@ -14,6 +14,7 @@ export const EXPECTED_COUNTS = {
   indonesian: 5000,
   thai: 5000,
   vietnamese: 5000,
+  hindi: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -28,6 +29,7 @@ const CODEBOOK_FILES = {
   indonesian: "../packages/codebook/codebook-dist/indonesian.json",
   thai: "../packages/codebook/codebook-dist/thai.json",
   vietnamese: "../packages/codebook/codebook-dist/vietnamese.json",
+  hindi: "../packages/codebook/codebook-dist/hindi.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -1247,6 +1249,28 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
     "tìnhdục",
     "dao",
   ],
+  hindi: [
+    "शराब",
+    "जुआ",
+    "नशा",
+    "हथियार",
+    "राजनीति",
+    "धर्म",
+    "मौत",
+    "खून",
+    "जेल",
+    "सेक्स",
+    "बीमारी",
+    "कर्ज",
+    "गोली",
+    "बंदूक",
+    "हत्या",
+    "युद्ध",
+    "चुनाव",
+    "मंदिर",
+    "प्रार्थना",
+    "अस्पताल",
+  ],
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -1757,6 +1781,44 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               rule: "vietnamese-too-long",
               detail:
                 "Vietnamese entries should stay short for readable share URLs",
+            }),
+          );
+        }
+      }
+
+      if (language === "hindi") {
+        if (!/^[\p{Script=Devanagari}\p{Mark}]+$/u.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "hindi-script",
+              detail: "Hindi entries should use Devanagari letters only",
+            }),
+          );
+        }
+        if (/[\s\-/#?]/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "hindi-url-safety",
+              detail:
+                "Hindi entries should not contain spaces or URL separators",
+            }),
+          );
+        }
+        if ([...word].length > 14) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "hindi-too-long",
+              detail:
+                "Hindi entries should stay short for readable share URLs",
             }),
           );
         }

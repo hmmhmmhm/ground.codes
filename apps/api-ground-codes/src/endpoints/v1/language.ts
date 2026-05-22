@@ -10,6 +10,7 @@ export const supportedLanguages = [
   "indonesian",
   "thai",
   "vietnamese",
+  "hindi",
 ] as const;
 
 export const getRegionDatasetName = ({

@@ -90,6 +90,49 @@ const makeVietnameseFixtures = (count) => {
   throw new Error(`Unable to generate ${count} Vietnamese fixtures`);
 };
 
+const makeHindiFixtures = (count) => {
+  const lead = [
+    "जल",
+    "घर",
+    "कमल",
+    "चाय",
+    "नदी",
+    "बाग",
+    "दीप",
+    "रंग",
+    "पुल",
+    "मिट्टी",
+  ];
+  const middle = [
+    "घड़ा",
+    "फूल",
+    "पत्ता",
+    "कप",
+    "थाली",
+    "दीया",
+    "बेलन",
+    "रस्सी",
+    "डिब्बा",
+    "कटोरा",
+  ];
+  const words = [];
+
+  for (const a of lead) {
+    for (const b of middle) {
+      for (const c of lead) {
+        for (const d of middle) {
+          words.push(`${a}${b}${c}${d}`);
+          if (words.length === count) {
+            return words;
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error(`Unable to generate ${count} Hindi fixtures`);
+};
+
 describe("codebook policy audit", () => {
   test("keeps distributed codebooks at the guide-approved counts", () => {
     const { summary } = auditCodebooks();
@@ -827,5 +870,29 @@ describe("codebook policy audit", () => {
         word,
       );
     }
+  });
+
+  test("flags Hindi script, URL-safety, length, and blocklist issues", () => {
+    const { violations } = auditCodebooks({
+      hindi: [
+        "शराब",
+        "जुआ",
+        "Ground",
+        "जल-घर",
+        "कमलफूलकमलफूलघड़ा",
+        ...makeHindiFixtures(EXPECTED_COUNTS.hindi - 5),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    assert.equal(actual.has("शराब:reviewed-blocklist"), true);
+    assert.equal(actual.has("जुआ:reviewed-blocklist"), true);
+    assert.equal(actual.has("Ground:hindi-script"), true);
+    assert.equal(actual.has("जल-घर:hindi-script"), true);
+    assert.equal(actual.has("जल-घर:hindi-url-safety"), true);
+    assert.equal(actual.has("कमलफूलकमलफूलघड़ा:hindi-too-long"), true);
   });
 });

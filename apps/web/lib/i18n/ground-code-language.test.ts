@@ -22,4 +22,8 @@ describe("ground code language mapping", () => {
   test("maps Vietnamese UI locale to Vietnamese Ground Codes", () => {
     expect(getGroundCodeLanguage("vi")).toBe("vietnamese");
   });
+
+  test("maps Hindi UI locale to Hindi Ground Codes", () => {
+    expect(getGroundCodeLanguage("hi")).toBe("hindi");
+  });
 });

@@ -161,6 +161,8 @@ export const I18nProvider: React.FC<{
                     ? "การเปลี่ยนภาษาจะโหลดหน้าใหม่และรีเซ็ตมุมมองปัจจุบัน ต้องการดำเนินการต่อหรือไม่?"
                     : locale === "vi"
                       ? "Thay đổi ngôn ngữ sẽ tải lại trang và đặt lại chế độ xem hiện tại. Bạn có muốn tiếp tục không?"
+                      : locale === "hi"
+                        ? "भाषा बदलने पर पेज रीफ्रेश होगा और वर्तमान दृश्य रीसेट हो जाएगा। क्या आप जारी रखना चाहते हैं?"
                       : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
 
     const userConfirmed = window.confirm(confirmMessage);

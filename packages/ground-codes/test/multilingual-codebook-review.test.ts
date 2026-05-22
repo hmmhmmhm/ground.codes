@@ -12,6 +12,7 @@ import portugueseWords from "@repo/codebook/codebook-dist/portuguese.json";
 import indonesianWords from "@repo/codebook/codebook-dist/indonesian.json";
 import thaiWords from "@repo/codebook/codebook-dist/thai.json";
 import vietnameseWords from "@repo/codebook/codebook-dist/vietnamese.json";
+import hindiWords from "@repo/codebook/codebook-dist/hindi.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -2142,6 +2143,79 @@ describe("reviewed multilingual codebooks", () => {
       "aomát",
       "hồxanh",
       "sôngmát",
+    ]);
+  });
+
+  test("keeps Hindi codebook URL-safe and neutral", () => {
+    assert.equal(hindiWords.length, 5000);
+    assert.equal(new Set(hindiWords).size, hindiWords.length);
+    assert.deepEqual(
+      hindiWords.filter(
+        (word) => !/^[\p{Script=Devanagari}\p{Mark}]+$/u.test(word),
+      ),
+      [],
+    );
+    assert.deepEqual(
+      hindiWords.filter((word) => /[\s\-/#?]/.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      hindiWords.filter((word) => [...word].length > 14),
+      [],
+    );
+    assertWordsPresent(hindiWords, [
+      "जल",
+      "घर",
+      "नदी",
+      "पहाड़",
+      "फूल",
+      "कमल",
+      "चाय",
+      "किताब",
+      "दीया",
+      "रोटी",
+      "दाल",
+      "चावल",
+      "आम",
+      "केला",
+      "नारियल",
+      "पेड़",
+      "बाजार",
+      "सड़क",
+      "पुल",
+      "थाली",
+      "कमलफूल",
+      "चायपत्ती",
+      "दीयाबत्ती",
+      "फूलदान",
+      "जलघड़ा",
+      "किताबघर",
+      "रेलस्टेशन",
+      "बसस्टैंड",
+      "नदीघाट",
+      "आमबाग",
+    ]);
+    assertBlockedWordsAbsent(hindiWords, [
+      "शराब",
+      "जुआ",
+      "नशा",
+      "हथियार",
+      "राजनीति",
+      "धर्म",
+      "मौत",
+      "खून",
+      "जेल",
+      "सेक्स",
+      "बीमारी",
+      "कर्ज",
+      "गोली",
+      "बंदूक",
+      "हत्या",
+      "युद्ध",
+      "चुनाव",
+      "मंदिर",
+      "प्रार्थना",
+      "अस्पताल",
     ]);
   });
 });

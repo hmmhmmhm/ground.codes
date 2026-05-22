@@ -128,6 +128,14 @@ const loadRegions = async (
           );
         return module.default as Region[];
       }
+      if (normalizedLanguage === "hindi") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-2-moon-hindi.json"
+          );
+        return module.default as Region[];
+      }
       const module =
         // @ts-ignore
         await import("@ground-codes/geoint/region-dist/region-2-moon.json");
@@ -216,6 +224,14 @@ const loadRegions = async (
             );
           return module.default as Region[];
         }
+        if (normalizedLanguage === "hindi") {
+          const module =
+            // @ts-ignore
+            await import(
+              "@ground-codes/geoint/region-dist/region-3-mars-hindi.json"
+            );
+          return module.default as Region[];
+        }
         const module =
           // @ts-ignore
           await import("@ground-codes/geoint/region-dist/region-3-mars.json");
@@ -300,6 +316,14 @@ const loadRegions = async (
           // @ts-ignore
           await import(
             "@ground-codes/geoint/region-dist/region-2-mars-vietnamese.json"
+          );
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "hindi") {
+        const module =
+          // @ts-ignore
+          await import(
+            "@ground-codes/geoint/region-dist/region-2-mars-hindi.json"
           );
         return module.default as Region[];
       }
@@ -395,6 +419,12 @@ const loadRegions = async (
           );
         return module.default as Region[];
       }
+      if (normalizedLanguage === "hindi") {
+        const module =
+          // @ts-ignore
+          await import("@ground-codes/geoint/region-dist/region-2-hindi.json");
+        return module.default as Region[];
+      }
       throw new Error(`Invalid language: ${language}`);
     }
 
@@ -475,6 +505,12 @@ const loadRegions = async (
           await import(
             "@ground-codes/geoint/region-dist/region-3-vietnamese.json"
           );
+        return module.default as Region[];
+      }
+      if (normalizedLanguage === "hindi") {
+        const module =
+          // @ts-ignore
+          await import("@ground-codes/geoint/region-dist/region-3-hindi.json");
         return module.default as Region[];
       }
       throw new Error(`Invalid language: ${language}`);

@@ -34,6 +34,7 @@ Current distributed word counts:
 | Indonesian |  5000 | `codebook-dist/indonesian.json` |
 | Thai       |  5000 | `codebook-dist/thai.json`       |
 | Vietnamese |  5000 | `codebook-dist/vietnamese.json` |
+| Hindi      |  5000 | `codebook-dist/hindi.json`      |
 
 ## Current Word Type Inventory
 
@@ -89,6 +90,9 @@ Current inventory:
 | Vietnamese | Recognized compound              |   190 |  3.8% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `đồnghồ`               |
 | Vietnamese | Short standalone                 |   265 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
 | Vietnamese | Other standalone or unclassified |  4545 | 90.9% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
+| Hindi      | Recognized compound              |  3373 | 67.5% | `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`, `लकड़ीकुर्सी`     |
+| Hindi      | Short standalone                 |   103 |  2.1% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
+| Hindi      | Other standalone or unclassified |  1524 | 30.5% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
 
 Review implications:
 
@@ -138,6 +142,11 @@ Review implications:
   object color templates such as `hộpxanh`, `bútvàng`, and `cốcđen`. It also
   avoids broad place mood/color templates such as `vườnnắng`, `ruộnggió`,
   `đồngmát`, and `bãivàng` in favor of concrete place terms.
+- Hindi uses native Devanagari in public code words instead of ASCII
+  transliteration. The initial set favors familiar everyday nouns and
+  transparent compounds such as `कमलफूल`, `चायपत्ती`, `दीयाबत्ती`,
+  `किताबघर`, `नदीघाट`, and `आमबाग`. Keep replacing broad generated pairings
+  with reviewed standalone Hindi nouns as coverage grows.
 
 ## Product Principles
 
@@ -537,6 +546,37 @@ a test blocklist.
   widely used proper names where natural: `Mare Tranquillitatis` -> `Biển Tĩnh
   Lặng`, `Olympus Mons` -> `Núi Olympus`, and crater fallbacks as
   `Hố va chạm ...`.
+
+### Hindi
+
+- Prefer common Hindi nouns written in Devanagari. Do not transliterate Hindi
+  code words to ASCII; Hindi URLs are expected to remain human-readable before
+  browser percent-encoding.
+- Codebook tokens must not contain spaces or URL separators. Natural multi-word
+  terms may be fused only when the result remains familiar to a general reader,
+  such as `कमलफूल`, `चायपत्ती`, `दीयाबत्ती`, `रेलस्टेशन`, and `बसस्टैंड`.
+- Keep Hindi entries at fourteen Unicode code points or fewer. Prefer short
+  standalone words such as `जल`, `घर`, `नदी`, `फूल`, `कमल`, `चाय`, `दीया`,
+  `रोटी`, `दाल`, `चावल`, and `आम`.
+- Use familiar concrete vocabulary from nature, food, household objects,
+  materials, transport, and public-place nouns. Avoid obscure Sanskritized
+  abstractions, specialist technical terms, proper names in the codebook, and
+  bureaucratic words unless the term is a stable region label.
+- Prefer exact reviewed compounds and semantically narrow templates. Use
+  material/object and place/nature pairings only when they read as ordinary
+  public labels, for example `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`,
+  `बांसटोकरी`, `नदीघाट`, and `गांवसड़क`. Avoid broad adjective templates and
+  repeated color/object generation when the result feels mechanical.
+- Reject sensitive or low-trust terms around gambling, drugs, weapons,
+  politics, religion, debt, illness, death, alcohol, blood, prison, killing,
+  and sex. Current reviewed rejects include `शराब`, `जुआ`, `नशा`, `हथियार`,
+  `राजनीति`, `धर्म`, `मौत`, `खून`, `जेल`, `सेक्स`, `बीमारी`, `कर्ज`,
+  `गोली`, `बंदूक`, `हत्या`, `युद्ध`, `चुनाव`, `मंदिर`, `प्रार्थना`, and
+  `अस्पताल`.
+- Region labels should localize stable terrain descriptors while preserving
+  widely used proper names where natural: `Mare Tranquillitatis` -> `शांति
+  सागर`, `Olympus Mons` -> `ओलिम्पस पर्वत`, and crater fallbacks as
+  `गड्ढा ...`.
 
 ## Automated Checks
 

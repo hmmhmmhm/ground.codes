@@ -28,6 +28,7 @@ const region2PathByLanguage: Record<string, string> = {
   indonesian: "@ground-codes/geoint/region-dist/region-2-indonesian.json",
   thai: "@ground-codes/geoint/region-dist/region-2-thai.json",
   vietnamese: "@ground-codes/geoint/region-dist/region-2-vietnamese.json",
+  hindi: "@ground-codes/geoint/region-dist/region-2-hindi.json",
 };
 
 const region3PathByLanguage: Record<string, string> = {
@@ -42,6 +43,7 @@ const region3PathByLanguage: Record<string, string> = {
   indonesian: "@ground-codes/geoint/region-dist/region-3-indonesian.json",
   thai: "@ground-codes/geoint/region-dist/region-3-thai.json",
   vietnamese: "@ground-codes/geoint/region-dist/region-3-vietnamese.json",
+  hindi: "@ground-codes/geoint/region-dist/region-3-hindi.json",
 };
 
 const languages = Object.keys(region3PathByLanguage);
@@ -75,6 +77,7 @@ describe("region-3 dataset", () => {
     const region2Indonesian = readRows(region2PathByLanguage.indonesian);
     const region2Thai = readRows(region2PathByLanguage.thai);
     const region2Vietnamese = readRows(region2PathByLanguage.vietnamese);
+    const region2Hindi = readRows(region2PathByLanguage.hindi);
     const region3Spanish = readRows(region3PathByLanguage.spanish);
     const region3French = readRows(region3PathByLanguage.french);
     const region3German = readRows(region3PathByLanguage.german);
@@ -82,6 +85,7 @@ describe("region-3 dataset", () => {
     const region3Indonesian = readRows(region3PathByLanguage.indonesian);
     const region3Thai = readRows(region3PathByLanguage.thai);
     const region3Vietnamese = readRows(region3PathByLanguage.vietnamese);
+    const region3Hindi = readRows(region3PathByLanguage.hindi);
 
     assert.equal(findRegionNameByCode(region2Korean, "1847050"), "애월");
     assert.equal(
@@ -120,6 +124,9 @@ describe("region-3 dataset", () => {
       "TP Hồ Chí Minh",
     );
     assert.equal(findRegionNameByCode(region3Vietnamese, "OCN0"), "Biển Ross 1");
+    assert.equal(findRegionNameByCode(region2Hindi, "1273294"), "दिल्ली");
+    assert.equal(findRegionNameByCode(region2Hindi, "1261481"), "नईदिल्ली");
+    assert.equal(findRegionNameByCode(region3Hindi, "OCN0"), "सागर Ross 1");
 
     assert.deepEqual(
       region2Korean
