@@ -1896,6 +1896,13 @@ describe("reviewed multilingual codebooks", () => {
       "Toples",
       "Ukiran",
       "Zamrud",
+      "Apel",
+      "Kamera",
+      "Kulkas",
+      "Meja",
+      "Pensil",
+      "Tenda",
+      "Warung",
     ]);
     assertBlockedWordsAbsent(indonesianWords, [
       "Halia",

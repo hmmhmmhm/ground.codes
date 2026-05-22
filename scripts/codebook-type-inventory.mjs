@@ -16,6 +16,10 @@ const SPANISH_REVIEW_FILES = [
   "../packages/codebook/codebook-dataset/spanish/standalone-review-2026-05-21.md",
 ];
 
+const INDONESIAN_REVIEW_FILES = [
+  "../packages/codebook/codebook-dataset/indonesian/standalone-review-2026-05-22.md",
+];
+
 const readReviewedSpanishStandaloneWords = () => {
   const words = new Set();
 
@@ -30,6 +34,22 @@ const readReviewedSpanishStandaloneWords = () => {
 };
 
 const SPANISH_REVIEWED_STANDALONE_WORDS = readReviewedSpanishStandaloneWords();
+
+const readReviewedIndonesianStandaloneWords = () => {
+  const words = new Set();
+
+  for (const path of INDONESIAN_REVIEW_FILES) {
+    const text = readFileSync(new URL(path, import.meta.url), "utf8");
+    for (const match of text.matchAll(/`([A-Z][a-z]+)`/g)) {
+      words.add(match[1]);
+    }
+  }
+
+  return words;
+};
+
+const INDONESIAN_REVIEWED_STANDALONE_WORDS =
+  readReviewedIndonesianStandaloneWords();
 
 const COMPOUND_SUFFIXES = {
   english: [
@@ -656,6 +676,12 @@ const normalizeForSuffix = (language, word) => {
 
 const findCompoundSuffix = (language, word) => {
   if (language === "spanish" && SPANISH_REVIEWED_STANDALONE_WORDS.has(word)) {
+    return undefined;
+  }
+  if (
+    language === "indonesian" &&
+    INDONESIAN_REVIEWED_STANDALONE_WORDS.has(word)
+  ) {
     return undefined;
   }
 
