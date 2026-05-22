@@ -1018,6 +1018,45 @@ const isAwkwardIndonesianCompound = (word) => {
   return half.length >= 3 && lower === `${half}${half}`;
 };
 
+const THAI_AWKWARD_ATTRIBUTE_ROOTS = [
+  "น้ำ",
+  "ไฟ",
+  "ลม",
+  "ข้าว",
+  "ปลา",
+  "นก",
+  "แมว",
+  "ม้า",
+  "ช้าง",
+  "กวาง",
+  "ผึ้ง",
+  "ไก่",
+  "เป็ด",
+  "ห่าน",
+  "กุ้ง",
+  "ปู",
+  "หอย",
+];
+
+const THAI_AWKWARD_ATTRIBUTE_SUFFIXES = [
+  "ดี",
+  "ยาว",
+  "สูง",
+  "ต่ำ",
+  "หนัก",
+  "แบน",
+  "กว้าง",
+  "แคบ",
+  "เย็น",
+];
+
+const isAwkwardThaiCompound = (word) =>
+  hasGeneratedPair(
+    word,
+    THAI_AWKWARD_ATTRIBUTE_ROOTS,
+    THAI_AWKWARD_ATTRIBUTE_SUFFIXES,
+  );
+
 const CHINESE_GENERATED_COMPOUND_PATTERN =
   /^(木|梅|杉|竹|棉|麻|兰|草|玉|石|纸|藤|布|砂|花|豆|米|松|枫|琥珀|翡翠|玛瑙)(小)?(筐|篮|盏|架|匣|瓶|钵|盂|盒|盖|箔|盆|塞|芯|坠|槽|坯|扣子|箩|提篮|篓|笼|夹|杯|碗|盘|筷|板|片|块|挂件|罐|箸|盒盖|坠子|木勺|刷|梳|小罐|小盘|小盒|小盆|小槽|小箩|小篓|小笼|小夹|小板|小片|小块)$/u;
 
@@ -1100,6 +1139,39 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
     "หลอก",
     "แพ้",
     "ผิด",
+    "เหล้า",
+    "เบียร์",
+    "บุหรี่",
+    "คาสิโน",
+    "หวย",
+    "ปืน",
+    "มีดดาบ",
+    "เลือด",
+    "คุก",
+    "ฆ่า",
+    "ฆาต",
+    "ขโมย",
+    "โจร",
+    "เซ็กซ์",
+    "โป๊",
+    "โรค",
+    "ยา",
+    "ไข้",
+    "เจ็บ",
+    "แผล",
+    "ศพ",
+    "ผี",
+    "วัด",
+    "พระ",
+    "ราชา",
+    "ตำรวจ",
+    "ทหาร",
+    "ภาษี",
+    "ศาล",
+    "คดี",
+    "ล้ม",
+    "พัง",
+    "เสีย",
   ],
 };
 
@@ -1529,6 +1601,18 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
       }
 
       if (language === "thai") {
+        if (isAwkwardThaiCompound(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "thai-awkward-generated-compound",
+              detail:
+                "Thai generated compounds should avoid broad noun/adjective pairings that read as template output",
+            }),
+          );
+        }
         if (!/^[\p{Script=Thai}]+$/u.test(word)) {
           violations.push(
             makeViolation({

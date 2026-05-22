@@ -82,9 +82,9 @@ Current inventory:
 | Indonesian | Recognized compound              |  3850 | 77.0% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
 | Indonesian | Short standalone                 |   191 |  3.8% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
 | Indonesian | Other standalone or unclassified |   959 | 19.2% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
-| Thai       | Recognized compound              |   789 | 15.8% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                         |
-| Thai       | Short standalone                 |    68 |  1.4% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                      |
-| Thai       | Other standalone or unclassified |  4143 | 82.9% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                              |
+| Thai       | Recognized compound              |   929 | 18.6% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                         |
+| Thai       | Short standalone                 |    90 |  1.8% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                      |
+| Thai       | Other standalone or unclassified |  3981 | 79.6% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                              |
 
 Review implications:
 
@@ -120,10 +120,11 @@ Review implications:
   generated compounds with reviewed standalone Indonesian nouns as coverage
   grows.
 - Thai uses native Thai script in public code words instead of ASCII
-  transliteration. The first release is intentionally dominated by concrete
-  everyday nouns and short readable noun/adjective combinations, with a much
-  lower recognized-compound share than Indonesian. Continue growing reviewed
-  standalone Thai nouns before increasing template composition.
+  transliteration. The quality v2 pass adds a larger pool of concrete everyday
+  nouns and reviewed household/food/nature compounds, while blocking broad
+  generated adjective pairings such as `ไฟดี`, `นกยาว`, `น้ำสูง`,
+  `ปลาแบน`, and `ข้าวหนัก`. Continue growing reviewed standalone Thai nouns
+  before increasing template composition.
 
 ## Product Principles
 
@@ -477,10 +478,13 @@ a test blocklist.
   address words. Prefer natural compounds such as `ใบไม้`, `ดอกไม้`, `แม่น้ำ`,
   and `โคมไฟ`; generated noun/adjective or noun/noun combinations are fallback
   material and should be replaced with reviewed standalone nouns over time.
-- Reject sensitive or low-trust terms around gambling, drugs, weapons, sex,
-  debt, illness, death, hate, fraud, politics, religion, and failure. Current
-  reviewed rejects include `พนัน`, `ยาเสพติด`, `อาวุธ`, `การเมือง`, `ศาสนา`,
-  `หนี้`, `ป่วย`, `ตาย`, `เกลียด`, `โกง`, `หลอก`, `แพ้`, and `ผิด`.
+- Reject sensitive or low-trust terms around gambling, drugs, weapons, alcohol,
+  tobacco, sex, debt, illness, death, hate, fraud, politics, religion, law
+  enforcement, courts, and failure. Current reviewed rejects include `พนัน`,
+  `ยาเสพติด`, `อาวุธ`, `การเมือง`, `ศาสนา`, `หนี้`, `ป่วย`, `ตาย`,
+  `เกลียด`, `โกง`, `หลอก`, `แพ้`, `ผิด`, `เหล้า`, `เบียร์`, `บุหรี่`,
+  `คาสิโน`, `หวย`, `ปืน`, `เลือด`, `คุก`, `ฆ่า`, `เซ็กซ์`, `โรค`,
+  `ยา`, `ศพ`, `ผี`, `วัด`, `พระ`, `ตำรวจ`, `ทหาร`, `ศาล`, and `คดี`.
 - Region labels should localize stable terrain descriptors for readability
   while preserving proper names where possible, for example `Mare
   Tranquillitatis` -> `ทะเลแห่งความสงบ`, `Olympus Mons` -> `ภูเขาโอลิมปัส`,

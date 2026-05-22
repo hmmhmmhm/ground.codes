@@ -632,9 +632,10 @@ describe("codebook policy audit", () => {
     const { violations } = auditCodebooks({
       thai: [
         "พนัน",
+        "เหล้า",
         "Thai",
         "น้ำตาลหอมหวานใหม่",
-        ...makeThaiFixtures(EXPECTED_COUNTS.thai - 3),
+        ...makeThaiFixtures(EXPECTED_COUNTS.thai - 4),
       ],
     });
 
@@ -643,7 +644,41 @@ describe("codebook policy audit", () => {
     );
 
     assert.equal(actual.has("พนัน:reviewed-blocklist"), true);
+    assert.equal(actual.has("เหล้า:reviewed-blocklist"), true);
     assert.equal(actual.has("Thai:thai-script"), true);
     assert.equal(actual.has("น้ำตาลหอมหวานใหม่:thai-too-long"), true);
+  });
+
+  test("flags awkward Thai generated adjective compounds", () => {
+    const { violations } = auditCodebooks({
+      thai: [
+        "ไฟดี",
+        "นกยาว",
+        "แมวยาว",
+        "น้ำสูง",
+        "ปลาแบน",
+        "ข้าวหนัก",
+        ...makeThaiFixtures(EXPECTED_COUNTS.thai - 6),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    for (const word of [
+      "ไฟดี",
+      "นกยาว",
+      "แมวยาว",
+      "น้ำสูง",
+      "ปลาแบน",
+      "ข้าวหนัก",
+    ]) {
+      assert.equal(
+        actual.has(`${word}:thai-awkward-generated-compound`),
+        true,
+        word,
+      );
+    }
   });
 });
