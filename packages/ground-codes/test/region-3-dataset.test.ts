@@ -126,7 +126,7 @@ describe("region-3 dataset", () => {
     assert.equal(findRegionNameByCode(region3Vietnamese, "OCN0"), "Biển Ross 1");
     assert.equal(findRegionNameByCode(region2Hindi, "1273294"), "दिल्ली");
     assert.equal(findRegionNameByCode(region2Hindi, "1261481"), "नईदिल्ली");
-    assert.equal(findRegionNameByCode(region3Hindi, "OCN0"), "सागर Ross 1");
+    assert.equal(findRegionNameByCode(region3Hindi, "OCN0"), "रॉस सागर 1");
 
     assert.deepEqual(
       region2Korean

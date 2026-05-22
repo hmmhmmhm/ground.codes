@@ -16,26 +16,61 @@ const writeJson = (filePath, value) =>
 
 const hindiWordPattern = /^[\p{Script=Devanagari}\p{Mark}]+$/u;
 const blockedTokens = new Set([
+  "अपरस",
   "अस्पताल",
+  "खर्रा",
+  "खिड़कीपट",
   "कर्ज",
   "खून",
   "गोली",
+  "गरमपानी",
   "जुआ",
   "जेल",
+  "टोकरीढक्कन",
   "चुनाव",
+  "चावलदान",
   "धर्म",
   "नशा",
+  "नदीघर",
+  "नदीबाजार",
+  "नदीलाल",
+  "नीलाकिताब",
+  "पटल",
+  "पपीहा",
   "प्रार्थना",
   "बंदूक",
+  "बखार",
+  "बरामदाबाजार",
   "बीमारी",
+  "बड़ाहवा",
+  "बलुआ",
   "मंदिर",
+  "मोडक",
   "मौत",
   "राजनीति",
+  "रूपहलाघर",
+  "रूपहलालहसुन",
+  "रूपहलालस्सी",
+  "रूपहलासत्तू",
+  "रूपहलासूप",
+  "रूपहलाहांडी",
+  "सरौता",
+  "सुनहराकुर्सी",
+  "सुनहरादान",
+  "सुनहरामेज",
   "युद्ध",
   "शराब",
+  "सुपली",
   "सेक्स",
   "हत्या",
   "हथियार",
+  "झीलनीला",
+  "लालघर",
+  "छोटामिट्टी",
+  "कागजकंबल",
+  "कपासदीया",
+  "चांदीकुर्सी",
+  "गांवमेड़",
 ]);
 
 const standaloneWords = [
@@ -344,7 +379,7 @@ const v2StandaloneWords = [
   "मुरमुरा",
   "मेथी",
   "मेवा",
-  "मोडक",
+  "मोदक",
   "मोती",
   "रजाई",
   "राखी",
@@ -367,6 +402,37 @@ const v2StandaloneWords = [
   "सौंफ",
   "हांडी",
   "हाथपंखा",
+];
+
+const v3StandaloneWords = [
+  "टिफिन",
+  "रुमाल",
+  "मोजा",
+  "कमीज",
+  "सलवार",
+  "कुर्ता",
+  "पाजामा",
+  "चश्मा",
+  "रेडियो",
+  "कैमरा",
+  "बैटरी",
+  "बल्ब",
+  "कैलकुलेटर",
+  "झाड़ू",
+  "पोछा",
+  "मग",
+  "तौलिया",
+  "साबुन",
+  "क्रीम",
+  "कंघा",
+  "डिबिया",
+  "तश्तरी",
+  "प्लेट",
+  "कटोरी",
+  "गिलास",
+  "कड़ाही",
+  "भगौना",
+  "चिमटा",
 ];
 
 const pairedCompounds = [
@@ -1136,6 +1202,7 @@ const buildHindiCodebook = () => {
 
   for (const word of standaloneWords) addToken(tokens, word);
   for (const word of v2StandaloneWords) addToken(tokens, word);
+  for (const word of v3StandaloneWords) addToken(tokens, word);
   for (const [left, right] of pairedCompounds) addToken(tokens, `${left}${right}`);
 
   addPairs(natureRoots, placeSuffixes);
@@ -1203,6 +1270,26 @@ const marineTerms = [
   ["Plain", "मैदान"],
 ];
 
+const hindiMarineProperFragments = new Map([
+  ["Ross", "रॉस"],
+  ["Weddell", "वेडेल"],
+  ["Amundsen", "अमुंडसेन"],
+  ["Bellingshausen", "बेलिंग्सहाउज़ेन"],
+  ["Scotia", "स्कोशिया"],
+  ["Lazarev", "लाज़ारेव"],
+  ["Davis", "डेविस"],
+  ["Mawson", "मॉसन"],
+  ["Somov", "सोमोव"],
+]);
+
+const translateHindiMarineProper = (value) => {
+  let name = value;
+  for (const [english, hindi] of hindiMarineProperFragments) {
+    name = name.replace(new RegExp(`\\b${english}\\b`, "g"), hindi);
+  }
+  return name;
+};
+
 const translateRegion3Name = (row) => {
   let name = removeUnsafeRegionChars(row.name);
   if (row.source === "synthetic-antarctic-grid") {
@@ -1221,7 +1308,7 @@ const translateRegion3Name = (row) => {
   for (const [english, hindi] of marineTerms) {
     const trailingMatch = name.match(new RegExp(`^(.+) ${english} (\\d+)$`));
     if (trailingMatch) {
-      name = `${hindi} ${trailingMatch[1]} ${trailingMatch[2]}`;
+      name = `${translateHindiMarineProper(trailingMatch[1])} ${hindi} ${trailingMatch[2]}`;
       continue;
     }
     name = name.replace(new RegExp(`^${english} `), `${hindi} `);

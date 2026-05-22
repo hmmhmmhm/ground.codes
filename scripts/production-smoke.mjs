@@ -65,6 +65,61 @@ await smoke.check("Earth Seoul encode", async () => {
   assert(/^Seoul-/.test(code), `expected Seoul code, got ${code}`);
 });
 
+await smoke.check("Korean Seoul encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 37.566,
+    lng: 126.978,
+    language: "korean",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^서울-/.test(code), `expected Korean Seoul code, got ${code}`);
+});
+
+await smoke.check("Chinese Seoul encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 37.566,
+    lng: 126.978,
+    language: "chinese",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^首尔-/.test(code), `expected Chinese Seoul code, got ${code}`);
+});
+
+await smoke.check("Japanese Seoul encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 37.566,
+    lng: 126.978,
+    language: "japanese",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^セオウル-/.test(code), `expected Japanese Seoul code, got ${code}`);
+});
+
+await smoke.check("Spanish Seoul encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 37.566,
+    lng: 126.978,
+    language: "spanish",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Seul-/.test(code), `expected Spanish Seoul code, got ${code}`);
+});
+
+await smoke.check("French Seoul encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 37.566,
+    lng: 126.978,
+    language: "french",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Seoul-/.test(code), `expected French Seoul code, got ${code}`);
+});
+
 await smoke.check("German Seoul encode", async () => {
   const code = await postJson("/v1/encode", {
     lat: 37.566,

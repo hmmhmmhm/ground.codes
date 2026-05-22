@@ -19,6 +19,9 @@ Before changing a codebook:
 5. Run the codebook and ground-codes audit tests.
 6. Update review tests when a new rejected term teaches a reusable rule.
 
+For current per-language status, see
+[`LANGUAGE_QUALITY.md`](./LANGUAGE_QUALITY.md).
+
 Current distributed word counts:
 
 | Language   | Count | Source file                     |
@@ -90,9 +93,9 @@ Current inventory:
 | Vietnamese | Recognized compound              |   190 |  3.8% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `đồnghồ`               |
 | Vietnamese | Short standalone                 |   265 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
 | Vietnamese | Other standalone or unclassified |  4545 | 90.9% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
-| Hindi      | Recognized compound              |  2172 | 43.4% | `चावलदान`, `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`         |
-| Hindi      | Short standalone                 |   174 |  3.5% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
-| Hindi      | Other standalone or unclassified |  2654 | 53.1% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
+| Hindi      | Recognized compound              |  2164 | 43.3% | `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`, `लकड़ीकुर्सी`      |
+| Hindi      | Short standalone                 |   176 |  3.5% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
+| Hindi      | Other standalone or unclassified |  2660 | 53.2% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
 
 Review implications:
 
@@ -143,12 +146,11 @@ Review implications:
   avoids broad place mood/color templates such as `vườnnắng`, `ruộnggió`,
   `đồngmát`, and `bãivàng` in favor of concrete place terms.
 - Hindi uses native Devanagari in public code words instead of ASCII
-  transliteration. The v2 cleanup reduces broad generated compounds from the
-  initial set, blocks object/material and object/place templates such as
-  `किताबमाटी`, `घड़ास्टेशन`, `दीपकसड़क`, and `मोहल्लाकुर्सी`, and favors
-  everyday standalone nouns plus narrower food, material/object, and
-  place-feature compounds. Keep replacing remaining broad descriptor compounds
-  with reviewed standalone Hindi nouns as coverage grows.
+  transliteration. The v3 cleanup removes reviewed descriptor compounds such as
+  `सुनहराकुर्सी`, mixed noun/color templates such as `नदीलाल`, weak nature/place
+  pairings such as `नदीघर`, and obscure standalone entries such as `अपरस` and
+  `सुपली`. Keep replacing remaining broad templates with reviewed standalone
+  Hindi nouns as coverage grows.
 
 ## Product Principles
 

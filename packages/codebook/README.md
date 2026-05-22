@@ -15,6 +15,8 @@ The Codebook package is a specialized word collection developed for the ground.c
 The canonical policy for creating, reviewing, and replacing codebook words is
 [`CODEBOOK_GUIDE.md`](./CODEBOOK_GUIDE.md). Read it before running generation,
 refinement, manual review, or distribution updates.
+Current language-by-language review status is tracked in
+[`LANGUAGE_QUALITY.md`](./LANGUAGE_QUALITY.md).
 
 ## 🎯 Purpose
 
@@ -33,6 +35,7 @@ The primary purpose of the Codebook is to provide a dictionary of words that can
 - 🇮🇩 **Indonesian Codebook**: Contains 5,000 URL-safe curated words
 - 🇹🇭 **Thai Codebook**: Contains 5,000 Thai-script curated words
 - 🇻🇳 **Vietnamese Codebook**: Contains 5,000 Vietnamese Latin-script curated words
+- 🇮🇳 **Hindi Codebook**: Contains 5,000 Devanagari-script curated words
 
 ## 🤖 Word Generation Process
 
@@ -79,6 +82,7 @@ Current distributed word sets:
 - Indonesian: 5,000 URL-safe words seeded from neutral concrete Indonesian nouns and filtered weak fused-compound candidates
 - Thai: 5,000 native Thai-script words seeded from neutral concrete nouns and filtered sensitive candidates
 - Vietnamese: 5,000 native Vietnamese Latin-script words seeded from neutral concrete nouns and filtered sensitive candidates
+- Hindi: 5,000 native Devanagari-script words seeded from neutral concrete nouns and filtered sensitive candidates
 
 ## ⚙️ Generation Commands
 
