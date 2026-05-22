@@ -86,9 +86,9 @@ Current inventory:
 | Thai       | Recognized compound              |   929 | 18.6% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                          |
 | Thai       | Short standalone                 |    90 |  1.8% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                      |
 | Thai       | Other standalone or unclassified |  3981 | 79.6% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                              |
-| Vietnamese | Recognized compound              |   161 |  3.2% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `chénmây`              |
-| Vietnamese | Short standalone                 |   266 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
-| Vietnamese | Other standalone or unclassified |  4573 | 91.5% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
+| Vietnamese | Recognized compound              |   185 |  3.7% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `đồnghồ`               |
+| Vietnamese | Short standalone                 |   263 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
+| Vietnamese | Other standalone or unclassified |  4552 | 91.0% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
 
 Review implications:
 
@@ -134,7 +134,8 @@ Review implications:
   nouns, and transparent fused tokens such as `áodài`, `càphê`, `nónlá`,
   `hoasen`, and `chuônggió`, while blocking sensitive terms and broad generated
   adjective pairings such as `nướccao`, `lửacao`, `nhàcao`, `vườncao`,
-  `xanhxanh`, and implausible fused noun pairs such as `khoaiđèn`.
+  `xanhxanh`, implausible fused noun pairs such as `khoaiđèn`, and repetitive
+  object color templates such as `hộpxanh`, `bútvàng`, and `cốcđen`.
 
 ## Product Principles
 
@@ -518,7 +519,10 @@ a test blocklist.
 - Prefer exact reviewed compounds and semantically narrow templates. Reject
   broad adjective or noun templates that create unnatural labels such as
   `nướccao`, `lửacao`, `xanhxanh`, `khoaiđèn`, `lácửa`, `chuôngbình`, or
-  `ruộngthuyền`.
+  `ruộngthuyền`. Limit color templates to categories where color is a natural
+  descriptor; prefer exact everyday terms such as `đồnghồ`, `máyảnh`,
+  `cầuthang`, `sânkhấu`, `bánhcuốn`, and `búnchả` over broad object-color
+  generation.
 - Reject sensitive or low-trust terms around gambling, drugs, weapons,
   politics, religion, debt, illness, death, alcohol, tobacco, blood, prison,
   killing, and sex. Current reviewed rejects include `cờbạc`, `matúy`,

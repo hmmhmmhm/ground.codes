@@ -763,7 +763,15 @@ describe("codebook policy audit", () => {
         "lácửa",
         "lạchồ",
         "chuôngbình",
-        ...makeVietnameseFixtures(EXPECTED_COUNTS.vietnamese - 12),
+        "hộpxanh",
+        "bútvàng",
+        "cốcđen",
+        "báttrắng",
+        "vảitím",
+        "lụahồng",
+        "đènđen",
+        "bìnhnâu",
+        ...makeVietnameseFixtures(EXPECTED_COUNTS.vietnamese - 20),
       ],
     });
 
@@ -784,6 +792,14 @@ describe("codebook policy audit", () => {
       "lácửa",
       "lạchồ",
       "chuôngbình",
+      "hộpxanh",
+      "bútvàng",
+      "cốcđen",
+      "báttrắng",
+      "vảitím",
+      "lụahồng",
+      "đènđen",
+      "bìnhnâu",
     ]) {
       assert.equal(
         actual.has(`${word}:vietnamese-awkward-generated-compound`),

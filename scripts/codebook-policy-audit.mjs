@@ -1084,6 +1084,14 @@ const VIETNAMESE_AWKWARD_EXACT_COMPOUNDS = new Set([
   "gốiớt",
   "chiếugạo",
   "mànhbút",
+  "hộpxanh",
+  "bútvàng",
+  "cốcđen",
+  "báttrắng",
+  "vảitím",
+  "lụahồng",
+  "đènđen",
+  "bìnhnâu",
 ]);
 
 const isAwkwardVietnameseCompound = (word) => {

@@ -2074,6 +2074,16 @@ describe("reviewed multilingual codebooks", () => {
       "cửasổ",
       "bảnđồ",
       "hộpbút",
+      "đồnghồ",
+      "máyảnh",
+      "máyquạt",
+      "máybay",
+      "cầuthang",
+      "sânkhấu",
+      "lọhoa",
+      "túixách",
+      "bánhcuốn",
+      "búnchả",
     ]);
     assertBlockedWordsAbsent(vietnameseWords, [
       "cờbạc",
@@ -2104,6 +2114,14 @@ describe("reviewed multilingual codebooks", () => {
       "lácửa",
       "lạchồ",
       "chuôngbình",
+      "hộpxanh",
+      "bútvàng",
+      "cốcđen",
+      "báttrắng",
+      "vảitím",
+      "lụahồng",
+      "đènđen",
+      "bìnhnâu",
     ]);
   });
 });
