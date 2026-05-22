@@ -18,4 +18,8 @@ describe("ground code language mapping", () => {
   test("maps Thai UI locale to Thai Ground Codes", () => {
     expect(getGroundCodeLanguage("th")).toBe("thai");
   });
+
+  test("maps Vietnamese UI locale to Vietnamese Ground Codes", () => {
+    expect(getGroundCodeLanguage("vi")).toBe("vietnamese");
+  });
 });

@@ -13,6 +13,7 @@ export const EXPECTED_COUNTS = {
   portuguese: 5000,
   indonesian: 5000,
   thai: 5000,
+  vietnamese: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -26,6 +27,7 @@ const CODEBOOK_FILES = {
   portuguese: "../packages/codebook/codebook-dist/portuguese.json",
   indonesian: "../packages/codebook/codebook-dist/indonesian.json",
   thai: "../packages/codebook/codebook-dist/thai.json",
+  vietnamese: "../packages/codebook/codebook-dist/vietnamese.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -1173,6 +1175,25 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
     "พัง",
     "เสีย",
   ],
+  vietnamese: [
+    "cờbạc",
+    "matúy",
+    "vũkhí",
+    "chínhtrị",
+    "tôngiáo",
+    "nợ",
+    "bệnh",
+    "chết",
+    "rượu",
+    "bia",
+    "thuốclá",
+    "súng",
+    "máu",
+    "tù",
+    "giết",
+    "tìnhdục",
+    "dao",
+  ],
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -1632,6 +1653,45 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               word,
               rule: "thai-too-long",
               detail: "Thai entries should stay short for readable share URLs",
+            }),
+          );
+        }
+      }
+
+      if (language === "vietnamese") {
+        if (!/^[\p{Script=Latin}\p{Mark}]+$/u.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "vietnamese-script",
+              detail:
+                "Vietnamese entries should use Vietnamese Latin letters only",
+            }),
+          );
+        }
+        if (/[\s\-/#?]/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "vietnamese-url-safety",
+              detail:
+                "Vietnamese entries should not contain spaces or URL separators",
+            }),
+          );
+        }
+        if ([...word].length > 14) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "vietnamese-too-long",
+              detail:
+                "Vietnamese entries should stay short for readable share URLs",
             }),
           );
         }

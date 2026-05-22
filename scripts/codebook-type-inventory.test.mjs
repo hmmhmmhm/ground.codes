@@ -37,4 +37,15 @@ describe("codebook type inventory", () => {
     assert.ok(thai.counts.recognizedCompound > 0);
     assert.ok(thai.counts.otherStandalone > thai.counts.recognizedCompound);
   });
+
+  test("classifies Vietnamese standalone and fused compound entries", () => {
+    const vietnamese = buildTypeInventory().find(
+      (row) => row.language === "vietnamese",
+    );
+
+    assert.ok(vietnamese);
+    assert.ok(vietnamese.counts.shortStandalone > 0);
+    assert.ok(vietnamese.counts.recognizedCompound > 0);
+    assert.ok(vietnamese.counts.otherStandalone > 0);
+  });
 });

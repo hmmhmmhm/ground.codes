@@ -179,6 +179,7 @@ export const decode = async (
     const chinesePattern =
       /[\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]|[\uD840-\uD869][\uDC00-\uDFFF]/;
     const thaiPattern = /[\u0E00-\u0E7F]/;
+    const vietnamesePattern = /[ĂăÂâĐđÊêÔôƠơƯư]/;
 
     // Test if the text contains Korean or Chinese characters
     if (koreanPattern.test(actualEncoded)) {
@@ -189,6 +190,8 @@ export const decode = async (
       language = "chinese";
     } else if (thaiPattern.test(actualEncoded)) {
       language = "thai";
+    } else if (vietnamesePattern.test(actualEncoded)) {
+      language = "vietnamese";
     } else {
       // Default to English if no Korean or Chinese characters are detected
       language = "english";

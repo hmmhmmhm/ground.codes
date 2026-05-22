@@ -11,6 +11,7 @@ import germanWords from "@repo/codebook/codebook-dist/german.json";
 import portugueseWords from "@repo/codebook/codebook-dist/portuguese.json";
 import indonesianWords from "@repo/codebook/codebook-dist/indonesian.json";
 import thaiWords from "@repo/codebook/codebook-dist/thai.json";
+import vietnameseWords from "@repo/codebook/codebook-dist/vietnamese.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -2021,6 +2022,66 @@ describe("reviewed multilingual codebooks", () => {
       "ข้าวหนัก",
       "ม้าเล็ก",
       "ช้างต่ำ",
+    ]);
+  });
+
+  test("keeps Vietnamese codebook URL-safe and neutral", () => {
+    assert.equal(vietnameseWords.length, 5000);
+    assert.equal(new Set(vietnameseWords).size, vietnameseWords.length);
+    assert.deepEqual(
+      vietnameseWords.filter(
+        (word) => !/^[\p{Script=Latin}\p{Mark}]+$/u.test(word),
+      ),
+      [],
+    );
+    assert.deepEqual(
+      vietnameseWords.filter((word) => /[\s\-/#?]/.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      vietnameseWords.filter((word) => [...word].length > 14),
+      [],
+    );
+    assertWordsPresent(vietnameseWords, [
+      "nước",
+      "lửa",
+      "nhà",
+      "vườn",
+      "gạo",
+      "chợ",
+      "cầu",
+      "sông",
+      "biển",
+      "núi",
+      "hoa",
+      "tre",
+      "mây",
+      "mưa",
+      "dừa",
+      "chuối",
+      "xoài",
+      "càphê",
+      "giỏ",
+      "đèn",
+      "áodài",
+    ]);
+    assertBlockedWordsAbsent(vietnameseWords, [
+      "cờbạc",
+      "matúy",
+      "vũkhí",
+      "chínhtrị",
+      "tôngiáo",
+      "nợ",
+      "bệnh",
+      "chết",
+      "rượu",
+      "bia",
+      "thuốclá",
+      "súng",
+      "máu",
+      "tù",
+      "giết",
+      "tìnhdục",
     ]);
   });
 });

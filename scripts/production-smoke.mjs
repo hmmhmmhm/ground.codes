@@ -115,6 +115,17 @@ await smoke.check("Thai Bangkok encode", async () => {
   );
 });
 
+await smoke.check("Vietnamese Hanoi encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 21.0278,
+    lng: 105.8342,
+    language: "vietnamese",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Hà Nội-/.test(code), `expected Vietnamese Hanoi code, got ${code}`);
+});
+
 await smoke.check("ASCII earth region data", async () => {
   const code = await postJson("/v1/encode", {
     lat: -82,

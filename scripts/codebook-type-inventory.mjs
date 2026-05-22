@@ -11,6 +11,7 @@ const CODEBOOK_FILES = {
   portuguese: "../packages/codebook/codebook-dist/portuguese.json",
   indonesian: "../packages/codebook/codebook-dist/indonesian.json",
   thai: "../packages/codebook/codebook-dist/thai.json",
+  vietnamese: "../packages/codebook/codebook-dist/vietnamese.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -674,6 +675,42 @@ const COMPOUND_SUFFIXES = {
     "พลอย",
     "หวาย",
   ],
+  vietnamese: [
+    "ao",
+    "bát",
+    "bếp",
+    "bình",
+    "bông",
+    "cầu",
+    "chợ",
+    "chén",
+    "cốc",
+    "cửa",
+    "đèn",
+    "đĩa",
+    "đồi",
+    "đũa",
+    "gạch",
+    "giỏ",
+    "hồ",
+    "hộp",
+    "khăn",
+    "lá",
+    "làng",
+    "lụa",
+    "mây",
+    "ngói",
+    "nhà",
+    "phố",
+    "quạt",
+    "rổ",
+    "sen",
+    "suối",
+    "tủ",
+    "vườn",
+    "vịnh",
+    "võng",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -687,6 +724,7 @@ const LANGUAGE_LABELS = {
   portuguese: "Portuguese",
   indonesian: "Indonesian",
   thai: "Thai",
+  vietnamese: "Vietnamese",
 };
 
 const TYPE_LABELS = {
@@ -711,7 +749,8 @@ const isShortStandalone = (language, word) => {
     language === "french" ||
     language === "german" ||
     language === "portuguese" ||
-    language === "indonesian"
+    language === "indonesian" ||
+    language === "vietnamese"
   ) {
     return length <= 4;
   }
@@ -737,7 +776,8 @@ const minPrefixLength = (language) => {
     language === "french" ||
     language === "german" ||
     language === "portuguese" ||
-    language === "indonesian"
+    language === "indonesian" ||
+    language === "vietnamese"
   ) {
     return 4;
   }
@@ -756,7 +796,8 @@ const normalizeForSuffix = (language, word) => {
     language === "french" ||
     language === "german" ||
     language === "portuguese" ||
-    language === "indonesian"
+    language === "indonesian" ||
+    language === "vietnamese"
   ) {
     return word.toLowerCase();
   }

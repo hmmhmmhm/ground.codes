@@ -9,6 +9,7 @@ import dePlaceTypes from "@/messages/de/placeTypes.json";
 import ptPlaceTypes from "@/messages/pt/placeTypes.json";
 import idPlaceTypes from "@/messages/id/placeTypes.json";
 import thPlaceTypes from "@/messages/th/placeTypes.json";
+import viPlaceTypes from "@/messages/vi/placeTypes.json";
 
 export interface PlaceDetailsProps {
   map: google.maps.Map | null;
@@ -31,4 +32,5 @@ export const placeTypes: Record<Locale, PlaceTypesRecord> = {
   pt: ptPlaceTypes as PlaceTypesRecord,
   id: idPlaceTypes as PlaceTypesRecord,
   th: thPlaceTypes as PlaceTypesRecord,
+  vi: viPlaceTypes as PlaceTypesRecord,
 };

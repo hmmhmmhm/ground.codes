@@ -33,6 +33,7 @@ Current distributed word counts:
 | Portuguese |  5000 | `codebook-dist/portuguese.json` |
 | Indonesian |  5000 | `codebook-dist/indonesian.json` |
 | Thai       |  5000 | `codebook-dist/thai.json`       |
+| Vietnamese |  5000 | `codebook-dist/vietnamese.json` |
 
 ## Current Word Type Inventory
 
@@ -85,6 +86,9 @@ Current inventory:
 | Thai       | Recognized compound              |   929 | 18.6% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                         |
 | Thai       | Short standalone                 |    90 |  1.8% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                      |
 | Thai       | Other standalone or unclassified |  3981 | 79.6% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                              |
+| Vietnamese | Recognized compound              |   798 | 16.0% | `nướccao`, `lửacao`, `nhàcao`, `vườncao`, `gạocao`                   |
+| Vietnamese | Short standalone                 |   175 |  3.5% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
+| Vietnamese | Other standalone or unclassified |  4027 | 80.5% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
 
 Review implications:
 
@@ -125,6 +129,11 @@ Review implications:
   generated adjective pairings such as `ไฟดี`, `นกยาว`, `น้ำสูง`,
   `ปลาแบน`, and `ข้าวหนัก`. Continue growing reviewed standalone Thai nouns
   before increasing template composition.
+- Vietnamese keeps native Vietnamese diacritics in public code words instead of
+  ASCII-folding. The first full set favors short everyday nouns and transparent
+  fused tokens such as `áodài`, `càphê`, `hoasen`, and `chuônggió`, while
+  blocking sensitive terms around gambling, drugs, politics, religion, weapons,
+  illness, death, alcohol, tobacco, debt, sex, and violence.
 
 ## Product Principles
 
@@ -489,6 +498,31 @@ a test blocklist.
   while preserving proper names where possible, for example `Mare
   Tranquillitatis` -> `ทะเลแห่งความสงบ`, `Olympus Mons` -> `ภูเขาโอลิมปัส`,
   and crater fallbacks as `หลุมอุกกาบาต...`.
+
+### Vietnamese
+
+- Prefer common Vietnamese nouns written with Vietnamese diacritics. Do not
+  ASCII-fold code words; Vietnamese URLs are expected to remain human-readable
+  before browser percent-encoding.
+- Codebook tokens must not contain spaces or URL separators. Natural multi-word
+  terms may be fused only when the result is still obvious to a general reader,
+  such as `áodài`, `càphê`, `nónlá`, `hoasen`, and `chuônggió`.
+- Keep Vietnamese entries at fourteen Unicode code points or fewer. Short
+  standalone words such as `nước`, `lửa`, `nhà`, `vườn`, `gạo`, `chợ`, `sông`,
+  `biển`, `núi`, `hoa`, and `tre` are preferred.
+- Use familiar concrete vocabulary from nature, food, household objects,
+  materials, transport, and public-place nouns. Avoid obscure Sino-Vietnamese
+  abstractions, specialist technical vocabulary, proper names, and bureaucratic
+  terms unless the term is a stable region label.
+- Reject sensitive or low-trust terms around gambling, drugs, weapons,
+  politics, religion, debt, illness, death, alcohol, tobacco, blood, prison,
+  killing, and sex. Current reviewed rejects include `cờbạc`, `matúy`,
+  `vũkhí`, `chínhtrị`, `tôngiáo`, `nợ`, `bệnh`, `chết`, `rượu`, `bia`,
+  `thuốclá`, `súng`, `máu`, `tù`, `giết`, `tìnhdục`, and `dao`.
+- Region labels should localize stable terrain descriptors while preserving
+  widely used proper names where natural: `Mare Tranquillitatis` -> `Biển Tĩnh
+  Lặng`, `Olympus Mons` -> `Núi Olympus`, and crater fallbacks as
+  `Hố va chạm ...`.
 
 ## Automated Checks
 

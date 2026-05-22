@@ -159,7 +159,9 @@ export const I18nProvider: React.FC<{
                   ? "Mengubah bahasa akan memuat ulang halaman dan mereset tampilan saat ini. Lanjutkan?"
                   : locale === "th"
                     ? "การเปลี่ยนภาษาจะโหลดหน้าใหม่และรีเซ็ตมุมมองปัจจุบัน ต้องการดำเนินการต่อหรือไม่?"
-                    : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
+                    : locale === "vi"
+                      ? "Thay đổi ngôn ngữ sẽ tải lại trang và đặt lại chế độ xem hiện tại. Bạn có muốn tiếp tục không?"
+                      : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
 
     const userConfirmed = window.confirm(confirmMessage);
 

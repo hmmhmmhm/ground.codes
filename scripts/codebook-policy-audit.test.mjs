@@ -47,6 +47,27 @@ const makeThaiFixtures = (count) => {
   throw new Error(`Unable to generate ${count} Thai fixtures`);
 };
 
+const makeVietnameseFixtures = (count) => {
+  const lead = ["lúa", "sen", "tre", "mây", "gạo", "hoa", "dừa", "núi", "sông", "biển"];
+  const tail = ["mát", "xanh", "vàng", "nhỏ", "sáng", "bền", "êm", "tươi", "thơm", "lành"];
+  const words = [];
+
+  for (const a of lead) {
+    for (const b of tail) {
+      for (const c of lead) {
+        for (const d of tail) {
+          words.push(`${a}${b}${c}${d}`);
+          if (words.length === count) {
+            return words;
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error(`Unable to generate ${count} Vietnamese fixtures`);
+};
+
 describe("codebook policy audit", () => {
   test("keeps distributed codebooks at the guide-approved counts", () => {
     const { summary } = auditCodebooks();
@@ -680,5 +701,28 @@ describe("codebook policy audit", () => {
         word,
       );
     }
+  });
+
+  test("flags Vietnamese script, URL-safety, length, and blocklist issues", () => {
+    const { violations } = auditCodebooks({
+      vietnamese: [
+        "cờbạc",
+        "rượu",
+        "Ground1",
+        "nước-mát",
+        "chuônggióhoasen",
+        ...makeVietnameseFixtures(EXPECTED_COUNTS.vietnamese - 5),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    assert.equal(actual.has("cờbạc:reviewed-blocklist"), true);
+    assert.equal(actual.has("rượu:reviewed-blocklist"), true);
+    assert.equal(actual.has("Ground1:vietnamese-script"), true);
+    assert.equal(actual.has("nước-mát:vietnamese-url-safety"), true);
+    assert.equal(actual.has("chuônggióhoasen:vietnamese-too-long"), true);
   });
 });
