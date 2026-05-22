@@ -31,6 +31,7 @@ const titleWord = (value) => {
 
 const reviewedStandaloneFiles = [
   "packages/codebook/codebook-dataset/indonesian/standalone-review-2026-05-22.md",
+  "packages/codebook/codebook-dataset/indonesian/standalone-review-2026-05-22-v2.md",
 ];
 
 const readReviewedStandaloneWords = () => {

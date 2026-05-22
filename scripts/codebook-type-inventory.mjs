@@ -18,6 +18,7 @@ const SPANISH_REVIEW_FILES = [
 
 const INDONESIAN_REVIEW_FILES = [
   "../packages/codebook/codebook-dataset/indonesian/standalone-review-2026-05-22.md",
+  "../packages/codebook/codebook-dataset/indonesian/standalone-review-2026-05-22-v2.md",
 ];
 
 const readReviewedSpanishStandaloneWords = () => {

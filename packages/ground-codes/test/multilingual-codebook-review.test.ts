@@ -1903,6 +1903,14 @@ describe("reviewed multilingual codebooks", () => {
       "Pensil",
       "Tenda",
       "Warung",
+      "Akuarium",
+      "Amplop",
+      "Boneka",
+      "Daster",
+      "Gedung",
+      "Gendang",
+      "Ponsel",
+      "Radio",
     ]);
     assertBlockedWordsAbsent(indonesianWords, [
       "Halia",
