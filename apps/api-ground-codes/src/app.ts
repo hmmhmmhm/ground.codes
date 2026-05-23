@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
 import { healthz, readyz } from "./endpoints/healthz.js";
 import {
+  openApiReferenceEndpoint,
   swaggerEndpoint,
   swaggerRedirectEndpoint,
 } from "./endpoints/swagger.js";
@@ -40,6 +41,7 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
     .use(createRateLimitEndpoint(rateLimit))
     .use(metricsEndpoint)
     .use(swaggerRedirectEndpoint)
+    .use(openApiReferenceEndpoint)
     .use(docsEndpoint)
     .use(swaggerEndpoint)
     .use(healthz)

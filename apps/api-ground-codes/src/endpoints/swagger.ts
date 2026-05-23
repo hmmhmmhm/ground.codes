@@ -47,7 +47,7 @@ const scalarReferenceConfig = {
 };
 
 export const swaggerEndpoint = swagger({
-  path: "/openapi",
+  path: "/openapi-json",
   exclude: publicDocPathsToHide,
   scalarConfig: scalarReferenceConfig,
   documentation: {
@@ -77,10 +77,59 @@ export const swaggerEndpoint = swagger({
   },
 });
 
+const openApiReferenceHtml = `<!doctype html>
+<html>
+  <head>
+    <title>Ground Codes API Documentation</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body { margin: 0; }
+      ${scalarReferenceConfig.customCss}
+    </style>
+  </head>
+  <body>
+    <script
+      id="api-reference"
+      data-url="/openapi-json/json"
+      data-configuration='${JSON.stringify({
+        spec: { url: "/openapi-json/json" },
+        ...scalarReferenceConfig,
+        _integration: "ground-codes",
+      })}'
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@latest/dist/browser/standalone.min.js" crossorigin></script>
+  </body>
+</html>`;
+
+export const openApiReferenceEndpoint = new Elysia()
+  .get(
+    "/openapi/",
+    ({ set }) => {
+      set.headers["cache-control"] = "public, max-age=300";
+      set.headers["content-type"] = "text/html; charset=utf-8";
+      return openApiReferenceHtml;
+    },
+    {
+      detail: {
+        hide: true,
+      },
+    },
+  )
+  .get(
+    "/openapi/json",
+    () => redirect("/openapi-json/json"),
+    {
+      detail: {
+        hide: true,
+      },
+    },
+  );
+
 export const swaggerRedirectEndpoint = new Elysia()
   .get(
     "/json",
-    () => redirect("/openapi/json"),
+    () => redirect("/openapi-json/json"),
     {
       detail: {
         hide: true,
@@ -116,7 +165,7 @@ export const swaggerRedirectEndpoint = new Elysia()
   )
   .get(
     "/swagger/json",
-    () => redirect("/openapi/json"),
+    () => redirect("/openapi-json/json"),
     {
       detail: {
         hide: true,

@@ -81,7 +81,12 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("Share URL Rules");
     expect(firstPartyDocs).toContain("Status Code Reference");
 
-    const schemaResponse = await get("/openapi/json");
+    const referenceResponse = await get("/openapi/");
+    expect(referenceResponse.status).toBe(200);
+    const referenceDocs = await referenceResponse.text();
+    expect(referenceDocs).toContain('data-url="/openapi-json/json"');
+
+    const schemaResponse = await get("/openapi-json/json");
     expect(schemaResponse.status).toBe(200);
     const schema = await schemaResponse.json();
     expect(schema.paths["/v1/encode"]).toBeDefined();
@@ -109,11 +114,17 @@ describe("Ground Codes API contract", () => {
 
     const schemaResponse = await get("/swagger/json");
     expect(schemaResponse.status).toBe(302);
-    expect(schemaResponse.headers.get("location")).toBe("/openapi/json");
+    expect(schemaResponse.headers.get("location")).toBe("/openapi-json/json");
 
     const jsonResponse = await get("/json");
     expect(jsonResponse.status).toBe(302);
-    expect(jsonResponse.headers.get("location")).toBe("/openapi/json");
+    expect(jsonResponse.headers.get("location")).toBe("/openapi-json/json");
+
+    const openApiJsonResponse = await get("/openapi/json");
+    expect(openApiJsonResponse.status).toBe(302);
+    expect(openApiJsonResponse.headers.get("location")).toBe(
+      "/openapi-json/json",
+    );
   });
 
   test("returns a structured not found error for unsupported routes", async () => {
