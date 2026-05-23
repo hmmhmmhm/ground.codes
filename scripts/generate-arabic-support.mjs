@@ -746,12 +746,13 @@ const buildEmbeddedRegionDb = async (regionName) => {
   rmSync(indexPath, { force: true });
   mkdirSync(regionLevelDbPath, { recursive: true });
 
-  const db = new Level(regionLevelDbPath, { valueEncoding: "json" });
+  const db = new Level(regionLevelDbPath);
   const index = new KDBush(regions.length);
 
-  for (const region of regions) {
+  for (const [indexKey, region] of regions.entries()) {
     index.add(region.long, region.lat);
-    await db.put(region.code, region);
+    await db.put(`I-${indexKey}`, JSON.stringify(region));
+    await db.put(`N-${region.name}`, `I-${indexKey}`);
   }
 
   index.finish();
