@@ -55,7 +55,7 @@ describe("Ground Codes API contract", () => {
     expect(rootDocs).toContain("Ground Codes API");
     expect(rootDocs).toContain("Copy-ready Examples");
     expect(rootDocs).toContain("https://api.ground.codes/v1/encode");
-    expect(rootDocs).toContain('href="/reference"');
+    expect(rootDocs).toContain('href="/reference/"');
     expect(rootDocs).toContain('href="/reference/json"');
 
     const firstPartyDocsResponse = await get("/docs");
@@ -99,7 +99,13 @@ describe("Ground Codes API contract", () => {
   test("redirects legacy swagger documentation URLs to the public docs", async () => {
     const docsResponse = await get("/swagger");
     expect(docsResponse.status).toBe(302);
-    expect(docsResponse.headers.get("location")).toBe("/reference");
+    expect(docsResponse.headers.get("location")).toBe("/reference/");
+
+    const referenceResponse = await createApp().handle(
+      new Request("http://localhost/reference"),
+    );
+    expect(referenceResponse.status).toBe(302);
+    expect(referenceResponse.headers.get("location")).toBe("/reference/");
 
     const schemaResponse = await get("/swagger/json");
     expect(schemaResponse.status).toBe(302);

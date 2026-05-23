@@ -87,8 +87,17 @@ export const swaggerRedirectEndpoint = new Elysia()
     },
   )
   .get(
+    "/reference",
+    () => redirect("/reference/"),
+    {
+      detail: {
+        hide: true,
+      },
+    },
+  )
+  .get(
     "/swagger",
-    () => redirect("/reference"),
+    () => redirect("/reference/"),
     {
       detail: {
         hide: true,
@@ -97,7 +106,7 @@ export const swaggerRedirectEndpoint = new Elysia()
   )
   .get(
     "/swagger/",
-    () => redirect("/reference"),
+    () => redirect("/reference/"),
     {
       detail: {
         hide: true,
