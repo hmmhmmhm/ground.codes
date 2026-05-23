@@ -17,7 +17,7 @@ operational status board for follow-up passes.
 | indonesian | 5000 | stable | Prefer common Indonesian forms over Malay-leaning or weak fused compounds. |
 | thai | 5000 | stable | Grow reviewed Thai-script standalone nouns before adding templates. |
 | vietnamese | 5000 | stable | Keep native diacritics and avoid broad color, mood, and place templates. |
-| hindi | 5000 | active cleanup | Remove broad descriptor compounds, obscure standalone entries, and mixed-script region labels. |
+| hindi | 5000 | active cleanup | Remove broad descriptor compounds, obscure standalone entries, mixed-script region labels, and URL separator leftovers. |
 
 Review checklist:
 

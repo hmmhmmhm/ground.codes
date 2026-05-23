@@ -93,9 +93,9 @@ Current inventory:
 | Vietnamese | Recognized compound              |   190 |  3.8% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `đồnghồ`               |
 | Vietnamese | Short standalone                 |   265 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
 | Vietnamese | Other standalone or unclassified |  4545 | 90.9% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
-| Hindi      | Recognized compound              |  2164 | 43.3% | `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`, `लकड़ीकुर्सी`      |
-| Hindi      | Short standalone                 |   176 |  3.5% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
-| Hindi      | Other standalone or unclassified |  2660 | 53.2% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
+| Hindi      | Recognized compound              |  2159 | 43.2% | `रोशनदान`, `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`          |
+| Hindi      | Short standalone                 |   183 |  3.7% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
+| Hindi      | Other standalone or unclassified |  2658 | 53.2% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
 
 Review implications:
 
@@ -146,9 +146,10 @@ Review implications:
   avoids broad place mood/color templates such as `vườnnắng`, `ruộnggió`,
   `đồngmát`, and `bãivàng` in favor of concrete place terms.
 - Hindi uses native Devanagari in public code words instead of ASCII
-  transliteration. The v3 cleanup removes reviewed descriptor compounds such as
-  `सुनहराकुर्सी`, mixed noun/color templates such as `नदीलाल`, weak nature/place
-  pairings such as `नदीघर`, and obscure standalone entries such as `अपरस` and
+  transliteration. The v4 cleanup removes reviewed descriptor compounds such as
+  `सुनहराकुर्सी`, mixed noun/color templates such as `नदीलाल` and
+  `नदीसुनहरा`, weak nature/place pairings such as `नदीघर`, unsafe region
+  separators in Hindi labels, and obscure standalone entries such as `अपरस` and
   `सुपली`. Keep replacing remaining broad templates with reviewed standalone
   Hindi nouns as coverage grows.
 

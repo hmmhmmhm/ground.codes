@@ -159,13 +159,25 @@ const docsHtml = `<!doctype html>
   </body>
 </html>`;
 
-export const docsEndpoint = new Elysia().get(
-  "/docs",
-  ({ set }) => {
+const serveDocs = ({ set }: { set: { headers: Record<string, string> } }) => {
     set.headers["cache-control"] = "public, max-age=300";
     set.headers["content-type"] = "text/html; charset=utf-8";
     return docsHtml;
-  },
+};
+
+export const docsEndpoint = new Elysia()
+  .get(
+    "/",
+    serveDocs,
+    {
+      detail: {
+        hide: true,
+      },
+    },
+  )
+  .get(
+    "/docs",
+    serveDocs,
   {
     detail: {
       hide: true,

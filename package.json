@@ -8,7 +8,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "production:smoke": "node scripts/production-smoke.mjs",
-    "data:audit-labels": "pnpm --filter ground-codes test:data-audit",
+    "data:audit-labels": "pnpm --filter ground-codes test:data-audit && node --test scripts/region-label-quality.test.mjs",
     "data:report-labels": "node scripts/url-label-report.mjs",
     "runtime:check-pins": "node scripts/check-api-runtime-pins.mjs",
     "runtime:update-pins": "node scripts/update-api-runtime-pins.mjs",

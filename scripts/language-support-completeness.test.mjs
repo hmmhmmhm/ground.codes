@@ -84,4 +84,10 @@ describe("language support completeness", () => {
       assert.match(doc, new RegExp(`\\| ${language} \\|`));
     }
   });
+
+  test("keeps region label quality audits in the scripted QA set", () => {
+    const qaScript = readText("package.json");
+
+    assert.match(qaScript, /region-label-quality\.test\.mjs/);
+  });
 });

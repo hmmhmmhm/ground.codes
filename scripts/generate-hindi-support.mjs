@@ -34,6 +34,7 @@ const blockedTokens = new Set([
   "नदीघर",
   "नदीबाजार",
   "नदीलाल",
+  "नदीसुनहरा",
   "नीलाकिताब",
   "पटल",
   "पपीहा",
@@ -54,7 +55,9 @@ const blockedTokens = new Set([
   "रूपहलासत्तू",
   "रूपहलासूप",
   "रूपहलाहांडी",
+  "रास्तागुलाबी",
   "सरौता",
+  "समुद्ररूपहला",
   "सुनहराकुर्सी",
   "सुनहरादान",
   "सुनहरामेज",
@@ -65,12 +68,19 @@ const blockedTokens = new Set([
   "हत्या",
   "हथियार",
   "झीलनीला",
+  "तालाबसुनहरा",
   "लालघर",
   "छोटामिट्टी",
+  "चाँदपीला",
+  "हवाकाला",
   "कागजकंबल",
+  "कागजरजाई",
   "कपासदीया",
   "चांदीकुर्सी",
   "गांवमेड़",
+  "पीतलकंबल",
+  "सूरजहरा",
+  "ईंटसाड़ी",
 ]);
 
 const standaloneWords = [
@@ -433,6 +443,29 @@ const v3StandaloneWords = [
   "कड़ाही",
   "भगौना",
   "चिमटा",
+];
+
+const v4StandaloneWords = [
+  "आरी",
+  "कैंची",
+  "कुदाल",
+  "खुरपी",
+  "फीता",
+  "ताला",
+  "ताली",
+  "बटन",
+  "कापी",
+  "लोटकी",
+  "सुराही",
+  "कुल्हड़",
+  "टोकना",
+  "चौका",
+  "चूल्हा",
+  "रोशनदान",
+  "दवात",
+  "स्याही",
+  "तख्ती",
+  "फूलझड़ी",
 ];
 
 const pairedCompounds = [
@@ -1203,6 +1236,7 @@ const buildHindiCodebook = () => {
   for (const word of standaloneWords) addToken(tokens, word);
   for (const word of v2StandaloneWords) addToken(tokens, word);
   for (const word of v3StandaloneWords) addToken(tokens, word);
+  for (const word of v4StandaloneWords) addToken(tokens, word);
   for (const [left, right] of pairedCompounds) addToken(tokens, `${left}${right}`);
 
   addPairs(natureRoots, placeSuffixes);
@@ -1252,7 +1286,10 @@ const hindiRegionOverrides = new Map([
 ]);
 
 const removeUnsafeRegionChars = (value) =>
-  String(value).replace(/[’'`´]/g, "").replace(/\s+/g, " ").trim();
+  String(value)
+    .replace(/[’'`´/#?\-]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 
 const translateEarthRegionName = (row) =>
   hindiRegionOverrides.get(String(row.code)) ?? removeUnsafeRegionChars(row.name);

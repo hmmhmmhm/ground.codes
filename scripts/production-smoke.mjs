@@ -52,6 +52,23 @@ await smoke.check("API readiness", async () => {
     ready.status === "ready",
     `unexpected readiness: ${JSON.stringify(ready)}`,
   );
+  assert(
+    typeof ready.runtimeTag === "string" &&
+      ready.runtimeTag.startsWith("railway-api-runtime-"),
+    `missing runtime tag: ${JSON.stringify(ready)}`,
+  );
+  assert(
+    /^[0-9a-f]{40}$/.test(ready.runtimeCommit),
+    `missing runtime commit: ${JSON.stringify(ready)}`,
+  );
+});
+
+await smoke.check("API docs root", async () => {
+  const text = await fetchText(`${apiBaseUrl}/`);
+  assert(
+    text.includes("Ground Codes API") && text.includes("/v1/encode"),
+    `unexpected API docs root: ${text.slice(0, 120)}`,
+  );
 });
 
 await smoke.check("Earth Seoul encode", async () => {
