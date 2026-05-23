@@ -5,7 +5,6 @@ import {
   swaggerRedirectEndpoint,
 } from "./endpoints/swagger.js";
 import { createCorsEndpoint } from "./endpoints/cors.js";
-import { staticPlugin } from "@elysiajs/static";
 import { codeEndpoint, rootRedirectEndpoint } from "./endpoints/code.js";
 import { docsEndpoint } from "./endpoints/docs.js";
 import { legacyEndpoints, v1Endpoints } from "./endpoints/v1/v1-endpoints.js";
@@ -43,11 +42,6 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
     .use(swaggerRedirectEndpoint)
     .use(docsEndpoint)
     .use(swaggerEndpoint)
-    .use(
-      staticPlugin({
-        prefix: "/",
-      })
-    )
     .use(healthz)
     .use(readyz)
     .use(v1Endpoints)
