@@ -57,4 +57,15 @@ describe("codebook type inventory", () => {
     assert.ok(hindi.counts.recognizedCompound > 0);
     assert.ok(hindi.counts.otherStandalone > 0);
   });
+
+  test("classifies Arabic standalone and Arabic-script compound entries", () => {
+    const arabic = buildTypeInventory().find(
+      (row) => row.language === "arabic",
+    );
+
+    assert.ok(arabic);
+    assert.ok(arabic.counts.shortStandalone > 0);
+    assert.ok(arabic.counts.recognizedCompound > 0);
+    assert.ok(arabic.counts.otherStandalone > 0);
+  });
 });

@@ -78,6 +78,7 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("<code>thai</code>");
     expect(firstPartyDocs).toContain("<code>vietnamese</code>");
     expect(firstPartyDocs).toContain("<code>hindi</code>");
+    expect(firstPartyDocs).toContain("<code>arabic</code>");
     expect(firstPartyDocs).toContain("Share URL Rules");
     expect(firstPartyDocs).toContain("Status Code Reference");
 
@@ -514,6 +515,46 @@ describe("Ground Codes API contract", () => {
     });
   }, 90_000);
 
+  test("encodes and searches Arabic ground codes and region labels", async () => {
+    const encodedResponse = await postJson("/v1/encode", {
+      lat: 30.0444,
+      lng: 31.2357,
+      language: "arabic",
+      regionLevel: 2,
+    });
+    expect(encodedResponse.status).toBe(200);
+    const code = await encodedResponse.text();
+    expect(code).toMatch(/^القاهرة-[\p{Script=Arabic}\p{Mark}]+/u);
+
+    const codeSearchResponse = await postJson("/v1/search", {
+      query: code,
+      language: "english",
+      regionLevel: 2,
+    });
+    expect(codeSearchResponse.status).toBe(200);
+    const codeSearch = await codeSearchResponse.json();
+    expect(codeSearch.results[0]).toMatchObject({
+      type: "ground-code",
+      label: code,
+      body: "earth",
+      regionLevel: 2,
+    });
+
+    const regionSearchResponse = await postJson("/v1/search", {
+      query: "القاهرة",
+      language: "arabic",
+      regionLevel: 2,
+    });
+    expect(regionSearchResponse.status).toBe(200);
+    const regionSearch = await regionSearchResponse.json();
+    expect(regionSearch.results[0]).toMatchObject({
+      type: "region",
+      label: "القاهرة",
+      body: "earth",
+      regionLevel: 2,
+    });
+  }, 90_000);
+
   test("search returns multiple partial region matches with cache headers", async () => {
     const response = await postJson("/v1/search", {
       query: "Seo",
@@ -843,6 +884,33 @@ describe("Ground Codes API contract", () => {
     expect(infoResponse.status).toBe(200);
     expect(await infoResponse.json()).toMatchObject({
       name: "दिल्ली",
+    });
+  });
+
+  test("loads Arabic region lookup data on demand for region endpoints", async () => {
+    const aroundResponse = await postJson("/v1/region/around", {
+      lat: 30.0444,
+      lng: 31.2357,
+      language: "arabic",
+      regionLevel: 2,
+      maxResults: 1,
+    });
+
+    expect(aroundResponse.status).toBe(200);
+    const around = await aroundResponse.json();
+    expect(around[0]).toMatchObject({
+      name: "القاهرة",
+    });
+
+    const infoResponse = await postJson("/v1/region/info", {
+      name: "القاهرة",
+      language: "arabic",
+      regionLevel: 2,
+      body: "earth",
+    });
+    expect(infoResponse.status).toBe(200);
+    expect(await infoResponse.json()).toMatchObject({
+      name: "القاهرة",
     });
   });
 

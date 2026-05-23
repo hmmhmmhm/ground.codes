@@ -14,6 +14,7 @@ const reviewedLabels = [
   ["packages/geoint/region-dist/region-3-thai.json", "OCN0", "ทะเลรอสส์ 1"],
   ["packages/geoint/region-dist/region-3-german.json", "OCN0", "Rossmeer 1"],
   ["packages/geoint/region-dist/region-3-portuguese.json", "OCN0", "Mar de Ross 1"],
+  ["packages/geoint/region-dist/region-3-arabic.json", "OCN0", "روس بحر 1"],
 ];
 
 describe("region label quality audit", () => {
@@ -31,6 +32,8 @@ describe("region label quality audit", () => {
       "packages/geoint/region-dist/region-3-hindi.json",
       "packages/geoint/region-dist/region-2-thai.json",
       "packages/geoint/region-dist/region-3-thai.json",
+      "packages/geoint/region-dist/region-2-arabic.json",
+      "packages/geoint/region-dist/region-3-arabic.json",
       "packages/geoint/region-dist/region-3-japanese.json",
       "packages/geoint/region-dist/region-3-chinese.json",
     ]) {

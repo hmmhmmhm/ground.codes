@@ -15,6 +15,7 @@ export const EXPECTED_COUNTS = {
   thai: 5000,
   vietnamese: 5000,
   hindi: 5000,
+  arabic: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -30,6 +31,7 @@ const CODEBOOK_FILES = {
   thai: "../packages/codebook/codebook-dist/thai.json",
   vietnamese: "../packages/codebook/codebook-dist/vietnamese.json",
   hindi: "../packages/codebook/codebook-dist/hindi.json",
+  arabic: "../packages/codebook/codebook-dist/arabic.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -1335,6 +1337,20 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
     "प्रार्थना",
     "अस्पताल",
   ],
+  arabic: [
+    "دين",
+    "حرب",
+    "قتل",
+    "دم",
+    "سلاح",
+    "مرض",
+    "خمر",
+    "سجن",
+    "سياسة",
+    "جنس",
+    "قنبلة",
+    "رصاص",
+  ],
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -1895,6 +1911,44 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               rule: "hindi-too-long",
               detail:
                 "Hindi entries should stay short for readable share URLs",
+            }),
+          );
+        }
+      }
+
+      if (language === "arabic") {
+        if (!/^[\p{Script=Arabic}\p{Mark}]+$/u.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "arabic-script",
+              detail: "Arabic entries should use Arabic letters only",
+            }),
+          );
+        }
+        if (/[\s\-/#?]/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "arabic-url-safety",
+              detail:
+                "Arabic entries should not contain spaces or URL separators",
+            }),
+          );
+        }
+        if ([...word].length > 14) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "arabic-too-long",
+              detail:
+                "Arabic entries should stay short for readable share URLs",
             }),
           );
         }

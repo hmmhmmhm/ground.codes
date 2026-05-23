@@ -67,6 +67,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-hindi.json",
   ],
   [
+    "earth region-2 arabic",
+    "arabic",
+    "../packages/geoint/region-dist/region-2-arabic.json",
+  ],
+  [
     "earth region-3 english",
     "english",
     "../packages/geoint/region-dist/region-3.json",
@@ -125,6 +130,11 @@ const DATASETS = [
     "earth region-3 hindi",
     "hindi",
     "../packages/geoint/region-dist/region-3-hindi.json",
+  ],
+  [
+    "earth region-3 arabic",
+    "arabic",
+    "../packages/geoint/region-dist/region-3-arabic.json",
   ],
   [
     "moon region-2 english",
@@ -187,6 +197,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-moon-hindi.json",
   ],
   [
+    "moon region-2 arabic",
+    "arabic",
+    "../packages/geoint/region-dist/region-2-moon-arabic.json",
+  ],
+  [
     "mars region-2 english",
     "english",
     "../packages/geoint/region-dist/region-2-mars.json",
@@ -247,6 +262,11 @@ const DATASETS = [
     "../packages/geoint/region-dist/region-2-mars-hindi.json",
   ],
   [
+    "mars region-2 arabic",
+    "arabic",
+    "../packages/geoint/region-dist/region-2-mars-arabic.json",
+  ],
+  [
     "mars region-3 english",
     "english",
     "../packages/geoint/region-dist/region-3-mars.json",
@@ -305,6 +325,11 @@ const DATASETS = [
     "mars region-3 hindi",
     "hindi",
     "../packages/geoint/region-dist/region-3-mars-hindi.json",
+  ],
+  [
+    "mars region-3 arabic",
+    "arabic",
+    "../packages/geoint/region-dist/region-3-mars-arabic.json",
   ],
 ];
 

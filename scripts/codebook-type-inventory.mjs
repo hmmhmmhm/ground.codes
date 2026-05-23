@@ -13,6 +13,7 @@ const CODEBOOK_FILES = {
   thai: "../packages/codebook/codebook-dist/thai.json",
   vietnamese: "../packages/codebook/codebook-dist/vietnamese.json",
   hindi: "../packages/codebook/codebook-dist/hindi.json",
+  arabic: "../packages/codebook/codebook-dist/arabic.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -781,6 +782,39 @@ const COMPOUND_SUFFIXES = {
     "सुनहरा",
     "रूपहला",
   ],
+  arabic: [
+    "بيت",
+    "سوق",
+    "طريق",
+    "جسر",
+    "حديقة",
+    "حقل",
+    "شاطئ",
+    "مرفأ",
+    "منارة",
+    "بوابة",
+    "ممر",
+    "ساحة",
+    "حي",
+    "مدينة",
+    "قرية",
+    "دكان",
+    "مقهى",
+    "مخبز",
+    "متحف",
+    "مكتبة",
+    "أبيض",
+    "أزرق",
+    "أخضر",
+    "أحمر",
+    "أصفر",
+    "فضي",
+    "ذهبي",
+    "وردي",
+    "صافي",
+    "لامع",
+    "جميل",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -796,6 +830,7 @@ const LANGUAGE_LABELS = {
   thai: "Thai",
   vietnamese: "Vietnamese",
   hindi: "Hindi",
+  arabic: "Arabic",
 };
 
 const TYPE_LABELS = {
@@ -822,7 +857,8 @@ const isShortStandalone = (language, word) => {
     language === "portuguese" ||
     language === "indonesian" ||
     language === "vietnamese" ||
-    language === "hindi"
+    language === "hindi" ||
+    language === "arabic"
   ) {
     return length <= 4;
   }
@@ -850,7 +886,8 @@ const minPrefixLength = (language) => {
     language === "portuguese" ||
     language === "indonesian" ||
     language === "vietnamese" ||
-    language === "hindi"
+    language === "hindi" ||
+    language === "arabic"
   ) {
     return 4;
   }

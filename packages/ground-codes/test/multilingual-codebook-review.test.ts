@@ -13,6 +13,7 @@ import indonesianWords from "@repo/codebook/codebook-dist/indonesian.json";
 import thaiWords from "@repo/codebook/codebook-dist/thai.json";
 import vietnameseWords from "@repo/codebook/codebook-dist/vietnamese.json";
 import hindiWords from "@repo/codebook/codebook-dist/hindi.json";
+import arabicWords from "@repo/codebook/codebook-dist/arabic.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -2274,6 +2275,51 @@ describe("reviewed multilingual codebooks", () => {
       "कागजरजाई",
       "पीतलकंबल",
       "ईंटसाड़ी",
+    ]);
+  });
+
+  test("keeps Arabic codebook URL-safe and neutral", () => {
+    assert.equal(arabicWords.length, 5000);
+    assert.equal(new Set(arabicWords).size, arabicWords.length);
+    assert.deepEqual(
+      arabicWords.filter(
+        (word) => !/^[\p{Script=Arabic}\p{Mark}]+$/u.test(word),
+      ),
+      [],
+    );
+    assert.deepEqual(
+      arabicWords.filter((word) => /[\s\-/#?]/.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      arabicWords.filter((word) => [...word].length > 14),
+      [],
+    );
+    assertWordsPresent(arabicWords, [
+      "ماء",
+      "بيت",
+      "نهر",
+      "جبل",
+      "زهرة",
+      "كتاب",
+      "تمر",
+      "زيتون",
+      "نخيل",
+      "بحيرةبيت",
+    ]);
+    assertBlockedWordsAbsent(arabicWords, [
+      "دين",
+      "حرب",
+      "قتل",
+      "دم",
+      "سلاح",
+      "مرض",
+      "خمر",
+      "سجن",
+      "سياسة",
+      "جنس",
+      "قنبلة",
+      "رصاص",
     ]);
   });
 });

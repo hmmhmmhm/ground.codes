@@ -38,6 +38,7 @@ Current distributed word counts:
 | Thai       |  5000 | `codebook-dist/thai.json`       |
 | Vietnamese |  5000 | `codebook-dist/vietnamese.json` |
 | Hindi      |  5000 | `codebook-dist/hindi.json`      |
+| Arabic     |  5000 | `codebook-dist/arabic.json`     |
 
 ## Current Word Type Inventory
 
@@ -96,6 +97,9 @@ Current inventory:
 | Hindi      | Recognized compound              |  2159 | 43.2% | `रोशनदान`, `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`          |
 | Hindi      | Short standalone                 |   183 |  3.7% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
 | Hindi      | Other standalone or unclassified |  2658 | 53.2% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
+| Arabic     | Recognized compound              |   962 | 19.2% | `بحيرةبيت`, `بحيرةسوق`, `بحيرةطريق`, `بحيرةجسر`, `بحيرةحديقة`        |
+| Arabic     | Short standalone                 |   168 |  3.4% | `ماء`, `بيت`, `نهر`, `جبل`, `زهرة`                                   |
+| Arabic     | Other standalone or unclassified |  3870 | 77.4% | `مصباح`, `زيتون`, `حديقة`, `بحيرة`, `حافلة`                          |
 
 Review implications:
 
@@ -152,6 +156,12 @@ Review implications:
   separators in Hindi labels, and obscure standalone entries such as `अपरस` and
   `सुपली`. Keep replacing remaining broad templates with reviewed standalone
   Hindi nouns as coverage grows.
+- Arabic uses native Arabic script in public code words and localized region
+  labels. The initial set favors common concrete nouns, short fused compounds,
+  and Arabic-script transliterations for proper names while blocking sensitive
+  terms around religion, politics, violence, sex, weapons, alcohol, and illness.
+  Keep replacing mechanical broad compounds with reviewed standalone Arabic
+  nouns as coverage grows.
 
 ## Product Principles
 
@@ -588,6 +598,33 @@ a test blocklist.
   widely used proper names where natural: `Mare Tranquillitatis` -> `शांति
   सागर`, `Olympus Mons` -> `ओलिम्पस पर्वत`, and crater fallbacks as
   `गड्ढा ...`.
+
+### Arabic
+
+- Prefer common Arabic nouns written in Arabic script. Do not transliterate
+  Arabic code words to ASCII; Arabic URLs are expected to remain human-readable
+  before browser percent-encoding.
+- Codebook tokens must not contain spaces, tatweel, or URL separators. Natural
+  multi-word terms may be fused only when the result remains short and readable,
+  such as `بحيرةحديقة`, `وردبيت`, and `نورسوق`.
+- Keep Arabic entries at fourteen Unicode code points or fewer. Prefer short
+  standalone words such as `ماء`, `بيت`, `نهر`, `جبل`, `زهرة`, `شاي`, `كتاب`,
+  `تمر`, `زيتون`, and `نخيل`.
+- Use familiar concrete vocabulary from nature, food, household objects,
+  materials, transport, and public places. Avoid specialist religious,
+  political, legal, medical, military, or adult terms in the codebook.
+- Prefer exact reviewed compounds and narrow templates. Use nature/place,
+  plant/object, material/object, and food/object pairings only when the result
+  reads as an ordinary public label. Avoid broad repeated adjective templates
+  when the result feels mechanical.
+- Reject sensitive or low-trust terms around religion, politics, weapons,
+  violence, illness, alcohol, prison, and sex. Current reviewed rejects include
+  `دين`, `حرب`, `قتل`, `دم`, `سلاح`, `مرض`, `خمر`, `سجن`, `سياسة`, `جنس`,
+  `قنبلة`, and `رصاص`.
+- Region labels should localize stable terrain descriptors while preserving
+  widely used proper names where natural: `Mare Tranquillitatis` -> `بحر
+  السكون`, `Olympus Mons` -> `جبل أوليمبوس`, and crater fallbacks as
+  `فوهة ...`.
 
 ## Automated Checks
 

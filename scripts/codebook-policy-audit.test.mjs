@@ -133,6 +133,49 @@ const makeHindiFixtures = (count) => {
   throw new Error(`Unable to generate ${count} Hindi fixtures`);
 };
 
+const makeArabicFixtures = (count) => {
+  const lead = [
+    "ماء",
+    "بيت",
+    "نهر",
+    "جبل",
+    "ورد",
+    "شاي",
+    "كتاب",
+    "تمر",
+    "زيتون",
+    "نخيل",
+  ];
+  const middle = [
+    "حديقة",
+    "سوق",
+    "طريق",
+    "جسر",
+    "صندوق",
+    "كوب",
+    "طبق",
+    "سلة",
+    "قلم",
+    "مصباح",
+  ];
+  const words = [];
+
+  for (const a of lead) {
+    for (const b of middle) {
+      for (const c of lead) {
+        for (const d of middle) {
+          words.push(`${a}${b}${c}${d}`);
+          if (words.length === count) {
+            return words;
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error(`Unable to generate ${count} Arabic fixtures`);
+};
+
 describe("codebook policy audit", () => {
   test("keeps distributed codebooks at the guide-approved counts", () => {
     const { summary } = auditCodebooks();
@@ -894,6 +937,33 @@ describe("codebook policy audit", () => {
     assert.equal(actual.has("जल-घर:hindi-script"), true);
     assert.equal(actual.has("जल-घर:hindi-url-safety"), true);
     assert.equal(actual.has("कमलफूलकमलफूलघड़ा:hindi-too-long"), true);
+  });
+
+  test("flags Arabic script, URL-safety, length, and blocklist issues", () => {
+    const { violations } = auditCodebooks({
+      arabic: [
+        "دين",
+        "حرب",
+        "Ground",
+        "ماء-بيت",
+        "بحيرةحديقةمصباحزيتون",
+        ...makeArabicFixtures(EXPECTED_COUNTS.arabic - 5),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    assert.equal(actual.has("دين:reviewed-blocklist"), true);
+    assert.equal(actual.has("حرب:reviewed-blocklist"), true);
+    assert.equal(actual.has("Ground:arabic-script"), true);
+    assert.equal(actual.has("ماء-بيت:arabic-script"), true);
+    assert.equal(actual.has("ماء-بيت:arabic-url-safety"), true);
+    assert.equal(
+      actual.has("بحيرةحديقةمصباحزيتون:arabic-too-long"),
+      true,
+    );
   });
 
   test("flags awkward Hindi generated compounds", () => {

@@ -26,4 +26,8 @@ describe("ground code language mapping", () => {
   test("maps Hindi UI locale to Hindi Ground Codes", () => {
     expect(getGroundCodeLanguage("hi")).toBe("hindi");
   });
+
+  test("maps Arabic UI locale to Arabic Ground Codes", () => {
+    expect(getGroundCodeLanguage("ar")).toBe("arabic");
+  });
 });
