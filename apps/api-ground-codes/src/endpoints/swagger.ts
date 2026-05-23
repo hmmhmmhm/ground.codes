@@ -7,6 +7,7 @@ const publicDocPathsToHide = [
   "/decode",
   "/search",
   "/docs",
+  "/reference",
   "/region/around",
   "/region/info",
   "/{path}",
@@ -45,7 +46,7 @@ const scalarReferenceConfig = {
 };
 
 export const swaggerEndpoint = swagger({
-  path: "/",
+  path: "/reference",
   exclude: publicDocPathsToHide,
   scalarConfig: scalarReferenceConfig,
   documentation: {
@@ -77,8 +78,17 @@ export const swaggerEndpoint = swagger({
 
 export const swaggerRedirectEndpoint = new Elysia()
   .get(
+    "/json",
+    () => redirect("/reference/json"),
+    {
+      detail: {
+        hide: true,
+      },
+    },
+  )
+  .get(
     "/swagger",
-    () => redirect("/"),
+    () => redirect("/reference"),
     {
       detail: {
         hide: true,
@@ -87,7 +97,7 @@ export const swaggerRedirectEndpoint = new Elysia()
   )
   .get(
     "/swagger/",
-    () => redirect("/"),
+    () => redirect("/reference"),
     {
       detail: {
         hide: true,
@@ -96,7 +106,7 @@ export const swaggerRedirectEndpoint = new Elysia()
   )
   .get(
     "/swagger/json",
-    () => redirect("/json"),
+    () => redirect("/reference/json"),
     {
       detail: {
         hide: true,

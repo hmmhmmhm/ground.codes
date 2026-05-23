@@ -53,7 +53,10 @@ describe("Ground Codes API contract", () => {
     expect(docsResponse.status).toBe(200);
     const rootDocs = await docsResponse.text();
     expect(rootDocs).toContain("Ground Codes API");
+    expect(rootDocs).toContain("Copy-ready Examples");
     expect(rootDocs).toContain("https://api.ground.codes/v1/encode");
+    expect(rootDocs).toContain('href="/reference"');
+    expect(rootDocs).toContain('href="/reference/json"');
 
     const firstPartyDocsResponse = await get("/docs");
     expect(firstPartyDocsResponse.status).toBe(200);
@@ -78,7 +81,7 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("Share URL Rules");
     expect(firstPartyDocs).toContain("Status Code Reference");
 
-    const schemaResponse = await get("/json");
+    const schemaResponse = await get("/reference/json");
     expect(schemaResponse.status).toBe(200);
     const schema = await schemaResponse.json();
     expect(schema.paths["/v1/encode"]).toBeDefined();
@@ -96,11 +99,15 @@ describe("Ground Codes API contract", () => {
   test("redirects legacy swagger documentation URLs to the public docs", async () => {
     const docsResponse = await get("/swagger");
     expect(docsResponse.status).toBe(302);
-    expect(docsResponse.headers.get("location")).toBe("/");
+    expect(docsResponse.headers.get("location")).toBe("/reference");
 
     const schemaResponse = await get("/swagger/json");
     expect(schemaResponse.status).toBe(302);
-    expect(schemaResponse.headers.get("location")).toBe("/json");
+    expect(schemaResponse.headers.get("location")).toBe("/reference/json");
+
+    const jsonResponse = await get("/json");
+    expect(jsonResponse.status).toBe(302);
+    expect(jsonResponse.headers.get("location")).toBe("/reference/json");
   });
 
   test("returns a structured not found error for unsupported routes", async () => {
