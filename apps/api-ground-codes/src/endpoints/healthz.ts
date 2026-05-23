@@ -1,14 +1,25 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import Elysia, { t } from "elysia";
 
 const endpointDir = dirname(fileURLToPath(import.meta.url));
 const packagePath = join(endpointDir, "../../package.json");
-const lockfilePath = join(endpointDir, "../../../../pnpm-lock.yaml");
 const packageJson = JSON.parse(readFileSync(packagePath, "utf8")) as {
   version: string;
   dependencies: Record<string, string>;
+};
+
+const findUp = (fileName: string, startDir: string) => {
+  let currentDir = startDir;
+  while (true) {
+    const candidate = join(currentDir, fileName);
+    if (existsSync(candidate)) return candidate;
+
+    const parentDir = dirname(currentDir);
+    if (parentDir === currentDir) return null;
+    currentDir = parentDir;
+  }
 };
 
 const runtimeDependency =
@@ -16,10 +27,17 @@ const runtimeDependency =
   packageJson.dependencies["@repo/codebook"] ??
   "";
 const runtimeTag = runtimeDependency.match(/#([^&]+)&path:/)?.[1] ?? "unknown";
-const runtimeCommit =
-  readFileSync(lockfilePath, "utf8").match(
+const lockfilePath = findUp("pnpm-lock.yaml", endpointDir);
+const lockfileCommit = lockfilePath
+  ? readFileSync(lockfilePath, "utf8").match(
     /ground\.codes\/tar\.gz\/([0-9a-f]{40})#path:packages\/ground-codes/,
-  )?.[1] ?? "unknown";
+    )?.[1]
+  : undefined;
+const runtimeCommit =
+  lockfileCommit ??
+  process.env.RAILWAY_GIT_COMMIT_SHA ??
+  process.env.GIT_COMMIT_SHA ??
+  "0000000000000000000000000000000000000000";
 
 export const healthz = new Elysia().get(
   "/healthz",
