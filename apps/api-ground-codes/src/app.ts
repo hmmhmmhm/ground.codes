@@ -5,7 +5,7 @@ import {
   swaggerRedirectEndpoint,
 } from "./endpoints/swagger.js";
 import { createCorsEndpoint } from "./endpoints/cors.js";
-import { codeEndpoint, rootRedirectEndpoint } from "./endpoints/code.js";
+import { codeEndpoint } from "./endpoints/code.js";
 import { docsEndpoint } from "./endpoints/docs.js";
 import { legacyEndpoints, v1Endpoints } from "./endpoints/v1/v1-endpoints.js";
 import { formatApiError } from "./endpoints/v1/api-error.js";
@@ -46,8 +46,7 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
     .use(readyz)
     .use(v1Endpoints)
     .use(legacyEndpoints)
-    .use(codeEndpoint)
-    .use(rootRedirectEndpoint);
+    .use(codeEndpoint);
 
   return options.port === undefined ? app : app.listen(options.port);
 };

@@ -47,6 +47,14 @@ describe("Ground Codes API contract", () => {
   });
 
   test("serves public API documentation without exposing legacy routes", async () => {
+    const docsResponse = await createApp().handle(
+      new Request("http://localhost/"),
+    );
+    expect(docsResponse.status).toBe(200);
+    const rootDocs = await docsResponse.text();
+    expect(rootDocs).toContain("Ground Codes API");
+    expect(rootDocs).toContain("https://api.ground.codes/v1/encode");
+
     const firstPartyDocsResponse = await get("/docs");
     expect(firstPartyDocsResponse.status).toBe(200);
     const firstPartyDocs = await firstPartyDocsResponse.text();
@@ -69,12 +77,6 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("<code>hindi</code>");
     expect(firstPartyDocs).toContain("Share URL Rules");
     expect(firstPartyDocs).toContain("Status Code Reference");
-
-    const docsResponse = await get("/");
-    expect(docsResponse.status).toBe(200);
-    expect(await docsResponse.text()).toContain(
-      "Ground Codes API Documentation",
-    );
 
     const schemaResponse = await get("/json");
     expect(schemaResponse.status).toBe(200);
