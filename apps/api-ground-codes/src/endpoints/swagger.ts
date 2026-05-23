@@ -8,6 +8,7 @@ const publicDocPathsToHide = [
   "/search",
   "/docs",
   "/reference",
+  "/openapi",
   "/region/around",
   "/region/info",
   "/{path}",
@@ -46,7 +47,7 @@ const scalarReferenceConfig = {
 };
 
 export const swaggerEndpoint = swagger({
-  path: "/reference",
+  path: "/openapi",
   exclude: publicDocPathsToHide,
   scalarConfig: scalarReferenceConfig,
   documentation: {
@@ -79,7 +80,7 @@ export const swaggerEndpoint = swagger({
 export const swaggerRedirectEndpoint = new Elysia()
   .get(
     "/json",
-    () => redirect("/reference/json"),
+    () => redirect("/openapi/json"),
     {
       detail: {
         hide: true,
@@ -88,7 +89,7 @@ export const swaggerRedirectEndpoint = new Elysia()
   )
   .get(
     "/reference",
-    () => redirect("/reference/"),
+    () => redirect("/openapi/"),
     {
       detail: {
         hide: true,
@@ -97,7 +98,7 @@ export const swaggerRedirectEndpoint = new Elysia()
   )
   .get(
     "/swagger",
-    () => redirect("/reference/"),
+    () => redirect("/openapi/"),
     {
       detail: {
         hide: true,
@@ -106,7 +107,7 @@ export const swaggerRedirectEndpoint = new Elysia()
   )
   .get(
     "/swagger/",
-    () => redirect("/reference/"),
+    () => redirect("/openapi/"),
     {
       detail: {
         hide: true,
@@ -115,7 +116,7 @@ export const swaggerRedirectEndpoint = new Elysia()
   )
   .get(
     "/swagger/json",
-    () => redirect("/reference/json"),
+    () => redirect("/openapi/json"),
     {
       detail: {
         hide: true,

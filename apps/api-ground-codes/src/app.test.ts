@@ -55,8 +55,8 @@ describe("Ground Codes API contract", () => {
     expect(rootDocs).toContain("Ground Codes API");
     expect(rootDocs).toContain("Copy-ready Examples");
     expect(rootDocs).toContain("https://api.ground.codes/v1/encode");
-    expect(rootDocs).toContain('href="/reference/"');
-    expect(rootDocs).toContain('href="/reference/json"');
+    expect(rootDocs).toContain('href="/openapi/"');
+    expect(rootDocs).toContain('href="/openapi/json"');
 
     const firstPartyDocsResponse = await get("/docs");
     expect(firstPartyDocsResponse.status).toBe(200);
@@ -81,7 +81,7 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("Share URL Rules");
     expect(firstPartyDocs).toContain("Status Code Reference");
 
-    const schemaResponse = await get("/reference/json");
+    const schemaResponse = await get("/openapi/json");
     expect(schemaResponse.status).toBe(200);
     const schema = await schemaResponse.json();
     expect(schema.paths["/v1/encode"]).toBeDefined();
@@ -99,21 +99,21 @@ describe("Ground Codes API contract", () => {
   test("redirects legacy swagger documentation URLs to the public docs", async () => {
     const docsResponse = await get("/swagger");
     expect(docsResponse.status).toBe(302);
-    expect(docsResponse.headers.get("location")).toBe("/reference/");
+    expect(docsResponse.headers.get("location")).toBe("/openapi/");
 
     const referenceResponse = await createApp().handle(
       new Request("http://localhost/reference"),
     );
     expect(referenceResponse.status).toBe(302);
-    expect(referenceResponse.headers.get("location")).toBe("/reference/");
+    expect(referenceResponse.headers.get("location")).toBe("/openapi/");
 
     const schemaResponse = await get("/swagger/json");
     expect(schemaResponse.status).toBe(302);
-    expect(schemaResponse.headers.get("location")).toBe("/reference/json");
+    expect(schemaResponse.headers.get("location")).toBe("/openapi/json");
 
     const jsonResponse = await get("/json");
     expect(jsonResponse.status).toBe(302);
-    expect(jsonResponse.headers.get("location")).toBe("/reference/json");
+    expect(jsonResponse.headers.get("location")).toBe("/openapi/json");
   });
 
   test("returns a structured not found error for unsupported routes", async () => {

@@ -78,8 +78,8 @@ const docsHtml = `<!doctype html>
         <h1>Ground Codes API</h1>
         <p>Encode coordinates into human-readable share codes, decode them back to coordinates, and search regions or codes through stable versioned endpoints.</p>
         <div class="actions">
-          <a href="/reference/">OpenAPI Reference</a>
-          <a href="/reference/json">OpenAPI JSON</a>
+          <a href="/openapi/">OpenAPI Reference</a>
+          <a href="/openapi/json">OpenAPI JSON</a>
           <a href="/metrics">Metrics</a>
           <a href="/readyz">Readiness</a>
         </div>
