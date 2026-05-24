@@ -19,7 +19,7 @@ operational status board for follow-up passes.
 | vietnamese | 5000 | stable | Keep native diacritics and avoid broad color, mood, and place templates. |
 | hindi | 5000 | active cleanup | Remove broad descriptor compounds, obscure standalone entries, mixed-script region labels, and URL separator leftovers. |
 | arabic | 5000 | active cleanup | Grow reviewed standalone nouns and keep abstract mood/value compounds out of public codes. |
-| russian | 5000 | active cleanup | V2 lowers generated compounds below 3,400 and blocks weak medical, religious, military, and body-part entries; keep growing reviewed standalone nouns. |
+| russian | 5000 | active cleanup | V3 keeps at least 250 short standalone nouns, lowers recognized generated compounds below 3,000, and blocks obscure or coined-looking leftovers. |
 
 Review checklist:
 

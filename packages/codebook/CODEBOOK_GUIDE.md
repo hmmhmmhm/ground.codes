@@ -101,9 +101,9 @@ Current inventory:
 | Arabic     | Recognized compound              |  1068 | 21.4% | `بحيرةبيت`, `بحيرةسوق`, `بحيرةطريق`, `بحيرةجسر`, `بحيرةحديقة`        |
 | Arabic     | Short standalone                 |   260 |  5.2% | `ماء`, `بيت`, `نهر`, `جبل`, `زهرة`                                   |
 | Arabic     | Other standalone or unclassified |  3672 | 73.4% | `مصباح`, `زيتون`, `حديقة`, `بحيرة`, `حافلة`                          |
-| Russian    | Recognized compound              |  3393 | 67.9% | `озеродом`, `озеромост`, `озеролист`, `озеросад`, `озеродвор`         |
-| Russian    | Short standalone                 |   227 |  4.5% | `вода`, `дом`, `река`, `гора`, `хлеб`                                 |
-| Russian    | Other standalone or unclassified |  1380 | 27.6% | `цветок`, `книга`, `яблоко`, `береза`, `озеро`                        |
+| Russian    | Recognized compound              |  2997 | 59.9% | `озеродом`, `озеромост`, `озеролист`, `озеросад`, `озеродвор`         |
+| Russian    | Short standalone                 |   271 |  5.4% | `вода`, `дом`, `река`, `гора`, `хлеб`                                 |
+| Russian    | Other standalone or unclassified |  1732 | 34.6% | `цветок`, `книга`, `яблоко`, `береза`, `озеро`                        |
 
 Review implications:
 
@@ -167,10 +167,11 @@ Review implications:
   `منارةشجرة`. Continue replacing weak material/object compounds with reviewed
   standalone Arabic nouns as coverage grows.
 - Russian uses native Cyrillic in public code words and localized region
-  labels. The v2 cleanup grows reviewed everyday standalone nouns, blocks
+  labels. The v3 cleanup grows reviewed everyday standalone nouns, blocks
   sensitive political, violent, adult, gambling, alcohol, medical, religious,
-  military, and body-part entries, and lowers generated-compound share below
-  3,400 entries. Keep replacing broad template compounds with reviewed
+  military, body-part, obscure, and coined-looking entries, keeps at least 250
+  short standalone words, and lowers recognized generated compounds below
+  3,000 entries. Keep replacing broad template compounds with reviewed
   standalone Russian nouns.
 
 ## Product Principles

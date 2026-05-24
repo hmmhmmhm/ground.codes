@@ -96,8 +96,8 @@ describe("codebook type inventory", () => {
     );
 
     assert.ok(russian);
-    assert.ok(russian.counts.shortStandalone >= 220);
-    assert.ok(russian.counts.recognizedCompound <= 3400);
+    assert.ok(russian.counts.shortStandalone >= 250);
+    assert.ok(russian.counts.recognizedCompound <= 3000);
     assert.ok(russian.counts.otherStandalone > 0);
   });
 });
