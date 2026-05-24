@@ -2356,8 +2356,8 @@ describe("reviewed multilingual codebooks", () => {
       [],
     );
     assert.ok(
-      russianWords.filter((word) => [...word].length <= 4).length >= 180,
-      "Russian codebook should include at least 180 short standalone words",
+      russianWords.filter((word) => [...word].length <= 4).length >= 220,
+      "Russian codebook should include at least 220 short standalone words",
     );
     assertWordsPresent(russianWords, [
       "вода",
@@ -2370,6 +2370,12 @@ describe("reviewed multilingual codebooks", () => {
       "яблоко",
       "береза",
       "мост",
+      "абрикос",
+      "ананас",
+      "апельсин",
+      "барабан",
+      "кастрюля",
+      "самовар",
       "озеродом",
     ]);
     assertBlockedWordsAbsent(russianWords, [
@@ -2386,6 +2392,30 @@ describe("reviewed multilingual codebooks", () => {
       "убийство",
       "казино",
       "алкоголь",
+      "мрак",
+      "кома",
+      "вера",
+      "флот",
+      "вена",
+      "труд",
+      "омут",
+      "рука",
+      "нос",
+      "ухо",
+      "зуб",
+      "йод",
+      "пир",
+      "фаза",
+      "рулет",
+      "султан",
+      "рогатка",
+      "бинт",
+      "финиш",
+      "фига",
+      "чек",
+      "тык",
+      "глечик",
+      "ерик",
     ]);
   });
 });
