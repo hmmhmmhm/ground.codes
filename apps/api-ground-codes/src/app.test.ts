@@ -29,8 +29,8 @@ describe("Ground Codes API contract", () => {
     expect(await response.json()).toMatchObject({
       status: "ready",
       service: "api-ground-codes",
-      apiVersion: "1.0.75",
-      runtimeTag: "railway-api-runtime-20260524-russian-v3",
+      apiVersion: "1.0.76",
+      runtimeTag: "railway-api-runtime-20260524-address-gap-languages",
       runtimeCommit: expect.stringMatching(/^[0-9a-f]{40}$/),
     });
   });
