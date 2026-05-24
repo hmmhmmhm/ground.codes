@@ -11,10 +11,10 @@ operational status board for follow-up passes.
 | chinese | 5140 | stable | Keep simplified Chinese entries short and avoid generated material/object grids. |
 | japanese | 5000 | stable | Keep kana-visible entries natural and avoid Latin fallback fragments. |
 | spanish | 5000 | stable | Continue lowering fused template saturation with everyday standalone nouns. |
-| french | 5000 | stable | Keep concrete French nouns ahead of BIP39-derived abstract candidates. |
-| german | 5000 | stable | Keep compound saturation bounded and prefer natural German compounds. |
-| portuguese | 5000 | stable | Keep Lusophone-neutral nouns and avoid Spanish-looking spellings. |
-| indonesian | 5000 | stable | Prefer common Indonesian forms over Malay-leaning or weak fused compounds. |
+| french | 5000 | stable | Keep short reviewed French nouns ahead of BIP39-derived abstract candidates. |
+| german | 5000 | stable | Keep reviewed standalone German nouns ahead of generated compound fallbacks. |
+| portuguese | 5000 | stable | Keep Lusophone-neutral short nouns ahead of generated fallback compounds. |
+| indonesian | 5000 | stable | Keep reviewed standalone growth ahead of generated Indonesian fallback compounds. |
 | thai | 5000 | stable | Grow reviewed Thai-script standalone nouns before adding templates. |
 | vietnamese | 5000 | stable | Keep native diacritics and avoid broad color, mood, and place templates. |
 | hindi | 5000 | active cleanup | Remove broad descriptor compounds, obscure standalone entries, mixed-script region labels, and URL separator leftovers. |

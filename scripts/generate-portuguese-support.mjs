@@ -29,6 +29,23 @@ const titleWord = (value) => {
   return `${normalized[0].toUpperCase()}${normalized.slice(1).toLowerCase()}`;
 };
 
+const reviewedStandaloneFiles = [
+  "packages/codebook/codebook-dataset/portuguese/standalone-review-2026-05-24.md",
+];
+
+const readReviewedStandaloneWords = () => {
+  const words = [];
+
+  for (const file of reviewedStandaloneFiles) {
+    const text = readFileSync(new URL(file, root), "utf8");
+    for (const match of text.matchAll(/`([A-Z][a-z]+)`/g)) {
+      words.push(match[1]);
+    }
+  }
+
+  return words;
+};
+
 const standaloneWords = [
   "Acacia",
   "Acucar",
@@ -449,6 +466,7 @@ const buildPortugueseCodebook = () => {
   };
 
   for (const word of standaloneWords) add(word);
+  for (const word of readReviewedStandaloneWords()) add(word);
 
   for (const suffix of naturalCompoundSuffixes) {
     for (const prefix of prefixes) {

@@ -23,10 +23,31 @@ describe("codebook type inventory", () => {
     );
 
     assert.ok(indonesian);
-    assert.ok(indonesian.counts.shortStandalone > 0);
+    assert.ok(indonesian.counts.shortStandalone >= 225);
     assert.ok(indonesian.counts.recognizedCompound > 0);
     assert.ok(indonesian.counts.otherStandalone >= 950);
-    assert.ok(indonesian.counts.recognizedCompound <= 4000);
+    assert.ok(indonesian.counts.recognizedCompound <= 3600);
+  });
+
+  test("keeps German generated compounds bounded by reviewed standalone growth", () => {
+    const german = buildTypeInventory().find((row) => row.language === "german");
+
+    assert.ok(german);
+    assert.ok(german.counts.shortStandalone >= 100);
+    assert.ok(german.counts.otherStandalone >= 1800);
+    assert.ok(german.counts.recognizedCompound <= 3100);
+  });
+
+  test("keeps French and Portuguese short standalone coverage healthy", () => {
+    const french = buildTypeInventory().find((row) => row.language === "french");
+    const portuguese = buildTypeInventory().find(
+      (row) => row.language === "portuguese",
+    );
+
+    assert.ok(french);
+    assert.ok(portuguese);
+    assert.ok(french.counts.shortStandalone >= 95);
+    assert.ok(portuguese.counts.shortStandalone >= 110);
   });
 
   test("classifies Thai script standalone and compound entries", () => {

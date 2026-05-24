@@ -1,0 +1,221 @@
+# German Standalone Review - 2026-05-24
+
+This review batch reduces German URL codebook reliance on generated compound
+templates while keeping natural German compounds available as a fallback.
+
+Scope:
+
+- Added reviewed standalone German nouns before generated fallback compounds.
+- Kept public code words ASCII title-case with German transliteration
+  (`Ae`, `Oe`, `Ue`, `ss`) where needed.
+- Preferred familiar concrete words from home, food, nature, tools, materials,
+  animals, transport, public places, and everyday objects.
+- Avoided person labels, brands, adult terms, gambling, drugs, weapons,
+  medicine, politics, religion, insults, debt, illness, and other sensitive
+  domains from the shared codebook guide.
+
+Reviewed standalone additions:
+
+- `Abend`
+- `Achse`
+- `Aehre`
+- `Amsel`
+- `Anker`
+- `Anorak`
+- `Arena`
+- `Atlas`
+- `Balkon`
+- `Banane`
+- `Band`
+- `Bau`
+- `Becken`
+- `Besen`
+- `Beton`
+- `Biber`
+- `Boot`
+- `Brezel`
+- `Brief`
+- `Brille`
+- `Bruecke`
+- `Bucht`
+- `Butter`
+- `Dach`
+- `Decke`
+- `Dinkel`
+- `Dirndl`
+- `Docht`
+- `Dohle`
+- `Drache`
+- `Eichel`
+- `Eiland`
+- `Eistee`
+- `Ente`
+- `Erker`
+- `Esel`
+- `Falte`
+- `Faehre`
+- `Fenster`
+- `Fernglas`
+- `Flocke`
+- `Fluss`
+- `Form`
+- `Frosch`
+- `Fuge`
+- `Gans`
+- `Gatter`
+- `Gemuese`
+- `Gewuerz`
+- `Giebel`
+- `Gips`
+- `Gitter`
+- `Gluehbirne`
+- `Gneis`
+- `Gurke`
+- `Hafen`
+- `Harke`
+- `Hecke`
+- `Herd`
+- `Himbeere`
+- `Himmel`
+- `Hirse`
+- `Hof`
+- `Hoehle`
+- `Horn`
+- `Hummel`
+- `Insel`
+- `Joghurt`
+- `Kabel`
+- `Kakao`
+- `Kamel`
+- `Kanu`
+- `Karotte`
+- `Keks`
+- `Kessel`
+- `Kette`
+- `Kirsche`
+- `Kissen`
+- `Klavier`
+- `Knete`
+- `Knospe`
+- `Koffer`
+- `Kohlrabi`
+- `Komet`
+- `Kommode`
+- `Kompass`
+- `Kuchen`
+- `Kugel`
+- `Kueste`
+- `Laken`
+- `Laterne`
+- `Lauch`
+- `Leiter`
+- `Limo`
+- `Lineal`
+- `Loewe`
+- `Lupe`
+- `Maerchen`
+- `Magnet`
+- `Marone`
+- `Mehl`
+- `Melone`
+- `Moehre`
+- `Mosaik`
+- `Muehle`
+- `Muetze`
+- `Nagel`
+- `Nektar`
+- `Nest`
+- `Netz`
+- `Nudel`
+- `Ofen`
+- `Palme`
+- `Parkett`
+- `Pforte`
+- `Pinguin`
+- `Pilz`
+- `Puppe`
+- `Quarz`
+- `Quelle`
+- `Radio`
+- `Raupe`
+- `Regal`
+- `Riemen`
+- `Rucksack`
+- `Saal`
+- `Sattel`
+- `Schirm`
+- `Schnecke`
+- `Schuh`
+- `Schwamm`
+- `Segel`
+- `Seife`
+- `Senke`
+- `Spinat`
+- `Stern`
+- `Strand`
+- `Strick`
+- `Strom`
+- `Sumpf`
+- `Teller`
+- `Teppich`
+- `Torf`
+- `Turm`
+- `Ufer`
+- `Vase`
+- `Vulkan`
+- `Waage`
+- `Wabe`
+- `Waffel`
+- `Wald`
+- `Walze`
+- `Wanne`
+- `Wasser`
+- `Weg`
+- `Welle`
+- `Werk`
+- `Wippe`
+- `Wolke`
+- `Wurst`
+- `Zahn`
+- `Zange`
+- `Zaun`
+- `Zelt`
+- `Zitrone`
+- `Zoo`
+- `Zopf`
+
+Additional short standalone additions:
+
+- `Ball`
+- `Burg`
+- `Dorf`
+- `Ei`
+- `Eis`
+- `Elch`
+- `Eule`
+- `Fell`
+- `Fels`
+- `Hai`
+- `Haus`
+- `Heu`
+- `Hund`
+- `Igel`
+- `Jute`
+- `Kalk`
+- `Kamm`
+- `Kern`
+- `Kino`
+- `Kiwi`
+- `Kran`
+- `Lamm`
+- `Moor`
+- `Oel`
+- `Reh`
+- `Riff`
+- `Saft`
+- `See`
+- `Sofa`
+- `Tor`
+- `Uhu`
+- `Wand`
+- `Zink`

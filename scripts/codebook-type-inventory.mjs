@@ -23,6 +23,19 @@ const SPANISH_REVIEW_FILES = [
 const INDONESIAN_REVIEW_FILES = [
   "../packages/codebook/codebook-dataset/indonesian/standalone-review-2026-05-22.md",
   "../packages/codebook/codebook-dataset/indonesian/standalone-review-2026-05-22-v2.md",
+  "../packages/codebook/codebook-dataset/indonesian/standalone-review-2026-05-24.md",
+];
+
+const GERMAN_REVIEW_FILES = [
+  "../packages/codebook/codebook-dataset/german/standalone-review-2026-05-24.md",
+];
+
+const FRENCH_REVIEW_FILES = [
+  "../packages/codebook/codebook-dataset/french/standalone-review-2026-05-24.md",
+];
+
+const PORTUGUESE_REVIEW_FILES = [
+  "../packages/codebook/codebook-dataset/portuguese/standalone-review-2026-05-24.md",
 ];
 
 const readReviewedSpanishStandaloneWords = () => {
@@ -55,6 +68,52 @@ const readReviewedIndonesianStandaloneWords = () => {
 
 const INDONESIAN_REVIEWED_STANDALONE_WORDS =
   readReviewedIndonesianStandaloneWords();
+
+const readReviewedGermanStandaloneWords = () => {
+  const words = new Set();
+
+  for (const path of GERMAN_REVIEW_FILES) {
+    const text = readFileSync(new URL(path, import.meta.url), "utf8");
+    for (const match of text.matchAll(/`([A-Z][a-z]+)`/g)) {
+      words.add(match[1]);
+    }
+  }
+
+  return words;
+};
+
+const GERMAN_REVIEWED_STANDALONE_WORDS = readReviewedGermanStandaloneWords();
+
+const readReviewedFrenchStandaloneWords = () => {
+  const words = new Set();
+
+  for (const path of FRENCH_REVIEW_FILES) {
+    const text = readFileSync(new URL(path, import.meta.url), "utf8");
+    for (const match of text.matchAll(/`([A-Z][a-z]+)`/g)) {
+      words.add(match[1]);
+    }
+  }
+
+  return words;
+};
+
+const FRENCH_REVIEWED_STANDALONE_WORDS = readReviewedFrenchStandaloneWords();
+
+const readReviewedPortugueseStandaloneWords = () => {
+  const words = new Set();
+
+  for (const path of PORTUGUESE_REVIEW_FILES) {
+    const text = readFileSync(new URL(path, import.meta.url), "utf8");
+    for (const match of text.matchAll(/`([A-Z][a-z]+)`/g)) {
+      words.add(match[1]);
+    }
+  }
+
+  return words;
+};
+
+const PORTUGUESE_REVIEWED_STANDALONE_WORDS =
+  readReviewedPortugueseStandaloneWords();
 
 const COMPOUND_SUFFIXES = {
   english: [
@@ -922,6 +981,18 @@ const findCompoundSuffix = (language, word) => {
   if (
     language === "indonesian" &&
     INDONESIAN_REVIEWED_STANDALONE_WORDS.has(word)
+  ) {
+    return undefined;
+  }
+  if (language === "german" && GERMAN_REVIEWED_STANDALONE_WORDS.has(word)) {
+    return undefined;
+  }
+  if (language === "french" && FRENCH_REVIEWED_STANDALONE_WORDS.has(word)) {
+    return undefined;
+  }
+  if (
+    language === "portuguese" &&
+    PORTUGUESE_REVIEWED_STANDALONE_WORDS.has(word)
   ) {
     return undefined;
   }

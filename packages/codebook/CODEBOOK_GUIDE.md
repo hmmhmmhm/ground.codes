@@ -76,18 +76,18 @@ Current inventory:
 | Spanish    | Recognized compound              |  2925 | 58.5% | `Papayatapa`, `Papayabote`, `Papayalata`, `Papayaolla`, `Papayacopa` |
 | Spanish    | Short standalone                 |   280 |  5.6% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe`                               |
 | Spanish    | Other standalone or unclassified |  1795 | 35.9% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto`                 |
-| French     | Recognized compound              |  2399 | 48.0% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
-| French     | Short standalone                 |    51 |  1.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
-| French     | Other standalone or unclassified |  2550 | 51.0% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
-| German     | Recognized compound              |  3255 | 65.1% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`       |
-| German     | Short standalone                 |    55 |  1.1% | `Anis`, `Aue`, `Bach`, `Bank`, `Beet`                                |
-| German     | Other standalone or unclassified |  1690 | 33.8% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                         |
-| Portuguese | Recognized compound              |  1424 | 28.5% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
-| Portuguese | Short standalone                 |    58 |  1.2% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
-| Portuguese | Other standalone or unclassified |  3518 | 70.4% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
-| Indonesian | Recognized compound              |  3850 | 77.0% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
-| Indonesian | Short standalone                 |   191 |  3.8% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
-| Indonesian | Other standalone or unclassified |   959 | 19.2% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
+| French     | Recognized compound              |  2361 | 47.2% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
+| French     | Short standalone                 |   101 |  2.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
+| French     | Other standalone or unclassified |  2538 | 50.8% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
+| German     | Recognized compound              |  3052 | 61.0% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`       |
+| German     | Short standalone                 |   127 |  2.5% | `Anis`, `Aue`, `Bach`, `Bank`, `Beet`                                |
+| German     | Other standalone or unclassified |  1821 | 36.4% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                         |
+| Portuguese | Recognized compound              |  1340 | 26.8% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
+| Portuguese | Short standalone                 |   121 |  2.4% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
+| Portuguese | Other standalone or unclassified |  3539 | 70.8% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
+| Indonesian | Recognized compound              |  3562 | 71.2% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
+| Indonesian | Short standalone                 |   240 |  4.8% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
+| Indonesian | Other standalone or unclassified |  1198 | 24.0% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
 | Thai       | Recognized compound              |   929 | 18.6% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                          |
 | Thai       | Short standalone                 |    90 |  1.8% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                      |
 | Thai       | Other standalone or unclassified |  3981 | 79.6% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                              |
@@ -111,29 +111,29 @@ Review implications:
 - Chinese, English, and Japanese have lower recognized-compound shares, but the
   unclassified bucket still needs human review because the script intentionally
   avoids broad, risky inference.
-- French is below the Korean and Spanish compound share after the first
-  post-launch cleanup pass. That pass removed reviewed sensitive, abstract, and
-  verb-like BIP39 seed terms, then replaced them with concrete standalone French
-  nouns. Continue replacing weak fused compounds with natural French standalone
-  words as review coverage grows.
-- German now keeps template-style generated compounds below 70% and front-loads
-  more natural landscape and plant compounds. Continue replacing weak generated
-  compounds with reviewed everyday standalone nouns over time.
-- Portuguese keeps a low recognized-compound share after the quality v2 cleanup,
-  which removed Spanish-like entries, proper-name risks, and weak generated
-  compounds. Keep it neutral and common across Lusophone regions, and do not
-  raise template-compound saturation while filling future review gaps.
-- Indonesian quality v8 replaces Malay-leaning `Halia` with `Jahe`, keeps
-  `Pepaya` instead of `Papaya`, adds more everyday standalone nouns, and blocks
-  weak fused pairings such as `Emaskuning`, `Garamwangi`, `Gulabening`,
-  `Awankaleng`, `Bambubilik`, and `Tomatcawan`-style material/object
-  combinations. The generator now prefers a larger adjective-composition pool
-  before falling back to object pairings. The latest standalone batch is kept in
-  `packages/codebook/codebook-dataset/indonesian/standalone-review-2026-05-22-v2.md`
-  and adds reviewed everyday words such as `Akuarium`, `Amplop`, `Boneka`,
-  `Daster`, `Gedung`, `Gendang`, `Ponsel`, and `Radio`. Continue replacing
-  generated compounds with reviewed standalone Indonesian nouns as coverage
+- French is below the Korean and Spanish compound share and now keeps at least
+  95 short standalone entries. The 2026-05-24 pass added short reviewed nouns
+  such as `Aile`, `Chat`, `Ile`, `Pain`, `Pont`, and `Velo`; continue replacing
+  weak fused compounds with natural French standalone words as review coverage
   grows.
+- German quality v2 keeps template-style generated compounds below 3,100,
+  raises short standalone words above 100, and front-loads the 2026-05-24
+  reviewed standalone batch before generated fallbacks. German compounds remain
+  natural and acceptable, but generated templates should keep shrinking as
+  reviewed everyday nouns grow.
+- Portuguese keeps a low recognized-compound share after the quality v3
+  cleanup and now keeps at least 110 short standalone entries. Keep it neutral
+  and common across Lusophone regions, and do not raise template-compound
+  saturation while filling future review gaps.
+- Indonesian quality v9 replaces more generated fallback slots with reviewed
+  standalone nouns from the 2026-05-24 review batch. Recognized compounds are
+  now capped at 3,600 by `scripts/codebook-type-inventory.test.mjs`, while
+  short standalone words must stay at 225 or higher. Earlier cleanup still
+  replaces Malay-leaning `Halia` with `Jahe`, keeps `Pepaya` instead of
+  `Papaya`, and blocks weak fused pairings such as `Emaskuning`,
+  `Garamwangi`, `Gulabening`, `Awankaleng`, `Bambubilik`, and
+  `Tomatcawan`-style material/object combinations. Continue replacing generated
+  compounds with reviewed standalone Indonesian nouns as coverage grows.
 - Thai uses native Thai script in public code words instead of ASCII
   transliteration. The quality v2 pass adds a larger pool of concrete everyday
   nouns and reviewed household/food/nature compounds, while blocking broad
@@ -410,6 +410,10 @@ a test blocklist.
 - Prefer concrete everyday nouns such as `Amande`, `Bocal`, `Panier`,
   `Tilleul`, `Violette`, `Accordeon`, `Artichaut`, `Canape`, `Jonquille`,
   and `Toboggan`.
+- Add reviewed short standalone candidates under
+  `packages/codebook/codebook-dataset/french/`; the generator reads them before
+  BIP39 seed and compound fallback words. Keep the operational floor at 95 or
+  more short standalone French entries.
 - Generated nature/material/object compounds may be used to preserve count, but
   they should stay below the Korean and Spanish compound share, should not
   exceed the French saturation limit enforced by `scripts/codebook-policy-audit.mjs`,
@@ -433,6 +437,12 @@ a test blocklist.
 - German compounds may be used more heavily than French or Spanish because they
   are natural in German, but the generated template share must stay below the
   German saturation limit enforced by `scripts/codebook-policy-audit.mjs`.
+- Keep the tighter operational inventory guard in place: at least 100 short
+  standalone German words, at least 1,800 other standalone or unclassified
+  entries, and no more than 3,100 recognized generated compounds.
+- Add new reviewed standalone candidates under
+  `packages/codebook/codebook-dataset/german/`; the generator reads those files
+  before compound fallback generation.
 - Reject self-duplicating or implausible generated compounds such as
   `Blattblatt`, `Feldfeld`, `Steinstein`, `Ackerfass`, `Ackerglas`,
   `Apfelpfeife`, and `Apfelsohle`.
@@ -456,6 +466,10 @@ a test blocklist.
 - Prefer concrete everyday nouns and natural landscape or plant words such as
   `Acucar`, `Amendoa`, `Areia`, `Arvore`, `Avela`, `Casa`, `Cesto`, `Jardim`,
   `Pao`, and `Rio`.
+- Add reviewed standalone candidates under
+  `packages/codebook/codebook-dataset/portuguese/`; the generator reads them
+  before compound fallback words. Keep the operational floor at 110 or more
+  short standalone Portuguese entries.
 - Generated nature/material/object compounds may be used to preserve count, but
   the template share must stay below the Portuguese saturation limit enforced by
   `scripts/codebook-policy-audit.mjs`.
@@ -472,6 +486,9 @@ a test blocklist.
   `packages/codebook/codebook-dataset/indonesian/`. The generator reads those
   reviewed files directly, so the review list is the source of truth for
   expansion batches.
+- Keep reviewed standalone growth ahead of generated fallback growth. The
+  current operational floor is at least 225 short standalone Indonesian words,
+  and recognized generated compounds must stay at or below 3,600 entries.
 - Prefer common Indonesian forms over regional or cross-language variants:
   `Jahe` over `Halia`, and `Pepaya` over `Papaya`.
 - Reject sensitive or low-trust terms such as gambling, drugs, weapons, sex,
