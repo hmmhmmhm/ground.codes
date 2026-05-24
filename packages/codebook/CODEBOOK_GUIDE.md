@@ -110,24 +110,24 @@ Current inventory:
 | Russian    | Recognized compound              |  2997 | 59.9% | `озеродом`, `озеромост`, `озеролист`, `озеросад`, `озеродвор`         |
 | Russian    | Short standalone                 |   271 |  5.4% | `вода`, `дом`, `река`, `гора`, `хлеб`                                 |
 | Russian    | Other standalone or unclassified |  1732 | 34.6% | `цветок`, `книга`, `яблоко`, `береза`, `озеро`                        |
-| Swahili    | Recognized compound              |   361 |  7.2% | `Majinyumba`, `Majikitabu`, `Majisoko`, `Majidaraja`, `Majibustani`    |
-| Swahili    | Short standalone                 |    28 |  0.6% | `Maji`, `Mto`, `Ua`, `Chai`, `Taa`                                    |
-| Swahili    | Other standalone or unclassified |  4611 | 92.2% | `Nyumba`, `Mlima`, `Kitabu`, `Mkate`, `Tufaha`                        |
-| Filipino   | Recognized compound              |   412 |  8.2% | `Tubigbahay`, `Tubigaklat`, `Tubigpalengke`, `Tubigtulay`, `Tubighardin` |
-| Filipino   | Short standalone                 |    24 |  0.5% | `Ilog`, `Tsaa`, `Ilaw`, `Puno`, `Daan`                                |
-| Filipino   | Other standalone or unclassified |  4564 | 91.3% | `Tubig`, `Bahay`, `Bundok`, `Bulaklak`, `Aklat`                       |
-| Hausa      | Recognized compound              |   432 |  8.6% | `Ruwagida`, `Ruwalittafi`, `Ruwakasuwa`, `Ruwahanya`, `Ruwalambu`      |
-| Hausa      | Short standalone                 |    27 |  0.5% | `Ruwa`, `Gida`, `Kogi`, `Fure`, `Gada`                                |
-| Hausa      | Other standalone or unclassified |  4541 | 90.8% | `Tsauni`, `Shayi`, `Littafi`, `Fitila`, `Burodi`                      |
-| Bengali    | Recognized compound              |   271 |  5.4% | `বাড়িবই`, `বাড়িবাজার`, `বাড়িসেতু`, `বাড়িবাগান`, `বাড়িমাঠ`        |
-| Bengali    | Short standalone                 |    94 |  1.9% | `জল`, `নদী`, `ফুল`, `চা`, `বই`                                       |
-| Bengali    | Other standalone or unclassified |  4635 | 92.7% | `বাড়ি`, `পাহাড়`, `খেজুর`, `জলপাই`, `বাজার`                         |
-| Urdu       | Recognized compound              |   337 |  6.7% | `عجائبگھر`, `پانیگھر`, `پانیکتاب`, `پانیبازار`, `پانیراستہ`           |
-| Urdu       | Short standalone                 |    84 |  1.7% | `پانی`, `گھر`, `دریا`, `پہاڑ`, `پھول`                                |
-| Urdu       | Other standalone or unclassified |  4579 | 91.6% | `کھجور`, `زیتون`, `بازار`, `راستہ`, `تالاب`                          |
-| Amharic    | Recognized compound              |   220 |  4.4% | `ትምህርትቤት`, `ውሃትምህርትቤት`, `ውሃዳቦቤት`, `ውሃምግብቤት`, `ቤትትምህርትቤት` |
-| Amharic    | Short standalone                 |   333 |  6.7% | `ውሃ`, `ቤት`, `ወንዝ`, `ተራራ`, `አበባ`                                |
-| Amharic    | Other standalone or unclassified |  4447 | 88.9% | `አውቶቡስ`, `አደባባይ`, `ዝንጅብል`, `ብርቱካን`, `ምግብቤት`               |
+| Swahili    | Recognized compound              |   154 |  3.1% | `Majinyumba`, `Majikitabu`, `Majisoko`, `Majidaraja`, `Majibustani`    |
+| Swahili    | Short standalone                 |    53 |  1.1% | `Maji`, `Mto`, `Ua`, `Chai`, `Taa`                                    |
+| Swahili    | Other standalone or unclassified |  4793 | 95.9% | `Nyumba`, `Mlima`, `Kitabu`, `Mkate`, `Tufaha`                        |
+| Filipino   | Recognized compound              |   214 |  4.3% | `Kapitbahay`, `Tubigbahay`, `Tubigaklat`, `Tubigpalengke`, `Tubigtulay` |
+| Filipino   | Short standalone                 |    46 |  0.9% | `Ilog`, `Tsaa`, `Ilaw`, `Puno`, `Daan`                                |
+| Filipino   | Other standalone or unclassified |  4740 | 94.8% | `Tubig`, `Bahay`, `Bundok`, `Bulaklak`, `Aklat`                       |
+| Hausa      | Recognized compound              |   205 |  4.1% | `Ruwagida`, `Ruwalittafi`, `Ruwakasuwa`, `Ruwahanya`, `Ruwalambu`      |
+| Hausa      | Short standalone                 |    56 |  1.1% | `Ruwa`, `Gida`, `Kogi`, `Fure`, `Gada`                                |
+| Hausa      | Other standalone or unclassified |  4739 | 94.8% | `Tsauni`, `Shayi`, `Littafi`, `Fitila`, `Burodi`                      |
+| Bengali    | Recognized compound              |    96 |  1.9% | `বাড়িবই`, `বাড়িবাজার`, `বাড়িসেতু`, `বাড়িবাগান`, `বাড়িমাঠ`        |
+| Bengali    | Short standalone                 |   169 |  3.4% | `জল`, `নদী`, `ফুল`, `চা`, `বই`                                       |
+| Bengali    | Other standalone or unclassified |  4735 | 94.7% | `বাড়ি`, `পাহাড়`, `খেজুর`, `জলপাই`, `বাজার`                         |
+| Urdu       | Recognized compound              |   177 |  3.5% | `عجائبگھر`, `پانیگھر`, `پانیکتاب`, `پانیبازار`, `پانیراستہ`           |
+| Urdu       | Short standalone                 |   156 |  3.1% | `پانی`, `گھر`, `دریا`, `پہاڑ`, `پھول`                                |
+| Urdu       | Other standalone or unclassified |  4667 | 93.3% | `کھجور`, `زیتون`, `بازار`, `راستہ`, `تالاب`                          |
+| Amharic    | Recognized compound              |   153 |  3.1% | `ትምህርትቤት`, `ውሃትምህርትቤት`, `ውሃዳቦቤት`, `ውሃምግብቤት`, `ውሃጎረቤት` |
+| Amharic    | Short standalone                 |   647 | 12.9% | `ውሃ`, `ቤት`, `ወንዝ`, `ተራራ`, `አበባ`                                |
+| Amharic    | Other standalone or unclassified |  4200 | 84.0% | `አውቶቡስ`, `አደባባይ`, `ዝንጅብል`, `ብርቱካን`, `ምግብቤት`               |
 
 Review implications:
 
@@ -198,10 +198,11 @@ Review implications:
   3,000 entries. Keep replacing broad template compounds with reviewed
   standalone Russian nouns.
 - Swahili, Filipino, Hausa, Bengali, Urdu, and Amharic were added for the
-  address-gap expansion. Their first-pass codebooks use concrete everyday nouns
-  and low template-compound saturation. Keep these languages in active cleanup
-  until native-speaker review replaces weak fused pairs and expands standalone
-  coverage.
+  address-gap expansion. The second cleanup pass front-loads at least 220
+  reviewed standalone entries before mechanical fallback fusions can appear,
+  and lowers recognized template-compound saturation across all six languages.
+  Keep these languages in active cleanup until native-speaker review replaces
+  weak fused pairs and expands standalone coverage.
 
 ## Product Principles
 

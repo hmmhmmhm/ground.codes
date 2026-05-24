@@ -100,9 +100,12 @@ describe("language support completeness", () => {
     }
   });
 
-  test("keeps region label quality audits in the scripted QA set", () => {
+  test("keeps region and address-gap codebook quality audits in the scripted QA set", () => {
     const qaScript = readText("package.json");
+    const scripts = readText("scripts/address-gap-codebook-quality.test.mjs");
 
     assert.match(qaScript, /region-label-quality\.test\.mjs/);
+    assert.match(qaScript, /scripts\/\*\.test\.mjs/);
+    assert.match(scripts, /mechanical two-word fusions/);
   });
 });

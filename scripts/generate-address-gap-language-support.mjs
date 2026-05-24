@@ -64,6 +64,27 @@ const baseWords = {
   ],
 };
 
+const additionalStandaloneWords = {
+  swahili: [
+    "paka","mbwa","kuku","ngombe","samaki","ndege","yai","chumvi","sukari","kahawa","maharage","mahindi","mtama","ufuta","karanga","embe","papai","parachichi","nanasi","fenesi","pera","plamu","pilipili","kabichi","boga","birika","chupa","sahani","sufuria","kisu","uma","beseni","ndoo","jiko","mshumaa","sabuni","brashi","taulo","shuka","blanketi","mto","godoro","saa","redio","simu","kompyuta","kalenda","mfuko","begi","kofia","viatu","shati","suruali","sketi","kanzu","soksi","pete","bangili","mkufu","nywele","jicho","sikio","mkono","mguu","kidole","uso","meno","familia","rafiki","mtoto","mwalimu","daktari","mkulima","mpishi","mvuvi","dereva","fundi","mgeni","jirani","ofisi","posta","benki","hoteli","soko","uwanja","stendi","kituo","barabara","njia","kijia","kisima","chemchemi","mapango","kilima","tambarare","korongo","kichaka","nyasi","maua","mbegu","tawi","mzizi","gome","kivuko","darubini","kizingiti","rafu","kabati","droo","kifungo","sindano","uzi","mkasi","gundi","karatasi","bahasha","stempu","jarida","gazeti","hadithi","wimbo","ngoma","filimbi","kinanda","picha","sanamu","udongo","tofali","saruji","chuma","bati","kokoto",
+  ],
+  filipino: [
+    "aso","pusa","manok","baka","isda","ibon","itlog","asin","asukal","kape","mais","sitaw","mani","mangga","papaya","abokado","pinya","langka","peras","kaakit","sili","repolyo","kalabasa","sibuyas","bawang","luya","palay","niyog","kawayan","palayok","kutsilyo","tinidor","plato","baso","bote","timba","palanggana","kalan","kandila","sabon","sipilyo","tuwalya","kumot","unan","kutson","orasan","radyo","telepono","kompyuter","kalendaryo","supot","bag","sumbrero","sapatos","damit","baro","pantalon","palda","medyas","singsing","pulseras","kuwintas","buhok","mata","tainga","kamay","paa","daliri","mukha","ngipin","pamilya","kaibigan","bata","guro","doktor","magsasaka","kusinero","mangingisda","tsuper","karpintero","panauhin","kapitbahay","opisina","koreo","bangko","hotel","istasyon","kalsada","eskinitas","balon","bukal","kuweba","burol","kapatagan","bangin","damuhan","sanga","ugat","balat","pantalan","tulay","bakod","aparador","estante","kabit","karayom","sinulid","gunting","pandikit","papel","sobre","selyo","magasin","pahayagan","kuwento","awit","tambol","plawta","piyano","larawan","rebulto","luwad","ladrilyo","semento","bakal","yero","graba","perlas","kabibe","buntot","pakpak","pugad","kulungan","silong",
+  ],
+  hausa: [
+    "kare","mage","kaza","saniya","kifi","tsuntsu","kwai","gishiri","sukari","kofi","masara","wake","gyada","mangwaro","gwanda","avocado","abarba","gwaza","pear","barkono","kabeji","kabewa","albasa","tafarnuwa","shinkafa","kwakwa","kwarya","wuka","faranti","gilashi","kwalba","guga","murhu","kyandir","sabulu","burushi","tawul","bargo","matashi","agogo","rediyo","waya","kwamfuta","kalanda","jaka","hula","takalmi","riga","wando","siket","safa","zobe","munduwa","sarka","gashi","ido","kunne","hannu","kafa","yatsa","fuska","hakori","iyali","aboki","yaro","malami","likita","manomi","maiabinci","masunci","direba","kafinta","bako","makwabci","ofis","wasiku","banki","otal","tasha","titi","rijiya","marmaro","kogo","tudu","filato","kwazazzabo","ciyawa","reshe","saiwa","bawo","katanga","shinge","shiryayye","maajiya","allura","zare","makasi","manne","takarda","ambulaf","tambari","mujalla","jarida","labari","waka","ganga","algaita","piyano","zane","mutumumi","bulo","siminti","karfe","kwano","tsakuwa","luuluu","kwari","fuka","gidauniya","rumbu","rumfa","inuwa","matashi","mayafi","zumunci","kasko","murfi","tukunya","tabarau","madubi","goge",
+  ],
+  bengali: [
+    "বিড়াল","কুকুর","মুরগি","গরু","মাছ","পাখি","ডিম","লবণ","চিনি","কফি","ভুট্টা","শিম","চিনাবাদাম","আম","পেঁপে","আনারস","কাঁঠাল","নাশপাতি","বরই","মরিচ","বাঁধাকপি","কুমড়া","পেঁয়াজ","রসুন","নারকেল","বাঁশ","ছুরি","কাঁটা","প্লেট","গ্লাস","বোতল","বালতি","চুলা","মোমবাতি","সাবান","ব্রাশ","তোয়ালে","কম্বল","বালিশ","গদি","ঘড়ি","রেডিও","ফোন","কম্পিউটার","ক্যালেন্ডার","থলে","ব্যাগ","টুপি","জুতা","জামা","প্যান্ট","মোজা","আংটি","বালা","হার","চুল","চোখ","কান","হাত","পা","আঙুল","মুখ","দাঁত","পরিবার","বন্ধু","শিশু","শিক্ষক","ডাক্তার","কৃষক","রাঁধুনি","জেলে","চালক","কারিগর","অতিথি","প্রতিবেশী","অফিস","ডাকঘর","ব্যাংক","হোটেল","স্টেশন","রাস্তা","গলি","কূপ","ঝরনা","গুহা","টিলা","সমতল","খাদ","ঘাস","শাখা","মূল","ছাল","ঘাট","বেড়া","তাক","আলমারি","সুঁই","সুতা","কাঁচি","আঠা","কাগজ","খাম","টিকিট","পত্রিকা","সংবাদপত্র","গল্প","গান","ঢোল","বাঁশি","পিয়ানো","মূর্তি","ইট","সিমেন্ট","লোহা","কঙ্কর","মুক্তা","ঝিনুক","লেজ","ডানা","বাসা","খাঁচা","ছাতা","চিরুনি","আয়না","বালুচর","চৌকি","বিছানা","কাঠি","ঘণ্টা","ঘুড়ি","খেলনা","পুতুল",
+  ],
+  urdu: [
+    "بلی","کتا","مرغی","گائے","مچھلی","پرندہ","انڈا","نمک","چینی","کافی","مکئی","لوبیا","مونگفلی","آم","پپیتا","انناس","ناشپاتی","آلوبخارا","مرچ","بندگوبھی","کدو","پیاز","لہسن","ناریل","بانس","چھری","کانٹا","پلیٹ","گلاس","بوتل","بالٹی","چولہا","مومبتی","صابن","برش","تولیہ","کمبل","تکیہ","گدا","گھڑی","ریڈیو","فون","کمپیوٹر","کیلنڈر","تھیلا","بیگ","ٹوپی","جوتا","قمیض","پتلون","جراب","انگوٹھی","کنگن","ہار","بال","آنکھ","کان","ہاتھ","پاؤں","انگلی","چہرہ","دانت","خاندان","دوست","بچہ","استاد","ڈاکٹر","کسان","باورچی","ماہیگیر","ڈرائیور","بڑھئی","مہمان","پڑوسی","دفتر","ڈاکخانہ","بینک","ہوٹل","اسٹیشن","سڑک","گلی","کنواں","چشمہ","غار","ٹیلا","میدان","گھاٹی","گھاس","شاخ","جڑ","چھال","گھاٹ","باڑ","شیلف","الماری","سوئی","دھاگا","قینچی","گوند","کاغذ","لفافہ","ٹکٹ","رسالہ","اخبار","کہانی","گیت","ڈھول","بانسری","پیانو","مجسمہ","اینٹ","سیمنٹ","لوہا","کنکر","موتی","سیپی","دم","پر","گھونسلا","پنجرہ","چھتری","کنگھی","آئینہ","کھلونا","گڑیا","گھنٹی","پتنگ","بستر","چارپائی",
+  ],
+  amharic: [
+    "ድመት","ውሻ","ዶሮ","ላም","ዓሣ","ወፍ","እንቁላል","ጨው","ስኳር","ቡና","በቆሎ","ሽንብራ","ለውዝ","ማንጎ","ፓፓያ","አናናስ","ኮኮናት","ቀይሽንኩርት","ነጭሽንኩርት","ቃሪያ","ጎመን","ዱባ","ቢላዋ","ሹካ","ሳህን","ብርጭቆ","ጠርሙስ","ባልዲ","ምድጃ","ሻማ","ሳሙና","ብሩሽ","ፎጣ","ብርድልብስ","ትራስ","ፍራሽ","ሰዓት","ሬዲዮ","ስልክ","ኮምፒዩተር","ቀንመቁጠሪያ","ቦርሳ","ኮፍያ","ጫማ","ሸሚዝ","ሱሪ","ካልሲ","ቀለበት","አምባር","ሀብል","ፀጉር","ዓይን","ጆሮ","እጅ","እግር","ጣት","ፊት","ጥርስ","ቤተሰብ","ጓደኛ","ልጅ","መምህር","ሐኪም","ገበሬ","አብሳይ","ዓሣአጥማጅ","አሽከርካሪ","አናጺ","እንግዳ","ጎረቤት","ቢሮ","ፖስታቤት","ባንክ","ሆቴል","ጣቢያ","መንገድ","ቅያስ","ጉድጓድ","ምንጭ","ዋሻ","ኮረብታ","ሜዳ","ገደል","ሣር","ቅርንጫፍ","ሥር","ቅርፊት","አጥር","መደርደሪያ","ቁምሳጥን","መርፌ","ክር","መቀስ","ሙጫ","ወረቀት","ፖስታ","ቴምብር","መጽሔት","ጋዜጣ","ታሪክ","ዘፈን","ከበሮ","ዋሽንት","ፒያኖ","ሐውልት","ጡብ","ሲሚንቶ","ብረት","ጠጠር","ዕንቁ","ቀንድ","ክንፍ","ጎጆ","ቤትእንስሳ","ጃንጥላ","ማበጠሪያ","መስተዋት","መጫወቻ","አሻንጉሊት","ደወል","ካይት","አልጋ","መቀመጫ",
+  ],
+};
+
 const blocked = {
   swahili: new Set(["vita","damu","silaha","ngono","kasino","pombe"]),
   filipino: new Set(["digma","dugo","baril","sugal","alak"]),
@@ -99,7 +120,10 @@ const buildCodebook = (language) => {
     words.push(candidate);
   };
 
-  const list = baseWords[language];
+  const list = [
+    ...baseWords[language],
+    ...(additionalStandaloneWords[language] ?? []),
+  ];
   for (const word of list) add(word);
   for (const prefix of list) {
     for (const suffix of list) {
