@@ -182,6 +182,7 @@ export const decode = async (
     const vietnamesePattern = /[ĂăÂâĐđÊêÔôƠơƯư]/;
     const hindiPattern = /[\u0900-\u097F]/;
     const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+    const russianPattern = /[\u0400-\u04FF]/;
 
     // Test if the text contains Korean or Chinese characters
     if (koreanPattern.test(actualEncoded)) {
@@ -198,6 +199,8 @@ export const decode = async (
       language = "hindi";
     } else if (arabicPattern.test(actualEncoded)) {
       language = "arabic";
+    } else if (russianPattern.test(actualEncoded)) {
+      language = "russian";
     } else {
       // Default to English if no Korean or Chinese characters are detected
       language = "english";

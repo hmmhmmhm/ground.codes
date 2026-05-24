@@ -16,6 +16,7 @@ export const EXPECTED_COUNTS = {
   vietnamese: 5000,
   hindi: 5000,
   arabic: 5000,
+  russian: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -32,6 +33,7 @@ const CODEBOOK_FILES = {
   vietnamese: "../packages/codebook/codebook-dist/vietnamese.json",
   hindi: "../packages/codebook/codebook-dist/hindi.json",
   arabic: "../packages/codebook/codebook-dist/arabic.json",
+  russian: "../packages/codebook/codebook-dist/russian.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -1364,6 +1366,21 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
     "قنبلة",
     "رصاص",
   ],
+  russian: [
+    "война",
+    "оружие",
+    "кровь",
+    "тюрьма",
+    "секс",
+    "наркотик",
+    "политика",
+    "религия",
+    "болезнь",
+    "долг",
+    "убийство",
+    "казино",
+    "алкоголь",
+  ],
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -1974,6 +1991,44 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
               rule: "arabic-too-long",
               detail:
                 "Arabic entries should stay short for readable share URLs",
+            }),
+          );
+        }
+      }
+
+      if (language === "russian") {
+        if (!/^[\p{Script=Cyrillic}\p{Mark}]+$/u.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "russian-script",
+              detail: "Russian entries should use Cyrillic letters only",
+            }),
+          );
+        }
+        if (/[\s\-/#?]/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "russian-url-safety",
+              detail:
+                "Russian entries should not contain spaces or URL separators",
+            }),
+          );
+        }
+        if ([...word].length > 14) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: "russian-too-long",
+              detail:
+                "Russian entries should stay short for readable share URLs",
             }),
           );
         }

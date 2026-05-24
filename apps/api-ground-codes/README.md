@@ -57,7 +57,8 @@ Korean, Chinese, Japanese, Spanish, French, German, Portuguese, Indonesian, Thai
 `language: "korean"`, `language: "chinese"`, `language: "japanese"`,
 `language: "spanish"`, `language: "french"`, `language: "german"`, and
 `language: "portuguese"`, `language: "indonesian"`, `language: "thai"`,
-`language: "vietnamese"`, `language: "hindi"`, and `language: "arabic"`;
+`language: "vietnamese"`, `language: "hindi"`, `language: "arabic"`, and
+`language: "russian"`;
 proper names are generally preserved while terrain descriptors are localized.
 For example, `Olympus Mons` becomes `올림푸스 산` in Korean, `奥林帕斯山` in
 Chinese, `オリンポス山` in Japanese, `Monte Olimpo` in Spanish, and

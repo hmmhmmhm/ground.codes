@@ -30,6 +30,7 @@ const region2PathByLanguage: Record<string, string> = {
   vietnamese: "@ground-codes/geoint/region-dist/region-2-vietnamese.json",
   hindi: "@ground-codes/geoint/region-dist/region-2-hindi.json",
   arabic: "@ground-codes/geoint/region-dist/region-2-arabic.json",
+  russian: "@ground-codes/geoint/region-dist/region-2-russian.json",
 };
 
 const region3PathByLanguage: Record<string, string> = {
@@ -46,6 +47,7 @@ const region3PathByLanguage: Record<string, string> = {
   vietnamese: "@ground-codes/geoint/region-dist/region-3-vietnamese.json",
   hindi: "@ground-codes/geoint/region-dist/region-3-hindi.json",
   arabic: "@ground-codes/geoint/region-dist/region-3-arabic.json",
+  russian: "@ground-codes/geoint/region-dist/region-3-russian.json",
 };
 
 const languages = Object.keys(region3PathByLanguage);
@@ -81,6 +83,7 @@ describe("region-3 dataset", () => {
     const region2Vietnamese = readRows(region2PathByLanguage.vietnamese);
     const region2Hindi = readRows(region2PathByLanguage.hindi);
     const region2Arabic = readRows(region2PathByLanguage.arabic);
+    const region2Russian = readRows(region2PathByLanguage.russian);
     const region3Spanish = readRows(region3PathByLanguage.spanish);
     const region3French = readRows(region3PathByLanguage.french);
     const region3German = readRows(region3PathByLanguage.german);
@@ -90,6 +93,7 @@ describe("region-3 dataset", () => {
     const region3Vietnamese = readRows(region3PathByLanguage.vietnamese);
     const region3Hindi = readRows(region3PathByLanguage.hindi);
     const region3Arabic = readRows(region3PathByLanguage.arabic);
+    const region3Russian = readRows(region3PathByLanguage.russian);
 
     assert.equal(findRegionNameByCode(region2Korean, "1847050"), "애월");
     assert.equal(
@@ -133,6 +137,15 @@ describe("region-3 dataset", () => {
     assert.equal(findRegionNameByCode(region3Hindi, "OCN0"), "रॉस सागर 1");
     assert.equal(findRegionNameByCode(region2Arabic, "360630"), "القاهرة");
     assert.equal(findRegionNameByCode(region3Arabic, "OCN0"), "روس بحر 1");
+    assert.equal(findRegionNameByCode(region2Russian, "524901"), "Москва");
+    assert.equal(
+      findRegionNameByCode(region2Russian, "498817"),
+      "Санкт Петербург",
+    );
+    assert.equal(
+      findRegionNameByCode(region3Russian, "OCN0"),
+      "Море Росса 1",
+    );
 
     assert.deepEqual(
       region2Korean

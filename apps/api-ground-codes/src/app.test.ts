@@ -79,6 +79,7 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("<code>vietnamese</code>");
     expect(firstPartyDocs).toContain("<code>hindi</code>");
     expect(firstPartyDocs).toContain("<code>arabic</code>");
+    expect(firstPartyDocs).toContain("<code>russian</code>");
     expect(firstPartyDocs).toContain("Share URL Rules");
     expect(firstPartyDocs).toContain("Status Code Reference");
 
@@ -550,6 +551,46 @@ describe("Ground Codes API contract", () => {
     expect(regionSearch.results[0]).toMatchObject({
       type: "region",
       label: "القاهرة",
+      body: "earth",
+      regionLevel: 2,
+    });
+  }, 90_000);
+
+  test("encodes and searches Russian ground codes and region labels", async () => {
+    const encodedResponse = await postJson("/v1/encode", {
+      lat: 55.7558,
+      lng: 37.6173,
+      language: "russian",
+      regionLevel: 2,
+    });
+    expect(encodedResponse.status).toBe(200);
+    const code = await encodedResponse.text();
+    expect(code).toMatch(/^Москва-[\p{Script=Cyrillic}\p{Mark}]+/u);
+
+    const codeSearchResponse = await postJson("/v1/search", {
+      query: code,
+      language: "english",
+      regionLevel: 2,
+    });
+    expect(codeSearchResponse.status).toBe(200);
+    const codeSearch = await codeSearchResponse.json();
+    expect(codeSearch.results[0]).toMatchObject({
+      type: "ground-code",
+      label: code,
+      body: "earth",
+      regionLevel: 2,
+    });
+
+    const regionSearchResponse = await postJson("/v1/search", {
+      query: "Москва",
+      language: "russian",
+      regionLevel: 2,
+    });
+    expect(regionSearchResponse.status).toBe(200);
+    const regionSearch = await regionSearchResponse.json();
+    expect(regionSearch.results[0]).toMatchObject({
+      type: "region",
+      label: "Москва",
       body: "earth",
       regionLevel: 2,
     });

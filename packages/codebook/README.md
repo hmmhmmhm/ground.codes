@@ -36,6 +36,7 @@ The primary purpose of the Codebook is to provide a dictionary of words that can
 - 🇹🇭 **Thai Codebook**: Contains 5,000 Thai-script curated words
 - 🇻🇳 **Vietnamese Codebook**: Contains 5,000 Vietnamese Latin-script curated words
 - 🇮🇳 **Hindi Codebook**: Contains 5,000 Devanagari-script curated words
+- 🇷🇺 **Russian Codebook**: Contains 5,000 Cyrillic-script curated words
 
 ## 🤖 Word Generation Process
 
@@ -83,6 +84,7 @@ Current distributed word sets:
 - Thai: 5,000 native Thai-script words seeded from neutral concrete nouns and filtered sensitive candidates
 - Vietnamese: 5,000 native Vietnamese Latin-script words seeded from neutral concrete nouns and filtered sensitive candidates
 - Hindi: 5,000 native Devanagari-script words seeded from neutral concrete nouns and filtered sensitive candidates
+- Russian: 5,000 native Cyrillic-script words seeded from neutral concrete nouns and filtered sensitive candidates
 
 ## ⚙️ Generation Commands
 

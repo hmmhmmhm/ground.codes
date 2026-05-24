@@ -220,6 +220,17 @@ await smoke.check("Arabic Cairo encode", async () => {
   assert(/^القاهرة-/.test(code), `expected Arabic Cairo code, got ${code}`);
 });
 
+await smoke.check("Russian Moscow encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 55.7558,
+    lng: 37.6173,
+    language: "russian",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Москва-/.test(code), `expected Russian Moscow code, got ${code}`);
+});
+
 await smoke.check("ASCII earth region data", async () => {
   const code = await postJson("/v1/encode", {
     lat: -82,

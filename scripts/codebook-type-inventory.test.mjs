@@ -89,4 +89,15 @@ describe("codebook type inventory", () => {
     assert.ok(arabic.counts.recognizedCompound > 0);
     assert.ok(arabic.counts.otherStandalone > 0);
   });
+
+  test("classifies Russian standalone and Cyrillic compound entries", () => {
+    const russian = buildTypeInventory().find(
+      (row) => row.language === "russian",
+    );
+
+    assert.ok(russian);
+    assert.ok(russian.counts.shortStandalone >= 180);
+    assert.ok(russian.counts.recognizedCompound > 0);
+    assert.ok(russian.counts.otherStandalone > 0);
+  });
 });

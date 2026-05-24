@@ -14,6 +14,7 @@ import thaiWords from "@repo/codebook/codebook-dist/thai.json";
 import vietnameseWords from "@repo/codebook/codebook-dist/vietnamese.json";
 import hindiWords from "@repo/codebook/codebook-dist/hindi.json";
 import arabicWords from "@repo/codebook/codebook-dist/arabic.json";
+import russianWords from "@repo/codebook/codebook-dist/russian.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -2334,6 +2335,57 @@ describe("reviewed multilingual codebooks", () => {
       "جنس",
       "قنبلة",
       "رصاص",
+    ]);
+  });
+
+  test("keeps Russian codebook URL-safe and neutral", () => {
+    assert.equal(russianWords.length, 5000);
+    assert.equal(new Set(russianWords).size, russianWords.length);
+    assert.deepEqual(
+      russianWords.filter(
+        (word) => !/^[\p{Script=Cyrillic}\p{Mark}]+$/u.test(word),
+      ),
+      [],
+    );
+    assert.deepEqual(
+      russianWords.filter((word) => /[\s\-/#?]/.test(word)),
+      [],
+    );
+    assert.deepEqual(
+      russianWords.filter((word) => [...word].length > 14),
+      [],
+    );
+    assert.ok(
+      russianWords.filter((word) => [...word].length <= 4).length >= 180,
+      "Russian codebook should include at least 180 short standalone words",
+    );
+    assertWordsPresent(russianWords, [
+      "вода",
+      "дом",
+      "река",
+      "гора",
+      "цветок",
+      "книга",
+      "хлеб",
+      "яблоко",
+      "береза",
+      "мост",
+      "озеродом",
+    ]);
+    assertBlockedWordsAbsent(russianWords, [
+      "война",
+      "оружие",
+      "кровь",
+      "тюрьма",
+      "секс",
+      "наркотик",
+      "политика",
+      "религия",
+      "болезнь",
+      "долг",
+      "убийство",
+      "казино",
+      "алкоголь",
     ]);
   });
 });

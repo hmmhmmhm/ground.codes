@@ -39,6 +39,7 @@ Current distributed word counts:
 | Vietnamese |  5000 | `codebook-dist/vietnamese.json` |
 | Hindi      |  5000 | `codebook-dist/hindi.json`      |
 | Arabic     |  5000 | `codebook-dist/arabic.json`     |
+| Russian    |  5000 | `codebook-dist/russian.json`    |
 
 ## Current Word Type Inventory
 
@@ -100,6 +101,9 @@ Current inventory:
 | Arabic     | Recognized compound              |  1068 | 21.4% | `بحيرةبيت`, `بحيرةسوق`, `بحيرةطريق`, `بحيرةجسر`, `بحيرةحديقة`        |
 | Arabic     | Short standalone                 |   260 |  5.2% | `ماء`, `بيت`, `نهر`, `جبل`, `زهرة`                                   |
 | Arabic     | Other standalone or unclassified |  3672 | 73.4% | `مصباح`, `زيتون`, `حديقة`, `بحيرة`, `حافلة`                          |
+| Russian    | Recognized compound              |  3776 | 75.5% | `озеродом`, `озеромост`, `озеролист`, `озеросад`, `озеродвор`         |
+| Russian    | Short standalone                 |   196 |  3.9% | `вода`, `дом`, `река`, `гора`, `хлеб`                                 |
+| Russian    | Other standalone or unclassified |  1028 | 20.6% | `цветок`, `книга`, `яблоко`, `береза`, `озеро`                        |
 
 Review implications:
 
@@ -162,6 +166,12 @@ Review implications:
   `فرحمصباح`, and `أملوعاء`, and avoids broad place-prefix templates such as
   `منارةشجرة`. Continue replacing weak material/object compounds with reviewed
   standalone Arabic nouns as coverage grows.
+- Russian uses native Cyrillic in public code words and localized region
+  labels. The first full-support pass seeds common concrete nouns, blocks
+  sensitive political, violent, adult, gambling, alcohol, and medical terms,
+  and generates fallback compounds only from neutral place, nature, household,
+  and food roots. Russian should get follow-up review passes to reduce the high
+  generated-compound share with more everyday standalone nouns.
 
 ## Product Principles
 

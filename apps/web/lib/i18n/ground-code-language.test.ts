@@ -30,4 +30,8 @@ describe("ground code language mapping", () => {
   test("maps Arabic UI locale to Arabic Ground Codes", () => {
     expect(getGroundCodeLanguage("ar")).toBe("arabic");
   });
+
+  test("maps Russian UI locale to Russian Ground Codes", () => {
+    expect(getGroundCodeLanguage("ru")).toBe("russian");
+  });
 });

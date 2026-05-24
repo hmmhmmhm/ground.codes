@@ -70,6 +70,7 @@ const MapControls: React.FC<MapControlsProps> = ({
     vi: "Tiếng Việt",
     hi: "हिन्दी",
     ar: "العربية",
+    ru: "Русский",
   };
   const localeShortLabels: Record<Locale, string> = {
     en: "EN",
@@ -85,6 +86,7 @@ const MapControls: React.FC<MapControlsProps> = ({
     vi: "VI",
     hi: "HI",
     ar: "AR",
+    ru: "RU",
   };
 
   const handleLanguageChange = (newLocale: Locale) => {

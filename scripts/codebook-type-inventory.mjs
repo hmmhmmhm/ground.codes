@@ -14,6 +14,7 @@ const CODEBOOK_FILES = {
   vietnamese: "../packages/codebook/codebook-dist/vietnamese.json",
   hindi: "../packages/codebook/codebook-dist/hindi.json",
   arabic: "../packages/codebook/codebook-dist/arabic.json",
+  russian: "../packages/codebook/codebook-dist/russian.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -874,6 +875,81 @@ const COMPOUND_SUFFIXES = {
     "لامع",
     "جميل",
   ],
+  russian: [
+    "дом",
+    "мост",
+    "лист",
+    "сад",
+    "двор",
+    "луг",
+    "парк",
+    "берег",
+    "пруд",
+    "лес",
+    "поле",
+    "камень",
+    "песок",
+    "ветка",
+    "корень",
+    "ствол",
+    "цветок",
+    "плод",
+    "ягода",
+    "орех",
+    "зерно",
+    "семя",
+    "трава",
+    "мох",
+    "сноп",
+    "венок",
+    "букет",
+    "чаша",
+    "кружка",
+    "миска",
+    "банка",
+    "ведро",
+    "ящик",
+    "короб",
+    "мешок",
+    "сумка",
+    "корзина",
+    "полка",
+    "стол",
+    "стул",
+    "лавка",
+    "рама",
+    "окно",
+    "дверь",
+    "крыша",
+    "доска",
+    "брус",
+    "рейка",
+    "замок",
+    "ручка",
+    "лента",
+    "нитка",
+    "ткань",
+    "холст",
+    "бумага",
+    "книга",
+    "кисть",
+    "краска",
+    "горшок",
+    "ваза",
+    "лампа",
+    "свеча",
+    "фонарь",
+    "лодка",
+    "весло",
+    "колесо",
+    "тропа",
+    "дорога",
+    "рынок",
+    "сарай",
+    "амбар",
+    "навес",
+    "печь",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -890,6 +966,7 @@ const LANGUAGE_LABELS = {
   vietnamese: "Vietnamese",
   hindi: "Hindi",
   arabic: "Arabic",
+  russian: "Russian",
 };
 
 const TYPE_LABELS = {
@@ -917,7 +994,8 @@ const isShortStandalone = (language, word) => {
     language === "indonesian" ||
     language === "vietnamese" ||
     language === "hindi" ||
-    language === "arabic"
+    language === "arabic" ||
+    language === "russian"
   ) {
     return length <= 4;
   }
@@ -946,7 +1024,8 @@ const minPrefixLength = (language) => {
     language === "indonesian" ||
     language === "vietnamese" ||
     language === "hindi" ||
-    language === "arabic"
+    language === "arabic" ||
+    language === "russian"
   ) {
     return 4;
   }
