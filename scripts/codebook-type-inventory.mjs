@@ -15,6 +15,12 @@ const CODEBOOK_FILES = {
   hindi: "../packages/codebook/codebook-dist/hindi.json",
   arabic: "../packages/codebook/codebook-dist/arabic.json",
   russian: "../packages/codebook/codebook-dist/russian.json",
+  swahili: "../packages/codebook/codebook-dist/swahili.json",
+  filipino: "../packages/codebook/codebook-dist/filipino.json",
+  hausa: "../packages/codebook/codebook-dist/hausa.json",
+  bengali: "../packages/codebook/codebook-dist/bengali.json",
+  urdu: "../packages/codebook/codebook-dist/urdu.json",
+  amharic: "../packages/codebook/codebook-dist/amharic.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -950,6 +956,78 @@ const COMPOUND_SUFFIXES = {
     "навес",
     "печь",
   ],
+  swahili: [
+    "nyumba",
+    "kitabu",
+    "soko",
+    "daraja",
+    "bustani",
+    "shamba",
+    "bahari",
+    "kikombe",
+    "kikapu",
+    "ramani",
+  ],
+  filipino: [
+    "bahay",
+    "aklat",
+    "palengke",
+    "tulay",
+    "hardin",
+    "bukid",
+    "dagat",
+    "mangkok",
+    "basket",
+    "larawan",
+  ],
+  hausa: [
+    "gida",
+    "littafi",
+    "kasuwa",
+    "hanya",
+    "lambu",
+    "gona",
+    "teku",
+    "kwano",
+    "kwando",
+    "taswira",
+  ],
+  bengali: [
+    "বাড়ি",
+    "বই",
+    "বাজার",
+    "সেতু",
+    "বাগান",
+    "মাঠ",
+    "সমুদ্র",
+    "বাটি",
+    "ঝুড়ি",
+    "ছবি",
+  ],
+  urdu: [
+    "گھر",
+    "کتاب",
+    "بازار",
+    "راستہ",
+    "باغ",
+    "کھیت",
+    "سمندر",
+    "پیالہ",
+    "ٹوکری",
+    "تصویر",
+  ],
+  amharic: [
+    "ቤት",
+    "መጽሐፍ",
+    "ገበያ",
+    "መንገድ",
+    "መናፈሻ",
+    "ሜዳ",
+    "ባሕር",
+    "ሳህን",
+    "ቅርጫት",
+    "ስዕል",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -967,6 +1045,12 @@ const LANGUAGE_LABELS = {
   hindi: "Hindi",
   arabic: "Arabic",
   russian: "Russian",
+  swahili: "Swahili",
+  filipino: "Filipino",
+  hausa: "Hausa",
+  bengali: "Bengali",
+  urdu: "Urdu",
+  amharic: "Amharic",
 };
 
 const TYPE_LABELS = {
@@ -995,7 +1079,13 @@ const isShortStandalone = (language, word) => {
     language === "vietnamese" ||
     language === "hindi" ||
     language === "arabic" ||
-    language === "russian"
+    language === "russian" ||
+    language === "swahili" ||
+    language === "filipino" ||
+    language === "hausa" ||
+    language === "bengali" ||
+    language === "urdu" ||
+    language === "amharic"
   ) {
     return length <= 4;
   }
@@ -1025,7 +1115,13 @@ const minPrefixLength = (language) => {
     language === "vietnamese" ||
     language === "hindi" ||
     language === "arabic" ||
-    language === "russian"
+    language === "russian" ||
+    language === "swahili" ||
+    language === "filipino" ||
+    language === "hausa" ||
+    language === "bengali" ||
+    language === "urdu" ||
+    language === "amharic"
   ) {
     return 4;
   }
@@ -1045,7 +1141,10 @@ const normalizeForSuffix = (language, word) => {
     language === "german" ||
     language === "portuguese" ||
     language === "indonesian" ||
-    language === "vietnamese"
+    language === "vietnamese" ||
+    language === "swahili" ||
+    language === "filipino" ||
+    language === "hausa"
   ) {
     return word.toLowerCase();
   }

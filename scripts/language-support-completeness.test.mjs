@@ -29,9 +29,24 @@ const parseWordsetCounts = () => {
 };
 
 const languageSuffix = (language) => (language === "english" ? "" : `-${language}`);
+const addressingGapLanguages = [
+  "swahili",
+  "filipino",
+  "hausa",
+  "bengali",
+  "urdu",
+  "amharic",
+];
 
 describe("language support completeness", () => {
   const languages = parseSupportedLanguages();
+
+  test("includes the address-gap expansion languages", () => {
+    assert.deepEqual(
+      addressingGapLanguages.filter((language) => !languages.includes(language)),
+      [],
+    );
+  });
 
   test("ships codebook and region assets for every supported language", () => {
     const counts = parseWordsetCounts();

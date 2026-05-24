@@ -13,6 +13,12 @@ import viPlaceTypes from "@/messages/vi/placeTypes.json";
 import hiPlaceTypes from "@/messages/hi/placeTypes.json";
 import arPlaceTypes from "@/messages/ar/placeTypes.json";
 import ruPlaceTypes from "@/messages/ru/placeTypes.json";
+import swPlaceTypes from "@/messages/sw/placeTypes.json";
+import filPlaceTypes from "@/messages/fil/placeTypes.json";
+import haPlaceTypes from "@/messages/ha/placeTypes.json";
+import bnPlaceTypes from "@/messages/bn/placeTypes.json";
+import urPlaceTypes from "@/messages/ur/placeTypes.json";
+import amPlaceTypes from "@/messages/am/placeTypes.json";
 
 export interface PlaceDetailsProps {
   map: google.maps.Map | null;
@@ -39,4 +45,10 @@ export const placeTypes: Record<Locale, PlaceTypesRecord> = {
   hi: hiPlaceTypes as PlaceTypesRecord,
   ar: arPlaceTypes as PlaceTypesRecord,
   ru: ruPlaceTypes as PlaceTypesRecord,
+  sw: swPlaceTypes as PlaceTypesRecord,
+  fil: filPlaceTypes as PlaceTypesRecord,
+  ha: haPlaceTypes as PlaceTypesRecord,
+  bn: bnPlaceTypes as PlaceTypesRecord,
+  ur: urPlaceTypes as PlaceTypesRecord,
+  am: amPlaceTypes as PlaceTypesRecord,
 };

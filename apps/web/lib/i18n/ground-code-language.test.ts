@@ -34,4 +34,13 @@ describe("ground code language mapping", () => {
   test("maps Russian UI locale to Russian Ground Codes", () => {
     expect(getGroundCodeLanguage("ru")).toBe("russian");
   });
+
+  test("maps address-gap expansion UI locales to Ground Codes", () => {
+    expect(getGroundCodeLanguage("sw")).toBe("swahili");
+    expect(getGroundCodeLanguage("fil")).toBe("filipino");
+    expect(getGroundCodeLanguage("ha")).toBe("hausa");
+    expect(getGroundCodeLanguage("bn")).toBe("bengali");
+    expect(getGroundCodeLanguage("ur")).toBe("urdu");
+    expect(getGroundCodeLanguage("am")).toBe("amharic");
+  });
 });

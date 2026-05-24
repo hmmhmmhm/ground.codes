@@ -20,6 +20,12 @@ operational status board for follow-up passes.
 | hindi | 5000 | active cleanup | Remove broad descriptor compounds, obscure standalone entries, mixed-script region labels, and URL separator leftovers. |
 | arabic | 5000 | active cleanup | Grow reviewed standalone nouns and keep abstract mood/value compounds out of public codes. |
 | russian | 5000 | active cleanup | V3 keeps at least 250 short standalone nouns, lowers recognized generated compounds below 3,000, and blocks obscure or coined-looking leftovers. |
+| swahili | 5000 | active cleanup | First address-gap expansion pass; grow native-reviewed standalone nouns and reduce weak fused pairs. |
+| filipino | 5000 | active cleanup | First address-gap expansion pass; grow Filipino-reviewed standalone nouns and reduce weak fused pairs. |
+| hausa | 5000 | active cleanup | First address-gap expansion pass; grow Hausa-reviewed standalone nouns and reduce weak fused pairs. |
+| bengali | 5000 | active cleanup | First address-gap expansion pass; keep native Bengali script and review fused noun pairs. |
+| urdu | 5000 | active cleanup | First address-gap expansion pass; keep Urdu script and review RTL fused noun pairs. |
+| amharic | 5000 | active cleanup | First address-gap expansion pass; keep Ethiopic script and review fused noun pairs. |
 
 Review checklist:
 

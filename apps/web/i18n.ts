@@ -13,6 +13,12 @@ export const locales = [
   "hi",
   "ar",
   "ru",
+  "sw",
+  "fil",
+  "ha",
+  "bn",
+  "ur",
+  "am",
 ] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "ko";

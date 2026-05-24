@@ -17,6 +17,12 @@ export const EXPECTED_COUNTS = {
   hindi: 5000,
   arabic: 5000,
   russian: 5000,
+  swahili: 5000,
+  filipino: 5000,
+  hausa: 5000,
+  bengali: 5000,
+  urdu: 5000,
+  amharic: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -34,6 +40,12 @@ const CODEBOOK_FILES = {
   hindi: "../packages/codebook/codebook-dist/hindi.json",
   arabic: "../packages/codebook/codebook-dist/arabic.json",
   russian: "../packages/codebook/codebook-dist/russian.json",
+  swahili: "../packages/codebook/codebook-dist/swahili.json",
+  filipino: "../packages/codebook/codebook-dist/filipino.json",
+  hausa: "../packages/codebook/codebook-dist/hausa.json",
+  bengali: "../packages/codebook/codebook-dist/bengali.json",
+  urdu: "../packages/codebook/codebook-dist/urdu.json",
+  amharic: "../packages/codebook/codebook-dist/amharic.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -1425,6 +1437,12 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
     "жгут",
     "хомут",
   ],
+  swahili: ["Vita", "Damu", "Silaha", "Ngono", "Kasino", "Pombe"],
+  filipino: ["Digma", "Dugo", "Baril", "Sugal", "Alak"],
+  hausa: ["Yaki", "Jini", "Bindiga", "Caca", "Giya"],
+  bengali: ["যুদ্ধ", "রক্ত", "অস্ত্র", "জুয়া", "মদ"],
+  urdu: ["جنگ", "خون", "ہتھیار", "جوا", "شراب"],
+  amharic: ["ጦርነት", "ደም", "መሳሪያ", "ቁማር", "አልኮል"],
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(

@@ -675,6 +675,80 @@ describe("celestial bodies", () => {
     assertClose(decoded.lng, 30.84, 0.0002);
   });
 
+  test("supports address-gap expansion Earth, Moon, and Mars labels", async () => {
+    const cases = [
+      {
+        language: "swahili",
+        target: { lat: -6.1751, lng: 106.865 },
+        earth: /^Jakarta-[A-Z][A-Za-z]+/u,
+        moon: /^[\p{Script=Latin}\s]+-[A-Z][A-Za-z]+/u,
+        mars: /^[\p{Script=Latin}\s\d]+-[A-Z][A-Za-z]+/u,
+      },
+      {
+        language: "filipino",
+        target: { lat: -6.1751, lng: 106.865 },
+        earth: /^Jakarta-[A-Z][A-Za-z]+/u,
+        moon: /^[\p{Script=Latin}\s]+-[A-Z][A-Za-z]+/u,
+        mars: /^[\p{Script=Latin}\s\d]+-[A-Z][A-Za-z]+/u,
+      },
+      {
+        language: "hausa",
+        target: { lat: 30.0444, lng: 31.2357 },
+        earth: /^Alkahira-[A-Z][A-Za-z]+/u,
+        moon: /^[\p{Script=Latin}\s]+-[A-Z][A-Za-z]+/u,
+        mars: /^[\p{Script=Latin}\s\d]+-[A-Z][A-Za-z]+/u,
+      },
+      {
+        language: "bengali",
+        target: { lat: 28.65195, lng: 77.23149 },
+        earth: /^দিল্লি-[\p{Script=Bengali}\p{Mark}]+/u,
+        moon: /^[\p{Script=Bengali}\p{Mark}\s]+-[\p{Script=Bengali}\p{Mark}]+/u,
+        mars: /^[\p{Script=Bengali}\p{Mark}\s\d]+-[\p{Script=Bengali}\p{Mark}]+/u,
+      },
+      {
+        language: "urdu",
+        target: { lat: 28.65195, lng: 77.23149 },
+        earth: /^دہلی-[\p{Script=Arabic}\p{Mark}]+/u,
+        moon: /^[\p{Script=Arabic}\p{Mark}\s]+-[\p{Script=Arabic}\p{Mark}]+/u,
+        mars: /^[\p{Script=Arabic}\p{Mark}\s\d]+-[\p{Script=Arabic}\p{Mark}]+/u,
+      },
+      {
+        language: "amharic",
+        target: { lat: 30.0444, lng: 31.2357 },
+        earth: /^ካይሮ-[\p{Script=Ethiopic}\p{Mark}]+/u,
+        moon: /^[\p{Script=Ethiopic}\p{Mark}\s]+-[\p{Script=Ethiopic}\p{Mark}]+/u,
+        mars: /^[\p{Script=Ethiopic}\p{Mark}\s\d]+-[\p{Script=Ethiopic}\p{Mark}]+/u,
+      },
+    ] as const;
+
+    for (const item of cases) {
+      const earthCode = await encode(item.target, {
+        regionLevel: 2,
+        language: item.language,
+      });
+      assert.match(earthCode, item.earth);
+
+      const moonCode = await encode(
+        { lat: 8.35, lng: 30.84 },
+        { body: "moon", regionLevel: 2, language: item.language },
+      );
+      assert.match(moonCode, item.moon);
+
+      const marsCode = await encode(
+        { lat: 18.6528, lng: 226.1975 },
+        { body: "mars", regionLevel: 2, language: item.language },
+      );
+      assert.match(marsCode, item.mars);
+
+      const decoded = await decode(moonCode, {
+        body: "moon",
+        language: item.language,
+      });
+      assertClose(decoded.lat, 8.35, 0.0002);
+      assertClose(decoded.lng, 30.84, 0.0002);
+    }
+  });
+
   test("uses a smaller meters-per-degree value on the Moon than on Earth", () => {
     assert.ok(getBodyMetersPerDegree("moon") < getBodyMetersPerDegree("earth"));
   });

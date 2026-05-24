@@ -100,4 +100,22 @@ describe("codebook type inventory", () => {
     assert.ok(russian.counts.recognizedCompound <= 3000);
     assert.ok(russian.counts.otherStandalone > 0);
   });
+
+  test("classifies address-gap expansion codebooks", () => {
+    const rows = buildTypeInventory();
+    for (const language of [
+      "swahili",
+      "filipino",
+      "hausa",
+      "bengali",
+      "urdu",
+      "amharic",
+    ]) {
+      const row = rows.find((item) => item.language === language);
+      assert.ok(row, `${language} inventory`);
+      assert.equal(row.total, 5000);
+      assert.ok(row.counts.recognizedCompound > 0, `${language} compounds`);
+      assert.ok(row.counts.otherStandalone > 4000, `${language} standalone`);
+    }
+  });
 });

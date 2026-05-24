@@ -231,6 +231,75 @@ await smoke.check("Russian Moscow encode", async () => {
   assert(/^Москва-/.test(code), `expected Russian Moscow code, got ${code}`);
 });
 
+await smoke.check("Swahili Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "swahili",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Swahili Jakarta code, got ${code}`);
+});
+
+await smoke.check("Filipino Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "filipino",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(
+    /^Jakarta-/.test(code),
+    `expected Filipino Jakarta code, got ${code}`,
+  );
+});
+
+await smoke.check("Hausa Cairo encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 30.0444,
+    lng: 31.2357,
+    language: "hausa",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Alkahira-/.test(code), `expected Hausa Cairo code, got ${code}`);
+});
+
+await smoke.check("Bengali Delhi encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 28.65195,
+    lng: 77.23149,
+    language: "bengali",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^দিল্লি-/.test(code), `expected Bengali Delhi code, got ${code}`);
+});
+
+await smoke.check("Urdu Delhi encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 28.65195,
+    lng: 77.23149,
+    language: "urdu",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^دہلی-/.test(code), `expected Urdu Delhi code, got ${code}`);
+});
+
+await smoke.check("Amharic Cairo encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 30.0444,
+    lng: 31.2357,
+    language: "amharic",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^ካይሮ-/.test(code), `expected Amharic Cairo code, got ${code}`);
+});
+
 await smoke.check("ASCII earth region data", async () => {
   const code = await postJson("/v1/encode", {
     lat: -82,

@@ -80,6 +80,12 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("<code>hindi</code>");
     expect(firstPartyDocs).toContain("<code>arabic</code>");
     expect(firstPartyDocs).toContain("<code>russian</code>");
+    expect(firstPartyDocs).toContain("<code>swahili</code>");
+    expect(firstPartyDocs).toContain("<code>filipino</code>");
+    expect(firstPartyDocs).toContain("<code>hausa</code>");
+    expect(firstPartyDocs).toContain("<code>bengali</code>");
+    expect(firstPartyDocs).toContain("<code>urdu</code>");
+    expect(firstPartyDocs).toContain("<code>amharic</code>");
     expect(firstPartyDocs).toContain("Share URL Rules");
     expect(firstPartyDocs).toContain("Status Code Reference");
 
@@ -595,6 +601,99 @@ describe("Ground Codes API contract", () => {
       regionLevel: 2,
     });
   }, 90_000);
+
+  test.each([
+    {
+      name: "Swahili",
+      language: "swahili",
+      lat: -6.1751,
+      lng: 106.865,
+      region: "Jakarta",
+      codePattern: /^Jakarta-[A-Z][A-Za-z]+/u,
+    },
+    {
+      name: "Filipino",
+      language: "filipino",
+      lat: -6.1751,
+      lng: 106.865,
+      region: "Jakarta",
+      codePattern: /^Jakarta-[A-Z][A-Za-z]+/u,
+    },
+    {
+      name: "Hausa",
+      language: "hausa",
+      lat: 30.0444,
+      lng: 31.2357,
+      region: "Alkahira",
+      codePattern: /^Alkahira-[A-Z][A-Za-z]+/u,
+    },
+    {
+      name: "Bengali",
+      language: "bengali",
+      lat: 28.65195,
+      lng: 77.23149,
+      region: "দিল্লি",
+      codePattern: /^দিল্লি-[\p{Script=Bengali}\p{Mark}]+/u,
+    },
+    {
+      name: "Urdu",
+      language: "urdu",
+      lat: 28.65195,
+      lng: 77.23149,
+      region: "دہلی",
+      codePattern: /^دہلی-[\p{Script=Arabic}\p{Mark}]+/u,
+    },
+    {
+      name: "Amharic",
+      language: "amharic",
+      lat: 30.0444,
+      lng: 31.2357,
+      region: "ካይሮ",
+      codePattern: /^ካይሮ-[\p{Script=Ethiopic}\p{Mark}]+/u,
+    },
+  ])(
+    "encodes and searches $name address-gap ground codes and region labels",
+    async ({ language, lat, lng, region, codePattern }) => {
+      const encodedResponse = await postJson("/v1/encode", {
+        lat,
+        lng,
+        language,
+        regionLevel: 2,
+      });
+      expect(encodedResponse.status).toBe(200);
+      const code = await encodedResponse.text();
+      expect(code).toMatch(codePattern);
+
+      const codeSearchResponse = await postJson("/v1/search", {
+        query: code,
+        language: "english",
+        regionLevel: 2,
+      });
+      expect(codeSearchResponse.status).toBe(200);
+      const codeSearch = await codeSearchResponse.json();
+      expect(codeSearch.results[0]).toMatchObject({
+        type: "ground-code",
+        label: code,
+        body: "earth",
+        regionLevel: 2,
+      });
+
+      const regionSearchResponse = await postJson("/v1/search", {
+        query: region,
+        language,
+        regionLevel: 2,
+      });
+      expect(regionSearchResponse.status).toBe(200);
+      const regionSearch = await regionSearchResponse.json();
+      expect(regionSearch.results[0]).toMatchObject({
+        type: "region",
+        label: region,
+        body: "earth",
+        regionLevel: 2,
+      });
+    },
+    90_000,
+  );
 
   test("search returns multiple partial region matches with cache headers", async () => {
     const response = await postJson("/v1/search", {

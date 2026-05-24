@@ -31,6 +31,12 @@ const region2PathByLanguage: Record<string, string> = {
   hindi: "@ground-codes/geoint/region-dist/region-2-hindi.json",
   arabic: "@ground-codes/geoint/region-dist/region-2-arabic.json",
   russian: "@ground-codes/geoint/region-dist/region-2-russian.json",
+  swahili: "@ground-codes/geoint/region-dist/region-2-swahili.json",
+  filipino: "@ground-codes/geoint/region-dist/region-2-filipino.json",
+  hausa: "@ground-codes/geoint/region-dist/region-2-hausa.json",
+  bengali: "@ground-codes/geoint/region-dist/region-2-bengali.json",
+  urdu: "@ground-codes/geoint/region-dist/region-2-urdu.json",
+  amharic: "@ground-codes/geoint/region-dist/region-2-amharic.json",
 };
 
 const region3PathByLanguage: Record<string, string> = {
@@ -48,6 +54,12 @@ const region3PathByLanguage: Record<string, string> = {
   hindi: "@ground-codes/geoint/region-dist/region-3-hindi.json",
   arabic: "@ground-codes/geoint/region-dist/region-3-arabic.json",
   russian: "@ground-codes/geoint/region-dist/region-3-russian.json",
+  swahili: "@ground-codes/geoint/region-dist/region-3-swahili.json",
+  filipino: "@ground-codes/geoint/region-dist/region-3-filipino.json",
+  hausa: "@ground-codes/geoint/region-dist/region-3-hausa.json",
+  bengali: "@ground-codes/geoint/region-dist/region-3-bengali.json",
+  urdu: "@ground-codes/geoint/region-dist/region-3-urdu.json",
+  amharic: "@ground-codes/geoint/region-dist/region-3-amharic.json",
 };
 
 const languages = Object.keys(region3PathByLanguage);

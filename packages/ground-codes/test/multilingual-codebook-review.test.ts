@@ -15,6 +15,12 @@ import vietnameseWords from "@repo/codebook/codebook-dist/vietnamese.json";
 import hindiWords from "@repo/codebook/codebook-dist/hindi.json";
 import arabicWords from "@repo/codebook/codebook-dist/arabic.json";
 import russianWords from "@repo/codebook/codebook-dist/russian.json";
+import swahiliWords from "@repo/codebook/codebook-dist/swahili.json";
+import filipinoWords from "@repo/codebook/codebook-dist/filipino.json";
+import hausaWords from "@repo/codebook/codebook-dist/hausa.json";
+import bengaliWords from "@repo/codebook/codebook-dist/bengali.json";
+import urduWords from "@repo/codebook/codebook-dist/urdu.json";
+import amharicWords from "@repo/codebook/codebook-dist/amharic.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -36,6 +42,23 @@ const germanTemplateCompoundPattern =
   /^[A-Z][a-z]{3,}(?:band|bank|becher|beet|beutel|blatt|blech|brett|bund|dose|eimer|faden|fass|feld|fliese|gabel|glas|griff|haken|hut|kachel|kanne|karton|kasten|kelle|kerze|kiste|klotz|knopf|korb|kranz|kreide|krug|lampe|leiste|mappe|matte|messer|nadel|papier|perle|pfanne|pfeife|pinsel|platte|polster|rahmen|riegel|ring|rohr|sack|schale|seil|sieb|sohle|spange|spatel|spiegel|spule|steg|stein|stift|tafel|tasche|tasse|tisch|topf|truhe|vlies|wagen)$/u;
 const portugueseTemplateCompoundPattern =
   /^[A-Z][a-z]{3,}(?:anel|banco|bandeja|bastao|bau|bolsa|botao|brocha|caixa|cesta|cesto|chave|copo|corda|cuba|cuia|escova|esteira|fita|folha|frasco|gancho|jarra|lata|livro|lona|luz|mapa|marco|mesa|pano|pote|prato|rede|saco|selo|suporte|tabua|tampa|tela|tigela|vaso|vela)$/u;
+const assertScriptCodebook = ({
+  words,
+  pattern,
+  expectedWords,
+  blockedWords,
+}: {
+  words: string[];
+  pattern: RegExp;
+  expectedWords: string[];
+  blockedWords: string[];
+}) => {
+  assert.equal(words.length, 5000);
+  assert.equal(new Set(words).size, words.length);
+  assert.deepEqual(words.filter((word) => !pattern.test(word)), []);
+  assertWordsPresent(words, expectedWords);
+  assertBlockedWordsAbsent(words, blockedWords);
+};
 
 const assertCodebook = ({
   words,
@@ -2442,5 +2465,55 @@ describe("reviewed multilingual codebooks", () => {
       "жгут",
       "хомут",
     ]);
+  });
+
+  test("keeps address-gap Latin codebooks URL-safe and neutral", () => {
+    for (const [words, expectedWords, blockedWords] of [
+      [
+        swahiliWords,
+        ["Maji", "Nyumba", "Mto", "Mlima", "Kitabu", "Soko"],
+        ["Vita", "Damu", "Silaha", "Ngono", "Kasino", "Pombe"],
+      ],
+      [
+        filipinoWords,
+        ["Tubig", "Bahay", "Ilog", "Bundok", "Aklat", "Palengke"],
+        ["Digma", "Dugo", "Baril", "Sugal", "Alak"],
+      ],
+      [
+        hausaWords,
+        ["Ruwa", "Gida", "Kogi", "Tsauni", "Littafi", "Kasuwa"],
+        ["Yaki", "Jini", "Bindiga", "Caca", "Giya"],
+      ],
+    ] as const) {
+      assert.equal(words.length, 5000);
+      assert.equal(new Set(words).size, words.length);
+      assert.deepEqual(
+        words.filter((word) => !/^[A-Z][a-z]+$/.test(word)),
+        [],
+      );
+      assertWordsPresent(words, expectedWords);
+      assertBlockedWordsAbsent(words, blockedWords);
+    }
+  });
+
+  test("keeps address-gap native-script codebooks URL-safe and neutral", () => {
+    assertScriptCodebook({
+      words: bengaliWords,
+      pattern: /^[\p{Script=Bengali}\p{Mark}]+$/u,
+      expectedWords: ["জল", "বাড়ি", "নদী", "পাহাড়", "বই", "বাজার"],
+      blockedWords: ["যুদ্ধ", "রক্ত", "অস্ত্র", "জুয়া", "মদ"],
+    });
+    assertScriptCodebook({
+      words: urduWords,
+      pattern: /^[\p{Script=Arabic}\p{Mark}]+$/u,
+      expectedWords: ["پانی", "گھر", "دریا", "پہاڑ", "کتاب", "بازار"],
+      blockedWords: ["جنگ", "خون", "ہتھیار", "جوا", "شراب"],
+    });
+    assertScriptCodebook({
+      words: amharicWords,
+      pattern: /^[\p{Script=Ethiopic}\p{Mark}]+$/u,
+      expectedWords: ["ውሃ", "ቤት", "ወንዝ", "ተራራ", "መጽሐፍ", "ገበያ"],
+      blockedWords: ["ጦርነት", "ደም", "መሳሪያ", "ቁማር", "አልኮል"],
+    });
   });
 });

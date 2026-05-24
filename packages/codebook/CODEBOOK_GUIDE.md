@@ -40,6 +40,12 @@ Current distributed word counts:
 | Hindi      |  5000 | `codebook-dist/hindi.json`      |
 | Arabic     |  5000 | `codebook-dist/arabic.json`     |
 | Russian    |  5000 | `codebook-dist/russian.json`    |
+| Swahili    |  5000 | `codebook-dist/swahili.json`    |
+| Filipino   |  5000 | `codebook-dist/filipino.json`   |
+| Hausa      |  5000 | `codebook-dist/hausa.json`      |
+| Bengali    |  5000 | `codebook-dist/bengali.json`    |
+| Urdu       |  5000 | `codebook-dist/urdu.json`       |
+| Amharic    |  5000 | `codebook-dist/amharic.json`    |
 
 ## Current Word Type Inventory
 
@@ -104,6 +110,24 @@ Current inventory:
 | Russian    | Recognized compound              |  2997 | 59.9% | `озеродом`, `озеромост`, `озеролист`, `озеросад`, `озеродвор`         |
 | Russian    | Short standalone                 |   271 |  5.4% | `вода`, `дом`, `река`, `гора`, `хлеб`                                 |
 | Russian    | Other standalone or unclassified |  1732 | 34.6% | `цветок`, `книга`, `яблоко`, `береза`, `озеро`                        |
+| Swahili    | Recognized compound              |   361 |  7.2% | `Majinyumba`, `Majikitabu`, `Majisoko`, `Majidaraja`, `Majibustani`    |
+| Swahili    | Short standalone                 |    28 |  0.6% | `Maji`, `Mto`, `Ua`, `Chai`, `Taa`                                    |
+| Swahili    | Other standalone or unclassified |  4611 | 92.2% | `Nyumba`, `Mlima`, `Kitabu`, `Mkate`, `Tufaha`                        |
+| Filipino   | Recognized compound              |   412 |  8.2% | `Tubigbahay`, `Tubigaklat`, `Tubigpalengke`, `Tubigtulay`, `Tubighardin` |
+| Filipino   | Short standalone                 |    24 |  0.5% | `Ilog`, `Tsaa`, `Ilaw`, `Puno`, `Daan`                                |
+| Filipino   | Other standalone or unclassified |  4564 | 91.3% | `Tubig`, `Bahay`, `Bundok`, `Bulaklak`, `Aklat`                       |
+| Hausa      | Recognized compound              |   432 |  8.6% | `Ruwagida`, `Ruwalittafi`, `Ruwakasuwa`, `Ruwahanya`, `Ruwalambu`      |
+| Hausa      | Short standalone                 |    27 |  0.5% | `Ruwa`, `Gida`, `Kogi`, `Fure`, `Gada`                                |
+| Hausa      | Other standalone or unclassified |  4541 | 90.8% | `Tsauni`, `Shayi`, `Littafi`, `Fitila`, `Burodi`                      |
+| Bengali    | Recognized compound              |   271 |  5.4% | `বাড়িবই`, `বাড়িবাজার`, `বাড়িসেতু`, `বাড়িবাগান`, `বাড়িমাঠ`        |
+| Bengali    | Short standalone                 |    94 |  1.9% | `জল`, `নদী`, `ফুল`, `চা`, `বই`                                       |
+| Bengali    | Other standalone or unclassified |  4635 | 92.7% | `বাড়ি`, `পাহাড়`, `খেজুর`, `জলপাই`, `বাজার`                         |
+| Urdu       | Recognized compound              |   337 |  6.7% | `عجائبگھر`, `پانیگھر`, `پانیکتاب`, `پانیبازار`, `پانیراستہ`           |
+| Urdu       | Short standalone                 |    84 |  1.7% | `پانی`, `گھر`, `دریا`, `پہاڑ`, `پھول`                                |
+| Urdu       | Other standalone or unclassified |  4579 | 91.6% | `کھجور`, `زیتون`, `بازار`, `راستہ`, `تالاب`                          |
+| Amharic    | Recognized compound              |   220 |  4.4% | `ትምህርትቤት`, `ውሃትምህርትቤት`, `ውሃዳቦቤት`, `ውሃምግብቤት`, `ቤትትምህርትቤት` |
+| Amharic    | Short standalone                 |   333 |  6.7% | `ውሃ`, `ቤት`, `ወንዝ`, `ተራራ`, `አበባ`                                |
+| Amharic    | Other standalone or unclassified |  4447 | 88.9% | `አውቶቡስ`, `አደባባይ`, `ዝንጅብል`, `ብርቱካን`, `ምግብቤት`               |
 
 Review implications:
 
@@ -173,6 +197,11 @@ Review implications:
   short standalone words, and lowers recognized generated compounds below
   3,000 entries. Keep replacing broad template compounds with reviewed
   standalone Russian nouns.
+- Swahili, Filipino, Hausa, Bengali, Urdu, and Amharic were added for the
+  address-gap expansion. Their first-pass codebooks use concrete everyday nouns
+  and low template-compound saturation. Keep these languages in active cleanup
+  until native-speaker review replaces weak fused pairs and expands standalone
+  coverage.
 
 ## Product Principles
 
