@@ -48,6 +48,52 @@ const CODEBOOK_FILES = {
   amharic: "../packages/codebook/codebook-dist/amharic.json",
 };
 
+const ADDRESS_GAP_LANGUAGES = new Set([
+  "swahili",
+  "filipino",
+  "hausa",
+  "bengali",
+  "urdu",
+  "amharic",
+]);
+
+const ADDRESS_GAP_SCRIPT_PATTERNS = {
+  swahili: /^[A-Z][a-z]+$/,
+  filipino: /^[A-Z][a-z]+$/,
+  hausa: /^[A-Z][a-z]+$/,
+  bengali: /^[\p{Script=Bengali}\p{Mark}]+$/u,
+  urdu: /^[\p{Script=Arabic}\p{Mark}]+$/u,
+  amharic: /^[\p{Script=Ethiopic}\p{Mark}]+$/u,
+};
+
+const ADDRESS_GAP_MAX_LENGTHS = {
+  swahili: 18,
+  filipino: 18,
+  hausa: 18,
+  bengali: 24,
+  urdu: 24,
+  amharic: 24,
+};
+
+const makeAddressGapPronunciationKey = (language, word) => {
+  if (["swahili", "filipino", "hausa"].includes(language)) {
+    return String(word)
+      .normalize("NFKD")
+      .replace(/\p{Mark}/gu, "")
+      .toLowerCase()
+      .replace(/c/g, "k")
+      .replace(/q/g, "k")
+      .replace(/ph/g, "f")
+      .replace(/([a-z])\1+/g, "$1");
+  }
+
+  const normalized = String(word).normalize("NFC").replace(/[\u200c\u200d\s]/g, "");
+  if (language === "urdu") {
+    return normalized.replace(/[\u064b-\u065f\u0670]/g, "");
+  }
+  return normalized.replace(/(.)\1+/gu, "$1");
+};
+
 const SPANISH_REVIEW_FILES = [
   "../packages/codebook/codebook-dataset/spanish/standalone-review-2026-05-21.md",
 ];
@@ -1437,12 +1483,79 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
     "жгут",
     "хомут",
   ],
-  swahili: ["Vita", "Damu", "Silaha", "Ngono", "Kasino", "Pombe"],
-  filipino: ["Digma", "Dugo", "Baril", "Sugal", "Alak"],
-  hausa: ["Yaki", "Jini", "Bindiga", "Caca", "Giya"],
-  bengali: ["যুদ্ধ", "রক্ত", "অস্ত্র", "জুয়া", "মদ"],
-  urdu: ["جنگ", "خون", "ہتھیار", "جوا", "شراب"],
-  amharic: ["ጦርነት", "ደም", "መሳሪያ", "ቁማር", "አልኮል"],
+  swahili: [
+    "Vita",
+    "Damu",
+    "Silaha",
+    "Ngono",
+    "Kasino",
+    "Pombe",
+    "Siasa",
+    "Dini",
+    "Dawa",
+    "Ugonjwa",
+    "Kifo",
+  ],
+  filipino: [
+    "Digma",
+    "Dugo",
+    "Baril",
+    "Sugal",
+    "Alak",
+    "Politika",
+    "Relihiyon",
+    "Sakit",
+    "Gamot",
+    "Kamatayan",
+  ],
+  hausa: [
+    "Yaki",
+    "Jini",
+    "Bindiga",
+    "Caca",
+    "Giya",
+    "Siyasa",
+    "Addini",
+    "Cuta",
+    "Magani",
+    "Mutuwa",
+  ],
+  bengali: [
+    "যুদ্ধ",
+    "রক্ত",
+    "অস্ত্র",
+    "জুয়া",
+    "মদ",
+    "রাজনীতি",
+    "ধর্ম",
+    "রোগ",
+    "ওষুধ",
+    "মৃত্যু",
+  ],
+  urdu: [
+    "جنگ",
+    "خون",
+    "ہتھیار",
+    "جوا",
+    "شراب",
+    "سیاست",
+    "مذہب",
+    "بیماری",
+    "دوا",
+    "موت",
+  ],
+  amharic: [
+    "ጦርነት",
+    "ደም",
+    "መሳሪያ",
+    "ቁማር",
+    "አልኮል",
+    "ፖለቲካ",
+    "ሃይማኖት",
+    "በሽታ",
+    "መድሃኒት",
+    "ሞት",
+  ],
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(
@@ -1601,6 +1714,7 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
     }
 
     const koreanPronunciationKeys = new Map();
+    const addressGapPronunciationKeys = new Map();
 
     for (const [index, word] of words.entries()) {
       if (word.trim() === "") {
@@ -2093,6 +2207,61 @@ export const auditCodebooks = (codebooks = loadCodebooks()) => {
                 "Russian entries should stay short for readable share URLs",
             }),
           );
+        }
+      }
+
+      if (ADDRESS_GAP_LANGUAGES.has(language)) {
+        if (!ADDRESS_GAP_SCRIPT_PATTERNS[language].test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: `${language}-script`,
+              detail:
+                "Address-gap codebook entries should stay in the reviewed language script and casing",
+            }),
+          );
+        }
+        if (/[\s\-/#?]/.test(word)) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: `${language}-url-safety`,
+              detail:
+                "Address-gap codebook entries should not contain spaces or URL separators",
+            }),
+          );
+        }
+        if ([...word].length > ADDRESS_GAP_MAX_LENGTHS[language]) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: `${language}-too-long`,
+              detail:
+                "Address-gap codebook entries should stay short for readable share URLs",
+            }),
+          );
+        }
+
+        const pronunciationKey = makeAddressGapPronunciationKey(language, word);
+        const previous = addressGapPronunciationKeys.get(pronunciationKey);
+        if (previous !== undefined && previous.word !== word) {
+          violations.push(
+            makeViolation({
+              language,
+              index,
+              word,
+              rule: `${language}-pronunciation-collision`,
+              detail: `Confusable with index ${previous.index} "${previous.word}" under address-gap normalization`,
+            }),
+          );
+        } else {
+          addressGapPronunciationKeys.set(pronunciationKey, { index, word });
         }
       }
 

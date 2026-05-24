@@ -107,16 +107,40 @@ const normalizeCodeWord = (language, word) => {
   return candidate;
 };
 
+const makeCodebookSoundKey = (language, word) => {
+  if (["swahili", "filipino", "hausa"].includes(language)) {
+    return String(word)
+      .normalize("NFKD")
+      .replace(/\p{Mark}/gu, "")
+      .toLowerCase()
+      .replace(/c/g, "k")
+      .replace(/q/g, "k")
+      .replace(/ph/g, "f")
+      .replace(/([a-z])\1+/g, "$1");
+  }
+
+  const normalized = String(word).normalize("NFC").replace(/[\u200c\u200d\s]/g, "");
+  if (language === "urdu") {
+    return normalized.replace(/[\u064b-\u065f\u0670]/g, "");
+  }
+  return normalized.replace(/(.)\1+/gu, "$1");
+};
+
 const buildCodebook = (language) => {
   const words = [];
   const seen = new Set();
+  const seenSoundKeys = new Map();
   const add = (word) => {
     const candidate = normalizeCodeWord(language, word);
     if (!candidate) return;
     if (blocked[language].has(candidate.toLowerCase?.() ?? candidate)) return;
     if (blocked[language].has(candidate)) return;
     if (seen.has(candidate)) return;
+    const soundKey = makeCodebookSoundKey(language, candidate);
+    const soundMatch = seenSoundKeys.get(soundKey);
+    if (soundMatch && soundMatch !== candidate) return;
     seen.add(candidate);
+    seenSoundKeys.set(soundKey, candidate);
     words.push(candidate);
   };
 

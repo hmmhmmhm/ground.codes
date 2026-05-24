@@ -176,6 +176,112 @@ const makeArabicFixtures = (count) => {
   throw new Error(`Unable to generate ${count} Arabic fixtures`);
 };
 
+const makeLatinFixtures = (count) => {
+  const lead = [
+    "Bana",
+    "Dara",
+    "Faro",
+    "Gala",
+    "Hema",
+    "Jina",
+    "Kalo",
+    "Lima",
+    "Mato",
+    "Nira",
+  ];
+  const tail = [
+    "baku",
+    "dami",
+    "feni",
+    "goro",
+    "haku",
+    "joli",
+    "kira",
+    "lomu",
+    "mika",
+    "nalo",
+  ];
+  const words = [];
+
+  for (const a of lead) {
+    for (const b of tail) {
+      for (const c of lead) {
+        for (const d of tail) {
+          words.push(`${a}${b}${c}${d}`);
+          if (words.length === count) {
+            return words;
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error(`Unable to generate ${count} Latin fixtures`);
+};
+
+const makeBengaliFixtures = (count) => {
+  const lead = ["বাড়ি", "নদী", "ফুল", "বই", "গাছ", "পথ", "সেতু", "মাটি", "পাথর", "চাবি"];
+  const tail = ["কাপ", "বাটি", "কলম", "মেঘ", "তারা", "দরজা", "ছবি", "খাতা", "ইট", "ঘাস"];
+  const words = [];
+
+  for (const a of lead) {
+    for (const b of tail) {
+      for (const c of lead) {
+        for (const d of tail) {
+          words.push(`${a}${b}${c}${d}`);
+          if (words.length === count) {
+            return words;
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error(`Unable to generate ${count} Bengali fixtures`);
+};
+
+const makeUrduFixtures = (count) => {
+  const lead = ["گھر", "دریا", "پھول", "کتاب", "درخت", "راستہ", "پل", "مٹی", "پتھر", "چابی"];
+  const tail = ["کپ", "پیالہ", "قلم", "بادل", "ستارہ", "دروازہ", "تصویر", "کاپی", "اینٹ", "گھاس"];
+  const words = [];
+
+  for (const a of lead) {
+    for (const b of tail) {
+      for (const c of lead) {
+        for (const d of tail) {
+          words.push(`${a}${b}${c}${d}`);
+          if (words.length === count) {
+            return words;
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error(`Unable to generate ${count} Urdu fixtures`);
+};
+
+const makeAmharicFixtures = (count) => {
+  const lead = ["ቤት", "ወንዝ", "አበባ", "መጽሐፍ", "ዛፍ", "መንገድ", "ድልድይ", "አፈር", "ድንጋይ", "ቁልፍ"];
+  const tail = ["ኩባያ", "ሳህን", "ብዕር", "ደመና", "ኮከብ", "በር", "ስዕል", "ደብተር", "ጡብ", "ሣር"];
+  const words = [];
+
+  for (const a of lead) {
+    for (const b of tail) {
+      for (const c of lead) {
+        for (const d of tail) {
+          words.push(`${a}${b}${c}${d}`);
+          if (words.length === count) {
+            return words;
+          }
+        }
+      }
+    }
+  }
+
+  throw new Error(`Unable to generate ${count} Amharic fixtures`);
+};
+
 describe("codebook policy audit", () => {
   test("keeps distributed codebooks at the guide-approved counts", () => {
     const { summary } = auditCodebooks();
@@ -1130,6 +1236,53 @@ describe("codebook policy audit", () => {
         actual.has(`${word}:hindi-awkward-generated-compound`),
         true,
         word,
+      );
+    }
+  });
+
+  test("flags address-gap language script, URL, and length issues", () => {
+    const { violations } = auditCodebooks({
+      swahili: ["Good", "Bad-Word", ...makeLatinFixtures(4998)],
+      filipino: ["Mabuti", "Bad/Word", ...makeLatinFixtures(4998)],
+      hausa: ["Gida", "Bad?Word", ...makeLatinFixtures(4998)],
+      bengali: ["বাড়ি", "BadLatin", ...makeBengaliFixtures(4998)],
+      urdu: ["گھر", "BadLatin", ...makeUrduFixtures(4998)],
+      amharic: ["ቤት", "BadLatin", ...makeAmharicFixtures(4998)],
+    });
+
+    assert.ok(violations.some((item) => item.rule === "swahili-url-safety"));
+    assert.ok(violations.some((item) => item.rule === "filipino-url-safety"));
+    assert.ok(violations.some((item) => item.rule === "hausa-url-safety"));
+    assert.ok(violations.some((item) => item.rule === "bengali-script"));
+    assert.ok(violations.some((item) => item.rule === "urdu-script"));
+    assert.ok(violations.some((item) => item.rule === "amharic-script"));
+  });
+
+  test("flags address-gap pronunciation or spelling collisions", () => {
+    const { violations } = auditCodebooks({
+      swahili: ["Kahawa", "Kahawwa", ...makeLatinFixtures(4998)],
+      filipino: ["Kape", "Cape", ...makeLatinFixtures(4998)],
+      hausa: ["Kofi", "Cofi", ...makeLatinFixtures(4998)],
+      bengali: ["বাড়ি", "বাাড়ি", ...makeBengaliFixtures(4998)],
+      urdu: ["گھر", "گَھر", ...makeUrduFixtures(4998)],
+      amharic: ["ቤት", "ቤትት", ...makeAmharicFixtures(4998)],
+    });
+
+    for (const language of [
+      "swahili",
+      "filipino",
+      "hausa",
+      "bengali",
+      "urdu",
+      "amharic",
+    ]) {
+      assert.ok(
+        violations.some(
+          (item) =>
+            item.language === language &&
+            item.rule === `${language}-pronunciation-collision`,
+        ),
+        `${language} pronunciation collision`,
       );
     }
   });
