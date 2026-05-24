@@ -64,7 +64,7 @@ describe("codebook type inventory", () => {
     );
 
     assert.ok(arabic);
-    assert.ok(arabic.counts.shortStandalone > 0);
+    assert.ok(arabic.counts.shortStandalone >= 250);
     assert.ok(arabic.counts.recognizedCompound > 0);
     assert.ok(arabic.counts.otherStandalone > 0);
   });

@@ -966,6 +966,37 @@ describe("codebook policy audit", () => {
     );
   });
 
+  test("flags awkward Arabic abstract generated compounds", () => {
+    const { violations } = auditCodebooks({
+      arabic: [
+        "صفاءبساط",
+        "هدوءبيت",
+        "بسمةكتاب",
+        "فرحمصباح",
+        "أملوعاء",
+        ...makeArabicFixtures(EXPECTED_COUNTS.arabic - 5),
+      ],
+    });
+
+    const actual = new Set(
+      violations.map((item) => `${item.word}:${item.rule}`),
+    );
+
+    for (const word of [
+      "صفاءبساط",
+      "هدوءبيت",
+      "بسمةكتاب",
+      "فرحمصباح",
+      "أملوعاء",
+    ]) {
+      assert.equal(
+        actual.has(`${word}:arabic-awkward-generated-compound`),
+        true,
+        word,
+      );
+    }
+  });
+
   test("flags awkward Hindi generated compounds", () => {
     const { violations } = auditCodebooks({
       hindi: [

@@ -2279,6 +2279,8 @@ describe("reviewed multilingual codebooks", () => {
   });
 
   test("keeps Arabic codebook URL-safe and neutral", () => {
+    const abstractCompoundPrefixes = ["صفاء", "هدوء", "بسمة", "فرح", "أمل"];
+
     assert.equal(arabicWords.length, 5000);
     assert.equal(new Set(arabicWords).size, arabicWords.length);
     assert.deepEqual(
@@ -2293,6 +2295,18 @@ describe("reviewed multilingual codebooks", () => {
     );
     assert.deepEqual(
       arabicWords.filter((word) => [...word].length > 14),
+      [],
+    );
+    assert.ok(
+      arabicWords.filter((word) => [...word].length <= 4).length >= 250,
+      "Arabic codebook should include at least 250 short standalone words",
+    );
+    assert.deepEqual(
+      arabicWords.filter((word) =>
+        abstractCompoundPrefixes.some(
+          (prefix) => word.startsWith(prefix) && word !== prefix,
+        ),
+      ),
       [],
     );
     assertWordsPresent(arabicWords, [

@@ -97,9 +97,9 @@ Current inventory:
 | Hindi      | Recognized compound              |  2159 | 43.2% | `रोशनदान`, `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`          |
 | Hindi      | Short standalone                 |   183 |  3.7% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
 | Hindi      | Other standalone or unclassified |  2658 | 53.2% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
-| Arabic     | Recognized compound              |   962 | 19.2% | `بحيرةبيت`, `بحيرةسوق`, `بحيرةطريق`, `بحيرةجسر`, `بحيرةحديقة`        |
-| Arabic     | Short standalone                 |   168 |  3.4% | `ماء`, `بيت`, `نهر`, `جبل`, `زهرة`                                   |
-| Arabic     | Other standalone or unclassified |  3870 | 77.4% | `مصباح`, `زيتون`, `حديقة`, `بحيرة`, `حافلة`                          |
+| Arabic     | Recognized compound              |  1068 | 21.4% | `بحيرةبيت`, `بحيرةسوق`, `بحيرةطريق`, `بحيرةجسر`, `بحيرةحديقة`        |
+| Arabic     | Short standalone                 |   260 |  5.2% | `ماء`, `بيت`, `نهر`, `جبل`, `زهرة`                                   |
+| Arabic     | Other standalone or unclassified |  3672 | 73.4% | `مصباح`, `زيتون`, `حديقة`, `بحيرة`, `حافلة`                          |
 
 Review implications:
 
@@ -157,11 +157,11 @@ Review implications:
   `सुपली`. Keep replacing remaining broad templates with reviewed standalone
   Hindi nouns as coverage grows.
 - Arabic uses native Arabic script in public code words and localized region
-  labels. The initial set favors common concrete nouns, short fused compounds,
-  and Arabic-script transliterations for proper names while blocking sensitive
-  terms around religion, politics, violence, sex, weapons, alcohol, and illness.
-  Keep replacing mechanical broad compounds with reviewed standalone Arabic
-  nouns as coverage grows.
+  labels. The quality v2 pass raises short standalone coverage, removes
+  abstract mood/value compounds such as `صفاءبساط`, `هدوءبيت`, `بسمةكتاب`,
+  `فرحمصباح`, and `أملوعاء`, and avoids broad place-prefix templates such as
+  `منارةشجرة`. Continue replacing weak material/object compounds with reviewed
+  standalone Arabic nouns as coverage grows.
 
 ## Product Principles
 
@@ -617,6 +617,9 @@ a test blocklist.
   plant/object, material/object, and food/object pairings only when the result
   reads as an ordinary public label. Avoid broad repeated adjective templates
   when the result feels mechanical.
+- Do not use abstract mood/value prefixes as fused compounds. Reject patterns
+  such as `صفاءبساط`, `هدوءبيت`, `بسمةكتاب`, `فرحمصباح`, and `أملوعاء`; keep
+  those roots only as standalone words if they remain useful and neutral.
 - Reject sensitive or low-trust terms around religion, politics, weapons,
   violence, illness, alcohol, prison, and sex. Current reviewed rejects include
   `دين`, `حرب`, `قتل`, `دم`, `سلاح`, `مرض`, `خمر`, `سجن`, `سياسة`, `جنس`,

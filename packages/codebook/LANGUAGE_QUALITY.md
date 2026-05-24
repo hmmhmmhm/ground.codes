@@ -18,7 +18,7 @@ operational status board for follow-up passes.
 | thai | 5000 | stable | Grow reviewed Thai-script standalone nouns before adding templates. |
 | vietnamese | 5000 | stable | Keep native diacritics and avoid broad color, mood, and place templates. |
 | hindi | 5000 | active cleanup | Remove broad descriptor compounds, obscure standalone entries, mixed-script region labels, and URL separator leftovers. |
-| arabic | 5000 | initial review | Keep Arabic-script entries short, URL-safe, and free of broad sensitive or political terms. |
+| arabic | 5000 | active cleanup | Grow reviewed standalone nouns and keep abstract mood/value compounds out of public codes. |
 
 Review checklist:
 
