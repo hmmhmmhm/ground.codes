@@ -29,8 +29,8 @@ describe("Ground Codes API contract", () => {
     expect(await response.json()).toMatchObject({
       status: "ready",
       service: "api-ground-codes",
-      apiVersion: "1.0.78",
-      runtimeTag: "railway-api-runtime-20260524-address-gap-quality-v3",
+      apiVersion: "1.0.79",
+      runtimeTag: "railway-api-runtime-20260525-address-gap-languages-v2",
       runtimeCommit: expect.stringMatching(/^[0-9a-f]{40}$/),
     });
   });
@@ -700,10 +700,10 @@ describe("Ground Codes API contract", () => {
     {
       name: "Lingala",
       language: "lingala",
-      lat: 30.0444,
-      lng: 31.2357,
-      region: "Kairo",
-      codePattern: /^Kairo-[A-Z][A-Za-z]+/u,
+      lat: -6.1751,
+      lng: 106.865,
+      region: "Jakarta",
+      codePattern: /^Jakarta-[A-Z][A-Za-z]+/u,
     },
   ])(
     "encodes and searches $name address-gap ground codes and region labels",
@@ -1147,9 +1147,9 @@ describe("Ground Codes API contract", () => {
     {
       name: "Lingala",
       language: "lingala",
-      lat: 30.0444,
-      lng: 31.2357,
-      region: "Kairo",
+      lat: -6.1751,
+      lng: 106.865,
+      region: "Jakarta",
     },
   ])(
     "loads $name region lookup data on demand for region endpoints",
