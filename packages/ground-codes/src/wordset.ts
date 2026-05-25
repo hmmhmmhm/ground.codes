@@ -20,7 +20,13 @@ export type SupportedLanguage =
   | "hausa"
   | "bengali"
   | "urdu"
-  | "amharic";
+  | "amharic"
+  | "burmese"
+  | "khmer"
+  | "nepali"
+  | "somali"
+  | "pashto"
+  | "lingala";
 
 export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   english: 6000,
@@ -43,6 +49,12 @@ export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   bengali: 5000,
   urdu: 5000,
   amharic: 5000,
+  burmese: 5000,
+  khmer: 5000,
+  nepali: 5000,
+  somali: 5000,
+  pashto: 5000,
+  lingala: 5000,
 };
 
 const loadWordSet = async (language: SupportedLanguage) => {
@@ -125,6 +137,30 @@ const loadWordSet = async (language: SupportedLanguage) => {
   } else if (language.toLowerCase() === "amharic") {
     // @ts-ignore
     return (await import("@repo/codebook/codebook-dist/amharic.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "burmese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/burmese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "khmer") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/khmer.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "nepali") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/nepali.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "somali") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/somali.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "pashto") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/pashto.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "lingala") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/lingala.json"))
       .default as string[];
   }
 

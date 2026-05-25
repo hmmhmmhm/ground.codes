@@ -9,6 +9,12 @@ const languages = [
   "bengali",
   "urdu",
   "amharic",
+  "burmese",
+  "khmer",
+  "nepali",
+  "somali",
+  "pashto",
+  "lingala",
 ];
 
 const readCodebook = (language) =>
@@ -24,12 +30,14 @@ const readCodebook = (language) =>
 
 const lexicalizedFusions = {
   amharic: new Set(["ዳቦቤት"]),
+  burmese: new Set(["စေိကကအန"]),
 };
 
 const isFusedFromEarlierWords = (word, earlierWords) => {
   for (const left of earlierWords) {
     if (!word.startsWith(left) || left.length === word.length) continue;
     const right = word.slice(left.length);
+    if ([...left].length < 3 || [...right].length < 3) continue;
     if (earlierWords.has(right)) return true;
   }
   return false;

@@ -42,5 +42,11 @@ describe("ground code language mapping", () => {
     expect(getGroundCodeLanguage("bn")).toBe("bengali");
     expect(getGroundCodeLanguage("ur")).toBe("urdu");
     expect(getGroundCodeLanguage("am")).toBe("amharic");
+    expect(getGroundCodeLanguage("my")).toBe("burmese");
+    expect(getGroundCodeLanguage("km")).toBe("khmer");
+    expect(getGroundCodeLanguage("ne")).toBe("nepali");
+    expect(getGroundCodeLanguage("so")).toBe("somali");
+    expect(getGroundCodeLanguage("ps")).toBe("pashto");
+    expect(getGroundCodeLanguage("ln")).toBe("lingala");
   });
 });

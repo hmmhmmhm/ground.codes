@@ -300,6 +300,72 @@ await smoke.check("Amharic Cairo encode", async () => {
   assert(/^ካይሮ-/.test(code), `expected Amharic Cairo code, got ${code}`);
 });
 
+await smoke.check("Burmese Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "burmese",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^ဂျာကာတာ-/.test(code), `expected Burmese Jakarta code, got ${code}`);
+});
+
+await smoke.check("Khmer Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "khmer",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^ចាការតា-/.test(code), `expected Khmer Jakarta code, got ${code}`);
+});
+
+await smoke.check("Nepali Delhi encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 28.65195,
+    lng: 77.23149,
+    language: "nepali",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^दिल्ली-/.test(code), `expected Nepali Delhi code, got ${code}`);
+});
+
+await smoke.check("Somali Cairo encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 30.0444,
+    lng: 31.2357,
+    language: "somali",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Qaahira-/.test(code), `expected Somali Cairo code, got ${code}`);
+});
+
+await smoke.check("Pashto Delhi encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 28.65195,
+    lng: 77.23149,
+    language: "pashto",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^ډیلي-/.test(code), `expected Pashto Delhi code, got ${code}`);
+});
+
+await smoke.check("Lingala Cairo encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 30.0444,
+    lng: 31.2357,
+    language: "lingala",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Kairo-/.test(code), `expected Lingala Cairo code, got ${code}`);
+});
+
 await smoke.check("ASCII earth region data", async () => {
   const code = await postJson("/v1/encode", {
     lat: -82,

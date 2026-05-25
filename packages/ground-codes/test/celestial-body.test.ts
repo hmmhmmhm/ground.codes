@@ -719,6 +719,48 @@ describe("celestial bodies", () => {
         moon: /^[\p{Script=Ethiopic}\p{Mark}\s]+-[\p{Script=Ethiopic}\p{Mark}]+/u,
         mars: /^[\p{Script=Ethiopic}\p{Mark}\s\d]+-[\p{Script=Ethiopic}\p{Mark}]+/u,
       },
+      {
+        language: "burmese",
+        target: { lat: -6.1751, lng: 106.865 },
+        earth: /^ဂျာကာတာ-[\p{Script=Myanmar}\p{Mark}]+/u,
+        moon: /^[\p{Script=Myanmar}\p{Mark}\s]+-[\p{Script=Myanmar}\p{Mark}]+/u,
+        mars: /^[\p{Script=Myanmar}\p{Mark}\s\d]+-[\p{Script=Myanmar}\p{Mark}]+/u,
+      },
+      {
+        language: "khmer",
+        target: { lat: -6.1751, lng: 106.865 },
+        earth: /^ចាការតា-[\p{Script=Khmer}\p{Mark}]+/u,
+        moon: /^[\p{Script=Khmer}\p{Mark}\s]+-[\p{Script=Khmer}\p{Mark}]+/u,
+        mars: /^[\p{Script=Khmer}\p{Mark}\s\d]+-[\p{Script=Khmer}\p{Mark}]+/u,
+      },
+      {
+        language: "nepali",
+        target: { lat: 28.65195, lng: 77.23149 },
+        earth: /^दिल्ली-[\p{Script=Devanagari}\p{Mark}]+/u,
+        moon: /^[\p{Script=Devanagari}\p{Mark}\s]+-[\p{Script=Devanagari}\p{Mark}]+/u,
+        mars: /^[\p{Script=Devanagari}\p{Mark}\s\d]+-[\p{Script=Devanagari}\p{Mark}]+/u,
+      },
+      {
+        language: "somali",
+        target: { lat: 30.0444, lng: 31.2357 },
+        earth: /^Qaahira-[A-Z][A-Za-z]+/u,
+        moon: /^[\p{Script=Latin}\s]+-[A-Z][A-Za-z]+/u,
+        mars: /^[\p{Script=Latin}\s\d]+-[A-Z][A-Za-z]+/u,
+      },
+      {
+        language: "pashto",
+        target: { lat: 28.65195, lng: 77.23149 },
+        earth: /^ډیلي-[\p{Script=Arabic}\p{Mark}]+/u,
+        moon: /^[\p{Script=Arabic}\p{Mark}\s]+-[\p{Script=Arabic}\p{Mark}]+/u,
+        mars: /^[\p{Script=Arabic}\p{Mark}\s\d]+-[\p{Script=Arabic}\p{Mark}]+/u,
+      },
+      {
+        language: "lingala",
+        target: { lat: 30.0444, lng: 31.2357 },
+        earth: /^Kairo-[A-Z][A-Za-z]+/u,
+        moon: /^[\p{Script=Latin}\s]+-[A-Z][A-Za-z]+/u,
+        mars: /^[\p{Script=Latin}\s\d]+-[A-Z][A-Za-z]+/u,
+      },
     ] as const;
 
     for (const item of cases) {

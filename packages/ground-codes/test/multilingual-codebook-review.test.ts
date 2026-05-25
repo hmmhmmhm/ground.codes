@@ -21,6 +21,12 @@ import hausaWords from "@repo/codebook/codebook-dist/hausa.json";
 import bengaliWords from "@repo/codebook/codebook-dist/bengali.json";
 import urduWords from "@repo/codebook/codebook-dist/urdu.json";
 import amharicWords from "@repo/codebook/codebook-dist/amharic.json";
+import burmeseWords from "@repo/codebook/codebook-dist/burmese.json";
+import khmerWords from "@repo/codebook/codebook-dist/khmer.json";
+import nepaliWords from "@repo/codebook/codebook-dist/nepali.json";
+import somaliWords from "@repo/codebook/codebook-dist/somali.json";
+import pashtoWords from "@repo/codebook/codebook-dist/pashto.json";
+import lingalaWords from "@repo/codebook/codebook-dist/lingala.json";
 
 const assertBlockedWordsAbsent = (words: string[], blockedWords: string[]) => {
   const blocked = new Set(blockedWords);
@@ -2484,6 +2490,16 @@ describe("reviewed multilingual codebooks", () => {
         ["Ruwa", "Gida", "Kogi", "Tsauni", "Littafi", "Kasuwa"],
         ["Yaki", "Jini", "Bindiga", "Caca", "Giya"],
       ],
+      [
+        somaliWords,
+        ["Biyo", "Guri", "Webi", "Buur", "Ubax", "Shaah"],
+        ["Dagaal", "Dhiig", "Hub", "Khamri"],
+      ],
+      [
+        lingalaWords,
+        ["Mai", "Ndako", "Ebale", "Ngomba", "Fololo", "Buku"],
+        ["Etumba", "Makila", "Mondoki", "Masanga"],
+      ],
     ] as const) {
       assert.equal(words.length, 5000);
       assert.equal(new Set(words).size, words.length);
@@ -2514,6 +2530,30 @@ describe("reviewed multilingual codebooks", () => {
       pattern: /^[\p{Script=Ethiopic}\p{Mark}]+$/u,
       expectedWords: ["ውሃ", "ቤት", "ወንዝ", "ተራራ", "መጽሐፍ", "ገበያ"],
       blockedWords: ["ጦርነት", "ደም", "መሳሪያ", "ቁማር", "አልኮል"],
+    });
+    assertScriptCodebook({
+      words: burmeseWords,
+      pattern: /^[\p{Script=Myanmar}\p{Mark}]+$/u,
+      expectedWords: ["ယေ", "ေိန", "မယိတ", "တအု", "စအိုက", "မေေ"],
+      blockedWords: ["စစ်", "သွေး", "လက်နက်"],
+    });
+    assertScriptCodebook({
+      words: khmerWords,
+      pattern: /^[\p{Script=Khmer}\p{Mark}]+$/u,
+      expectedWords: ["តុក", "ពតេអហ", "តូនលេ", "នូម", "សិេវូវ", "បអយ"],
+      blockedWords: ["សង្គ្រាម", "ឈាម", "អាវុធ"],
+    });
+    assertScriptCodebook({
+      words: nepaliWords,
+      pattern: /^[\p{Script=Devanagari}\p{Mark}]+$/u,
+      expectedWords: ["पअनि", "अर", "नअदि", "पअहअद", "कितअब", "रोति"],
+      blockedWords: ["युद्ध", "रगत", "हतियार", "जुवा", "रक्सी"],
+    });
+    assertScriptCodebook({
+      words: pashtoWords,
+      pattern: /^[\p{Script=Arabic}\p{Mark}]+$/u,
+      expectedWords: ["وبا", "کور", "سيند", "ار", "ګول", "کيتاب"],
+      blockedWords: ["جګړه", "وینه", "وسله", "قمار", "شراب"],
     });
   });
 });

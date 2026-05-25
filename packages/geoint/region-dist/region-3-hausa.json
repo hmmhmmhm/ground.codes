@@ -471751,7 +471751,7 @@
     "regionKind": "sahara-grid"
   },
   {
-    "name": "Kohnen Station Area",
+    "name": "Kohnen Station Are 1",
     "code": "NGP1",
     "lat": -77.875,
     "long": 6.625,
@@ -471760,7 +471760,7 @@
     "referenceDistanceKm": 347.6
   },
   {
-    "name": "Dronning Maud 2 Area",
+    "name": "Dronning Maud 2 Ar 2",
     "code": "NGP2",
     "lat": -77.125,
     "long": 22.875,
@@ -471769,7 +471769,7 @@
     "referenceDistanceKm": 334.5
   },
   {
-    "name": "Belgica 4 Area",
+    "name": "Belgica 4 Area 3",
     "code": "NGP3",
     "lat": -78.125,
     "long": 137.875,
@@ -471778,7 +471778,7 @@
     "referenceDistanceKm": 281.7
   },
   {
-    "name": "Slessorbreen Area",
+    "name": "Slessorbreen Area 4",
     "code": "NGP4",
     "lat": -77.875,
     "long": -7.875,
@@ -471787,7 +471787,7 @@
     "referenceDistanceKm": 319.4
   },
   {
-    "name": "Talnakh Area",
+    "name": "Talnakh Area 5",
     "code": "NGP5",
     "lat": 67.875,
     "long": 96.875,
@@ -471796,7 +471796,7 @@
     "referenceDistanceKm": 347.5
   },
   {
-    "name": "Peacock 2 Area",
+    "name": "Peacock 2 Area 6",
     "code": "NGP6",
     "lat": -78.375,
     "long": 120.875,
@@ -471805,7 +471805,7 @@
     "referenceDistanceKm": 221.7
   },
   {
-    "name": "Turnback Dome Area",
+    "name": "Turnback Dome Area 7",
     "code": "NGP7",
     "lat": -77.875,
     "long": 59.875,
@@ -471814,7 +471814,7 @@
     "referenceDistanceKm": 242.1
   },
   {
-    "name": "Tasiilaq Area",
+    "name": "Tasiilaq Area 8",
     "code": "NGP8",
     "lat": 68.125,
     "long": -42.125,
@@ -471823,7 +471823,7 @@
     "referenceDistanceKm": 321.5
   },
   {
-    "name": "Aykhal Area",
+    "name": "Aykhal Area 9",
     "code": "NGP9",
     "lat": 67.375,
     "long": 104.125,
@@ -471832,7 +471832,7 @@
     "referenceDistanceKm": 361.4
   },
   {
-    "name": "Serlapova podledna",
+    "name": "Serlapova podledn 10",
     "code": "NGP10",
     "lat": -75.875,
     "long": 46.625,
@@ -471841,7 +471841,7 @@
     "referenceDistanceKm": 216
   },
   {
-    "name": "Valkyrjedomen Area",
+    "name": "Valkyrjedomen Are 11",
     "code": "NGP11",
     "lat": -75.125,
     "long": 31.875,
@@ -471850,7 +471850,7 @@
     "referenceDistanceKm": 257
   },
   {
-    "name": "Turukhansk Area",
+    "name": "Turukhansk Area 12",
     "code": "NGP12",
     "lat": 64.625,
     "long": 93.375,
@@ -471859,7 +471859,7 @@
     "referenceDistanceKm": 283.7
   },
   {
-    "name": "Vincennes 1 Area",
+    "name": "Vincennes 1 Area 13",
     "code": "NGP13",
     "lat": -71.125,
     "long": 125.375,
@@ -471868,7 +471868,7 @@
     "referenceDistanceKm": 238.3
   },
   {
-    "name": "Shmidt Subglaci Area",
+    "name": "Shmidt Subglaci A 14",
     "code": "NGP14",
     "lat": -70.125,
     "long": 104.625,
@@ -471877,7 +471877,7 @@
     "referenceDistanceKm": 214.3
   },
   {
-    "name": "Yerbogachen Area",
+    "name": "Yerbogachen Area 15",
     "code": "NGP15",
     "lat": 63.875,
     "long": 105.375,
@@ -471886,7 +471886,7 @@
     "referenceDistanceKm": 245.3
   },
   {
-    "name": "Anadyr Area",
+    "name": "Anadyr Area 16",
     "code": "NGP16",
     "lat": 66.875,
     "long": 173.375,
@@ -471895,7 +471895,7 @@
     "referenceDistanceKm": 280.1
   },
   {
-    "name": "Batagay Area",
+    "name": "Batagay Area 17",
     "code": "NGP17",
     "lat": 65.375,
     "long": 135.375,
@@ -471904,7 +471904,7 @@
     "referenceDistanceKm": 254.5
   },
   {
-    "name": "Kargasok Area",
+    "name": "Kargasok Area 18",
     "code": "NGP18",
     "lat": 61.375,
     "long": 84.625,
@@ -471913,7 +471913,7 @@
     "referenceDistanceKm": 285.9
   },
   {
-    "name": "Zhigansk Area",
+    "name": "Zhigansk Area 19",
     "code": "NGP19",
     "lat": 67.875,
     "long": 120.125,
@@ -471922,7 +471922,7 @@
     "referenceDistanceKm": 183.3
   },
   {
-    "name": "Tabki Vostok Area",
+    "name": "Tabki Vostok Area 20",
     "code": "NGP20",
     "lat": -76.875,
     "long": 97.375,
@@ -471931,7 +471931,7 @@
     "referenceDistanceKm": 191.3
   },
   {
-    "name": "Chagda Area",
+    "name": "Chagda Area 21",
     "code": "NGP21",
     "lat": 56.125,
     "long": 130.875,
@@ -471940,7 +471940,7 @@
     "referenceDistanceKm": 292.5
   },
   {
-    "name": "Arviat Area",
+    "name": "Arviat Area 22",
     "code": "NGP22",
     "lat": 62.875,
     "long": -102.375,
@@ -471949,7 +471949,7 @@
     "referenceDistanceKm": 208.4
   },
   {
-    "name": "Nuuk Area",
+    "name": "Nuuk Area 23",
     "code": "NGP23",
     "lat": 64.875,
     "long": -45.625,
@@ -471958,7 +471958,7 @@
     "referenceDistanceKm": 218.2
   },
   {
-    "name": "Schwerdtfeger A Area",
+    "name": "Schwerdtfeger A A 24",
     "code": "NGP24",
     "lat": -75.875,
     "long": 109.875,
@@ -471967,7 +471967,7 @@
     "referenceDistanceKm": 193.2
   },
   {
-    "name": "Tasiilaq Interior",
+    "name": "Tasiilaq Interior 25",
     "code": "NGP25",
     "lat": 68.625,
     "long": -34.125,
@@ -471976,7 +471976,7 @@
     "referenceDistanceKm": 186.8
   },
   {
-    "name": "Wilkes 2 Area",
+    "name": "Wilkes 2 Area 26",
     "code": "NGP26",
     "lat": -73.375,
     "long": 147.125,
@@ -471985,7 +471985,7 @@
     "referenceDistanceKm": 191.8
   },
   {
-    "name": "As Sulayyil Area",
+    "name": "As Sulayyil Area 27",
     "code": "NGP27",
     "lat": 20.625,
     "long": 49.125,
@@ -471994,7 +471994,7 @@
     "referenceDistanceKm": 277.5
   },
   {
-    "name": "UstMaya Area",
+    "name": "UstMaya Area 28",
     "code": "NGP28",
     "lat": 59.125,
     "long": 136.875,
@@ -472003,7 +472003,7 @@
     "referenceDistanceKm": 193.5
   },
   {
-    "name": "Cuozheqiangma Area",
+    "name": "Cuozheqiangma Are 29",
     "code": "NGP29",
     "lat": 35.375,
     "long": 86.875,
@@ -472012,7 +472012,7 @@
     "referenceDistanceKm": 243.4
   },
   {
-    "name": "Kamenskoye Area",
+    "name": "Kamenskoye Area 30",
     "code": "NGP30",
     "lat": 64.875,
     "long": 164.375,
@@ -472021,7 +472021,7 @@
     "referenceDistanceKm": 184.3
   },
   {
-    "name": "Radok AWS Area",
+    "name": "Radok AWS Area 31",
     "code": "NGP31",
     "lat": -71.125,
     "long": 116.125,
@@ -472030,7 +472030,7 @@
     "referenceDistanceKm": 181.1
   },
   {
-    "name": "Kuujjuarapik Area",
+    "name": "Kuujjuarapik Area 32",
     "code": "NGP32",
     "lat": 57.625,
     "long": -73.125,
@@ -472039,7 +472039,7 @@
     "referenceDistanceKm": 219.1
   },
   {
-    "name": "Pagnag Area",
+    "name": "Pagnag Area 33",
     "code": "NGP33",
     "lat": 34.625,
     "long": 91.375,
@@ -472048,7 +472048,7 @@
     "referenceDistanceKm": 263.4
   },
   {
-    "name": "Aleksandra Girs Area",
+    "name": "Aleksandra Girs A 34",
     "code": "NGP34",
     "lat": -78.625,
     "long": 22.125,
@@ -472057,7 +472057,7 @@
     "referenceDistanceKm": 197.8
   },
   {
-    "name": "Nyurba Area",
+    "name": "Nyurba Area 35",
     "code": "NGP35",
     "lat": 64.875,
     "long": 117.125,
@@ -472066,7 +472066,7 @@
     "referenceDistanceKm": 185.3
   },
   {
-    "name": "Mid Point Stati Area",
+    "name": "Mid Point Stati A 36",
     "code": "NGP36",
     "lat": -77.125,
     "long": 142.375,
@@ -472075,7 +472075,7 @@
     "referenceDistanceKm": 198
   },
   {
-    "name": "Pine Is Gl. 2 Area",
+    "name": "Pine Is Gl. 2 Are 37",
     "code": "NGP37",
     "lat": -76.625,
     "long": -95.375,
@@ -472084,7 +472084,7 @@
     "referenceDistanceKm": 204.8
   },
   {
-    "name": "King Leopold Qu Area",
+    "name": "King Leopold Qu A 38",
     "code": "NGP38",
     "lat": -71.125,
     "long": 89.375,
@@ -472093,7 +472093,7 @@
     "referenceDistanceKm": 182
   },
   {
-    "name": "Srednekolymsk Area",
+    "name": "Srednekolymsk Are 39",
     "code": "NGP39",
     "lat": 65.875,
     "long": 156.875,
@@ -472102,7 +472102,7 @@
     "referenceDistanceKm": 182.8
   },
   {
-    "name": "Kugluktuk Area",
+    "name": "Kugluktuk Area 40",
     "code": "NGP40",
     "lat": 66.375,
     "long": -111.875,
@@ -472111,7 +472111,7 @@
     "referenceDistanceKm": 195.2
   },
   {
-    "name": "Okhotsk Area",
+    "name": "Okhotsk Area 41",
     "code": "NGP41",
     "lat": 61.125,
     "long": 142.625,
@@ -472120,7 +472120,7 @@
     "referenceDistanceKm": 192.2
   },
   {
-    "name": "Kamenskoye Interior",
+    "name": "Kamenskoye Interi 42",
     "code": "NGP42",
     "lat": 62.625,
     "long": 171.875,
@@ -472129,7 +472129,7 @@
     "referenceDistanceKm": 190.1
   },
   {
-    "name": "Turukhansk Interior",
+    "name": "Turukhansk Interi 43",
     "code": "NGP43",
     "lat": 63.125,
     "long": 88.625,
@@ -472138,7 +472138,7 @@
     "referenceDistanceKm": 184.7
   },
   {
-    "name": "Dronning Ma Interior",
+    "name": "Dronning Ma Inter 44",
     "code": "NGP44",
     "lat": -75.875,
     "long": 19.625,
@@ -472147,7 +472147,7 @@
     "referenceDistanceKm": 184.8
   },
   {
-    "name": "Shumanay Area",
+    "name": "Shumanay Area 45",
     "code": "NGP45",
     "lat": 41.875,
     "long": 56.375,
@@ -472156,7 +472156,7 @@
     "referenceDistanceKm": 225.7
   },
   {
-    "name": "Shaybah Area",
+    "name": "Shaybah Area 46",
     "code": "NGP46",
     "lat": 21.125,
     "long": 52.125,
@@ -472165,7 +472165,7 @@
     "referenceDistanceKm": 212.8
   },
   {
-    "name": "Sangar Area",
+    "name": "Sangar Area 47",
     "code": "NGP47",
     "lat": 65.375,
     "long": 129.375,
@@ -472174,7 +472174,7 @@
     "referenceDistanceKm": 185.1
   },
   {
-    "name": "Zhigansk Interior",
+    "name": "Zhigansk Interior 48",
     "code": "NGP48",
     "lat": 68.125,
     "long": 125.875,
@@ -472183,7 +472183,7 @@
     "referenceDistanceKm": 182.5
   },
   {
-    "name": "Adventure Subglaci",
+    "name": "Adventure Subglac 49",
     "code": "NGP49",
     "lat": -75.375,
     "long": 137.125,
@@ -472192,7 +472192,7 @@
     "referenceDistanceKm": 214.4
   },
   {
-    "name": "Olenyok Area",
+    "name": "Olenyok Area 50",
     "code": "NGP50",
     "lat": 68.625,
     "long": 104.125,
@@ -472201,7 +472201,7 @@
     "referenceDistanceKm": 266.2
   },
   {
-    "name": "Mizuho Kogen Area",
+    "name": "Mizuho Kogen Area 51",
     "code": "NGP51",
     "lat": -74.375,
     "long": 44.625,
@@ -472210,7 +472210,7 @@
     "referenceDistanceKm": 210.2
   },
   {
-    "name": "Vanavara Area",
+    "name": "Vanavara Area 52",
     "code": "NGP52",
     "lat": 61.875,
     "long": 100.875,
@@ -472219,7 +472219,7 @@
     "referenceDistanceKm": 185.6
   },
   {
-    "name": "Srednekolym Interior",
+    "name": "Srednekolym Inter 53",
     "code": "NGP53",
     "lat": 69.125,
     "long": 152.125,
@@ -472228,7 +472228,7 @@
     "referenceDistanceKm": 196.6
   },
   {
-    "name": "Samuelhamaren Area",
+    "name": "Samuelhamaren Are 54",
     "code": "NGP54",
     "lat": -76.875,
     "long": -12.125,
@@ -472237,7 +472237,7 @@
     "referenceDistanceKm": 194.6
   },
   {
-    "name": "Kohnen Stat Interior",
+    "name": "Kohnen Stat Inter 55",
     "code": "NGP55",
     "lat": -76.375,
     "long": 5.125,
@@ -472246,7 +472246,7 @@
     "referenceDistanceKm": 206.5
   },
   {
-    "name": "Chumikan Area",
+    "name": "Chumikan Area 56",
     "code": "NGP56",
     "lat": 56.375,
     "long": 133.125,
@@ -472255,7 +472255,7 @@
     "referenceDistanceKm": 230
   },
   {
-    "name": "Pangnirtung Area",
+    "name": "Pangnirtung Area 57",
     "code": "NGP57",
     "lat": 65.625,
     "long": -69.625,
@@ -472264,7 +472264,7 @@
     "referenceDistanceKm": 186.8
   },
   {
-    "name": "Ledjanye nunata Area",
+    "name": "Ledjanye nunata A 58",
     "code": "NGP58",
     "lat": -71.875,
     "long": 56.375,
@@ -472273,7 +472273,7 @@
     "referenceDistanceKm": 185
   },
   {
-    "name": "Znamenskoye Area",
+    "name": "Znamenskoye Area 59",
     "code": "NGP59",
     "lat": 58.375,
     "long": 75.875,
@@ -472282,7 +472282,7 @@
     "referenceDistanceKm": 184.3
   },
   {
-    "name": "Gjoa Haven Area",
+    "name": "Gjoa Haven Area 60",
     "code": "NGP60",
     "lat": 67.375,
     "long": -100.625,
@@ -472291,7 +472291,7 @@
     "referenceDistanceKm": 180.1
   },
   {
-    "name": "Chara Area",
+    "name": "Chara Area 61",
     "code": "NGP61",
     "lat": 58.625,
     "long": 118.875,
@@ -472300,7 +472300,7 @@
     "referenceDistanceKm": 193.7
   },
   {
-    "name": "Fort Good Hope Area",
+    "name": "Fort Good Hope Ar 62",
     "code": "NGP62",
     "lat": 64.625,
     "long": -132.875,
@@ -472309,7 +472309,7 @@
     "referenceDistanceKm": 183.5
   },
   {
-    "name": "Gamburtsev 2 Area",
+    "name": "Gamburtsev 2 Area 63",
     "code": "NGP63",
     "lat": -79.375,
     "long": 66.625,
@@ -472318,7 +472318,7 @@
     "referenceDistanceKm": 180.8
   },
   {
-    "name": "Yellowknife Area",
+    "name": "Yellowknife Area 64",
     "code": "NGP64",
     "lat": 61.125,
     "long": -107.625,
@@ -472327,7 +472327,7 @@
     "referenceDistanceKm": 180.1
   },
   {
-    "name": "Moynoq Shahri Area",
+    "name": "Moynoq Shahri Are 65",
     "code": "NGP65",
     "lat": 45.625,
     "long": 58.125,
@@ -472336,7 +472336,7 @@
     "referenceDistanceKm": 180.5
   },
   {
-    "name": "Arviat Interior",
+    "name": "Arviat Interior 66",
     "code": "NGP66",
     "lat": 62.875,
     "long": -99.875,
@@ -472345,7 +472345,7 @@
     "referenceDistanceKm": 200.9
   },
   {
-    "name": "Turukhansk Sector",
+    "name": "Turukhansk Sector 67",
     "code": "NGP67",
     "lat": 66.125,
     "long": 96.375,
@@ -472354,7 +472354,7 @@
     "referenceDistanceKm": 274.5
   },
   {
-    "name": "Asino Area",
+    "name": "Asino Area 68",
     "code": "NGP68",
     "lat": 58.625,
     "long": 86.125,
@@ -472363,7 +472363,7 @@
     "referenceDistanceKm": 180.8
   },
   {
-    "name": "Komsomolskaja Area",
+    "name": "Komsomolskaja Are 69",
     "code": "NGP69",
     "lat": -74.375,
     "long": 103.625,
@@ -472372,7 +472372,7 @@
     "referenceDistanceKm": 187.4
   },
   {
-    "name": "Maud Subglacial Area",
+    "name": "Maud Subglacial A 70",
     "code": "NGP70",
     "lat": -79.375,
     "long": 3.625,
@@ -472381,7 +472381,7 @@
     "referenceDistanceKm": 181.1
   },
   {
-    "name": "Vernadskogo 1 Area",
+    "name": "Vernadskogo 1 Are 71",
     "code": "NGP71",
     "lat": -77.375,
     "long": 55.125,
@@ -472390,7 +472390,7 @@
     "referenceDistanceKm": 214.9
   },
   {
-    "name": "UstIlimsk Area",
+    "name": "UstIlimsk Area 72",
     "code": "NGP72",
     "lat": 58.875,
     "long": 105.375,
@@ -472399,7 +472399,7 @@
     "referenceDistanceKm": 182.7
   },
   {
-    "name": "Olyokminsk Area",
+    "name": "Olyokminsk Area 73",
     "code": "NGP73",
     "lat": 60.625,
     "long": 123.875,
@@ -472408,7 +472408,7 @@
     "referenceDistanceKm": 188
   },
   {
-    "name": "Wentugaole Area",
+    "name": "Wentugaole Area 74",
     "code": "NGP74",
     "lat": 40.375,
     "long": 103.875,
@@ -472417,7 +472417,7 @@
     "referenceDistanceKm": 188.5
   },
   {
-    "name": "Kawawachikamach Area",
+    "name": "Kawawachikamach A 75",
     "code": "NGP75",
     "lat": 56.625,
     "long": -67.125,
@@ -472426,7 +472426,7 @@
     "referenceDistanceKm": 181.2
   },
   {
-    "name": "Zhabu Area",
+    "name": "Zhabu Area 76",
     "code": "NGP76",
     "lat": 34.375,
     "long": 84.625,
@@ -472435,7 +472435,7 @@
     "referenceDistanceKm": 185.5
   },
   {
-    "name": "Charcot Station Area",
+    "name": "Charcot Station A 77",
     "code": "NGP77",
     "lat": -70.375,
     "long": 125.375,
@@ -472444,7 +472444,7 @@
     "referenceDistanceKm": 242.7
   },
   {
-    "name": "Bilibino Area",
+    "name": "Bilibino Area 78",
     "code": "NGP78",
     "lat": 66.375,
     "long": 164.375,
@@ -472453,7 +472453,7 @@
     "referenceDistanceKm": 180.4
   },
   {
-    "name": "Khonuu Area",
+    "name": "Khonuu Area 79",
     "code": "NGP79",
     "lat": 65.875,
     "long": 139.125,
@@ -472462,7 +472462,7 @@
     "referenceDistanceKm": 195.1
   },
   {
-    "name": "As Sulayyil Interior",
+    "name": "As Sulayyil Inter 80",
     "code": "NGP80",
     "lat": 19.125,
     "long": 47.125,
@@ -472471,7 +472471,7 @@
     "referenceDistanceKm": 184.4
   },
   {
-    "name": "Telfer Area",
+    "name": "Telfer Area 81",
     "code": "NGP81",
     "lat": -22.375,
     "long": 126.625,
@@ -472480,7 +472480,7 @@
     "referenceDistanceKm": 191.1
   },
   {
-    "name": "Terra Santa Area",
+    "name": "Terra Santa Area 82",
     "code": "NGP82",
     "lat": 0.125,
     "long": -57.375,
@@ -472489,7 +472489,7 @@
     "referenceDistanceKm": 209.9
   },
   {
-    "name": "Sitry Point Area",
+    "name": "Sitry Point Area 83",
     "code": "NGP83",
     "lat": -71.875,
     "long": 153.875,
@@ -472498,7 +472498,7 @@
     "referenceDistanceKm": 183.3
   },
   {
-    "name": "Abu Samrah Area",
+    "name": "Abu Samrah Area 84",
     "code": "NGP84",
     "lat": 21.625,
     "long": 49.875,
@@ -472507,7 +472507,7 @@
     "referenceDistanceKm": 290.9
   },
   {
-    "name": "Al Muwayh Area",
+    "name": "Al Muwayh Area 85",
     "code": "NGP85",
     "lat": 21.875,
     "long": 43.625,
@@ -472516,7 +472516,7 @@
     "referenceDistanceKm": 194.9
   },
   {
-    "name": "Yulara Area",
+    "name": "Yulara Area 86",
     "code": "NGP86",
     "lat": -27.875,
     "long": 127.875,
@@ -472525,7 +472525,7 @@
     "referenceDistanceKm": 180.3
   },
   {
-    "name": "AlUla Area",
+    "name": "AlUla Area 87",
     "code": "NGP87",
     "lat": 27.625,
     "long": 39.625,
@@ -472534,7 +472534,7 @@
     "referenceDistanceKm": 196
   },
   {
-    "name": "Clyde Kogi Area",
+    "name": "Clyde Kogi Area 88",
     "code": "NGP88",
     "lat": 68.625,
     "long": -72.625,
@@ -472543,7 +472543,7 @@
     "referenceDistanceKm": 180.7
   },
   {
-    "name": "Evensk Area",
+    "name": "Evensk Area 89",
     "code": "NGP89",
     "lat": 63.625,
     "long": 159.125,
@@ -472552,7 +472552,7 @@
     "referenceDistanceKm": 189.5
   },
   {
-    "name": "Aykhal Interior",
+    "name": "Aykhal Interior 90",
     "code": "NGP90",
     "lat": 64.125,
     "long": 106.625,
@@ -472561,7 +472561,7 @@
     "referenceDistanceKm": 300.1
   },
   {
-    "name": "Peacock 2 Interior",
+    "name": "Peacock 2 Interio 91",
     "code": "NGP91",
     "lat": -79.375,
     "long": 121.375,
@@ -472570,7 +472570,7 @@
     "referenceDistanceKm": 180.8
   },
   {
-    "name": "Kugluktuk Interior",
+    "name": "Kugluktuk Interio 92",
     "code": "NGP92",
     "lat": 66.875,
     "long": -109.625,
@@ -472579,7 +472579,7 @@
     "referenceDistanceKm": 205.1
   },
   {
-    "name": "Clifton Hills Airp",
+    "name": "Clifton Hills Air 93",
     "code": "NGP93",
     "lat": -26.125,
     "long": 137.375,
@@ -472588,7 +472588,7 @@
     "referenceDistanceKm": 180.6
   },
   {
-    "name": "Al Mazyunah Area",
+    "name": "Al Mazyunah Area 94",
     "code": "NGP94",
     "lat": 19.375,
     "long": 53.375,
@@ -472597,7 +472597,7 @@
     "referenceDistanceKm": 186.7
   },
   {
-    "name": "Cuozheqiang Interior",
+    "name": "Cuozheqiang Inter 95",
     "code": "NGP95",
     "lat": 35.375,
     "long": 87.625,
@@ -472606,7 +472606,7 @@
     "referenceDistanceKm": 229.9
   },
   {
-    "name": "Tatrang Area",
+    "name": "Tatrang Area 96",
     "code": "NGP96",
     "lat": 39.375,
     "long": 83.875,
@@ -472615,7 +472615,7 @@
     "referenceDistanceKm": 182.6
   },
   {
-    "name": "Zolotinka Area",
+    "name": "Zolotinka Area 97",
     "code": "NGP97",
     "lat": 55.875,
     "long": 128.625,
@@ -472624,7 +472624,7 @@
     "referenceDistanceKm": 236.1
   },
   {
-    "name": "Qeqertarsuaq Area",
+    "name": "Qeqertarsuaq Area 98",
     "code": "NGP98",
     "lat": 62.875,
     "long": -46.625,
@@ -472633,7 +472633,7 @@
     "referenceDistanceKm": 182.8
   },
   {
-    "name": "Kangerlussuaq Area",
+    "name": "Kangerlussuaq Are 99",
     "code": "NGP99",
     "lat": 67.625,
     "long": -46.625,
@@ -472642,7 +472642,7 @@
     "referenceDistanceKm": 187.2
   },
   {
-    "name": "Telfer Interior",
+    "name": "Telfer Interior 100",
     "code": "NGP100",
     "lat": -24.625,
     "long": 124.375,
@@ -472651,7 +472651,7 @@
     "referenceDistanceKm": 191.7
   },
   {
-    "name": "Carandayti Area",
+    "name": "Carandayti Area 101",
     "code": "NGP101",
     "lat": -20.375,
     "long": -60.875,
@@ -472660,7 +472660,7 @@
     "referenceDistanceKm": 188.1
   },
   {
-    "name": "Baykit Area",
+    "name": "Baykit Area 102",
     "code": "NGP102",
     "lat": 62.875,
     "long": 93.625,
@@ -472669,7 +472669,7 @@
     "referenceDistanceKm": 194.1
   },
   {
-    "name": "Igarka Area",
+    "name": "Igarka Area 103",
     "code": "NGP103",
     "lat": 67.625,
     "long": 93.125,
@@ -472678,7 +472678,7 @@
     "referenceDistanceKm": 221.1
   },
   {
-    "name": "Concordia 2 Area",
+    "name": "Concordia 2 Area 104",
     "code": "NGP104",
     "lat": -72.625,
     "long": 127.625,
@@ -472687,7 +472687,7 @@
     "referenceDistanceKm": 181.9
   },
   {
-    "name": "Kuujjuarapi Interior",
+    "name": "Kuujjuarapi Inte 105",
     "code": "NGP105",
     "lat": 58.125,
     "long": -74.125,
@@ -472696,7 +472696,7 @@
     "referenceDistanceKm": 212.2
   },
   {
-    "name": "Plateau Area",
+    "name": "Plateau Area 106",
     "code": "NGP106",
     "lat": -79.125,
     "long": 31.875,
@@ -472705,7 +472705,7 @@
     "referenceDistanceKm": 180.3
   },
   {
-    "name": "Taxtakopir Area",
+    "name": "Taxtakopir Area 107",
     "code": "NGP107",
     "lat": 43.625,
     "long": 62.375,
@@ -472714,7 +472714,7 @@
     "referenceDistanceKm": 181.1
   },
   {
-    "name": "Shalqiya Area",
+    "name": "Shalqiya Area 108",
     "code": "NGP108",
     "lat": 45.625,
     "long": 67.875,
@@ -472723,7 +472723,7 @@
     "referenceDistanceKm": 183.3
   },
   {
-    "name": "HavreSaint Pierre",
+    "name": "HavreSaint Pierr 109",
     "code": "NGP109",
     "lat": 51.875,
     "long": -62.875,
@@ -472732,7 +472732,7 @@
     "referenceDistanceKm": 184.5
   },
   {
-    "name": "Kuujjuarapik Sector",
+    "name": "Kuujjuarapik Sec 110",
     "code": "NGP110",
     "lat": 55.375,
     "long": -74.375,
@@ -472741,7 +472741,7 @@
     "referenceDistanceKm": 185.6
   },
   {
-    "name": "Lajamanu Area",
+    "name": "Lajamanu Area 111",
     "code": "NGP111",
     "lat": -19.625,
     "long": 131.875,
@@ -472750,7 +472750,7 @@
     "referenceDistanceKm": 189.7
   },
   {
-    "name": "UstMaya Interior",
+    "name": "UstMaya Interior 112",
     "code": "NGP112",
     "lat": 59.125,
     "long": 138.125,
@@ -472759,7 +472759,7 @@
     "referenceDistanceKm": 241.8
   },
   {
-    "name": "Eyelash Crevass Area",
+    "name": "Eyelash Crevass 113",
     "code": "NGP113",
     "lat": -78.375,
     "long": 146.125,
@@ -472768,7 +472768,7 @@
     "referenceDistanceKm": 213
   },
   {
-    "name": "Canicado Area",
+    "name": "Canicado Area 114",
     "code": "NGP114",
     "lat": -22.875,
     "long": 33.625,
@@ -472777,7 +472777,7 @@
     "referenceDistanceKm": 185
   },
   {
-    "name": "Tieganlike Area",
+    "name": "Tieganlike Area 115",
     "code": "NGP115",
     "lat": 40.625,
     "long": 88.625,
@@ -472786,7 +472786,7 @@
     "referenceDistanceKm": 181.3
   },
   {
-    "name": "Olenyok Interior",
+    "name": "Olenyok Interior 116",
     "code": "NGP116",
     "lat": 67.625,
     "long": 116.375,
@@ -472795,7 +472795,7 @@
     "referenceDistanceKm": 189.6
   },
   {
-    "name": "Inuvik Area",
+    "name": "Inuvik Area 117",
     "code": "NGP117",
     "lat": 68.375,
     "long": -128.875,
@@ -472804,7 +472804,7 @@
     "referenceDistanceKm": 180.6
   },
   {
-    "name": "Mazongshan Area",
+    "name": "Mazongshan Area 118",
     "code": "NGP118",
     "lat": 43.375,
     "long": 97.625,
@@ -472813,7 +472813,7 @@
     "referenceDistanceKm": 180.9
   },
   {
-    "name": "Berezovyy Area",
+    "name": "Berezovyy Area 119",
     "code": "NGP119",
     "lat": 53.125,
     "long": 136.875,
@@ -472822,7 +472822,7 @@
     "referenceDistanceKm": 181
   },
   {
-    "name": "Bagdarin Area",
+    "name": "Bagdarin Area 120",
     "code": "NGP120",
     "lat": 54.625,
     "long": 116.375,
@@ -472831,7 +472831,7 @@
     "referenceDistanceKm": 180.3
   },
   {
-    "name": "Kargasok Interior",
+    "name": "Kargasok Interio 121",
     "code": "NGP121",
     "lat": 60.625,
     "long": 81.875,
@@ -472840,7 +472840,7 @@
     "referenceDistanceKm": 183.5
   },
   {
-    "name": "Khonuu Interior",
+    "name": "Khonuu Interior 122",
     "code": "NGP122",
     "lat": 66.875,
     "long": 147.375,
@@ -472849,7 +472849,7 @@
     "referenceDistanceKm": 187.2
   },
   {
-    "name": "Sovetskaja nauchna",
+    "name": "Sovetskaja nauch 123",
     "code": "NGP123",
     "lat": -77.625,
     "long": 94.625,
@@ -472858,7 +472858,7 @@
     "referenceDistanceKm": 184.2
   },
   {
-    "name": "Shmidta podledn Area",
+    "name": "Shmidta podledn 124",
     "code": "NGP124",
     "lat": -70.375,
     "long": 106.625,
@@ -472867,7 +472867,7 @@
     "referenceDistanceKm": 182.1
   },
   {
-    "name": "Tejen Area",
+    "name": "Tejen Area 125",
     "code": "NGP125",
     "lat": 39.125,
     "long": 60.625,
@@ -472876,7 +472876,7 @@
     "referenceDistanceKm": 187.2
   },
   {
-    "name": "Saksaulskiy Area",
+    "name": "Saksaulskiy Area 126",
     "code": "NGP126",
     "lat": 47.625,
     "long": 63.875,
@@ -472885,7 +472885,7 @@
     "referenceDistanceKm": 180.9
   },
   {
-    "name": "Gjoa Haven Interior",
+    "name": "Gjoa Haven Inter 127",
     "code": "NGP127",
     "lat": 66.375,
     "long": -98.375,
@@ -472894,7 +472894,7 @@
     "referenceDistanceKm": 183.5
   },
   {
-    "name": "Noatak Area",
+    "name": "Noatak Area 128",
     "code": "NGP128",
     "lat": 68.875,
     "long": -158.875,
@@ -472903,7 +472903,7 @@
     "referenceDistanceKm": 185.6
   },
   {
-    "name": "Klaus Weber Ruc Area",
+    "name": "Klaus Weber Ruc 129",
     "code": "NGP129",
     "lat": -77.875,
     "long": -6.375,
@@ -472912,7 +472912,7 @@
     "referenceDistanceKm": 344.3
   },
   {
-    "name": "Dronning Maud Sector",
+    "name": "Dronning Maud Se 130",
     "code": "NGP130",
     "lat": -76.375,
     "long": 23.625,
@@ -472921,7 +472921,7 @@
     "referenceDistanceKm": 305.1
   },
   {
-    "name": "Hualfin Area",
+    "name": "Hualfin Area 131",
     "code": "NGP131",
     "lat": -25.875,
     "long": -67.875,
@@ -472930,7 +472930,7 @@
     "referenceDistanceKm": 182.4
   },
   {
-    "name": "Raja Area",
+    "name": "Raja Area 132",
     "code": "NGP132",
     "lat": 6.875,
     "long": 24.875,
@@ -472939,7 +472939,7 @@
     "referenceDistanceKm": 182.7
   },
   {
-    "name": "Omsukchan Area",
+    "name": "Omsukchan Area 133",
     "code": "NGP133",
     "lat": 63.875,
     "long": 157.875,
@@ -472948,7 +472948,7 @@
     "referenceDistanceKm": 183.7
   },
   {
-    "name": "Srednekolymsk Sector",
+    "name": "Srednekolymsk Se 134",
     "code": "NGP134",
     "lat": 66.125,
     "long": 156.375,
@@ -472957,7 +472957,7 @@
     "referenceDistanceKm": 188.6
   },
   {
-    "name": "Runyon Rock Area",
+    "name": "Runyon Rock Area 135",
     "code": "NGP135",
     "lat": -78.375,
     "long": -112.875,
@@ -472966,7 +472966,7 @@
     "referenceDistanceKm": 182.5
   },
   {
-    "name": "Vostok nauchnaj Area",
+    "name": "Vostok nauchnaj 136",
     "code": "NGP136",
     "lat": -78.375,
     "long": 115.125,
@@ -472975,7 +472975,7 @@
     "referenceDistanceKm": 185.9
   },
   {
-    "name": "Mid Point S Interior",
+    "name": "Mid Point S Inte 137",
     "code": "NGP137",
     "lat": -74.875,
     "long": 151.625,
@@ -472984,7 +472984,7 @@
     "referenceDistanceKm": 180.6
   },
   {
-    "name": "Gruyere Mine Airpo",
+    "name": "Gruyere Mine Air 138",
     "code": "NGP138",
     "lat": -28.375,
     "long": 125.625,
@@ -472993,7 +472993,7 @@
     "referenceDistanceKm": 181.5
   },
   {
-    "name": "Luena Area",
+    "name": "Luena Area 139",
     "code": "NGP139",
     "lat": -13.375,
     "long": 19.375,
@@ -473002,7 +473002,7 @@
     "referenceDistanceKm": 186.5
   },
   {
-    "name": "Cruzeiro do Sul Area",
+    "name": "Cruzeiro do Sul 140",
     "code": "NGP140",
     "lat": -6.375,
     "long": -71.625,
@@ -473011,7 +473011,7 @@
     "referenceDistanceKm": 181.4
   },
   {
-    "name": "Maraa Area",
+    "name": "Maraa Area 141",
     "code": "NGP141",
     "lat": 0.875,
     "long": -63.875,
@@ -473020,7 +473020,7 @@
     "referenceDistanceKm": 181.2
   },
   {
-    "name": "Tokar Area",
+    "name": "Tokar Area 142",
     "code": "NGP142",
     "lat": 17.375,
     "long": 39.125,
@@ -473029,7 +473029,7 @@
     "referenceDistanceKm": 181.2
   },
   {
-    "name": "Segong Area",
+    "name": "Segong Area 143",
     "code": "NGP143",
     "lat": 33.625,
     "long": 93.125,
@@ -473038,7 +473038,7 @@
     "referenceDistanceKm": 182.7
   },
   {
-    "name": "Fermont Area",
+    "name": "Fermont Area 144",
     "code": "NGP144",
     "lat": 53.125,
     "long": -69.875,
@@ -473047,7 +473047,7 @@
     "referenceDistanceKm": 180.3
   },
   {
-    "name": "Stoyba Area",
+    "name": "Stoyba Area 145",
     "code": "NGP145",
     "lat": 54.125,
     "long": 130.125,
@@ -473056,7 +473056,7 @@
     "referenceDistanceKm": 182.1
   },
   {
-    "name": "Okhotsk Interior",
+    "name": "Okhotsk Interior 146",
     "code": "NGP146",
     "lat": 60.625,
     "long": 145.375,
@@ -473065,7 +473065,7 @@
     "referenceDistanceKm": 181.9
   },
   {
-    "name": "Nadym Area",
+    "name": "Nadym Area 147",
     "code": "NGP147",
     "lat": 64.125,
     "long": 70.375,
@@ -473074,7 +473074,7 @@
     "referenceDistanceKm": 186.5
   },
   {
-    "name": "Yerbogachen Interior",
+    "name": "Yerbogachen Inte 148",
     "code": "NGP148",
     "lat": 64.125,
     "long": 104.375,
@@ -473083,7 +473083,7 @@
     "referenceDistanceKm": 192
   },
   {
-    "name": "Rankin Inlet Area",
+    "name": "Rankin Inlet Are 149",
     "code": "NGP149",
     "lat": 64.875,
     "long": -92.125,
@@ -473092,7 +473092,7 @@
     "referenceDistanceKm": 182.9
   },
   {
-    "name": "Kamenskoye Sector",
+    "name": "Kamenskoye Secto 150",
     "code": "NGP150",
     "lat": 64.875,
     "long": 166.625,

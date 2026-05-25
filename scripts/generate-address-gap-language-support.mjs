@@ -25,6 +25,10 @@ const scriptPatterns = {
   bengali: /^[\p{Script=Bengali}\p{Mark}]+$/u,
   urdu: /^[\p{Script=Arabic}\p{Mark}]+$/u,
   amharic: /^[\p{Script=Ethiopic}\p{Mark}]+$/u,
+  burmese: /^[\p{Script=Myanmar}\p{Mark}]+$/u,
+  khmer: /^[\p{Script=Khmer}\p{Mark}]+$/u,
+  nepali: /^[\p{Script=Devanagari}\p{Mark}]+$/u,
+  pashto: /^[\p{Script=Arabic}\p{Mark}]+$/u,
 };
 
 const titleAscii = (value) => {
@@ -64,6 +68,29 @@ const baseWords = {
   ],
 };
 
+const expansionSeedWords = {
+  burmese: [
+    "ye","ein","myit","taung","pan","lahpet","saok","mee","mont","htamin","panthi","hnget","u","sabe","thit","zei","lan","tada","uyin","le","ywet","mye","kyauk","the","kan","in","pinle","kanbe","hle","yata","bas","ka","kwin","khwet","pagan","zun","kalam","ayaung","tein","nwe","la","kye","lay","moe","pawa","khalon","sabein","thitkha","panban","kyo","kanzin","liteka","taik","mote","min","myo","ywa","sain","gyin","pazin","nanam","saba","gandum","pe","alu","kayan","monlar","thagwa","nweu","pazun","nwa","ngar","kyet","kway","kyaung","hsi","thanakha","ban","seik","sone","tazaung","myauk","tadaing","myinkwin","yo","seikkan","sin","myaw","saya","sayama","hsayawun","miba","thangegyin","kale","ayeik","kabyar","kyoe","sebu","kabe","hnyin","kyaukpyar","khayan","shauk","thabyu","ohn","ngapi","kyar","thinbaw","zin","pale","yokthe","myatthar","shwe","ngwe","kyay",
+  ],
+  khmer: [
+    "tuk","pteah","tonle","phnom","phka","tae","sievphov","phleung","nompang","bay","pom","chek","khnol","olive","daem","phsar","phlov","spean","suon","srae","sleuk","dei","thmor","ksach","boeng","samot","chhne","tukdo","rotphleng","lan","vela","kaev","chan","slappria","khmao","pophok","preahathit","chan","pkaray","khyol","phleang","kramah","kae","tok","prdab","kantrak","khsae","kantel","veng","chhnang","dambol","chamreang","phum","krong","hang","khnyay","chi","mareah","srov","sandek","dambong","krohom","trasak","tukdoh","phom","khmum","svaay","krouch","trabaek","lvea","khtum","chhkae","chhma","moan","ko","trey","baksay","pong","ambil","skor","kafe","pot","sbek","sabou","chas","kanseng","phuy","khnaey","knong","muk","thmenh","kru","vechobandit","kasekor","neakbork","phgneav","bank","sambot","kraom","tumneab","bangku","sramaol","khnong","rung","phleungtien","kda","dek","sang","kaong",
+  ],
+  nepali: [
+    "pani","ghar","nadi","pahad","phul","chiya","kitab","batti","roti","bhat","syau","kera","khajur","jaitun","rukh","bajar","bato","pul","bagaincha","khet","pat","mato","dhunga","balua","tal","pokhari","samundra","kinar","nauka","rel","bas","gadi","chok","kap","katora","chamcha","kalam","rang","badal","surya","chandra","tara","hawa","paniyeko","kapada","kursi","mej","baksa","tokari","dori","chakati","parda","bhada","chhat","bhitta","sindhi","tol","sahar","gaun","pasal","aduwa","pudina","tulasi","chameli","gahu","dal","alu","golbheda","gajar","kakro","dudh","paneer","maha","mithai","badam","anar","angur","kagati","suntala","tarbuj","dalchini","chhaya","ujyalo","bihan","sanjh","basanta","garmi","sharad","jado","upatyaka","ban","tapoo","bandar","minar","dhoka","jhyal","sacho","naksa","chithi","tasbir","kapi","school","sangrahalaya","cafe","bakery","restaurant","kath","kapas","resham","chandi","tama","sun","sisa",
+  ],
+  somali: [
+    "biyo","guri","webi","buur","ubax","shaah","buug","nal","rooti","bariis","tufaax","moos","timir","saytuun","geed","suuq","waddo","buundo","beer","dhul","caleen","carro","dhagax","ciid","haro","balli","bad","xeeb","doon","tareen","bas","gaari","fagaaro","koob","baaquli","qaaddo","qalin","midab","daruur","qorrax","dayax","xiddig","dabayl","roob","maro","kursi","miis","sanduuq","dambiil","xadhig","derin","daah","dheri","saqaf","derbi","jaranjar","xaafad","magaalo","tuulo","dukaan","sinjibiil","reexaanta","qamadiga","digir","baradho","yaanyo","karoot","qajaar","caano","farmaajo","malab","laws","rummaan","canab","liin","qaraha","qorfe","hoos","iftiin","subax","fiid","gu","xagaa","dayr","jiilaal","dooxo","kaynta","jasiirad","deked","munaarad","albaab","daaqad","furaha","khariidad","warqad","sawir","buugyar","dugsi","madxaf","kafe","foorno","makhaayad","alwaax","suuf","xariir","qalinjab","maar","dahab","muraayad","bisad","eey","digaag","lo","kalluun","shimbir","ukun","milix","sonkor","qaxwo","galley","basal","toon","kaabash","bocor","mindida",
+  ],
+  pashto: [
+    "oba","kor","sind","ghar","gul","chai","kitab","chiragh","dodai","wriji","manra","kela","khajur","zaitun","wana","bazar","lar","pul","bagh","pati","pana","khawra","tiga","shga","dand","talab","samandar","ghara","kashti","rel","bas","motar","maidon","pyala","kasa","qashogha","qalam","rang","wraza","lmar","spogmai","stori","bad","baran","tukra","kursi","mez","sandoq","tokrai","rasai","satrangi","parda","degi","chat","dewal","zine","kali","shar","keli","dukan","adrak","podina","kashmali","ghanim","dal","kachalo","tamatar","gajar","badrang","shide","panir","shahd","khog","badam","anar","angor","limu","naranj","tarboz","darchini","sori","rana","sahar","makham","sperlai","dobai","manai","jami","dara","jangal","jazira","bandar","minar","war","kirkai","kilai","naksha","lik","anzoor","kitabcha","maktab","muzim","kafe","nanwai","restoran","laragi","malmal","resham","spinzar","mes","sra","shisha",
+  ],
+  lingala: [
+    "mai","ndako","ebale","ngomba","fololo","ti","buku","mwinda","mapa","loso","pom","banana","mbila","olive","nzete","zando","nzela","pont","elanga","bilanga","lokasa","mabele","libanga","zelo","etima","liziba","mbu","libongo","bwato","tren","bisi","motuka","lopango","kopo","sani","lutu","ekomeli","langi","lipata","moyi","sanza","monzoto","mopepe","mbula","elamba","kiti","mesa","sanduku","kitunga","nsinga","lisolo","rido","nzungu","toit","efelo","emata","kartye","engumba","mboka","butiki","ngenge","menta","ble","masangu","loso","pomdetere","tomati","karoti","konkonbre","mabeleya","fromage","mafuta","amande","grenade","raisin","limo","orange","pastèque","kanela","elili","pole","ntongo","mpokwa","printemps","moi","automne","malili","lobwaku","zamba","esanga","libongo","ndakoelai","ekuke","fenetre","fungola","karte","mokanda","elilingi","kaye","kelasi","musee","kafe","boulangerie","restaurant","libaya","coton","soie","palata","motako","wolo","talatala","mbwa","nyau","nsoso","ngombe","mbisi","ndeke","likei","mungwa","sukali",
+  ],
+};
+
+Object.assign(baseWords, expansionSeedWords);
+
 const additionalStandaloneWords = {
   swahili: [
     "paka","mbwa","kuku","ngombe","samaki","ndege","yai","chumvi","sukari","kahawa","maharage","mahindi","mtama","ufuta","karanga","embe","papai","parachichi","nanasi","fenesi","pera","plamu","pilipili","kabichi","boga","birika","chupa","sahani","sufuria","kisu","uma","beseni","ndoo","jiko","mshumaa","sabuni","brashi","taulo","shuka","blanketi","mto","godoro","saa","redio","simu","kompyuta","kalenda","mfuko","begi","kofia","viatu","shati","suruali","sketi","kanzu","soksi","pete","bangili","mkufu","nywele","jicho","sikio","mkono","mguu","kidole","uso","meno","familia","rafiki","mtoto","mwalimu","daktari","mkulima","mpishi","mvuvi","dereva","fundi","mgeni","jirani","ofisi","posta","benki","hoteli","soko","uwanja","stendi","kituo","barabara","njia","kijia","kisima","chemchemi","mapango","kilima","tambarare","korongo","kichaka","nyasi","maua","mbegu","tawi","mzizi","gome","kivuko","darubini","kizingiti","rafu","kabati","droo","kifungo","sindano","uzi","mkasi","gundi","karatasi","bahasha","stempu","jarida","gazeti","hadithi","wimbo","ngoma","filimbi","kinanda","picha","sanamu","udongo","tofali","saruji","chuma","bati","kokoto",
@@ -85,6 +112,19 @@ const additionalStandaloneWords = {
   ],
 };
 
+const expansionMoreWords = [
+  "cat","dog","chicken","cow","fish","bird","egg","salt","sugar","coffee","corn","bean","peanut","mango","papaya","pineapple","pear","pepper","cabbage","pumpkin","onion","garlic","coconut","bamboo","knife","fork","plate","glass","bottle","bucket","stove","candle","soap","brush","towel","blanket","pillow","mattress","clock","radio","phone","computer","calendar","bag","hat","shoe","shirt","trousers","sock","ring","bracelet","necklace","hair","eye","ear","hand","foot","finger","face","tooth","family","friend","child","teacher","doctor","farmer","cook","fisher","driver","carpenter","guest","neighbor","office","post","bank","hotel","station","street","lane","well","spring","cave","hill","plain","ravine","grass","branch","root","bark","fence","shelf","cabinet","needle","thread","scissors","glue","paper","envelope","stamp","magazine","newspaper","story","song","drum","flute","piano","statue","brick","cement","iron","gravel","pearl","shell","tail","wing","nest","cage","umbrella","comb","mirror","toy","doll","bell","kite","bed","bench","ladder","market","school","clinic","garden","field","harbor","tower","gate","yard","path","shade","light","morning","evening","valley","forest","island","letter","picture","notebook","wood","cotton","silver","copper","gold","window","door","key","map",
+];
+
+Object.assign(additionalStandaloneWords, {
+  burmese: expansionMoreWords,
+  khmer: expansionMoreWords,
+  nepali: expansionMoreWords,
+  somali: expansionMoreWords,
+  pashto: expansionMoreWords,
+  lingala: expansionMoreWords,
+});
+
 const blocked = {
   swahili: new Set(["vita","damu","silaha","ngono","kasino","pombe"]),
   filipino: new Set(["digma","dugo","baril","sugal","alak"]),
@@ -92,23 +132,69 @@ const blocked = {
   bengali: new Set(["যুদ্ধ","রক্ত","অস্ত্র","জুয়া","মদ"]),
   urdu: new Set(["جنگ","خون","ہتھیار","جوا","شراب"]),
   amharic: new Set(["ጦርነት","ደም","መሳሪያ","ቁማር","አልኮል"]),
+  burmese: new Set(["စစ်","သွေး","လက်နက်"]),
+  khmer: new Set(["សង្គ្រាម","ឈាម","អាវុធ"]),
+  nepali: new Set(["युद्ध","रगत","हतियार","जुवा","रक्सी"]),
+  somali: new Set(["Dagaal","Dhiig","Hub","Khamri"]),
+  pashto: new Set(["جګړه","وینه","وسله","قمار","شراب"]),
+  lingala: new Set(["Etumba","Makila","Mondoki","Masanga"]),
+};
+
+const codebookTransliterationMaps = {
+  burmese: {
+    pairs: [[/ng/gi, "င"], [/ny/gi, "ည"], [/th/gi, "သ"], [/sh/gi, "ရှ"], [/ch/gi, "ချ"], [/ph/gi, "ဖ"], [/kh/gi, "ခ"]],
+    chars: { a:"အ", b:"ဗ", c:"က", d:"ဒ", e:"ေ", f:"ဖ", g:"ဂ", h:"ဟ", i:"ိ", j:"ဂျ", k:"က", l:"လ", m:"မ", n:"န", o:"ို", p:"ပ", q:"က", r:"ရ", s:"စ", t:"တ", u:"ု", v:"ဗ", w:"ဝ", x:"က်စ", y:"ယ", z:"ဇ" },
+  },
+  khmer: {
+    pairs: [[/ng/gi, "ង"], [/ny/gi, "ញ"], [/th/gi, "ថ"], [/ch/gi, "ច"], [/ph/gi, "ផ"], [/kh/gi, "ខ"], [/tr/gi, "ត្រ"]],
+    chars: { a:"អ", b:"ប", c:"ក", d:"ដ", e:"េ", f:"ហ្វ", g:"គ", h:"ហ", i:"ិ", j:"ជ", k:"ក", l:"ល", m:"ម", n:"ន", o:"ូ", p:"ព", q:"ក", r:"រ", s:"ស", t:"ត", u:"ុ", v:"វ", w:"វ", x:"ក្ស", y:"យ", z:"ហ្ស" },
+  },
+  nepali: {
+    pairs: [[/chh/gi, "छ"], [/ch/gi, "च"], [/th/gi, "थ"], [/ph/gi, "फ"], [/kh/gi, "ख"], [/gh/gi, "घ"], [/bh/gi, "भ"], [/dh/gi, "ध"], [/sh/gi, "श"], [/ny/gi, "ञ"], [/ng/gi, "ङ"]],
+    chars: { a:"अ", b:"ब", c:"क", d:"द", e:"े", f:"फ", g:"ग", h:"ह", i:"ि", j:"ज", k:"क", l:"ल", m:"म", n:"न", o:"ो", p:"प", q:"क", r:"र", s:"स", t:"त", u:"ु", v:"व", w:"व", x:"क्स", y:"य", z:"ज" },
+  },
+  pashto: {
+    pairs: [[/sh/gi, "ش"], [/ch/gi, "چ"], [/th/gi, "ت"], [/ph/gi, "ف"], [/kh/gi, "خ"], [/gh/gi, "غ"], [/ng/gi, "نګ"], [/ny/gi, "نی"]],
+    chars: { a:"ا", b:"ب", c:"ک", d:"د", e:"ې", f:"ف", g:"ګ", h:"ه", i:"ي", j:"ج", k:"ک", l:"ل", m:"م", n:"ن", o:"و", p:"پ", q:"ق", r:"ر", s:"س", t:"ت", u:"و", v:"و", w:"و", x:"کس", y:"ی", z:"ز" },
+  },
+};
+
+const transliterateCodeWord = (language, value) => {
+  const spec = codebookTransliterationMaps[language];
+  if (!spec) return String(value);
+  let normalized = String(value).normalize("NFD").replace(/\p{Mark}/gu, "");
+  for (const [pattern, replacement] of spec.pairs) {
+    normalized = normalized.replace(pattern, replacement);
+  }
+  let output = "";
+  for (const char of normalized) {
+    if (/\d/.test(char) || /\s/.test(char)) {
+      output += char;
+      continue;
+    }
+    if (/[A-Za-z]/.test(char)) output += spec.chars[char.toLowerCase()] ?? "";
+  }
+  return output;
 };
 
 const normalizeCodeWord = (language, word) => {
-  if (["swahili", "filipino", "hausa"].includes(language)) {
+  if (["swahili", "filipino", "hausa", "somali", "lingala"].includes(language)) {
     const candidate = titleAscii(word);
     if (!commonLatinPattern.test(candidate)) return "";
     if (candidate.length > 18) return "";
     return candidate;
   }
-  const candidate = compactScript(word);
+  let candidate = compactScript(word);
+  if (!scriptPatterns[language]?.test(candidate)) {
+    candidate = compactScript(transliterateCodeWord(language, word));
+  }
   if (!scriptPatterns[language].test(candidate)) return "";
   if ([...candidate].length > 24) return "";
   return candidate;
 };
 
 const makeCodebookSoundKey = (language, word) => {
-  if (["swahili", "filipino", "hausa"].includes(language)) {
+  if (["swahili", "filipino", "hausa", "somali", "lingala"].includes(language)) {
     return String(word)
       .normalize("NFKD")
       .replace(/\p{Mark}/gu, "")
@@ -263,6 +349,42 @@ const languageSpecs = {
       .replace(/ስኤአ/g, "ባሕር"),
     overrides: { 1642911: "ጃካርታ", 1835848: "ሴኡል", 1273294: "ዴሊ", 360630: "ካይሮ" },
   },
+  burmese: {
+    region: (name) => transliterateCodeWord("burmese", name),
+    overrides: { 1642911: "ဂျာကာတာ", 1835848: "ဆိုးလ်", 1273294: "ဒေလီ", 360630: "ကိုင်ရို" },
+  },
+  khmer: {
+    region: (name) => transliterateCodeWord("khmer", name),
+    overrides: { 1642911: "ចាការតា", 1835848: "សេអ៊ូល", 1273294: "ដេលី", 360630: "កែរ" },
+  },
+  nepali: {
+    region: (name) => transliterateCodeWord("nepali", name),
+    overrides: { 1642911: "जकार्ता", 1835848: "सोल", 1273294: "दिल्ली", 360630: "काहिरा" },
+  },
+  somali: {
+    region: (name) => foldLatin(name)
+      .replace(/\bOcean\b/g, "Bad")
+      .replace(/\bSea\b/g, "Bad")
+      .replace(/\bBay\b/g, "Gacanka")
+      .replace(/\bGulf\b/g, "Gacanka")
+      .replace(/\bLake\b/g, "Haro")
+      .replace(/\bRiver\b/g, "Webi"),
+    overrides: { 1642911: "Jakarta", 1835848: "Seoul", 1273294: "Delhi", 360630: "Qaahira" },
+  },
+  pashto: {
+    region: (name) => transliterateCodeWord("pashto", name),
+    overrides: { 1642911: "جاکارتا", 1835848: "سیول", 1273294: "ډیلي", 360630: "قاهره" },
+  },
+  lingala: {
+    region: (name) => foldLatin(name)
+      .replace(/\bOcean\b/g, "Mbu")
+      .replace(/\bSea\b/g, "Mbu")
+      .replace(/\bBay\b/g, "Libongo")
+      .replace(/\bGulf\b/g, "Libongo")
+      .replace(/\bLake\b/g, "Etima")
+      .replace(/\bRiver\b/g, "Ebale"),
+    overrides: { 1642911: "Jakarta", 1835848: "Seoul", 1273294: "Delhi", 360630: "Kairo" },
+  },
 };
 
 const webLocaleByLanguage = {
@@ -272,6 +394,12 @@ const webLocaleByLanguage = {
   bengali: { locale: "bn", languageName: "বাংলা" },
   urdu: { locale: "ur", languageName: "اردو" },
   amharic: { locale: "am", languageName: "አማርኛ" },
+  burmese: { locale: "my", languageName: "မြန်မာ" },
+  khmer: { locale: "km", languageName: "ខ្មែរ" },
+  nepali: { locale: "ne", languageName: "नेपाली" },
+  somali: { locale: "so", languageName: "Soomaali" },
+  pashto: { locale: "ps", languageName: "پښتو" },
+  lingala: { locale: "ln", languageName: "Lingála" },
 };
 
 const normalizeRegionLabel = (value) =>
@@ -280,11 +408,24 @@ const normalizeRegionLabel = (value) =>
     .replace(/\s+/g, " ")
     .trim();
 
+const truncateLabel = (value, maxLength) => {
+  if ([...value].length <= maxLength) return value;
+
+  const suffixMatch = value.match(/^(.*?)( \d+)$/);
+  if (suffixMatch) {
+    const [, head, suffix] = suffixMatch;
+    const headLength = Math.max(1, maxLength - [...suffix].length);
+    return `${[...head].slice(0, headLength).join("").trim()}${suffix}`;
+  }
+
+  return [...value].slice(0, maxLength).join("").trim();
+};
+
 const dedupeNames = (rows, maxLength) => {
   const seen = new Set();
   return rows.map((row) => {
     let base = normalizeRegionLabel(row.name);
-    if ([...base].length > maxLength) base = [...base].slice(0, maxLength).join("").trim();
+    base = truncateLabel(base, maxLength);
     let candidate = base || String(row.code);
     let index = 2;
     while (seen.has(candidate.toLocaleLowerCase())) {
@@ -303,11 +444,46 @@ const translateName = (language, row) => {
   return spec.overrides[String(row.code)] ?? spec.region(row.name);
 };
 
+const numericSuffixSources = new Set([
+  "natural-earth-marine",
+  "synthetic-antarctic-grid",
+  "synthetic-arctic-grid",
+  "synthetic-sahara-grid",
+]);
+
+const stableNumericSuffix = (row, index) => {
+  const digits = String(row.code ?? "").match(/\d+/g)?.join("");
+  return digits || String(index + 1);
+};
+
+const withRequiredSuffix = (row, index) => {
+  if (numericSuffixSources.has(row.source) && !/ \d+$/.test(row.name)) {
+    return {
+      ...row,
+      name: `${row.name} ${stableNumericSuffix(row, index)}`,
+    };
+  }
+
+  if (row.source === "synthetic-named-gap") {
+    return {
+      ...row,
+      name: `${row.name} ${stableNumericSuffix(row, index)}`,
+    };
+  }
+
+  return row;
+};
+
 const buildLocalizedRows = (language, inputPath, outputPath, maxLength) => {
-  const rows = readJson(inputPath).map((row) => ({
-    ...row,
-    name: translateName(language, row),
-  }));
+  const rows = readJson(inputPath).map((row, index) =>
+    withRequiredSuffix(
+      {
+        ...row,
+        name: translateName(language, row),
+      },
+      index,
+    ),
+  );
   writeJson(outputPath, dedupeNames(rows, maxLength));
 };
 

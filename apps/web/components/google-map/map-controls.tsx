@@ -77,6 +77,12 @@ const MapControls: React.FC<MapControlsProps> = ({
     bn: "বাংলা",
     ur: "اردو",
     am: "አማርኛ",
+    my: "မြန်မာ",
+    km: "ខ្មែរ",
+    ne: "नेपाली",
+    so: "Soomaali",
+    ps: "پښتو",
+    ln: "Lingála",
   };
   const localeShortLabels: Record<Locale, string> = {
     en: "EN",
@@ -99,6 +105,12 @@ const MapControls: React.FC<MapControlsProps> = ({
     bn: "BN",
     ur: "UR",
     am: "AM",
+    my: "MY",
+    km: "KM",
+    ne: "NE",
+    so: "SO",
+    ps: "PS",
+    ln: "LN",
   };
 
   const handleLanguageChange = (newLocale: Locale) => {

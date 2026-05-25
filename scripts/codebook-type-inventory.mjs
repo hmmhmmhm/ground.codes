@@ -21,6 +21,12 @@ const CODEBOOK_FILES = {
   bengali: "../packages/codebook/codebook-dist/bengali.json",
   urdu: "../packages/codebook/codebook-dist/urdu.json",
   amharic: "../packages/codebook/codebook-dist/amharic.json",
+  burmese: "../packages/codebook/codebook-dist/burmese.json",
+  khmer: "../packages/codebook/codebook-dist/khmer.json",
+  nepali: "../packages/codebook/codebook-dist/nepali.json",
+  somali: "../packages/codebook/codebook-dist/somali.json",
+  pashto: "../packages/codebook/codebook-dist/pashto.json",
+  lingala: "../packages/codebook/codebook-dist/lingala.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -1028,6 +1034,78 @@ const COMPOUND_SUFFIXES = {
     "ቅርጫት",
     "ስዕል",
   ],
+  burmese: [
+    "ေိန",
+    "စအိုက",
+    "ဇေိ",
+    "တအဒ",
+    "အုယိန",
+    "လေ",
+    "ပိနလေ",
+    "ပအဂအန",
+    "ပအနဗအန",
+    "ရို",
+  ],
+  khmer: [
+    "ពតេអហ",
+    "សិេវូវ",
+    "ពហសអរ",
+    "សពេអន",
+    "សុអន",
+    "សរេអេ",
+    "សអមូត",
+    "ចអន",
+    "កអនតេអល",
+    "រោ",
+  ],
+  nepali: [
+    "अर",
+    "कितअब",
+    "बअजअर",
+    "बअतो",
+    "पुल",
+    "बअगअिनअ",
+    "सअमुनदरअ",
+    "कअतोरअ",
+    "तोकअरि",
+    "कअप",
+  ],
+  somali: [
+    "guri",
+    "buug",
+    "suuq",
+    "waddo",
+    "beer",
+    "dhul",
+    "bad",
+    "baaquli",
+    "dambiil",
+    "sawir",
+  ],
+  pashto: [
+    "کور",
+    "کيتاب",
+    "بازار",
+    "لر",
+    "پل",
+    "باغ",
+    "سمندر",
+    "کاسا",
+    "توکراي",
+    "انزور",
+  ],
+  lingala: [
+    "ndako",
+    "buku",
+    "zando",
+    "nzela",
+    "elanga",
+    "bilanga",
+    "mbu",
+    "sani",
+    "kitunga",
+    "elilingi",
+  ],
 };
 
 const LANGUAGE_LABELS = {
@@ -1051,6 +1129,12 @@ const LANGUAGE_LABELS = {
   bengali: "Bengali",
   urdu: "Urdu",
   amharic: "Amharic",
+  burmese: "Burmese",
+  khmer: "Khmer",
+  nepali: "Nepali",
+  somali: "Somali",
+  pashto: "Pashto",
+  lingala: "Lingala",
 };
 
 const TYPE_LABELS = {
@@ -1085,7 +1169,13 @@ const isShortStandalone = (language, word) => {
     language === "hausa" ||
     language === "bengali" ||
     language === "urdu" ||
-    language === "amharic"
+    language === "amharic" ||
+    language === "burmese" ||
+    language === "khmer" ||
+    language === "nepali" ||
+    language === "somali" ||
+    language === "pashto" ||
+    language === "lingala"
   ) {
     return length <= 4;
   }
@@ -1121,7 +1211,13 @@ const minPrefixLength = (language) => {
     language === "hausa" ||
     language === "bengali" ||
     language === "urdu" ||
-    language === "amharic"
+    language === "amharic" ||
+    language === "burmese" ||
+    language === "khmer" ||
+    language === "nepali" ||
+    language === "somali" ||
+    language === "pashto" ||
+    language === "lingala"
   ) {
     return 4;
   }
@@ -1144,7 +1240,9 @@ const normalizeForSuffix = (language, word) => {
     language === "vietnamese" ||
     language === "swahili" ||
     language === "filipino" ||
-    language === "hausa"
+    language === "hausa" ||
+    language === "somali" ||
+    language === "lingala"
   ) {
     return word.toLowerCase();
   }

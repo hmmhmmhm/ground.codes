@@ -36,6 +36,12 @@ const addressingGapLanguages = [
   "bengali",
   "urdu",
   "amharic",
+  "burmese",
+  "khmer",
+  "nepali",
+  "somali",
+  "pashto",
+  "lingala",
 ];
 
 describe("language support completeness", () => {

@@ -20,5 +20,11 @@ export const getGroundCodeLanguage = (locale: Locale) => {
   if (locale === "bn") return "bengali";
   if (locale === "ur") return "urdu";
   if (locale === "am") return "amharic";
+  if (locale === "my") return "burmese";
+  if (locale === "km") return "khmer";
+  if (locale === "ne") return "nepali";
+  if (locale === "so") return "somali";
+  if (locale === "ps") return "pashto";
+  if (locale === "ln") return "lingala";
   return "english";
 };

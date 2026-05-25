@@ -19,6 +19,12 @@ export const locales = [
   "bn",
   "ur",
   "am",
+  "my",
+  "km",
+  "ne",
+  "so",
+  "ps",
+  "ln",
 ] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "ko";

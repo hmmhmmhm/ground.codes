@@ -110,6 +110,12 @@ describe("codebook type inventory", () => {
       "bengali",
       "urdu",
       "amharic",
+      "burmese",
+      "khmer",
+      "nepali",
+      "somali",
+      "pashto",
+      "lingala",
     ]) {
       const row = rows.find((item) => item.language === language);
       assert.ok(row, `${language} inventory`);

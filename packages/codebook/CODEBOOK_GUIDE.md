@@ -46,6 +46,12 @@ Current distributed word counts:
 | Bengali    |  5000 | `codebook-dist/bengali.json`    |
 | Urdu       |  5000 | `codebook-dist/urdu.json`       |
 | Amharic    |  5000 | `codebook-dist/amharic.json`    |
+| Burmese    |  5000 | `codebook-dist/burmese.json`    |
+| Khmer      |  5000 | `codebook-dist/khmer.json`      |
+| Nepali     |  5000 | `codebook-dist/nepali.json`     |
+| Somali     |  5000 | `codebook-dist/somali.json`     |
+| Pashto     |  5000 | `codebook-dist/pashto.json`     |
+| Lingala    |  5000 | `codebook-dist/lingala.json`    |
 
 ## Current Word Type Inventory
 
@@ -128,6 +134,24 @@ Current inventory:
 | Amharic    | Recognized compound              |   153 |  3.1% | `ትምህርትቤት`, `ውሃትምህርትቤት`, `ውሃዳቦቤት`, `ውሃምግብቤት`, `ውሃጎረቤት` |
 | Amharic    | Short standalone                 |   647 | 12.9% | `ውሃ`, `ቤት`, `ወንዝ`, `ተራራ`, `አበባ`                                |
 | Amharic    | Other standalone or unclassified |  4200 | 84.0% | `አውቶቡስ`, `አደባባይ`, `ዝንጅብል`, `ብርቱካን`, `ምግብቤት`               |
+| Burmese    | Recognized compound              |   217 |  4.3% | `ပိနေအပပလေ`, `ဗိုတတလေ`, `ကအနဒလေ`, `နေေဒလေ`, `ယေပိနလေ`              |
+| Burmese    | Short standalone                 |   246 |  4.9% | `ယေ`, `ေိန`, `မယိတ`, `တအု`, `ပအန`                                    |
+| Burmese    | Other standalone or unclassified |  4537 | 90.7% | `လအဟပေတ`, `စအိုက`, `မိုနတ`, `ဟတအမိန`, `ကယအုက`                      |
+| Khmer      | Recognized compound              |    29 |  0.6% | `ពតេអហសិេវូវ`, `ពតេអហសពេអន`, `ពតេអហសអមូត`, `តូនលេពតេអហ`, `តូនលេសិេវូវ` |
+| Khmer      | Short standalone                 |   177 |  3.5% | `តុក`, `នូម`, `កអ`, `តអេ`, `លេុ`                                     |
+| Khmer      | Other standalone or unclassified |  4794 | 95.9% | `ពតេអហ`, `តូនលេ`, `សិេវូវ`, `នូមពអ`, `ូលិវេ`                        |
+| Nepali     | Recognized compound              |   301 |  6.0% | `बअनदअर`, `कअलेनदअर`, `पअनिअर`, `पअनिकितअब`, `पअनिबअजअर`             |
+| Nepali     | Short standalone                 |   195 |  3.9% | `पअनि`, `अर`, `नअदि`, `ुल`, `ियअ`                                    |
+| Nepali     | Other standalone or unclassified |  4504 | 90.1% | `पअहअद`, `कितअब`, `बअतति`, `जअितुन`, `बअजअर`                         |
+| Somali     | Recognized compound              |   156 |  3.1% | `Biyoguri`, `Biyobuug`, `Biyosuuq`, `Biyowaddo`, `Biyobeer`           |
+| Somali     | Short standalone                 |    90 |  1.8% | `Biyo`, `Guri`, `Webi`, `Buur`, `Ubax`                                |
+| Somali     | Other standalone or unclassified |  4754 | 95.1% | `Shaah`, `Rooti`, `Bariis`, `Tufaax`, `Timir`                         |
+| Pashto     | Recognized compound              |    48 |  1.0% | `سيندکور`, `سيندکيتاب`, `سيندبازار`, `سيندکاسا`, `سيندتوکراي`         |
+| Pashto     | Short standalone                 |   151 |  3.0% | `وبا`, `کور`, `سيند`, `ار`, `ګول`                                     |
+| Pashto     | Other standalone or unclassified |  4801 | 96.0% | `کيتاب`, `دوداي`, `وريجي`, `مانرا`, `زايتون`                         |
+| Lingala    | Recognized compound              |   146 |  2.9% | `Ndakobuku`, `Ndakozando`, `Ndakonzela`, `Ndakoelanga`, `Ndakobilanga` |
+| Lingala    | Short standalone                 |    83 |  1.7% | `Mai`, `Ti`, `Buku`, `Mapa`, `Loso`                                   |
+| Lingala    | Other standalone or unclassified |  4771 | 95.4% | `Ndako`, `Ebale`, `Ngomba`, `Fololo`, `Mwinda`                        |
 
 Review implications:
 
@@ -203,6 +227,12 @@ Review implications:
   and lowers recognized template-compound saturation across all six languages.
   Keep these languages in active cleanup until native-speaker review replaces
   weak fused pairs and expands standalone coverage.
+- Burmese, Khmer, Nepali, Somali, Pashto, and Lingala are the second
+  address-gap expansion batch. Somali and Lingala use Latin-script URL-safe
+  titlecase words; Burmese, Khmer, Nepali, and Pashto currently use native
+  script assets generated from conservative seed lists plus rough
+  transliteration fallbacks. Keep all six in active cleanup, with native review
+  especially required before marking the four non-Latin codebooks stable.
 
 ## Product Principles
 

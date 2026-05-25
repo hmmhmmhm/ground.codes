@@ -42,6 +42,12 @@ const regionSupportedLanguages = new Set<string>([
   "bengali",
   "urdu",
   "amharic",
+  "burmese",
+  "khmer",
+  "nepali",
+  "somali",
+  "pashto",
+  "lingala",
 ]);
 
 const addressGapLanguages = new Set([
@@ -51,6 +57,12 @@ const addressGapLanguages = new Set([
   "bengali",
   "urdu",
   "amharic",
+  "burmese",
+  "khmer",
+  "nepali",
+  "somali",
+  "pashto",
+  "lingala",
 ]);
 
 const addressGapRegionLoaders: Record<string, () => Promise<Region[]>> = {
@@ -173,6 +185,126 @@ const addressGapRegionLoaders: Record<string, () => Promise<Region[]>> = {
   "region-3-mars-amharic": async () =>
     // @ts-ignore
     (await import("@ground-codes/geoint/region-dist/region-3-mars-amharic.json"))
+      .default as Region[],
+  "region-2-burmese": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-burmese.json"))
+      .default as Region[],
+  "region-3-burmese": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-burmese.json"))
+      .default as Region[],
+  "region-2-moon-burmese": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-moon-burmese.json"))
+      .default as Region[],
+  "region-2-mars-burmese": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-mars-burmese.json"))
+      .default as Region[],
+  "region-3-mars-burmese": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-mars-burmese.json"))
+      .default as Region[],
+  "region-2-khmer": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-khmer.json"))
+      .default as Region[],
+  "region-3-khmer": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-khmer.json"))
+      .default as Region[],
+  "region-2-moon-khmer": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-moon-khmer.json"))
+      .default as Region[],
+  "region-2-mars-khmer": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-mars-khmer.json"))
+      .default as Region[],
+  "region-3-mars-khmer": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-mars-khmer.json"))
+      .default as Region[],
+  "region-2-nepali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-nepali.json"))
+      .default as Region[],
+  "region-3-nepali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-nepali.json"))
+      .default as Region[],
+  "region-2-moon-nepali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-moon-nepali.json"))
+      .default as Region[],
+  "region-2-mars-nepali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-mars-nepali.json"))
+      .default as Region[],
+  "region-3-mars-nepali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-mars-nepali.json"))
+      .default as Region[],
+  "region-2-somali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-somali.json"))
+      .default as Region[],
+  "region-3-somali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-somali.json"))
+      .default as Region[],
+  "region-2-moon-somali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-moon-somali.json"))
+      .default as Region[],
+  "region-2-mars-somali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-mars-somali.json"))
+      .default as Region[],
+  "region-3-mars-somali": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-mars-somali.json"))
+      .default as Region[],
+  "region-2-pashto": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-pashto.json"))
+      .default as Region[],
+  "region-3-pashto": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-pashto.json"))
+      .default as Region[],
+  "region-2-moon-pashto": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-moon-pashto.json"))
+      .default as Region[],
+  "region-2-mars-pashto": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-mars-pashto.json"))
+      .default as Region[],
+  "region-3-mars-pashto": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-mars-pashto.json"))
+      .default as Region[],
+  "region-2-lingala": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-lingala.json"))
+      .default as Region[],
+  "region-3-lingala": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-lingala.json"))
+      .default as Region[],
+  "region-2-moon-lingala": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-moon-lingala.json"))
+      .default as Region[],
+  "region-2-mars-lingala": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-2-mars-lingala.json"))
+      .default as Region[],
+  "region-3-mars-lingala": async () =>
+    // @ts-ignore
+    (await import("@ground-codes/geoint/region-dist/region-3-mars-lingala.json"))
       .default as Region[],
 };
 

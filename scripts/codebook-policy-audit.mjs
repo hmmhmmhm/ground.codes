@@ -23,6 +23,12 @@ export const EXPECTED_COUNTS = {
   bengali: 5000,
   urdu: 5000,
   amharic: 5000,
+  burmese: 5000,
+  khmer: 5000,
+  nepali: 5000,
+  somali: 5000,
+  pashto: 5000,
+  lingala: 5000,
 };
 
 const CODEBOOK_FILES = {
@@ -46,6 +52,12 @@ const CODEBOOK_FILES = {
   bengali: "../packages/codebook/codebook-dist/bengali.json",
   urdu: "../packages/codebook/codebook-dist/urdu.json",
   amharic: "../packages/codebook/codebook-dist/amharic.json",
+  burmese: "../packages/codebook/codebook-dist/burmese.json",
+  khmer: "../packages/codebook/codebook-dist/khmer.json",
+  nepali: "../packages/codebook/codebook-dist/nepali.json",
+  somali: "../packages/codebook/codebook-dist/somali.json",
+  pashto: "../packages/codebook/codebook-dist/pashto.json",
+  lingala: "../packages/codebook/codebook-dist/lingala.json",
 };
 
 const ADDRESS_GAP_LANGUAGES = new Set([
@@ -55,6 +67,12 @@ const ADDRESS_GAP_LANGUAGES = new Set([
   "bengali",
   "urdu",
   "amharic",
+  "burmese",
+  "khmer",
+  "nepali",
+  "somali",
+  "pashto",
+  "lingala",
 ]);
 
 const ADDRESS_GAP_SCRIPT_PATTERNS = {
@@ -64,6 +82,12 @@ const ADDRESS_GAP_SCRIPT_PATTERNS = {
   bengali: /^[\p{Script=Bengali}\p{Mark}]+$/u,
   urdu: /^[\p{Script=Arabic}\p{Mark}]+$/u,
   amharic: /^[\p{Script=Ethiopic}\p{Mark}]+$/u,
+  burmese: /^[\p{Script=Myanmar}\p{Mark}]+$/u,
+  khmer: /^[\p{Script=Khmer}\p{Mark}]+$/u,
+  nepali: /^[\p{Script=Devanagari}\p{Mark}]+$/u,
+  somali: /^[A-Z][a-z]+$/,
+  pashto: /^[\p{Script=Arabic}\p{Mark}]+$/u,
+  lingala: /^[A-Z][a-z]+$/,
 };
 
 const ADDRESS_GAP_MAX_LENGTHS = {
@@ -73,10 +97,16 @@ const ADDRESS_GAP_MAX_LENGTHS = {
   bengali: 24,
   urdu: 24,
   amharic: 24,
+  burmese: 24,
+  khmer: 24,
+  nepali: 24,
+  somali: 18,
+  pashto: 24,
+  lingala: 18,
 };
 
 const makeAddressGapPronunciationKey = (language, word) => {
-  if (["swahili", "filipino", "hausa"].includes(language)) {
+  if (["swahili", "filipino", "hausa", "somali", "lingala"].includes(language)) {
     return String(word)
       .normalize("NFKD")
       .replace(/\p{Mark}/gu, "")
@@ -1556,6 +1586,12 @@ const GUIDE_REVIEWED_BLOCKLISTS = {
     "መድሃኒት",
     "ሞት",
   ],
+  burmese: ["စစ်", "သွေး", "လက်နက်", "နိုင်ငံရေး", "ဘာသာ", "ရောဂါ", "သေခြင်း"],
+  khmer: ["សង្គ្រាម", "ឈាម", "អាវុធ", "នយោបាយ", "សាសនា", "ជំងឺ", "ស្លាប់"],
+  nepali: ["युद्ध", "रगत", "हतियार", "राजनीति", "धर्म", "रोग", "मृत्यु"],
+  somali: ["Dagaal", "Dhiig", "Hub", "Siyaasad", "Diin", "Cudur", "Dhimasho"],
+  pashto: ["جګړه", "وینه", "وسله", "سیاست", "دین", "ناروغي", "مرګ"],
+  lingala: ["Etumba", "Makila", "Mondoki", "Politiki", "Lingomba", "Maladi", "Kufa"],
 };
 
 const EXACT_BLOCKLISTS = Object.fromEntries(

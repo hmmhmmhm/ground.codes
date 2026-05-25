@@ -19,6 +19,12 @@ export const supportedLanguages = [
   "bengali",
   "urdu",
   "amharic",
+  "burmese",
+  "khmer",
+  "nepali",
+  "somali",
+  "pashto",
+  "lingala",
 ] as const;
 
 export const getRegionDatasetName = ({

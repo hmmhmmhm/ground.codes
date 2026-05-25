@@ -86,6 +86,12 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("<code>bengali</code>");
     expect(firstPartyDocs).toContain("<code>urdu</code>");
     expect(firstPartyDocs).toContain("<code>amharic</code>");
+    expect(firstPartyDocs).toContain("<code>burmese</code>");
+    expect(firstPartyDocs).toContain("<code>khmer</code>");
+    expect(firstPartyDocs).toContain("<code>nepali</code>");
+    expect(firstPartyDocs).toContain("<code>somali</code>");
+    expect(firstPartyDocs).toContain("<code>pashto</code>");
+    expect(firstPartyDocs).toContain("<code>lingala</code>");
     expect(firstPartyDocs).toContain("Share URL Rules");
     expect(firstPartyDocs).toContain("Status Code Reference");
 
@@ -651,6 +657,54 @@ describe("Ground Codes API contract", () => {
       region: "ካይሮ",
       codePattern: /^ካይሮ-[\p{Script=Ethiopic}\p{Mark}]+/u,
     },
+    {
+      name: "Burmese",
+      language: "burmese",
+      lat: -6.1751,
+      lng: 106.865,
+      region: "ဂျာကာတာ",
+      codePattern: /^ဂျာကာတာ-[\p{Script=Myanmar}\p{Mark}]+/u,
+    },
+    {
+      name: "Khmer",
+      language: "khmer",
+      lat: -6.1751,
+      lng: 106.865,
+      region: "ចាការតា",
+      codePattern: /^ចាការតា-[\p{Script=Khmer}\p{Mark}]+/u,
+    },
+    {
+      name: "Nepali",
+      language: "nepali",
+      lat: 28.65195,
+      lng: 77.23149,
+      region: "दिल्ली",
+      codePattern: /^दिल्ली-[\p{Script=Devanagari}\p{Mark}]+/u,
+    },
+    {
+      name: "Somali",
+      language: "somali",
+      lat: 30.0444,
+      lng: 31.2357,
+      region: "Qaahira",
+      codePattern: /^Qaahira-[A-Z][A-Za-z]+/u,
+    },
+    {
+      name: "Pashto",
+      language: "pashto",
+      lat: 28.65195,
+      lng: 77.23149,
+      region: "ډیلي",
+      codePattern: /^ډیلي-[\p{Script=Arabic}\p{Mark}]+/u,
+    },
+    {
+      name: "Lingala",
+      language: "lingala",
+      lat: 30.0444,
+      lng: 31.2357,
+      region: "Kairo",
+      codePattern: /^Kairo-[A-Z][A-Za-z]+/u,
+    },
   ])(
     "encodes and searches $name address-gap ground codes and region labels",
     async ({ language, lat, lng, region, codePattern }) => {
@@ -1053,6 +1107,79 @@ describe("Ground Codes API contract", () => {
       name: "القاهرة",
     });
   });
+
+  test.each([
+    {
+      name: "Burmese",
+      language: "burmese",
+      lat: -6.1751,
+      lng: 106.865,
+      region: "ဂျာကာတာ",
+    },
+    {
+      name: "Khmer",
+      language: "khmer",
+      lat: -6.1751,
+      lng: 106.865,
+      region: "ចាការតា",
+    },
+    {
+      name: "Nepali",
+      language: "nepali",
+      lat: 28.65195,
+      lng: 77.23149,
+      region: "दिल्ली",
+    },
+    {
+      name: "Somali",
+      language: "somali",
+      lat: 30.0444,
+      lng: 31.2357,
+      region: "Qaahira",
+    },
+    {
+      name: "Pashto",
+      language: "pashto",
+      lat: 28.65195,
+      lng: 77.23149,
+      region: "ډیلي",
+    },
+    {
+      name: "Lingala",
+      language: "lingala",
+      lat: 30.0444,
+      lng: 31.2357,
+      region: "Kairo",
+    },
+  ])(
+    "loads $name region lookup data on demand for region endpoints",
+    async ({ language, lat, lng, region }) => {
+      const aroundResponse = await postJson("/v1/region/around", {
+        lat,
+        lng,
+        language,
+        regionLevel: 2,
+        maxResults: 1,
+      });
+
+      expect(aroundResponse.status).toBe(200);
+      const around = await aroundResponse.json();
+      expect(around[0]).toMatchObject({
+        name: region,
+      });
+
+      const infoResponse = await postJson("/v1/region/info", {
+        name: region,
+        language,
+        regionLevel: 2,
+        body: "earth",
+      });
+      expect(infoResponse.status).toBe(200);
+      expect(await infoResponse.json()).toMatchObject({
+        name: region,
+      });
+    },
+  );
 
   test("returns a structured not found error for missing region info", async () => {
     const response = await postJson("/v1/region/info", {

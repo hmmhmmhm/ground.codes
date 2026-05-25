@@ -37,6 +37,12 @@ const region2PathByLanguage: Record<string, string> = {
   bengali: "@ground-codes/geoint/region-dist/region-2-bengali.json",
   urdu: "@ground-codes/geoint/region-dist/region-2-urdu.json",
   amharic: "@ground-codes/geoint/region-dist/region-2-amharic.json",
+  burmese: "@ground-codes/geoint/region-dist/region-2-burmese.json",
+  khmer: "@ground-codes/geoint/region-dist/region-2-khmer.json",
+  nepali: "@ground-codes/geoint/region-dist/region-2-nepali.json",
+  somali: "@ground-codes/geoint/region-dist/region-2-somali.json",
+  pashto: "@ground-codes/geoint/region-dist/region-2-pashto.json",
+  lingala: "@ground-codes/geoint/region-dist/region-2-lingala.json",
 };
 
 const region3PathByLanguage: Record<string, string> = {
@@ -60,6 +66,12 @@ const region3PathByLanguage: Record<string, string> = {
   bengali: "@ground-codes/geoint/region-dist/region-3-bengali.json",
   urdu: "@ground-codes/geoint/region-dist/region-3-urdu.json",
   amharic: "@ground-codes/geoint/region-dist/region-3-amharic.json",
+  burmese: "@ground-codes/geoint/region-dist/region-3-burmese.json",
+  khmer: "@ground-codes/geoint/region-dist/region-3-khmer.json",
+  nepali: "@ground-codes/geoint/region-dist/region-3-nepali.json",
+  somali: "@ground-codes/geoint/region-dist/region-3-somali.json",
+  pashto: "@ground-codes/geoint/region-dist/region-3-pashto.json",
+  lingala: "@ground-codes/geoint/region-dist/region-3-lingala.json",
 };
 
 const languages = Object.keys(region3PathByLanguage);

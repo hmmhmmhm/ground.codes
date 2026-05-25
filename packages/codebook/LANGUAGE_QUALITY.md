@@ -26,6 +26,12 @@ operational status board for follow-up passes.
 | bengali | 5000 | active cleanup | Second address-gap cleanup pass front-loads standalone Bengali nouns; continue reviewing fused noun pairs. |
 | urdu | 5000 | active cleanup | Second address-gap cleanup pass front-loads standalone Urdu nouns; continue reviewing RTL fused noun pairs. |
 | amharic | 5000 | active cleanup | Second address-gap cleanup pass front-loads standalone Ethiopic nouns; continue reviewing fused noun pairs. |
+| burmese | 5000 | active cleanup | First address-gap pass ships Myanmar-script URL-safe codes; native review should replace rough transliterated seed terms. |
+| khmer | 5000 | active cleanup | First address-gap pass ships Khmer-script URL-safe codes; native review should replace rough transliterated seed terms. |
+| nepali | 5000 | active cleanup | First address-gap pass ships Devanagari URL-safe codes; native Nepali review should expand natural standalone nouns. |
+| somali | 5000 | active cleanup | First address-gap pass front-loads Somali Latin nouns; continue native review of remaining fused fallback pairs. |
+| pashto | 5000 | active cleanup | First address-gap pass ships Arabic-script URL-safe codes; native Pashto review should replace rough transliterated seed terms. |
+| lingala | 5000 | active cleanup | First address-gap pass front-loads Lingala Latin nouns; continue native review of remaining fallback pairs. |
 
 Review checklist:
 
