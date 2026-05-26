@@ -308,19 +308,23 @@ importers:
         version: 5.8.2
 
   packages/ground-codes:
+    dependencies:
+      '@ground-codes/geoint':
+        specifier: workspace:*
+        version: link:../geoint
     devDependencies:
       '@changesets/cli':
         specifier: ^2.28.1
         version: 2.28.1
-      '@ground-codes/geoint':
-        specifier: workspace:*
-        version: link:../geoint
       '@repo/codebook':
         specifier: workspace:*
         version: link:../codebook
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.13.9
+        version: 22.13.9
       tsup:
         specifier: ^8.5.1
         version: 8.5.1(jiti@2.4.2)(postcss@8.5.15)(tsx@4.22.3)(typescript@5.8.2)(yaml@2.7.0)

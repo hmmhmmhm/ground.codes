@@ -36,9 +36,12 @@
       ]
     }
   },
+  "dependencies": {
+    "@ground-codes/geoint": "workspace:*"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
-    "@ground-codes/geoint": "workspace:*",
+    "@types/node": "^22.13.9",
     "@repo/codebook": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "tsup": "^8.5.1",

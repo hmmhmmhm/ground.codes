@@ -8,6 +8,7 @@ export default defineConfig({
       resolveJsonModule: false,
     },
   },
+  external: ["@ground-codes/geoint", "@ground-codes/geoint/*"],
   splitting: true,
   minify: true,
   sourcemap: false,

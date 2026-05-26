@@ -1,5 +1,6 @@
 /// <reference path="./region-json.d.ts" />
 
+import { createRequire } from "node:module";
 import { SupportedLanguage } from "./wordset.js";
 import {
   CelestialBody,
@@ -17,6 +18,9 @@ export interface Region {
   distanceKm?: number;
   population?: number;
 }
+
+const requireRegionJson = createRequire(import.meta.url);
+const loadRegionData = (path: string) => requireRegionJson(path) as Region[];
 
 const DEFAULT_REGION_2_FALLBACK_DISTANCE_KM = 100;
 const DEFAULT_MARS_REGION_2_FALLBACK_DISTANCE_KM = 100;
@@ -67,245 +71,179 @@ const addressGapLanguages = new Set([
 
 const addressGapRegionLoaders: Record<string, () => Promise<Region[]>> = {
   "region-2-swahili": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-swahili.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-swahili.json"),
   "region-3-swahili": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-swahili.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-swahili.json"),
   "region-2-moon-swahili": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-swahili.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-swahili.json",
+    ),
   "region-2-mars-swahili": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-swahili.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-swahili.json",
+    ),
   "region-3-mars-swahili": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-swahili.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-swahili.json",
+    ),
   "region-2-filipino": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-filipino.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-filipino.json"),
   "region-3-filipino": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-filipino.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-filipino.json"),
   "region-2-moon-filipino": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-filipino.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-filipino.json",
+    ),
   "region-2-mars-filipino": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-filipino.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-filipino.json",
+    ),
   "region-3-mars-filipino": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-filipino.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-filipino.json",
+    ),
   "region-2-hausa": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-hausa.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-hausa.json"),
   "region-3-hausa": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-hausa.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-hausa.json"),
   "region-2-moon-hausa": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-hausa.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-hausa.json"),
   "region-2-mars-hausa": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-hausa.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-hausa.json"),
   "region-3-mars-hausa": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-hausa.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-hausa.json"),
   "region-2-bengali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-bengali.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-bengali.json"),
   "region-3-bengali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-bengali.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-bengali.json"),
   "region-2-moon-bengali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-bengali.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-bengali.json",
+    ),
   "region-2-mars-bengali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-bengali.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-bengali.json",
+    ),
   "region-3-mars-bengali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-bengali.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-bengali.json",
+    ),
   "region-2-urdu": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-urdu.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-urdu.json"),
   "region-3-urdu": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-urdu.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-urdu.json"),
   "region-2-moon-urdu": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-urdu.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-urdu.json"),
   "region-2-mars-urdu": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-urdu.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-urdu.json"),
   "region-3-mars-urdu": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-urdu.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-urdu.json"),
   "region-2-amharic": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-amharic.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-amharic.json"),
   "region-3-amharic": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-amharic.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-amharic.json"),
   "region-2-moon-amharic": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-amharic.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-amharic.json",
+    ),
   "region-2-mars-amharic": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-amharic.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-amharic.json",
+    ),
   "region-3-mars-amharic": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-amharic.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-amharic.json",
+    ),
   "region-2-burmese": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-burmese.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-burmese.json"),
   "region-3-burmese": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-burmese.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-burmese.json"),
   "region-2-moon-burmese": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-burmese.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-burmese.json",
+    ),
   "region-2-mars-burmese": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-burmese.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-burmese.json",
+    ),
   "region-3-mars-burmese": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-burmese.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-burmese.json",
+    ),
   "region-2-khmer": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-khmer.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-khmer.json"),
   "region-3-khmer": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-khmer.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-khmer.json"),
   "region-2-moon-khmer": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-khmer.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-khmer.json"),
   "region-2-mars-khmer": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-khmer.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-khmer.json"),
   "region-3-mars-khmer": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-khmer.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-khmer.json"),
   "region-2-nepali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-nepali.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-nepali.json"),
   "region-3-nepali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-nepali.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-nepali.json"),
   "region-2-moon-nepali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-nepali.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-nepali.json",
+    ),
   "region-2-mars-nepali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-nepali.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-nepali.json",
+    ),
   "region-3-mars-nepali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-nepali.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-nepali.json",
+    ),
   "region-2-somali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-somali.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-somali.json"),
   "region-3-somali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-somali.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-somali.json"),
   "region-2-moon-somali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-somali.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-somali.json",
+    ),
   "region-2-mars-somali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-somali.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-somali.json",
+    ),
   "region-3-mars-somali": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-somali.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-somali.json",
+    ),
   "region-2-pashto": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-pashto.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-pashto.json"),
   "region-3-pashto": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-pashto.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-pashto.json"),
   "region-2-moon-pashto": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-pashto.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-pashto.json",
+    ),
   "region-2-mars-pashto": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-pashto.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-pashto.json",
+    ),
   "region-3-mars-pashto": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-pashto.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-pashto.json",
+    ),
   "region-2-lingala": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-lingala.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-lingala.json"),
   "region-3-lingala": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-lingala.json"))
-      .default as Region[],
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-lingala.json"),
   "region-2-moon-lingala": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-moon-lingala.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-lingala.json",
+    ),
   "region-2-mars-lingala": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-2-mars-lingala.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-lingala.json",
+    ),
   "region-3-mars-lingala": async () =>
-    // @ts-ignore
-    (await import("@ground-codes/geoint/region-dist/region-3-mars-lingala.json"))
-      .default as Region[],
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-lingala.json",
+    ),
 };
 
 const loadAddressGapRegionDataset = async (
@@ -362,10 +300,7 @@ const loadRegions = async (
       }
 
       if (regionLevel === 1) {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-1.json");
-        return module.default as Region[];
+        return loadRegionData("@ground-codes/geoint/region-dist/region-1.json");
       }
 
       if ([2, 3].includes(regionLevel)) {
@@ -380,549 +315,362 @@ const loadRegions = async (
     if (body === "moon") {
       if (regionLevel !== 2) throw new Error("Moon supports region level 2");
       if (normalizedLanguage === "korean") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-korean.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-korean.json",
+        );
       }
       if (normalizedLanguage === "chinese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-chinese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-chinese.json",
+        );
       }
       if (normalizedLanguage === "japanese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-japanese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-japanese.json",
+        );
       }
       if (normalizedLanguage === "spanish") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-spanish.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-spanish.json",
+        );
       }
       if (normalizedLanguage === "french") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-french.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-french.json",
+        );
       }
       if (normalizedLanguage === "german") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-german.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-german.json",
+        );
       }
       if (normalizedLanguage === "portuguese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-portuguese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-portuguese.json",
+        );
       }
       if (normalizedLanguage === "indonesian") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-indonesian.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-indonesian.json",
+        );
       }
       if (normalizedLanguage === "thai") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-thai.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-thai.json",
+        );
       }
       if (normalizedLanguage === "vietnamese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-vietnamese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-vietnamese.json",
+        );
       }
       if (normalizedLanguage === "hindi") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-hindi.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-hindi.json",
+        );
       }
       if (normalizedLanguage === "arabic") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-arabic.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-arabic.json",
+        );
       }
       if (normalizedLanguage === "russian") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-moon-russian.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-moon-russian.json",
+        );
       }
-      const module =
-        // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-2-moon.json");
-      return module.default as Region[];
+      return loadRegionData(
+        "@ground-codes/geoint/region-dist/region-2-moon.json",
+      );
     }
 
     if (body === "mars") {
       if (regionLevel === 3) {
         if (normalizedLanguage === "korean") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-korean.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-korean.json",
+          );
         }
         if (normalizedLanguage === "chinese") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-chinese.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-chinese.json",
+          );
         }
         if (normalizedLanguage === "japanese") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-japanese.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-japanese.json",
+          );
         }
         if (normalizedLanguage === "spanish") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-spanish.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-spanish.json",
+          );
         }
         if (normalizedLanguage === "french") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-french.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-french.json",
+          );
         }
         if (normalizedLanguage === "german") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-german.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-german.json",
+          );
         }
         if (normalizedLanguage === "portuguese") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-portuguese.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-portuguese.json",
+          );
         }
         if (normalizedLanguage === "indonesian") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-indonesian.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-indonesian.json",
+          );
         }
         if (normalizedLanguage === "thai") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-thai.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-thai.json",
+          );
         }
         if (normalizedLanguage === "vietnamese") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-vietnamese.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-vietnamese.json",
+          );
         }
         if (normalizedLanguage === "hindi") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-hindi.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-hindi.json",
+          );
         }
         if (normalizedLanguage === "arabic") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-arabic.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-arabic.json",
+          );
         }
         if (normalizedLanguage === "russian") {
-          const module =
-            // @ts-ignore
-            await import(
-              "@ground-codes/geoint/region-dist/region-3-mars-russian.json"
-            );
-          return module.default as Region[];
+          return loadRegionData(
+            "@ground-codes/geoint/region-dist/region-3-mars-russian.json",
+          );
         }
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-3-mars.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-mars.json",
+        );
       }
       if (regionLevel !== 2)
         throw new Error("Mars supports region levels 2 and 3");
       if (normalizedLanguage === "korean") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-korean.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-korean.json",
+        );
       }
       if (normalizedLanguage === "chinese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-chinese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-chinese.json",
+        );
       }
       if (normalizedLanguage === "japanese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-japanese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-japanese.json",
+        );
       }
       if (normalizedLanguage === "spanish") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-spanish.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-spanish.json",
+        );
       }
       if (normalizedLanguage === "french") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-french.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-french.json",
+        );
       }
       if (normalizedLanguage === "german") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-german.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-german.json",
+        );
       }
       if (normalizedLanguage === "portuguese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-portuguese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-portuguese.json",
+        );
       }
       if (normalizedLanguage === "indonesian") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-indonesian.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-indonesian.json",
+        );
       }
       if (normalizedLanguage === "thai") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-thai.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-thai.json",
+        );
       }
       if (normalizedLanguage === "vietnamese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-vietnamese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-vietnamese.json",
+        );
       }
       if (normalizedLanguage === "hindi") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-hindi.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-hindi.json",
+        );
       }
       if (normalizedLanguage === "arabic") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-arabic.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-arabic.json",
+        );
       }
       if (normalizedLanguage === "russian") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-mars-russian.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-mars-russian.json",
+        );
       }
-      const module =
-        // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-2-mars.json");
-      return module.default as Region[];
+      return loadRegionData(
+        "@ground-codes/geoint/region-dist/region-2-mars.json",
+      );
     }
 
     if (regionLevel === 1) {
-      const module =
-        // @ts-ignore
-        await import("@ground-codes/geoint/region-dist/region-1.json");
-      return module.default as Region[];
+      return loadRegionData("@ground-codes/geoint/region-dist/region-1.json");
     }
 
     if (regionLevel === 2) {
       if (!language || normalizedLanguage === "english") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-2.json");
-        return module.default as Region[];
+        return loadRegionData("@ground-codes/geoint/region-dist/region-2.json");
       }
       if (normalizedLanguage === "korean") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-2-korean.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-korean.json",
+        );
       }
       if (normalizedLanguage === "chinese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-chinese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-chinese.json",
+        );
       }
       if (normalizedLanguage === "japanese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-japanese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-japanese.json",
+        );
       }
       if (normalizedLanguage === "spanish") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-spanish.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-spanish.json",
+        );
       }
       if (normalizedLanguage === "french") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-2-french.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-french.json",
+        );
       }
       if (normalizedLanguage === "german") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-2-german.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-german.json",
+        );
       }
       if (normalizedLanguage === "portuguese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-portuguese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-portuguese.json",
+        );
       }
       if (normalizedLanguage === "indonesian") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-indonesian.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-indonesian.json",
+        );
       }
       if (normalizedLanguage === "thai") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-2-thai.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-thai.json",
+        );
       }
       if (normalizedLanguage === "vietnamese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-vietnamese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-vietnamese.json",
+        );
       }
       if (normalizedLanguage === "hindi") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-2-hindi.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-hindi.json",
+        );
       }
       if (normalizedLanguage === "arabic") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-arabic.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-arabic.json",
+        );
       }
       if (normalizedLanguage === "russian") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-2-russian.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-2-russian.json",
+        );
       }
       throw new Error(`Invalid language: ${language}`);
     }
 
     if (regionLevel === 3) {
       if (!language || normalizedLanguage === "english") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-3.json");
-        return module.default as Region[];
+        return loadRegionData("@ground-codes/geoint/region-dist/region-3.json");
       }
       if (normalizedLanguage === "korean") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-3-korean.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-korean.json",
+        );
       }
       if (normalizedLanguage === "chinese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-3-chinese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-chinese.json",
+        );
       }
       if (normalizedLanguage === "japanese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-3-japanese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-japanese.json",
+        );
       }
       if (normalizedLanguage === "spanish") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-3-spanish.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-spanish.json",
+        );
       }
       if (normalizedLanguage === "french") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-3-french.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-french.json",
+        );
       }
       if (normalizedLanguage === "german") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-3-german.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-german.json",
+        );
       }
       if (normalizedLanguage === "portuguese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-3-portuguese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-portuguese.json",
+        );
       }
       if (normalizedLanguage === "indonesian") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-3-indonesian.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-indonesian.json",
+        );
       }
       if (normalizedLanguage === "thai") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-3-thai.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-thai.json",
+        );
       }
       if (normalizedLanguage === "vietnamese") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-3-vietnamese.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-vietnamese.json",
+        );
       }
       if (normalizedLanguage === "hindi") {
-        const module =
-          // @ts-ignore
-          await import("@ground-codes/geoint/region-dist/region-3-hindi.json");
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-hindi.json",
+        );
       }
       if (normalizedLanguage === "arabic") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-3-arabic.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-arabic.json",
+        );
       }
       if (normalizedLanguage === "russian") {
-        const module =
-          // @ts-ignore
-          await import(
-            "@ground-codes/geoint/region-dist/region-3-russian.json"
-          );
-        return module.default as Region[];
+        return loadRegionData(
+          "@ground-codes/geoint/region-dist/region-3-russian.json",
+        );
       }
       throw new Error(`Invalid language: ${language}`);
     }
