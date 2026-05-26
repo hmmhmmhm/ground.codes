@@ -2,6 +2,16 @@ import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { AirQualityData, WeatherData } from "@/app/api/weather-data/route";
+import {
+  formatConcentrationUnit,
+  formatWeatherDate,
+  getAirQualityBackgroundClass,
+  getHealthRecommendationLabel,
+  getWeatherIconUrl,
+  getWindDescription,
+  getWindDirection,
+  rgbToColorString,
+} from "./weather-detail-formatters";
 
 interface WeatherDetailModalProps {
   isOpen: boolean;
@@ -39,133 +49,6 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
-
-  // Format date and time
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("default", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date);
-  };
-
-  // Get weather icon URL from OpenWeatherMap
-  const getWeatherIconUrl = (iconCode: string) => {
-    return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-  };
-
-  // Convert wind speed to beaufort scale and get description
-  const getWindDescription = (speed: number) => {
-    // Beaufort scale conversion (m/s to beaufort)
-    let beaufort = 0;
-    if (speed < 0.3)
-      beaufort = 0; // Calm
-    else if (speed < 1.6)
-      beaufort = 1; // Light air
-    else if (speed < 3.4)
-      beaufort = 2; // Light breeze
-    else if (speed < 5.5)
-      beaufort = 3; // Gentle breeze
-    else if (speed < 8.0)
-      beaufort = 4; // Moderate breeze
-    else if (speed < 10.8)
-      beaufort = 5; // Fresh breeze
-    else if (speed < 13.9)
-      beaufort = 6; // Strong breeze
-    else if (speed < 17.2)
-      beaufort = 7; // High wind
-    else if (speed < 20.8)
-      beaufort = 8; // Gale
-    else if (speed < 24.5)
-      beaufort = 9; // Strong gale
-    else if (speed < 28.5)
-      beaufort = 10; // Storm
-    else if (speed < 32.7)
-      beaufort = 11; // Violent storm
-    else beaufort = 12; // Hurricane
-
-    const descriptions = [
-      t("weather.wind.calm"),
-      t("weather.wind.lightAir"),
-      t("weather.wind.lightBreeze"),
-      t("weather.wind.gentleBreeze"),
-      t("weather.wind.moderateBreeze"),
-      t("weather.wind.freshBreeze"),
-      t("weather.wind.strongBreeze"),
-      t("weather.wind.highWind"),
-      t("weather.wind.gale"),
-      t("weather.wind.strongGale"),
-      t("weather.wind.storm"),
-      t("weather.wind.violentStorm"),
-      t("weather.wind.hurricane"),
-    ];
-
-    return `${descriptions[beaufort]} (${beaufort})`;
-  };
-
-  // Get wind direction from degrees
-  const getWindDirection = (degrees: number) => {
-    const directions = [
-      t("weather.direction.n"),
-      t("weather.direction.nne"),
-      t("weather.direction.ne"),
-      t("weather.direction.ene"),
-      t("weather.direction.e"),
-      t("weather.direction.ese"),
-      t("weather.direction.se"),
-      t("weather.direction.sse"),
-      t("weather.direction.s"),
-      t("weather.direction.ssw"),
-      t("weather.direction.sw"),
-      t("weather.direction.wsw"),
-      t("weather.direction.w"),
-      t("weather.direction.wnw"),
-      t("weather.direction.nw"),
-      t("weather.direction.nnw"),
-    ];
-    const index = Math.round(degrees / 22.5) % 16;
-    return directions[index];
-  };
-
-  // Convert concentration units to proper symbols
-  const formatConcentrationUnit = (unit: string) => {
-    switch (unit) {
-      case "PARTS_PER_BILLION":
-        return "ppb";
-      case "PARTS_PER_MILLION":
-        return "ppm";
-      case "MICROGRAMS_PER_CUBIC_METER":
-        return "μg/m³";
-      case "MILLIGRAMS_PER_CUBIC_METER":
-        return "mg/m³";
-      default:
-        return unit;
-    }
-  };
-
-  // Convert RGB object to CSS color string
-  const rgbToColorString = (colorObj: unknown) => {
-    if (typeof colorObj === "string" && colorObj.startsWith("#")) {
-      return colorObj;
-    }
-
-    if (!colorObj || typeof colorObj !== "object") return "#808080"; // Default gray
-
-    // Check if it has RGB components
-    if ("red" in colorObj && "green" in colorObj && "blue" in colorObj) {
-      const rgb = colorObj as { red: number; green: number; blue: number };
-      // Convert 0-1 range to 0-255 range
-      const r = Math.round(rgb.red * 255);
-      const g = Math.round(rgb.green * 255);
-      const b = Math.round(rgb.blue * 255);
-      return `rgb(${r}, ${g}, ${b})`;
-    }
-
-    return "#808080"; // Default gray
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
@@ -273,7 +156,7 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
                     <p className="text-lg font-semibold text-gray-800 dark:text-gray-200 capitalize mb-2">
                       {weatherData.weather[0].main &&
                         t(
-                          `weather.mainTypes.${weatherData.weather[0].main.toLowerCase()}`
+                          `weather.mainTypes.${weatherData.weather[0].main.toLowerCase()}`,
                         )}
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -330,7 +213,7 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
                       {t("weather.description")}
                     </p>
                     <p className="text-gray-800 dark:text-gray-200">
-                      {getWindDescription(weatherData.wind?.speed)}
+                      {getWindDescription(weatherData.wind?.speed, t)}
                     </p>
                   </div>
                   <div>
@@ -338,7 +221,7 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
                       {t("weather.wind.direction")}
                     </p>
                     <p className="text-gray-800 dark:text-gray-200">
-                      {getWindDirection(weatherData.wind?.deg)} (
+                      {getWindDirection(weatherData.wind?.deg, t)} (
                       {weatherData.wind?.deg}°)
                     </p>
                   </div>
@@ -361,7 +244,8 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
               {t("airQuality.title")}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              {t("airQuality.updatedAt")}: {formatDate(airQualityData.dateTime)}
+              {t("airQuality.updatedAt")}:{" "}
+              {formatWeatherDate(airQualityData.dateTime)}
             </p>
 
             {/* AQI Index */}
@@ -372,29 +256,9 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {airQualityData.indexes.map((index) => {
-                    // Determine background color based on category
-                    let bgColorClass = "bg-gray-100 dark:bg-gray-700";
-                    if (index.category.toLowerCase().includes("good")) {
-                      bgColorClass = "bg-green-50 dark:bg-green-900/30";
-                    } else if (
-                      index.category.toLowerCase().includes("moderate")
-                    ) {
-                      bgColorClass = "bg-yellow-50 dark:bg-yellow-900/30";
-                    } else if (
-                      index.category.toLowerCase().includes("unhealthy") &&
-                      index.category.toLowerCase().includes("sensitive")
-                    ) {
-                      bgColorClass = "bg-orange-50 dark:bg-orange-900/30";
-                    } else if (
-                      index.category.toLowerCase().includes("unhealthy")
-                    ) {
-                      bgColorClass = "bg-red-50 dark:bg-red-900/30";
-                    } else if (
-                      index.category.toLowerCase().includes("very") ||
-                      index.category.toLowerCase().includes("hazardous")
-                    ) {
-                      bgColorClass = "bg-purple-50 dark:bg-purple-900/30";
-                    }
+                    const bgColorClass = getAirQualityBackgroundClass(
+                      index.category,
+                    );
 
                     return (
                       <div
@@ -460,7 +324,7 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
                             <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                               {pollutant.concentration.value}{" "}
                               {formatConcentrationUnit(
-                                pollutant.concentration.units
+                                pollutant.concentration.units,
                               )}
                             </td>
                           </tr>
@@ -482,29 +346,13 @@ const WeatherDetailModal: React.FC<WeatherDetailModalProps> = ({
                     ([key, value]) => (
                       <div key={key}>
                         <h5 className="text-sm font-bold text-gray-700 dark:text-gray-300 capitalize">
-                          {key === "generalPopulation"
-                            ? t("airQuality.generalPopulation")
-                            : key === "children"
-                              ? t("airQuality.children")
-                              : key === "elderly"
-                                ? t("airQuality.elderly")
-                                : key === "sportsAndRecreation"
-                                  ? t("airQuality.sportsAndRecreation")
-                                  : key === "lungDiseasePopulation"
-                                    ? t("airQuality.lungDiseasePopulation")
-                                    : key === "heartDiseasePopulation"
-                                      ? t("airQuality.heartDiseasePopulation")
-                                      : key === "athletes"
-                                        ? t("airQuality.athletes")
-                                        : key === "pregnantWomen"
-                                          ? t("airQuality.pregnantWomen")
-                                          : key}
+                          {getHealthRecommendationLabel(key, t)}
                         </h5>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                           {value}
                         </p>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
               </div>

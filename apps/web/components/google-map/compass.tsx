@@ -1,5 +1,7 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
 
+import { CompassIcon } from "./compass-icon";
+
 interface CompassProps {
   mapHeading: number;
   resetMapHeading: () => void;
@@ -30,7 +32,7 @@ const Compass: React.FC<CompassProps> = ({
     (centerX: number, centerY: number, pointX: number, pointY: number) => {
       return Math.atan2(pointY - centerY, pointX - centerX) * (180 / Math.PI);
     },
-    []
+    [],
   );
 
   // Handle mouse movement during drag
@@ -58,7 +60,7 @@ const Compass: React.FC<CompassProps> = ({
         centerX,
         centerY,
         e.clientX,
-        e.clientY
+        e.clientY,
       );
 
       // Calculate the difference between the start angle and current angle
@@ -73,7 +75,7 @@ const Compass: React.FC<CompassProps> = ({
       if (newHeading < 0) newHeading += 360;
       setMapHeading(newHeading);
     },
-    [calculateAngle, setMapHeading]
+    [calculateAngle, setMapHeading],
   );
 
   // Handle touch movement
@@ -101,7 +103,7 @@ const Compass: React.FC<CompassProps> = ({
         centerX,
         centerY,
         e.touches[0].clientX,
-        e.touches[0].clientY
+        e.touches[0].clientY,
       );
 
       // Calculate the difference between the start angle and current angle
@@ -119,7 +121,7 @@ const Compass: React.FC<CompassProps> = ({
       // Prevent default action
       e.preventDefault();
     },
-    [calculateAngle, setMapHeading]
+    [calculateAngle, setMapHeading],
   );
 
   // Handle drag end
@@ -188,12 +190,12 @@ const Compass: React.FC<CompassProps> = ({
         centerX,
         centerY,
         e.clientX,
-        e.clientY
+        e.clientY,
       );
       startHeadingRef.current = mapHeading;
       setIsDragging(true);
     },
-    [calculateAngle, mapHeading, setMapHeading]
+    [calculateAngle, mapHeading, setMapHeading],
   );
 
   // Handle touch drag start
@@ -220,12 +222,12 @@ const Compass: React.FC<CompassProps> = ({
         centerX,
         centerY,
         e.touches[0].clientX,
-        e.touches[0].clientY
+        e.touches[0].clientY,
       );
       startHeadingRef.current = mapHeading;
       setIsDragging(true);
     },
-    [calculateAngle, mapHeading, setMapHeading]
+    [calculateAngle, mapHeading, setMapHeading],
   );
 
   // Handle click (reset only if no drag occurred recently)
@@ -244,7 +246,7 @@ const Compass: React.FC<CompassProps> = ({
       // If no drag occurred recently, reset heading
       resetMapHeading();
     },
-    [resetMapHeading]
+    [resetMapHeading],
   );
 
   return (
@@ -261,203 +263,7 @@ const Compass: React.FC<CompassProps> = ({
         transition: isDragging ? "none" : "transform 0.3s ease-in-out",
       }}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="40"
-        height="40"
-        viewBox="0 0 24 24"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        {/* Compass outer circle */}
-        <circle
-          cx="12"
-          cy="12"
-          r="11"
-          fill="rgba(34, 34, 34, 0.14)"
-          stroke="#444444"
-          strokeWidth="1"
-        />
-
-        {/* Compass ticks - statically implemented */}
-        {/* 12 o'clock (north) */}
-        <line
-          x1="12"
-          y1="1"
-          x2="12"
-          y2="3.5"
-          stroke="#FFFFFF"
-          strokeWidth="1"
-        />
-        {/* 1 o'clock (east) */}
-        <line
-          x1="15.5"
-          y1="2.2"
-          x2="14.6"
-          y2="4.3"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-        {/* 2 o'clock (east) */}
-        <line
-          x1="18.5"
-          y1="4.5"
-          x2="16.7"
-          y2="6"
-          stroke="#FFFFFF"
-          strokeWidth="1"
-        />
-        {/* 3 o'clock (east) */}
-        <line
-          x1="20.8"
-          y1="7.5"
-          x2="18.7"
-          y2="8.4"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-        <line
-          x1="22"
-          y1="12"
-          x2="19.5"
-          y2="12"
-          stroke="#FFFFFF"
-          strokeWidth="1"
-        />
-        {/* 5 o'clock (west) */}
-        <line
-          x1="20.8"
-          y1="16.5"
-          x2="18.7"
-          y2="15.6"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-        {/* 6 o'clock (south) */}
-        <line
-          x1="18.5"
-          y1="19.5"
-          x2="16.7"
-          y2="18"
-          stroke="#FFFFFF"
-          strokeWidth="1"
-        />
-        {/* 7 o'clock (west) */}
-        <line
-          x1="15.5"
-          y1="21.8"
-          x2="14.6"
-          y2="19.7"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-        {/* 8 o'clock (west) */}
-        <line
-          x1="12"
-          y1="23"
-          x2="12"
-          y2="20.5"
-          stroke="#FFFFFF"
-          strokeWidth="1"
-        />
-        {/* 9 o'clock (west) */}
-        <line
-          x1="8.5"
-          y1="21.8"
-          x2="9.4"
-          y2="19.7"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-        {/* 10 o'clock (west) */}
-        <line
-          x1="5.5"
-          y1="19.5"
-          x2="7.3"
-          y2="18"
-          stroke="#FFFFFF"
-          strokeWidth="1"
-        />
-        {/* 11 o'clock (west) */}
-        <line
-          x1="3.2"
-          y1="16.5"
-          x2="5.3"
-          y2="15.6"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-        <line
-          x1="2"
-          y1="12"
-          x2="4.5"
-          y2="12"
-          stroke="#FFFFFF"
-          strokeWidth="1"
-        />
-        {/* 1 o'clock (east) */}
-        <line
-          x1="3.2"
-          y1="7.5"
-          x2="5.3"
-          y2="8.4"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-        {/* 2 o'clock (east) */}
-        <line
-          x1="5.5"
-          y1="4.5"
-          x2="7.3"
-          y2="6"
-          stroke="#FFFFFF"
-          strokeWidth="1"
-        />
-        {/* 3 o'clock (east) */}
-        <line
-          x1="8.5"
-          y1="2.2"
-          x2="9.4"
-          y2="4.3"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-
-        {/* Compass north direction indicator - red triangle */}
-        <path
-          d="M12 1L14.5 4L9.5 4L12 1Z"
-          fill="#FF4444"
-          stroke="#FF4444"
-          strokeWidth="0.5"
-        />
-
-        {/* Compass center crosshair */}
-        <circle
-          cx="12"
-          cy="12"
-          r="1"
-          fill="#FFFFFF"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-        <line
-          x1="12"
-          y1="9"
-          x2="12"
-          y2="15"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-        <line
-          x1="9"
-          y1="12"
-          x2="15"
-          y2="12"
-          stroke="#FFFFFF"
-          strokeWidth="0.5"
-        />
-      </svg>
+      <CompassIcon />
     </button>
   );
 };
