@@ -24,34 +24,70 @@ For current per-language status, see
 
 Current distributed word counts:
 
-| Language   | Count | Source file                     |
-| ---------- | ----: | ------------------------------- |
-| English    |  6000 | `codebook-dist/english.json`    |
-| Korean     |  5630 | `codebook-dist/korean.json`     |
-| Chinese    |  5140 | `codebook-dist/chinese.json`    |
-| Japanese   |  5000 | `codebook-dist/japanese.json`   |
-| Spanish    |  5000 | `codebook-dist/spanish.json`    |
-| French     |  5000 | `codebook-dist/french.json`     |
-| German     |  5000 | `codebook-dist/german.json`     |
-| Portuguese |  5000 | `codebook-dist/portuguese.json` |
-| Indonesian |  5000 | `codebook-dist/indonesian.json` |
-| Thai       |  5000 | `codebook-dist/thai.json`       |
-| Vietnamese |  5000 | `codebook-dist/vietnamese.json` |
-| Hindi      |  5000 | `codebook-dist/hindi.json`      |
-| Arabic     |  5000 | `codebook-dist/arabic.json`     |
-| Russian    |  5000 | `codebook-dist/russian.json`    |
-| Swahili    |  5000 | `codebook-dist/swahili.json`    |
-| Filipino   |  5000 | `codebook-dist/filipino.json`   |
-| Hausa      |  5000 | `codebook-dist/hausa.json`      |
-| Bengali    |  5000 | `codebook-dist/bengali.json`    |
-| Urdu       |  5000 | `codebook-dist/urdu.json`       |
-| Amharic    |  5000 | `codebook-dist/amharic.json`    |
-| Burmese    |  5000 | `codebook-dist/burmese.json`    |
-| Khmer      |  5000 | `codebook-dist/khmer.json`      |
-| Nepali     |  5000 | `codebook-dist/nepali.json`     |
-| Somali     |  5000 | `codebook-dist/somali.json`     |
-| Pashto     |  5000 | `codebook-dist/pashto.json`     |
-| Lingala    |  5000 | `codebook-dist/lingala.json`    |
+| Language    | Count | Source file                      |
+| ----------- | ----: | -------------------------------- |
+| English     |  6000 | `codebook-dist/english.json`     |
+| Korean      |  5630 | `codebook-dist/korean.json`      |
+| Chinese     |  5140 | `codebook-dist/chinese.json`     |
+| Japanese    |  5000 | `codebook-dist/japanese.json`    |
+| Spanish     |  5000 | `codebook-dist/spanish.json`     |
+| French      |  5000 | `codebook-dist/french.json`      |
+| German      |  5000 | `codebook-dist/german.json`      |
+| Portuguese  |  5000 | `codebook-dist/portuguese.json`  |
+| Indonesian  |  5000 | `codebook-dist/indonesian.json`  |
+| Thai        |  5000 | `codebook-dist/thai.json`        |
+| Vietnamese  |  5000 | `codebook-dist/vietnamese.json`  |
+| Hindi       |  5000 | `codebook-dist/hindi.json`       |
+| Arabic      |  5000 | `codebook-dist/arabic.json`      |
+| Russian     |  5000 | `codebook-dist/russian.json`     |
+| Swahili     |  5000 | `codebook-dist/swahili.json`     |
+| Filipino    |  5000 | `codebook-dist/filipino.json`    |
+| Hausa       |  5000 | `codebook-dist/hausa.json`       |
+| Bengali     |  5000 | `codebook-dist/bengali.json`     |
+| Urdu        |  5000 | `codebook-dist/urdu.json`        |
+| Amharic     |  5000 | `codebook-dist/amharic.json`     |
+| Burmese     |  5000 | `codebook-dist/burmese.json`     |
+| Khmer       |  5000 | `codebook-dist/khmer.json`       |
+| Nepali      |  5000 | `codebook-dist/nepali.json`      |
+| Somali      |  5000 | `codebook-dist/somali.json`      |
+| Pashto      |  5000 | `codebook-dist/pashto.json`      |
+| Lingala     |  5000 | `codebook-dist/lingala.json`     |
+| Mongolian   |  5000 | `codebook-dist/mongolian.json`   |
+| Lao         |  5000 | `codebook-dist/lao.json`         |
+| Malagasy    |  5000 | `codebook-dist/malagasy.json`    |
+| Dari        |  5000 | `codebook-dist/dari.json`        |
+| Oromo       |  5000 | `codebook-dist/oromo.json`       |
+| Chichewa    |  5000 | `codebook-dist/chichewa.json`    |
+| Tigrinya    |  5000 | `codebook-dist/tigrinya.json`    |
+| Bambara     |  5000 | `codebook-dist/bambara.json`     |
+| Fula        |  5000 | `codebook-dist/fula.json`        |
+| Wolof       |  5000 | `codebook-dist/wolof.json`       |
+| Sinhala     |  5000 | `codebook-dist/sinhala.json`     |
+| Tamil       |  5000 | `codebook-dist/tamil.json`       |
+| Kinyarwanda |  5000 | `codebook-dist/kinyarwanda.json` |
+| Kirundi     |  5000 | `codebook-dist/kirundi.json`     |
+| Krio        |  5000 | `codebook-dist/krio.json`        |
+| Ewe         |  5000 | `codebook-dist/ewe.json`         |
+| Fon         |  5000 | `codebook-dist/fon.json`         |
+| Sango       |  5000 | `codebook-dist/sango.json`       |
+| Mooré       |  5000 | `codebook-dist/moore.json`       |
+| Kanuri      |  5000 | `codebook-dist/kanuri.json`      |
+| Quechua     |  5000 | `codebook-dist/quechua.json`     |
+| Aymara      |  5000 | `codebook-dist/aymara.json`      |
+| Guarani     |  5000 | `codebook-dist/guarani.json`     |
+| Kongo       |  5000 | `codebook-dist/kongo.json`       |
+| Zarma       |  5000 | `codebook-dist/zarma.json`       |
+| Tamasheq    |  5000 | `codebook-dist/tamasheq.json`    |
+| Songhay     |  5000 | `codebook-dist/songhay.json`     |
+| Twi         |  5000 | `codebook-dist/twi.json`         |
+| Dagbanli    |  5000 | `codebook-dist/dagbani.json`     |
+| Luganda     |  5000 | `codebook-dist/luganda.json`     |
+| Acholi      |  5000 | `codebook-dist/acholi.json`      |
+| Dinka       |  5000 | `codebook-dist/dinka.json`       |
+| Nuer        |  5000 | `codebook-dist/nuer.json`        |
+| chiShona    |  5000 | `codebook-dist/shona.json`       |
+| isiNdebele  |  5000 | `codebook-dist/ndebele.json`     |
+| Tok Pisin   |  5000 | `codebook-dist/tok_pisin.json`   |
 
 ## Current Word Type Inventory
 
@@ -72,86 +108,86 @@ counted once using this precedence:
 
 Current inventory:
 
-| Language   | Type                             | Count | Share | Examples                                                             |
-| ---------- | -------------------------------- | ----: | ----: | -------------------------------------------------------------------- |
-| English    | Recognized compound              |  1760 | 29.3% | `Handbag`, `Dewdrop`, `Headlamp`, `Feltmat`, `Applebox`              |
-| English    | Short standalone                 |   465 |  7.8% | `Dawn`, `Dune`, `Fern`, `Leaf`, `Lily`                               |
-| English    | Other standalone or unclassified |  3775 | 62.9% | `Acorn`, `Alder`, `Arbor`, `Aspen`, `Aster`                          |
-| Korean     | Recognized compound              |  3314 | 58.9% | `안방`, `사과상자`, `나무병`, `사과바구니`, `책받침`                 |
-| Korean     | Short standalone                 |    87 |  1.5% | `빛`, `별`, `색`, `물`, `무`                                         |
-| Korean     | Other standalone or unclassified |  2229 | 39.6% | `손전등`, `현관문`, `테이블`, `구두주걱`, `연필깎이`                 |
-| Chinese    | Recognized compound              |  1528 | 29.7% | `苹果盒`, `苹果袋`, `苹果杯`, `青叶`, `青草`                         |
-| Chinese    | Short standalone                 |   798 | 15.5% | `狮`, `声`, `米`, `麦`, `豆`                                         |
-| Chinese    | Other standalone or unclassified |  2814 | 54.7% | `木杆`, `竹签`, `芦坯`, `木铲`, `青绳`                               |
-| Japanese   | Recognized compound              |  1068 | 21.4% | `りんごはこ`, `りんごかご`, `りんごさら`, `りんごつぼ`, `りんごなべ` |
-| Japanese   | Short standalone                 |   371 |  7.4% | `いえ`, `すき`, `かい`, `やる`, `つぎ`                               |
-| Japanese   | Other standalone or unclassified |  3561 | 71.2% | `あさかけ`, `はなし`, `おもう`, `かんがえ`, `かんじ`                 |
-| Spanish    | Recognized compound              |  2925 | 58.5% | `Papayatapa`, `Papayabote`, `Papayalata`, `Papayaolla`, `Papayacopa` |
-| Spanish    | Short standalone                 |   280 |  5.6% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe`                               |
-| Spanish    | Other standalone or unclassified |  1795 | 35.9% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto`                 |
-| French     | Recognized compound              |  2361 | 47.2% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`    |
-| French     | Short standalone                 |   101 |  2.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                               |
-| French     | Other standalone or unclassified |  2538 | 50.8% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                        |
-| German     | Recognized compound              |  3052 | 61.0% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`       |
-| German     | Short standalone                 |   127 |  2.5% | `Anis`, `Aue`, `Bach`, `Bank`, `Beet`                                |
-| German     | Other standalone or unclassified |  1821 | 36.4% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                         |
-| Portuguese | Recognized compound              |  1340 | 26.8% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`  |
-| Portuguese | Short standalone                 |   121 |  2.4% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                |
-| Portuguese | Other standalone or unclassified |  3539 | 70.8% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                    |
-| Indonesian | Recognized compound              |  3562 | 71.2% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`    |
-| Indonesian | Short standalone                 |   240 |  4.8% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                               |
-| Indonesian | Other standalone or unclassified |  1198 | 24.0% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                          |
-| Thai       | Recognized compound              |   929 | 18.6% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                          |
-| Thai       | Short standalone                 |    90 |  1.8% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                      |
-| Thai       | Other standalone or unclassified |  3981 | 79.6% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                              |
-| Vietnamese | Recognized compound              |   190 |  3.8% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `đồnghồ`               |
-| Vietnamese | Short standalone                 |   265 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                  |
-| Vietnamese | Other standalone or unclassified |  4545 | 90.9% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                         |
-| Hindi      | Recognized compound              |  2159 | 43.2% | `रोशनदान`, `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`          |
-| Hindi      | Short standalone                 |   183 |  3.7% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                      |
-| Hindi      | Other standalone or unclassified |  2658 | 53.2% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                         |
-| Arabic     | Recognized compound              |  1068 | 21.4% | `بحيرةبيت`, `بحيرةسوق`, `بحيرةطريق`, `بحيرةجسر`, `بحيرةحديقة`        |
-| Arabic     | Short standalone                 |   260 |  5.2% | `ماء`, `بيت`, `نهر`, `جبل`, `زهرة`                                   |
-| Arabic     | Other standalone or unclassified |  3672 | 73.4% | `مصباح`, `زيتون`, `حديقة`, `بحيرة`, `حافلة`                          |
-| Russian    | Recognized compound              |  2997 | 59.9% | `озеродом`, `озеромост`, `озеролист`, `озеросад`, `озеродвор`         |
-| Russian    | Short standalone                 |   271 |  5.4% | `вода`, `дом`, `река`, `гора`, `хлеб`                                 |
-| Russian    | Other standalone or unclassified |  1732 | 34.6% | `цветок`, `книга`, `яблоко`, `береза`, `озеро`                        |
-| Swahili    | Recognized compound              |   154 |  3.1% | `Majinyumba`, `Majikitabu`, `Majisoko`, `Majidaraja`, `Majibustani`    |
-| Swahili    | Short standalone                 |    53 |  1.1% | `Maji`, `Mto`, `Ua`, `Chai`, `Taa`                                    |
-| Swahili    | Other standalone or unclassified |  4793 | 95.9% | `Nyumba`, `Mlima`, `Kitabu`, `Mkate`, `Tufaha`                        |
+| Language   | Type                             | Count | Share | Examples                                                                |
+| ---------- | -------------------------------- | ----: | ----: | ----------------------------------------------------------------------- |
+| English    | Recognized compound              |  1760 | 29.3% | `Handbag`, `Dewdrop`, `Headlamp`, `Feltmat`, `Applebox`                 |
+| English    | Short standalone                 |   465 |  7.8% | `Dawn`, `Dune`, `Fern`, `Leaf`, `Lily`                                  |
+| English    | Other standalone or unclassified |  3775 | 62.9% | `Acorn`, `Alder`, `Arbor`, `Aspen`, `Aster`                             |
+| Korean     | Recognized compound              |  3314 | 58.9% | `안방`, `사과상자`, `나무병`, `사과바구니`, `책받침`                    |
+| Korean     | Short standalone                 |    87 |  1.5% | `빛`, `별`, `색`, `물`, `무`                                            |
+| Korean     | Other standalone or unclassified |  2229 | 39.6% | `손전등`, `현관문`, `테이블`, `구두주걱`, `연필깎이`                    |
+| Chinese    | Recognized compound              |  1528 | 29.7% | `苹果盒`, `苹果袋`, `苹果杯`, `青叶`, `青草`                            |
+| Chinese    | Short standalone                 |   798 | 15.5% | `狮`, `声`, `米`, `麦`, `豆`                                            |
+| Chinese    | Other standalone or unclassified |  2814 | 54.7% | `木杆`, `竹签`, `芦坯`, `木铲`, `青绳`                                  |
+| Japanese   | Recognized compound              |  1068 | 21.4% | `りんごはこ`, `りんごかご`, `りんごさら`, `りんごつぼ`, `りんごなべ`    |
+| Japanese   | Short standalone                 |   371 |  7.4% | `いえ`, `すき`, `かい`, `やる`, `つぎ`                                  |
+| Japanese   | Other standalone or unclassified |  3561 | 71.2% | `あさかけ`, `はなし`, `おもう`, `かんがえ`, `かんじ`                    |
+| Spanish    | Recognized compound              |  2925 | 58.5% | `Papayatapa`, `Papayabote`, `Papayalata`, `Papayaolla`, `Papayacopa`    |
+| Spanish    | Short standalone                 |   280 |  5.6% | `Agua`, `Aire`, `Baul`, `Bota`, `Cafe`                                  |
+| Spanish    | Other standalone or unclassified |  1795 | 35.9% | `Aceite`, `Alfombra`, `Almendra`, `Arbol`, `Arbusto`                    |
+| French     | Recognized compound              |  2361 | 47.2% | `Ruisseau`, `Vaisseau`, `Abricotabri`, `Acaciaabri`, `Amandeabri`       |
+| French     | Short standalone                 |   101 |  2.0% | `Abri`, `Aire`, `Anis`, `Banc`, `Bois`                                  |
+| French     | Other standalone or unclassified |  2538 | 50.8% | `Album`, `Amande`, `Ancre`, `Aneth`, `Anneau`                           |
+| German     | Recognized compound              |  3052 | 61.0% | `Sonnenhut`, `Ackerband`, `Ahornband`, `Apfelband`, `Bachband`          |
+| German     | Short standalone                 |   127 |  2.5% | `Anis`, `Aue`, `Bach`, `Bank`, `Beet`                                   |
+| German     | Other standalone or unclassified |  1821 | 36.4% | `Acker`, `Ahorn`, `Akelei`, `Allee`, `Ampel`                            |
+| Portuguese | Recognized compound              |  1340 | 26.8% | `Acaciafolha`, `Aloefolha`, `Amorafolha`, `Anilfolha`, `Arrozfolha`     |
+| Portuguese | Short standalone                 |   121 |  2.4% | `Agua`, `Alho`, `Aloe`, `Anil`, `Bau`                                   |
+| Portuguese | Other standalone or unclassified |  3539 | 70.8% | `Acacia`, `Acucar`, `Agata`, `Alecrim`, `Algodao`                       |
+| Indonesian | Recognized compound              |  3562 | 71.2% | `Akaralami`, `Alamalami`, `Anginalami`, `Awanalami`, `Bambualami`       |
+| Indonesian | Short standalone                 |   240 |  4.8% | `Akar`, `Alam`, `Awan`, `Batu`, `Biji`                                  |
+| Indonesian | Other standalone or unclassified |  1198 | 24.0% | `Angin`, `Bakul`, `Bambu`, `Bayam`, `Beras`                             |
+| Thai       | Recognized compound              |   929 | 18.6% | `ใบไม้`, `ดอกไม้`, `แม่น้ำ`, `ขนม`, `โคมไฟ`                             |
+| Thai       | Short standalone                 |    90 |  1.8% | `น้ำ`, `ไฟ`, `ลม`, `ดิน`, `หิน`                                         |
+| Thai       | Other standalone or unclassified |  3981 | 79.6% | `บ้าน`, `เรือน`, `ข้าว`, `ช้าง`, `กวาง`                                 |
+| Vietnamese | Recognized compound              |   190 |  3.8% | `chàylá`, `cổngchợ`, `cổnglàng`, `đườnglàng`, `đồnghồ`                  |
+| Vietnamese | Short standalone                 |   265 |  5.3% | `nước`, `lửa`, `nhà`, `vườn`, `gạo`                                     |
+| Vietnamese | Other standalone or unclassified |  4545 | 90.9% | `chuối`, `càphê`, `áodài`, `chiếu`, `chuông`                            |
+| Hindi      | Recognized compound              |  2159 | 43.2% | `रोशनदान`, `किताबघर`, `मिट्टीघड़ा`, `पीतलथाली`, `तांबालोटा`             |
+| Hindi      | Short standalone                 |   183 |  3.7% | `जल`, `घर`, `नदी`, `फूल`, `कमल`                                         |
+| Hindi      | Other standalone or unclassified |  2658 | 53.2% | `पहाड़`, `किताब`, `नारियल`, `बाजार`, `पत्ता`                            |
+| Arabic     | Recognized compound              |  1068 | 21.4% | `بحيرةبيت`, `بحيرةسوق`, `بحيرةطريق`, `بحيرةجسر`, `بحيرةحديقة`           |
+| Arabic     | Short standalone                 |   260 |  5.2% | `ماء`, `بيت`, `نهر`, `جبل`, `زهرة`                                      |
+| Arabic     | Other standalone or unclassified |  3672 | 73.4% | `مصباح`, `زيتون`, `حديقة`, `بحيرة`, `حافلة`                             |
+| Russian    | Recognized compound              |  2997 | 59.9% | `озеродом`, `озеромост`, `озеролист`, `озеросад`, `озеродвор`           |
+| Russian    | Short standalone                 |   271 |  5.4% | `вода`, `дом`, `река`, `гора`, `хлеб`                                   |
+| Russian    | Other standalone or unclassified |  1732 | 34.6% | `цветок`, `книга`, `яблоко`, `береза`, `озеро`                          |
+| Swahili    | Recognized compound              |   154 |  3.1% | `Majinyumba`, `Majikitabu`, `Majisoko`, `Majidaraja`, `Majibustani`     |
+| Swahili    | Short standalone                 |    53 |  1.1% | `Maji`, `Mto`, `Ua`, `Chai`, `Taa`                                      |
+| Swahili    | Other standalone or unclassified |  4793 | 95.9% | `Nyumba`, `Mlima`, `Kitabu`, `Mkate`, `Tufaha`                          |
 | Filipino   | Recognized compound              |   214 |  4.3% | `Kapitbahay`, `Tubigbahay`, `Tubigaklat`, `Tubigpalengke`, `Tubigtulay` |
-| Filipino   | Short standalone                 |    46 |  0.9% | `Ilog`, `Tsaa`, `Ilaw`, `Puno`, `Daan`                                |
-| Filipino   | Other standalone or unclassified |  4740 | 94.8% | `Tubig`, `Bahay`, `Bundok`, `Bulaklak`, `Aklat`                       |
-| Hausa      | Recognized compound              |   205 |  4.1% | `Ruwagida`, `Ruwalittafi`, `Ruwakasuwa`, `Ruwahanya`, `Ruwalambu`      |
-| Hausa      | Short standalone                 |    56 |  1.1% | `Ruwa`, `Gida`, `Kogi`, `Fure`, `Gada`                                |
-| Hausa      | Other standalone or unclassified |  4739 | 94.8% | `Tsauni`, `Shayi`, `Littafi`, `Fitila`, `Burodi`                      |
-| Bengali    | Recognized compound              |    96 |  1.9% | `বাড়িবই`, `বাড়িবাজার`, `বাড়িসেতু`, `বাড়িবাগান`, `বাড়িমাঠ`        |
-| Bengali    | Short standalone                 |   169 |  3.4% | `জল`, `নদী`, `ফুল`, `চা`, `বই`                                       |
-| Bengali    | Other standalone or unclassified |  4735 | 94.7% | `বাড়ি`, `পাহাড়`, `খেজুর`, `জলপাই`, `বাজার`                         |
-| Urdu       | Recognized compound              |   177 |  3.5% | `عجائبگھر`, `پانیگھر`, `پانیکتاب`, `پانیبازار`, `پانیراستہ`           |
-| Urdu       | Short standalone                 |   156 |  3.1% | `پانی`, `گھر`, `دریا`, `پہاڑ`, `پھول`                                |
-| Urdu       | Other standalone or unclassified |  4667 | 93.3% | `کھجور`, `زیتون`, `بازار`, `راستہ`, `تالاب`                          |
-| Amharic    | Recognized compound              |   153 |  3.1% | `ትምህርትቤት`, `ውሃትምህርትቤት`, `ውሃዳቦቤት`, `ውሃምግብቤት`, `ውሃጎረቤት` |
-| Amharic    | Short standalone                 |   647 | 12.9% | `ውሃ`, `ቤት`, `ወንዝ`, `ተራራ`, `አበባ`                                |
-| Amharic    | Other standalone or unclassified |  4200 | 84.0% | `አውቶቡስ`, `አደባባይ`, `ዝንጅብል`, `ብርቱካን`, `ምግብቤት`               |
-| Burmese    | Recognized compound              |   217 |  4.3% | `ပိနေအပပလေ`, `ဗိုတတလေ`, `ကအနဒလေ`, `နေေဒလေ`, `ယေပိနလေ`              |
-| Burmese    | Short standalone                 |   246 |  4.9% | `ယေ`, `ေိန`, `မယိတ`, `တအု`, `ပအန`                                    |
-| Burmese    | Other standalone or unclassified |  4537 | 90.7% | `လအဟပေတ`, `စအိုက`, `မိုနတ`, `ဟတအမိန`, `ကယအုက`                      |
-| Khmer      | Recognized compound              |    29 |  0.6% | `ពតេអហសិេវូវ`, `ពតេអហសពេអន`, `ពតេអហសអមូត`, `តូនលេពតេអហ`, `តូនលេសិេវូវ` |
-| Khmer      | Short standalone                 |   177 |  3.5% | `តុក`, `នូម`, `កអ`, `តអេ`, `លេុ`                                     |
-| Khmer      | Other standalone or unclassified |  4794 | 95.9% | `ពតេអហ`, `តូនលេ`, `សិេវូវ`, `នូមពអ`, `ូលិវេ`                        |
-| Nepali     | Recognized compound              |   301 |  6.0% | `बअनदअर`, `कअलेनदअर`, `पअनिअर`, `पअनिकितअब`, `पअनिबअजअर`             |
-| Nepali     | Short standalone                 |   195 |  3.9% | `पअनि`, `अर`, `नअदि`, `ुल`, `ियअ`                                    |
-| Nepali     | Other standalone or unclassified |  4504 | 90.1% | `पअहअद`, `कितअब`, `बअतति`, `जअितुन`, `बअजअर`                         |
-| Somali     | Recognized compound              |   156 |  3.1% | `Biyoguri`, `Biyobuug`, `Biyosuuq`, `Biyowaddo`, `Biyobeer`           |
-| Somali     | Short standalone                 |    90 |  1.8% | `Biyo`, `Guri`, `Webi`, `Buur`, `Ubax`                                |
-| Somali     | Other standalone or unclassified |  4754 | 95.1% | `Shaah`, `Rooti`, `Bariis`, `Tufaax`, `Timir`                         |
-| Pashto     | Recognized compound              |    48 |  1.0% | `سيندکور`, `سيندکيتاب`, `سيندبازار`, `سيندکاسا`, `سيندتوکراي`         |
-| Pashto     | Short standalone                 |   151 |  3.0% | `وبا`, `کور`, `سيند`, `ار`, `ګول`                                     |
-| Pashto     | Other standalone or unclassified |  4801 | 96.0% | `کيتاب`, `دوداي`, `وريجي`, `مانرا`, `زايتون`                         |
-| Lingala    | Recognized compound              |   146 |  2.9% | `Ndakobuku`, `Ndakozando`, `Ndakonzela`, `Ndakoelanga`, `Ndakobilanga` |
-| Lingala    | Short standalone                 |    83 |  1.7% | `Mai`, `Ti`, `Buku`, `Mapa`, `Loso`                                   |
-| Lingala    | Other standalone or unclassified |  4771 | 95.4% | `Ndako`, `Ebale`, `Ngomba`, `Fololo`, `Mwinda`                        |
+| Filipino   | Short standalone                 |    46 |  0.9% | `Ilog`, `Tsaa`, `Ilaw`, `Puno`, `Daan`                                  |
+| Filipino   | Other standalone or unclassified |  4740 | 94.8% | `Tubig`, `Bahay`, `Bundok`, `Bulaklak`, `Aklat`                         |
+| Hausa      | Recognized compound              |   205 |  4.1% | `Ruwagida`, `Ruwalittafi`, `Ruwakasuwa`, `Ruwahanya`, `Ruwalambu`       |
+| Hausa      | Short standalone                 |    56 |  1.1% | `Ruwa`, `Gida`, `Kogi`, `Fure`, `Gada`                                  |
+| Hausa      | Other standalone or unclassified |  4739 | 94.8% | `Tsauni`, `Shayi`, `Littafi`, `Fitila`, `Burodi`                        |
+| Bengali    | Recognized compound              |    96 |  1.9% | `বাড়িবই`, `বাড়িবাজার`, `বাড়িসেতু`, `বাড়িবাগান`, `বাড়িমাঠ`          |
+| Bengali    | Short standalone                 |   169 |  3.4% | `জল`, `নদী`, `ফুল`, `চা`, `বই`                                          |
+| Bengali    | Other standalone or unclassified |  4735 | 94.7% | `বাড়ি`, `পাহাড়`, `খেজুর`, `জলপাই`, `বাজার`                            |
+| Urdu       | Recognized compound              |   177 |  3.5% | `عجائبگھر`, `پانیگھر`, `پانیکتاب`, `پانیبازار`, `پانیراستہ`             |
+| Urdu       | Short standalone                 |   156 |  3.1% | `پانی`, `گھر`, `دریا`, `پہاڑ`, `پھول`                                   |
+| Urdu       | Other standalone or unclassified |  4667 | 93.3% | `کھجور`, `زیتون`, `بازار`, `راستہ`, `تالاب`                             |
+| Amharic    | Recognized compound              |   153 |  3.1% | `ትምህርትቤት`, `ውሃትምህርትቤት`, `ውሃዳቦቤት`, `ውሃምግብቤት`, `ውሃጎረቤት`                   |
+| Amharic    | Short standalone                 |   647 | 12.9% | `ውሃ`, `ቤት`, `ወንዝ`, `ተራራ`, `አበባ`                                         |
+| Amharic    | Other standalone or unclassified |  4200 | 84.0% | `አውቶቡስ`, `አደባባይ`, `ዝንጅብል`, `ብርቱካን`, `ምግብቤት`                             |
+| Burmese    | Recognized compound              |   217 |  4.3% | `ပိနေအပပလေ`, `ဗိုတတလေ`, `ကအနဒလေ`, `နေေဒလေ`, `ယေပိနလေ`                   |
+| Burmese    | Short standalone                 |   246 |  4.9% | `ယေ`, `ေိန`, `မယိတ`, `တအု`, `ပအန`                                       |
+| Burmese    | Other standalone or unclassified |  4537 | 90.7% | `လအဟပေတ`, `စအိုက`, `မိုနတ`, `ဟတအမိန`, `ကယအုက`                           |
+| Khmer      | Recognized compound              |    29 |  0.6% | `ពតេអហសិេវូវ`, `ពតេអហសពេអន`, `ពតេអហសអមូត`, `តូនលេពតេអហ`, `តូនលេសិេវូវ`  |
+| Khmer      | Short standalone                 |   177 |  3.5% | `តុក`, `នូម`, `កអ`, `តអេ`, `លេុ`                                        |
+| Khmer      | Other standalone or unclassified |  4794 | 95.9% | `ពតេអហ`, `តូនលេ`, `សិេវូវ`, `នូមពអ`, `ូលិវេ`                            |
+| Nepali     | Recognized compound              |   301 |  6.0% | `बअनदअर`, `कअलेनदअर`, `पअनिअर`, `पअनिकितअब`, `पअनिबअजअर`                |
+| Nepali     | Short standalone                 |   195 |  3.9% | `पअनि`, `अर`, `नअदि`, `ुल`, `ियअ`                                       |
+| Nepali     | Other standalone or unclassified |  4504 | 90.1% | `पअहअद`, `कितअब`, `बअतति`, `जअितुन`, `बअजअर`                            |
+| Somali     | Recognized compound              |   156 |  3.1% | `Biyoguri`, `Biyobuug`, `Biyosuuq`, `Biyowaddo`, `Biyobeer`             |
+| Somali     | Short standalone                 |    90 |  1.8% | `Biyo`, `Guri`, `Webi`, `Buur`, `Ubax`                                  |
+| Somali     | Other standalone or unclassified |  4754 | 95.1% | `Shaah`, `Rooti`, `Bariis`, `Tufaax`, `Timir`                           |
+| Pashto     | Recognized compound              |    48 |  1.0% | `سيندکور`, `سيندکيتاب`, `سيندبازار`, `سيندکاسا`, `سيندتوکراي`           |
+| Pashto     | Short standalone                 |   151 |  3.0% | `وبا`, `کور`, `سيند`, `ار`, `ګول`                                       |
+| Pashto     | Other standalone or unclassified |  4801 | 96.0% | `کيتاب`, `دوداي`, `وريجي`, `مانرا`, `زايتون`                            |
+| Lingala    | Recognized compound              |   146 |  2.9% | `Ndakobuku`, `Ndakozando`, `Ndakonzela`, `Ndakoelanga`, `Ndakobilanga`  |
+| Lingala    | Short standalone                 |    83 |  1.7% | `Mai`, `Ti`, `Buku`, `Mapa`, `Loso`                                     |
+| Lingala    | Other standalone or unclassified |  4771 | 95.4% | `Ndako`, `Ebale`, `Ngomba`, `Fololo`, `Mwinda`                          |
 
 Review implications:
 
@@ -612,7 +648,7 @@ a test blocklist.
   `ยา`, `ศพ`, `ผี`, `วัด`, `พระ`, `ตำรวจ`, `ทหาร`, `ศาล`, and `คดี`.
 - Region labels should localize stable terrain descriptors for readability
   while preserving proper names where possible, for example `Mare
-  Tranquillitatis` -> `ทะเลแห่งความสงบ`, `Olympus Mons` -> `ภูเขาโอลิมปัส`,
+Tranquillitatis` -> `ทะเลแห่งความสงบ`, `Olympus Mons` -> `ภูเขาโอลิมปัส`,
   and crater fallbacks as `หลุมอุกกาบาต...`.
 
 ### Vietnamese
@@ -647,7 +683,7 @@ a test blocklist.
   `thuốclá`, `súng`, `máu`, `tù`, `giết`, `tìnhdục`, and `dao`.
 - Region labels should localize stable terrain descriptors while preserving
   widely used proper names where natural: `Mare Tranquillitatis` -> `Biển Tĩnh
-  Lặng`, `Olympus Mons` -> `Núi Olympus`, and crater fallbacks as
+Lặng`, `Olympus Mons` -> `Núi Olympus`, and crater fallbacks as
   `Hố va chạm ...`.
 
 ### Hindi
@@ -684,7 +720,7 @@ a test blocklist.
   `अस्पताल`.
 - Region labels should localize stable terrain descriptors while preserving
   widely used proper names where natural: `Mare Tranquillitatis` -> `शांति
-  सागर`, `Olympus Mons` -> `ओलिम्पस पर्वत`, and crater fallbacks as
+सागर`, `Olympus Mons` -> `ओलिम्पस पर्वत`, and crater fallbacks as
   `गड्ढा ...`.
 
 ### Arabic
@@ -714,7 +750,7 @@ a test blocklist.
   `قنبلة`, and `رصاص`.
 - Region labels should localize stable terrain descriptors while preserving
   widely used proper names where natural: `Mare Tranquillitatis` -> `بحر
-  السكون`, `Olympus Mons` -> `جبل أوليمبوس`, and crater fallbacks as
+السكون`, `Olympus Mons` -> `جبل أوليمبوس`, and crater fallbacks as
   `فوهة ...`.
 
 ## Automated Checks

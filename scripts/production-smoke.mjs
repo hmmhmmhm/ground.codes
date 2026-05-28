@@ -250,10 +250,7 @@ await smoke.check("Filipino Jakarta encode", async () => {
     regionLevel: 2,
     body: "earth",
   });
-  assert(
-    /^Jakarta-/.test(code),
-    `expected Filipino Jakarta code, got ${code}`,
-  );
+  assert(/^Jakarta-/.test(code), `expected Filipino Jakarta code, got ${code}`);
 });
 
 await smoke.check("Hausa Cairo encode", async () => {
@@ -364,6 +361,414 @@ await smoke.check("Lingala Cairo encode", async () => {
     body: "earth",
   });
   assert(/^Kairo-/.test(code), `expected Lingala Cairo code, got ${code}`);
+});
+
+await smoke.check("Mongolian Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "mongolian",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(
+    /^Жакарта-/.test(code),
+    `expected Mongolian Jakarta code, got ${code}`,
+  );
+});
+
+await smoke.check("Lao Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "lao",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^ຈາກາຕາ-/.test(code), `expected Lao Jakarta code, got ${code}`);
+});
+
+await smoke.check("Malagasy Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "malagasy",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Malagasy Jakarta code, got ${code}`);
+});
+
+await smoke.check("Dari Delhi encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 28.65195,
+    lng: 77.23149,
+    language: "dari",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^دهلی-/.test(code), `expected Dari Delhi code, got ${code}`);
+});
+
+await smoke.check("Oromo Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "oromo",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Oromo Jakarta code, got ${code}`);
+});
+
+await smoke.check("Chichewa Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "chichewa",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Chichewa Jakarta code, got ${code}`);
+});
+
+await smoke.check("Tigrinya Cairo encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: 30.0444,
+    lng: 31.2357,
+    language: "tigrinya",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^ካይሮ-/.test(code), `expected Tigrinya Cairo code, got ${code}`);
+});
+
+await smoke.check("Bambara Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "bambara",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Bambara Jakarta code, got ${code}`);
+});
+
+await smoke.check("Fula Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "fula",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Fula Jakarta code, got ${code}`);
+});
+
+await smoke.check("Wolof Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "wolof",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Wolof Jakarta code, got ${code}`);
+});
+
+await smoke.check("Sinhala Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "sinhala",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^ජකර්තා-/.test(code), `expected Sinhala Jakarta code, got ${code}`);
+});
+
+await smoke.check("Tamil Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "tamil",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^ஜகார்த்தா-/.test(code), `expected Tamil Jakarta code, got ${code}`);
+});
+
+await smoke.check("Kinyarwanda Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "kinyarwanda",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(
+    /^Jakarta-/.test(code),
+    `expected Kinyarwanda Jakarta code, got ${code}`,
+  );
+});
+
+await smoke.check("Kirundi Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "kirundi",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Kirundi Jakarta code, got ${code}`);
+});
+
+await smoke.check("Krio Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "krio",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Krio Jakarta code, got ${code}`);
+});
+
+await smoke.check("Ewe Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "ewe",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Ewe Jakarta code, got ${code}`);
+});
+
+await smoke.check("Fon Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "fon",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Fon Jakarta code, got ${code}`);
+});
+
+await smoke.check("Sango Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "sango",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Sango Jakarta code, got ${code}`);
+});
+
+await smoke.check("Mooré Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "moore",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Mooré Jakarta code, got ${code}`);
+});
+
+await smoke.check("Kanuri Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "kanuri",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Kanuri Jakarta code, got ${code}`);
+});
+
+await smoke.check("Quechua Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "quechua",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Quechua Jakarta code, got ${code}`);
+});
+
+await smoke.check("Aymara Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "aymara",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Aymara Jakarta code, got ${code}`);
+});
+
+await smoke.check("Guarani Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "guarani",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Guarani Jakarta code, got ${code}`);
+});
+
+await smoke.check("Kongo Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "kongo",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Kongo Jakarta code, got ${code}`);
+});
+
+await smoke.check("Zarma Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "zarma",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Zarma Jakarta code, got ${code}`);
+});
+
+await smoke.check("Tamasheq Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "tamasheq",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Tamasheq Jakarta code, got ${code}`);
+});
+
+await smoke.check("Songhay Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "songhay",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Songhay Jakarta code, got ${code}`);
+});
+
+await smoke.check("Twi Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "twi",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Twi Jakarta code, got ${code}`);
+});
+
+await smoke.check("Dagbanli Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "dagbani",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Dagbanli Jakarta code, got ${code}`);
+});
+
+await smoke.check("Luganda Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "luganda",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Luganda Jakarta code, got ${code}`);
+});
+
+await smoke.check("Acholi Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "acholi",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Acholi Jakarta code, got ${code}`);
+});
+
+await smoke.check("Dinka Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "dinka",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Dinka Jakarta code, got ${code}`);
+});
+
+await smoke.check("Nuer Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "nuer",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected Nuer Jakarta code, got ${code}`);
+});
+
+await smoke.check("chiShona Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "shona",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(/^Jakarta-/.test(code), `expected chiShona Jakarta code, got ${code}`);
+});
+
+await smoke.check("isiNdebele Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "ndebele",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(
+    /^Jakarta-/.test(code),
+    `expected isiNdebele Jakarta code, got ${code}`,
+  );
+});
+
+await smoke.check("Tok Pisin Jakarta encode", async () => {
+  const code = await postJson("/v1/encode", {
+    lat: -6.1751,
+    lng: 106.865,
+    language: "tok_pisin",
+    regionLevel: 2,
+    body: "earth",
+  });
+  assert(
+    /^Jakarta-/.test(code),
+    `expected Tok Pisin Jakarta code, got ${code}`,
+  );
 });
 
 await smoke.check("ASCII earth region data", async () => {

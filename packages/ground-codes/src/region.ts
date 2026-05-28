@@ -52,6 +52,42 @@ const regionSupportedLanguages = new Set<string>([
   "somali",
   "pashto",
   "lingala",
+  "mongolian",
+  "lao",
+  "malagasy",
+  "dari",
+  "oromo",
+  "chichewa",
+  "tigrinya",
+  "bambara",
+  "fula",
+  "wolof",
+  "sinhala",
+  "tamil",
+  "kinyarwanda",
+  "kirundi",
+  "krio",
+  "ewe",
+  "fon",
+  "sango",
+  "moore",
+  "kanuri",
+  "quechua",
+  "aymara",
+  "guarani",
+  "kongo",
+  "zarma",
+  "tamasheq",
+  "songhay",
+  "twi",
+  "dagbani",
+  "luganda",
+  "acholi",
+  "dinka",
+  "nuer",
+  "shona",
+  "ndebele",
+  "tok_pisin",
 ]);
 
 const addressGapLanguages = new Set([
@@ -67,6 +103,42 @@ const addressGapLanguages = new Set([
   "somali",
   "pashto",
   "lingala",
+  "mongolian",
+  "lao",
+  "malagasy",
+  "dari",
+  "oromo",
+  "chichewa",
+  "tigrinya",
+  "bambara",
+  "fula",
+  "wolof",
+  "sinhala",
+  "tamil",
+  "kinyarwanda",
+  "kirundi",
+  "krio",
+  "ewe",
+  "fon",
+  "sango",
+  "moore",
+  "kanuri",
+  "quechua",
+  "aymara",
+  "guarani",
+  "kongo",
+  "zarma",
+  "tamasheq",
+  "songhay",
+  "twi",
+  "dagbani",
+  "luganda",
+  "acholi",
+  "dinka",
+  "nuer",
+  "shona",
+  "ndebele",
+  "tok_pisin",
 ]);
 
 const addressGapRegionLoaders: Record<string, () => Promise<Region[]>> = {
@@ -243,6 +315,484 @@ const addressGapRegionLoaders: Record<string, () => Promise<Region[]>> = {
   "region-3-mars-lingala": async () =>
     loadRegionData(
       "@ground-codes/geoint/region-dist/region-3-mars-lingala.json",
+    ),
+  "region-2-mongolian": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mongolian.json"),
+  "region-3-mongolian": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mongolian.json"),
+  "region-2-moon-mongolian": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-mongolian.json",
+    ),
+  "region-2-mars-mongolian": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-mongolian.json",
+    ),
+  "region-3-mars-mongolian": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-mongolian.json",
+    ),
+  "region-2-lao": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-lao.json"),
+  "region-3-lao": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-lao.json"),
+  "region-2-moon-lao": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-lao.json"),
+  "region-2-mars-lao": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-lao.json"),
+  "region-3-mars-lao": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-lao.json"),
+  "region-2-malagasy": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-malagasy.json"),
+  "region-3-malagasy": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-malagasy.json"),
+  "region-2-moon-malagasy": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-malagasy.json",
+    ),
+  "region-2-mars-malagasy": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-malagasy.json",
+    ),
+  "region-3-mars-malagasy": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-malagasy.json",
+    ),
+  "region-2-dari": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-dari.json"),
+  "region-3-dari": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-dari.json"),
+  "region-2-moon-dari": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-dari.json"),
+  "region-2-mars-dari": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-dari.json"),
+  "region-3-mars-dari": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-dari.json"),
+  "region-2-oromo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-oromo.json"),
+  "region-3-oromo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-oromo.json"),
+  "region-2-moon-oromo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-oromo.json"),
+  "region-2-mars-oromo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-oromo.json"),
+  "region-3-mars-oromo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-oromo.json"),
+  "region-2-chichewa": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-chichewa.json"),
+  "region-3-chichewa": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-chichewa.json"),
+  "region-2-moon-chichewa": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-chichewa.json",
+    ),
+  "region-2-mars-chichewa": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-chichewa.json",
+    ),
+  "region-3-mars-chichewa": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-chichewa.json",
+    ),
+  "region-2-tigrinya": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-tigrinya.json"),
+  "region-3-tigrinya": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-tigrinya.json"),
+  "region-2-moon-tigrinya": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-tigrinya.json",
+    ),
+  "region-2-mars-tigrinya": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-tigrinya.json",
+    ),
+  "region-3-mars-tigrinya": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-tigrinya.json",
+    ),
+  "region-2-bambara": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-bambara.json"),
+  "region-3-bambara": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-bambara.json"),
+  "region-2-moon-bambara": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-bambara.json",
+    ),
+  "region-2-mars-bambara": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-bambara.json",
+    ),
+  "region-3-mars-bambara": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-bambara.json",
+    ),
+  "region-2-fula": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-fula.json"),
+  "region-3-fula": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-fula.json"),
+  "region-2-moon-fula": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-fula.json"),
+  "region-2-mars-fula": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-fula.json"),
+  "region-3-mars-fula": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-fula.json"),
+  "region-2-wolof": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-wolof.json"),
+  "region-3-wolof": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-wolof.json"),
+  "region-2-moon-wolof": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-wolof.json"),
+  "region-2-mars-wolof": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-wolof.json"),
+  "region-3-mars-wolof": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-wolof.json"),
+  "region-2-sinhala": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-sinhala.json"),
+  "region-3-sinhala": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-sinhala.json"),
+  "region-2-moon-sinhala": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-sinhala.json",
+    ),
+  "region-2-mars-sinhala": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-sinhala.json",
+    ),
+  "region-3-mars-sinhala": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-sinhala.json",
+    ),
+  "region-2-tamil": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-tamil.json"),
+  "region-3-tamil": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-tamil.json"),
+  "region-2-moon-tamil": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-tamil.json"),
+  "region-2-mars-tamil": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-tamil.json"),
+  "region-3-mars-tamil": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-tamil.json"),
+  "region-2-kinyarwanda": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-kinyarwanda.json",
+    ),
+  "region-3-kinyarwanda": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-kinyarwanda.json",
+    ),
+  "region-2-moon-kinyarwanda": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-kinyarwanda.json",
+    ),
+  "region-2-mars-kinyarwanda": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-kinyarwanda.json",
+    ),
+  "region-3-mars-kinyarwanda": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-kinyarwanda.json",
+    ),
+  "region-2-kirundi": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-kirundi.json"),
+  "region-3-kirundi": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-kirundi.json"),
+  "region-2-moon-kirundi": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-kirundi.json",
+    ),
+  "region-2-mars-kirundi": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-kirundi.json",
+    ),
+  "region-3-mars-kirundi": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-kirundi.json",
+    ),
+  "region-2-krio": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-krio.json"),
+  "region-3-krio": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-krio.json"),
+  "region-2-moon-krio": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-krio.json"),
+  "region-2-mars-krio": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-krio.json"),
+  "region-3-mars-krio": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-krio.json"),
+  "region-2-ewe": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-ewe.json"),
+  "region-3-ewe": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-ewe.json"),
+  "region-2-moon-ewe": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-ewe.json"),
+  "region-2-mars-ewe": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-ewe.json"),
+  "region-3-mars-ewe": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-ewe.json"),
+  "region-2-fon": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-fon.json"),
+  "region-3-fon": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-fon.json"),
+  "region-2-moon-fon": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-fon.json"),
+  "region-2-mars-fon": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-fon.json"),
+  "region-3-mars-fon": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-fon.json"),
+  "region-2-sango": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-sango.json"),
+  "region-3-sango": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-sango.json"),
+  "region-2-moon-sango": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-sango.json"),
+  "region-2-mars-sango": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-sango.json"),
+  "region-3-mars-sango": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-sango.json"),
+  "region-2-moore": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moore.json"),
+  "region-3-moore": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-moore.json"),
+  "region-2-moon-moore": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-moore.json"),
+  "region-2-mars-moore": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-moore.json"),
+  "region-3-mars-moore": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-moore.json"),
+  "region-2-kanuri": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-kanuri.json"),
+  "region-3-kanuri": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-kanuri.json"),
+  "region-2-moon-kanuri": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-kanuri.json",
+    ),
+  "region-2-mars-kanuri": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-kanuri.json",
+    ),
+  "region-3-mars-kanuri": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-kanuri.json",
+    ),
+  "region-2-quechua": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-quechua.json"),
+  "region-3-quechua": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-quechua.json"),
+  "region-2-moon-quechua": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-quechua.json",
+    ),
+  "region-2-mars-quechua": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-quechua.json",
+    ),
+  "region-3-mars-quechua": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-quechua.json",
+    ),
+  "region-2-aymara": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-aymara.json"),
+  "region-3-aymara": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-aymara.json"),
+  "region-2-moon-aymara": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-aymara.json",
+    ),
+  "region-2-mars-aymara": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-aymara.json",
+    ),
+  "region-3-mars-aymara": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-aymara.json",
+    ),
+  "region-2-guarani": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-guarani.json"),
+  "region-3-guarani": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-guarani.json"),
+  "region-2-moon-guarani": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-guarani.json",
+    ),
+  "region-2-mars-guarani": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-guarani.json",
+    ),
+  "region-3-mars-guarani": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-guarani.json",
+    ),
+  "region-2-kongo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-kongo.json"),
+  "region-3-kongo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-kongo.json"),
+  "region-2-moon-kongo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-kongo.json"),
+  "region-2-mars-kongo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-kongo.json"),
+  "region-3-mars-kongo": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-kongo.json"),
+  "region-2-zarma": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-zarma.json"),
+  "region-3-zarma": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-zarma.json"),
+  "region-2-moon-zarma": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-zarma.json"),
+  "region-2-mars-zarma": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-zarma.json"),
+  "region-3-mars-zarma": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-zarma.json"),
+  "region-2-tamasheq": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-tamasheq.json"),
+  "region-3-tamasheq": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-tamasheq.json"),
+  "region-2-moon-tamasheq": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-tamasheq.json",
+    ),
+  "region-2-mars-tamasheq": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-tamasheq.json",
+    ),
+  "region-3-mars-tamasheq": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-tamasheq.json",
+    ),
+  "region-2-songhay": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-songhay.json"),
+  "region-3-songhay": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-songhay.json"),
+  "region-2-moon-songhay": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-songhay.json",
+    ),
+  "region-2-mars-songhay": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-songhay.json",
+    ),
+  "region-3-mars-songhay": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-songhay.json",
+    ),
+  "region-2-twi": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-twi.json"),
+  "region-3-twi": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-twi.json"),
+  "region-2-moon-twi": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-twi.json"),
+  "region-2-mars-twi": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-twi.json"),
+  "region-3-mars-twi": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-twi.json"),
+  "region-2-dagbani": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-dagbani.json"),
+  "region-3-dagbani": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-dagbani.json"),
+  "region-2-moon-dagbani": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-dagbani.json",
+    ),
+  "region-2-mars-dagbani": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-dagbani.json",
+    ),
+  "region-3-mars-dagbani": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-dagbani.json",
+    ),
+  "region-2-luganda": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-luganda.json"),
+  "region-3-luganda": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-luganda.json"),
+  "region-2-moon-luganda": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-luganda.json",
+    ),
+  "region-2-mars-luganda": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-luganda.json",
+    ),
+  "region-3-mars-luganda": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-luganda.json",
+    ),
+  "region-2-acholi": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-acholi.json"),
+  "region-3-acholi": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-acholi.json"),
+  "region-2-moon-acholi": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-acholi.json",
+    ),
+  "region-2-mars-acholi": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-acholi.json",
+    ),
+  "region-3-mars-acholi": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-acholi.json",
+    ),
+  "region-2-dinka": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-dinka.json"),
+  "region-3-dinka": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-dinka.json"),
+  "region-2-moon-dinka": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-dinka.json"),
+  "region-2-mars-dinka": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-dinka.json"),
+  "region-3-mars-dinka": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-dinka.json"),
+  "region-2-nuer": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-nuer.json"),
+  "region-3-nuer": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-nuer.json"),
+  "region-2-moon-nuer": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-nuer.json"),
+  "region-2-mars-nuer": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-nuer.json"),
+  "region-3-mars-nuer": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-nuer.json"),
+  "region-2-shona": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-shona.json"),
+  "region-3-shona": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-shona.json"),
+  "region-2-moon-shona": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-moon-shona.json"),
+  "region-2-mars-shona": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-mars-shona.json"),
+  "region-3-mars-shona": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-mars-shona.json"),
+  "region-2-ndebele": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-ndebele.json"),
+  "region-3-ndebele": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-ndebele.json"),
+  "region-2-moon-ndebele": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-ndebele.json",
+    ),
+  "region-2-mars-ndebele": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-ndebele.json",
+    ),
+  "region-3-mars-ndebele": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-ndebele.json",
+    ),
+  "region-2-tok_pisin": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-2-tok_pisin.json"),
+  "region-3-tok_pisin": async () =>
+    loadRegionData("@ground-codes/geoint/region-dist/region-3-tok_pisin.json"),
+  "region-2-moon-tok_pisin": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-moon-tok_pisin.json",
+    ),
+  "region-2-mars-tok_pisin": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-2-mars-tok_pisin.json",
+    ),
+  "region-3-mars-tok_pisin": async () =>
+    loadRegionData(
+      "@ground-codes/geoint/region-dist/region-3-mars-tok_pisin.json",
     ),
 };
 

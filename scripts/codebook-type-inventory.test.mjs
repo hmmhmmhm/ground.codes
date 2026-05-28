@@ -30,7 +30,9 @@ describe("codebook type inventory", () => {
   });
 
   test("keeps German generated compounds bounded by reviewed standalone growth", () => {
-    const german = buildTypeInventory().find((row) => row.language === "german");
+    const german = buildTypeInventory().find(
+      (row) => row.language === "german",
+    );
 
     assert.ok(german);
     assert.ok(german.counts.shortStandalone >= 100);
@@ -39,7 +41,9 @@ describe("codebook type inventory", () => {
   });
 
   test("keeps French and Portuguese short standalone coverage healthy", () => {
-    const french = buildTypeInventory().find((row) => row.language === "french");
+    const french = buildTypeInventory().find(
+      (row) => row.language === "french",
+    );
     const portuguese = buildTypeInventory().find(
       (row) => row.language === "portuguese",
     );
@@ -116,6 +120,42 @@ describe("codebook type inventory", () => {
       "somali",
       "pashto",
       "lingala",
+      "mongolian",
+      "lao",
+      "malagasy",
+      "dari",
+      "oromo",
+      "chichewa",
+      "tigrinya",
+      "bambara",
+      "fula",
+      "wolof",
+      "sinhala",
+      "tamil",
+      "kinyarwanda",
+      "kirundi",
+      "krio",
+      "ewe",
+      "fon",
+      "sango",
+      "moore",
+      "kanuri",
+      "quechua",
+      "aymara",
+      "guarani",
+      "kongo",
+      "zarma",
+      "tamasheq",
+      "songhay",
+      "twi",
+      "dagbani",
+      "luganda",
+      "acholi",
+      "dinka",
+      "nuer",
+      "shona",
+      "ndebele",
+      "tok_pisin",
     ]) {
       const row = rows.find((item) => item.language === language);
       assert.ok(row, `${language} inventory`);

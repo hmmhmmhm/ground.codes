@@ -28,7 +28,8 @@ const parseWordsetCounts = () => {
   );
 };
 
-const languageSuffix = (language) => (language === "english" ? "" : `-${language}`);
+const languageSuffix = (language) =>
+  language === "english" ? "" : `-${language}`;
 const addressingGapLanguages = [
   "swahili",
   "filipino",
@@ -42,6 +43,42 @@ const addressingGapLanguages = [
   "somali",
   "pashto",
   "lingala",
+  "mongolian",
+  "lao",
+  "malagasy",
+  "dari",
+  "oromo",
+  "chichewa",
+  "tigrinya",
+  "bambara",
+  "fula",
+  "wolof",
+  "sinhala",
+  "tamil",
+  "kinyarwanda",
+  "kirundi",
+  "krio",
+  "ewe",
+  "fon",
+  "sango",
+  "moore",
+  "kanuri",
+  "quechua",
+  "aymara",
+  "guarani",
+  "kongo",
+  "zarma",
+  "tamasheq",
+  "songhay",
+  "twi",
+  "dagbani",
+  "luganda",
+  "acholi",
+  "dinka",
+  "nuer",
+  "shona",
+  "ndebele",
+  "tok_pisin",
 ];
 
 describe("language support completeness", () => {
@@ -49,7 +86,9 @@ describe("language support completeness", () => {
 
   test("includes the address-gap expansion languages", () => {
     assert.deepEqual(
-      addressingGapLanguages.filter((language) => !languages.includes(language)),
+      addressingGapLanguages.filter(
+        (language) => !languages.includes(language),
+      ),
       [],
     );
   });
@@ -102,7 +141,7 @@ describe("language support completeness", () => {
     const doc = readText("packages/codebook/LANGUAGE_QUALITY.md");
 
     for (const language of languages) {
-      assert.match(doc, new RegExp(`\\| ${language} \\|`));
+      assert.match(doc, new RegExp(`\\|\\s+${language}\\s+\\|`));
     }
   });
 

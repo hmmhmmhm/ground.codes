@@ -25,6 +25,42 @@ import nePlaceTypes from "@/messages/ne/placeTypes.json";
 import soPlaceTypes from "@/messages/so/placeTypes.json";
 import psPlaceTypes from "@/messages/ps/placeTypes.json";
 import lnPlaceTypes from "@/messages/ln/placeTypes.json";
+import mnPlaceTypes from "@/messages/mn/placeTypes.json";
+import loPlaceTypes from "@/messages/lo/placeTypes.json";
+import mgPlaceTypes from "@/messages/mg/placeTypes.json";
+import prsPlaceTypes from "@/messages/prs/placeTypes.json";
+import omPlaceTypes from "@/messages/om/placeTypes.json";
+import nyPlaceTypes from "@/messages/ny/placeTypes.json";
+import tiPlaceTypes from "@/messages/ti/placeTypes.json";
+import bmPlaceTypes from "@/messages/bm/placeTypes.json";
+import ffPlaceTypes from "@/messages/ff/placeTypes.json";
+import woPlaceTypes from "@/messages/wo/placeTypes.json";
+import siPlaceTypes from "@/messages/si/placeTypes.json";
+import taPlaceTypes from "@/messages/ta/placeTypes.json";
+import rwPlaceTypes from "@/messages/rw/placeTypes.json";
+import rnPlaceTypes from "@/messages/rn/placeTypes.json";
+import kriPlaceTypes from "@/messages/kri/placeTypes.json";
+import eePlaceTypes from "@/messages/ee/placeTypes.json";
+import fonPlaceTypes from "@/messages/fon/placeTypes.json";
+import sgPlaceTypes from "@/messages/sg/placeTypes.json";
+import mosPlaceTypes from "@/messages/mos/placeTypes.json";
+import krPlaceTypes from "@/messages/kr/placeTypes.json";
+import quPlaceTypes from "@/messages/qu/placeTypes.json";
+import ayPlaceTypes from "@/messages/ay/placeTypes.json";
+import gnPlaceTypes from "@/messages/gn/placeTypes.json";
+import kgPlaceTypes from "@/messages/kg/placeTypes.json";
+import djePlaceTypes from "@/messages/dje/placeTypes.json";
+import tmhPlaceTypes from "@/messages/tmh/placeTypes.json";
+import sonPlaceTypes from "@/messages/son/placeTypes.json";
+import twPlaceTypes from "@/messages/tw/placeTypes.json";
+import dagPlaceTypes from "@/messages/dag/placeTypes.json";
+import lgPlaceTypes from "@/messages/lg/placeTypes.json";
+import achPlaceTypes from "@/messages/ach/placeTypes.json";
+import dinPlaceTypes from "@/messages/din/placeTypes.json";
+import nusPlaceTypes from "@/messages/nus/placeTypes.json";
+import snPlaceTypes from "@/messages/sn/placeTypes.json";
+import ndePlaceTypes from "@/messages/nde/placeTypes.json";
+import tpiPlaceTypes from "@/messages/tpi/placeTypes.json";
 
 export interface PlaceDetailsProps {
   map: google.maps.Map | null;
@@ -63,4 +99,40 @@ export const placeTypes: Record<Locale, PlaceTypesRecord> = {
   so: soPlaceTypes as PlaceTypesRecord,
   ps: psPlaceTypes as PlaceTypesRecord,
   ln: lnPlaceTypes as PlaceTypesRecord,
+  mn: mnPlaceTypes as PlaceTypesRecord,
+  lo: loPlaceTypes as PlaceTypesRecord,
+  mg: mgPlaceTypes as PlaceTypesRecord,
+  prs: prsPlaceTypes as PlaceTypesRecord,
+  om: omPlaceTypes as PlaceTypesRecord,
+  ny: nyPlaceTypes as PlaceTypesRecord,
+  ti: tiPlaceTypes as PlaceTypesRecord,
+  bm: bmPlaceTypes as PlaceTypesRecord,
+  ff: ffPlaceTypes as PlaceTypesRecord,
+  wo: woPlaceTypes as PlaceTypesRecord,
+  si: siPlaceTypes as PlaceTypesRecord,
+  ta: taPlaceTypes as PlaceTypesRecord,
+  rw: rwPlaceTypes as PlaceTypesRecord,
+  rn: rnPlaceTypes as PlaceTypesRecord,
+  kri: kriPlaceTypes as PlaceTypesRecord,
+  ee: eePlaceTypes as PlaceTypesRecord,
+  fon: fonPlaceTypes as PlaceTypesRecord,
+  sg: sgPlaceTypes as PlaceTypesRecord,
+  mos: mosPlaceTypes as PlaceTypesRecord,
+  kr: krPlaceTypes as PlaceTypesRecord,
+  qu: quPlaceTypes as PlaceTypesRecord,
+  ay: ayPlaceTypes as PlaceTypesRecord,
+  gn: gnPlaceTypes as PlaceTypesRecord,
+  kg: kgPlaceTypes as PlaceTypesRecord,
+  dje: djePlaceTypes as PlaceTypesRecord,
+  tmh: tmhPlaceTypes as PlaceTypesRecord,
+  son: sonPlaceTypes as PlaceTypesRecord,
+  tw: twPlaceTypes as PlaceTypesRecord,
+  dag: dagPlaceTypes as PlaceTypesRecord,
+  lg: lgPlaceTypes as PlaceTypesRecord,
+  ach: achPlaceTypes as PlaceTypesRecord,
+  din: dinPlaceTypes as PlaceTypesRecord,
+  nus: nusPlaceTypes as PlaceTypesRecord,
+  sn: snPlaceTypes as PlaceTypesRecord,
+  nde: ndePlaceTypes as PlaceTypesRecord,
+  tpi: tpiPlaceTypes as PlaceTypesRecord,
 };

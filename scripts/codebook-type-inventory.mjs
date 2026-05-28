@@ -27,6 +27,42 @@ const CODEBOOK_FILES = {
   somali: "../packages/codebook/codebook-dist/somali.json",
   pashto: "../packages/codebook/codebook-dist/pashto.json",
   lingala: "../packages/codebook/codebook-dist/lingala.json",
+  mongolian: "../packages/codebook/codebook-dist/mongolian.json",
+  lao: "../packages/codebook/codebook-dist/lao.json",
+  malagasy: "../packages/codebook/codebook-dist/malagasy.json",
+  dari: "../packages/codebook/codebook-dist/dari.json",
+  oromo: "../packages/codebook/codebook-dist/oromo.json",
+  chichewa: "../packages/codebook/codebook-dist/chichewa.json",
+  tigrinya: "../packages/codebook/codebook-dist/tigrinya.json",
+  bambara: "../packages/codebook/codebook-dist/bambara.json",
+  fula: "../packages/codebook/codebook-dist/fula.json",
+  wolof: "../packages/codebook/codebook-dist/wolof.json",
+  sinhala: "../packages/codebook/codebook-dist/sinhala.json",
+  tamil: "../packages/codebook/codebook-dist/tamil.json",
+  kinyarwanda: "../packages/codebook/codebook-dist/kinyarwanda.json",
+  kirundi: "../packages/codebook/codebook-dist/kirundi.json",
+  krio: "../packages/codebook/codebook-dist/krio.json",
+  ewe: "../packages/codebook/codebook-dist/ewe.json",
+  fon: "../packages/codebook/codebook-dist/fon.json",
+  sango: "../packages/codebook/codebook-dist/sango.json",
+  moore: "../packages/codebook/codebook-dist/moore.json",
+  kanuri: "../packages/codebook/codebook-dist/kanuri.json",
+  quechua: "../packages/codebook/codebook-dist/quechua.json",
+  aymara: "../packages/codebook/codebook-dist/aymara.json",
+  guarani: "../packages/codebook/codebook-dist/guarani.json",
+  kongo: "../packages/codebook/codebook-dist/kongo.json",
+  zarma: "../packages/codebook/codebook-dist/zarma.json",
+  tamasheq: "../packages/codebook/codebook-dist/tamasheq.json",
+  songhay: "../packages/codebook/codebook-dist/songhay.json",
+  twi: "../packages/codebook/codebook-dist/twi.json",
+  dagbani: "../packages/codebook/codebook-dist/dagbani.json",
+  luganda: "../packages/codebook/codebook-dist/luganda.json",
+  acholi: "../packages/codebook/codebook-dist/acholi.json",
+  dinka: "../packages/codebook/codebook-dist/dinka.json",
+  nuer: "../packages/codebook/codebook-dist/nuer.json",
+  shona: "../packages/codebook/codebook-dist/shona.json",
+  ndebele: "../packages/codebook/codebook-dist/ndebele.json",
+  tok_pisin: "../packages/codebook/codebook-dist/tok_pisin.json",
 };
 
 const SPANISH_REVIEW_FILES = [
@@ -1135,6 +1171,42 @@ const LANGUAGE_LABELS = {
   somali: "Somali",
   pashto: "Pashto",
   lingala: "Lingala",
+  mongolian: "Mongolian",
+  lao: "Lao",
+  malagasy: "Malagasy",
+  dari: "Dari",
+  oromo: "Oromo",
+  chichewa: "Chichewa",
+  tigrinya: "Tigrinya",
+  bambara: "Bambara",
+  fula: "Fula",
+  wolof: "Wolof",
+  sinhala: "Sinhala",
+  tamil: "Tamil",
+  kinyarwanda: "Kinyarwanda",
+  kirundi: "Kirundi",
+  krio: "Krio",
+  ewe: "Ewe",
+  fon: "Fon",
+  sango: "Sango",
+  moore: "Mooré",
+  kanuri: "Kanuri",
+  quechua: "Quechua",
+  aymara: "Aymara",
+  guarani: "Guarani",
+  kongo: "Kongo",
+  zarma: "Zarma",
+  tamasheq: "Tamasheq",
+  songhay: "Songhay",
+  twi: "Twi",
+  dagbani: "Dagbanli",
+  luganda: "Luganda",
+  acholi: "Acholi",
+  dinka: "Dinka",
+  nuer: "Nuer",
+  shona: "chiShona",
+  ndebele: "isiNdebele",
+  tok_pisin: "Tok Pisin",
 };
 
 const TYPE_LABELS = {
@@ -1150,33 +1222,71 @@ const readCodebook = (language) =>
 
 const characterLength = (word) => [...word].length;
 
+const fourCharStandaloneLanguages = new Set([
+  "swahili",
+  "filipino",
+  "hausa",
+  "bengali",
+  "urdu",
+  "amharic",
+  "burmese",
+  "khmer",
+  "nepali",
+  "somali",
+  "pashto",
+  "lingala",
+  "mongolian",
+  "lao",
+  "malagasy",
+  "dari",
+  "oromo",
+  "chichewa",
+  "tigrinya",
+  "bambara",
+  "fula",
+  "wolof",
+  "sinhala",
+  "tamil",
+  "kinyarwanda",
+  "kirundi",
+  "krio",
+  "ewe",
+  "fon",
+  "sango",
+  "moore",
+  "kanuri",
+  "quechua",
+  "aymara",
+  "guarani",
+  "kongo",
+  "zarma",
+  "tamasheq",
+  "songhay",
+  "twi",
+  "dagbani",
+  "luganda",
+  "acholi",
+  "dinka",
+  "nuer",
+  "shona",
+  "ndebele",
+  "tok_pisin",
+  "english",
+  "spanish",
+  "french",
+  "german",
+  "portuguese",
+  "indonesian",
+  "vietnamese",
+  "hindi",
+  "arabic",
+  "russian",
+]);
+
 const isShortStandalone = (language, word) => {
   const length = characterLength(word);
 
-  if (
-    language === "english" ||
-    language === "spanish" ||
-    language === "french" ||
-    language === "german" ||
-    language === "portuguese" ||
-    language === "indonesian" ||
-    language === "vietnamese" ||
-    language === "hindi" ||
-    language === "arabic" ||
-    language === "russian" ||
-    language === "swahili" ||
-    language === "filipino" ||
-    language === "hausa" ||
-    language === "bengali" ||
-    language === "urdu" ||
-    language === "amharic" ||
-    language === "burmese" ||
-    language === "khmer" ||
-    language === "nepali" ||
-    language === "somali" ||
-    language === "pashto" ||
-    language === "lingala"
-  ) {
+  if (fourCharStandaloneLanguages.has(language)) {
     return length <= 4;
   }
 
@@ -1196,29 +1306,7 @@ const minPrefixLength = (language) => {
     return 1;
   }
 
-  if (
-    language === "spanish" ||
-    language === "french" ||
-    language === "german" ||
-    language === "portuguese" ||
-    language === "indonesian" ||
-    language === "vietnamese" ||
-    language === "hindi" ||
-    language === "arabic" ||
-    language === "russian" ||
-    language === "swahili" ||
-    language === "filipino" ||
-    language === "hausa" ||
-    language === "bengali" ||
-    language === "urdu" ||
-    language === "amharic" ||
-    language === "burmese" ||
-    language === "khmer" ||
-    language === "nepali" ||
-    language === "somali" ||
-    language === "pashto" ||
-    language === "lingala"
-  ) {
+  if (fourCharStandaloneLanguages.has(language)) {
     return 4;
   }
 
@@ -1229,25 +1317,106 @@ const minPrefixLength = (language) => {
   return 3;
 };
 
+const latinSuffixLanguages = new Set([
+  "english",
+  "spanish",
+  "french",
+  "german",
+  "portuguese",
+  "indonesian",
+  "vietnamese",
+  "swahili",
+  "filipino",
+  "hausa",
+  "somali",
+  "lingala",
+  "malagasy",
+  "oromo",
+  "chichewa",
+  "bambara",
+  "fula",
+  "wolof",
+  "kinyarwanda",
+  "kirundi",
+  "krio",
+  "ewe",
+  "fon",
+  "sango",
+  "moore",
+  "kanuri",
+  "quechua",
+  "aymara",
+  "guarani",
+  "kongo",
+  "zarma",
+  "tamasheq",
+  "songhay",
+  "twi",
+  "dagbani",
+  "luganda",
+  "acholi",
+  "dinka",
+  "nuer",
+  "shona",
+  "ndebele",
+  "tok_pisin",
+]);
+
 const normalizeForSuffix = (language, word) => {
-  if (
-    language === "english" ||
-    language === "spanish" ||
-    language === "french" ||
-    language === "german" ||
-    language === "portuguese" ||
-    language === "indonesian" ||
-    language === "vietnamese" ||
-    language === "swahili" ||
-    language === "filipino" ||
-    language === "hausa" ||
-    language === "somali" ||
-    language === "lingala"
-  ) {
+  if (latinSuffixLanguages.has(language)) {
     return word.toLowerCase();
   }
 
   return word;
+};
+
+const generatedAddressGapLanguages = new Set([
+  "mongolian",
+  "lao",
+  "malagasy",
+  "dari",
+  "oromo",
+  "chichewa",
+  "tigrinya",
+  "bambara",
+  "fula",
+  "wolof",
+  "sinhala",
+  "tamil",
+  "kinyarwanda",
+  "kirundi",
+  "krio",
+  "ewe",
+  "fon",
+  "sango",
+  "moore",
+  "kanuri",
+  "quechua",
+  "aymara",
+  "guarani",
+  "kongo",
+  "zarma",
+  "tamasheq",
+  "songhay",
+  "twi",
+  "dagbani",
+  "luganda",
+  "acholi",
+  "dinka",
+  "nuer",
+  "shona",
+  "ndebele",
+  "tok_pisin",
+]);
+const generatedSuffixCache = new Map();
+const getGeneratedSuffixes = (language) => {
+  const cached = generatedSuffixCache.get(language);
+  if (cached) return cached;
+  const suffixes = readCodebook(language)
+    .slice(0, 5)
+    .map((word) => normalizeForSuffix(language, word));
+  generatedSuffixCache.set(language, suffixes);
+  return suffixes;
 };
 
 const findCompoundSuffix = (language, word) => {
@@ -1274,7 +1443,11 @@ const findCompoundSuffix = (language, word) => {
   }
 
   const normalized = normalizeForSuffix(language, word);
-  const suffixes = COMPOUND_SUFFIXES[language];
+  const suffixes =
+    COMPOUND_SUFFIXES[language] ??
+    (generatedAddressGapLanguages.has(language)
+      ? getGeneratedSuffixes(language)
+      : []);
   const minPrefix = minPrefixLength(language);
 
   return suffixes.find(
