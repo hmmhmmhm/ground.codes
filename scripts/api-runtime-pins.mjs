@@ -1,5 +1,6 @@
 export const RUNTIME_REPOSITORY =
   "git+https://github.com/hmmhmmhm/ground.codes.git";
+export const WORKSPACE_DEPENDENCY = "workspace:*";
 
 export const RUNTIME_PACKAGES = [
   {
@@ -26,7 +27,27 @@ export const getRuntimeTag = (packageJson) => {
   return match?.[1] ?? null;
 };
 
+export const usesWorkspaceRuntime = (packageJson) =>
+  RUNTIME_PACKAGES.every(
+    ({ name }) => packageJson.dependencies?.[name] === WORKSPACE_DEPENDENCY,
+  );
+
 export const getRuntimePinFailures = (packageJson, tag) =>
+  usesWorkspaceRuntime(packageJson)
+    ? []
+    : RUNTIME_PACKAGES.flatMap((runtimePackage) => {
+        const expected = buildPinnedDependency(tag, runtimePackage);
+        const actual = packageJson.dependencies?.[runtimePackage.name];
+        return actual === expected
+          ? []
+          : [
+              `${runtimePackage.name} expected ${expected} or ${WORKSPACE_DEPENDENCY}, found ${
+                actual ?? "missing"
+              }`,
+            ];
+      });
+
+export const getStrictRuntimePinFailures = (packageJson, tag) =>
   RUNTIME_PACKAGES.flatMap((runtimePackage) => {
     const expected = buildPinnedDependency(tag, runtimePackage);
     const actual = packageJson.dependencies?.[runtimePackage.name];

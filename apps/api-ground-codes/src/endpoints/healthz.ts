@@ -26,7 +26,10 @@ const runtimeDependency =
   packageJson.dependencies["ground-codes"] ??
   packageJson.dependencies["@repo/codebook"] ??
   "";
-const runtimeTag = runtimeDependency.match(/#([^&]+)&path:/)?.[1] ?? "unknown";
+const runtimeTag =
+  process.env.API_RUNTIME_TAG ??
+  runtimeDependency.match(/#([^&]+)&path:/)?.[1] ??
+  (runtimeDependency.startsWith("workspace:") ? "workspace" : "unknown");
 const lockfilePath = findUp("pnpm-lock.yaml", endpointDir);
 const lockfileCommit = lockfilePath
   ? readFileSync(lockfilePath, "utf8").match(

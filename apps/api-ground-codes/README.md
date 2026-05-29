@@ -112,12 +112,17 @@ pnpm --filter api-ground-codes build
 pnpm --filter api-ground-codes start
 ```
 
-If Railway is configured with `apps/api-ground-codes` as the root directory,
-only this app directory is available during install. In that standalone mode the
-API runtime packages are pinned to a repository tag:
-`railway-api-runtime-20260521-spanish-korean-quality`. Bump that tag whenever the
-deployed API needs new local changes from `ground-codes`, `@ground-codes/geoint`,
-or `@repo/codebook`, then run:
+The API depends on `ground-codes`, `@ground-codes/geoint`, and `@repo/codebook`
+through workspace links. Keep Railway pointed at the repository root so the
+large generated geoint datasets are installed once from the checkout instead of
+being downloaded repeatedly as Git package tarballs.
+
+If Railway must be configured with `apps/api-ground-codes` as the root directory,
+only this app directory is available during install. In that legacy standalone
+mode the API runtime packages can be pinned to a repository tag, but this is no
+longer the preferred deployment path for the full address-gap dataset. Bump that
+tag whenever the deployed API needs new local changes from `ground-codes`,
+`@ground-codes/geoint`, or `@repo/codebook`, then run:
 
 ```bash
 pnpm runtime:update-pins railway-api-runtime-YYYYMMDD-short-name

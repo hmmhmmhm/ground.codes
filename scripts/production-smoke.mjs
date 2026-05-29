@@ -54,7 +54,8 @@ await smoke.check("API readiness", async () => {
   );
   assert(
     typeof ready.runtimeTag === "string" &&
-      ready.runtimeTag.startsWith("railway-api-runtime-"),
+      (ready.runtimeTag === "workspace" ||
+        ready.runtimeTag.startsWith("railway-api-runtime-")),
     `missing runtime tag: ${JSON.stringify(ready)}`,
   );
   assert(

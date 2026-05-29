@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import {
   getRuntimePinFailures,
   getRuntimeTag,
+  usesWorkspaceRuntime,
 } from "./api-runtime-pins.mjs";
 
 const packageJson = JSON.parse(
@@ -13,9 +14,12 @@ const packageJson = JSON.parse(
 
 const runtimeTag = process.env.API_RUNTIME_TAG ?? getRuntimeTag(packageJson);
 
-const failures = runtimeTag
-  ? getRuntimePinFailures(packageJson, runtimeTag)
-  : ["unable to infer API runtime tag from package pins"];
+const failures =
+  usesWorkspaceRuntime(packageJson) && !process.env.API_RUNTIME_TAG
+    ? []
+    : runtimeTag
+      ? getRuntimePinFailures(packageJson, runtimeTag)
+      : ["unable to infer API runtime tag from package pins"];
 
 if (failures.length > 0) {
   console.error("API runtime package pins are not aligned:");
@@ -23,4 +27,8 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-console.log(`API runtime package pins are aligned on ${runtimeTag}.`);
+console.log(
+  usesWorkspaceRuntime(packageJson) && !process.env.API_RUNTIME_TAG
+    ? "API runtime packages use workspace dependencies."
+    : `API runtime package pins are aligned on ${runtimeTag}.`,
+);
