@@ -1,0 +1,6 @@
+.git
+**/.turbo
+**/node_modules
+**/dist
+apps/web/.next
+apps/grok-spiral/.next
