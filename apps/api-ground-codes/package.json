@@ -14,11 +14,11 @@
     "@elysiajs/cors": "^1.2.0",
     "@elysiajs/static": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
-    "@ground-codes/geoint": "git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260525-address-gap-languages-v2&path:packages/geoint",
-    "@repo/codebook": "git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260525-address-gap-languages-v2&path:packages/codebook",
+    "@ground-codes/geoint": "git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260529-address-gap-full-v1&path:packages/geoint",
+    "@repo/codebook": "git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260529-address-gap-full-v1&path:packages/codebook",
     "@sinclair/typebox": "^0.34.30",
     "elysia": "latest",
-    "ground-codes": "git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260525-address-gap-languages-v2&path:packages/ground-codes"
+    "ground-codes": "git+https://github.com/hmmhmmhm/ground.codes.git#railway-api-runtime-20260529-address-gap-full-v1&path:packages/ground-codes"
   },
   "devDependencies": {
     "bun-types": "latest"

@@ -30,7 +30,7 @@ describe("Ground Codes API contract", () => {
       status: "ready",
       service: "api-ground-codes",
       apiVersion: "1.0.79",
-      runtimeTag: "railway-api-runtime-20260525-address-gap-languages-v2",
+      runtimeTag: "railway-api-runtime-20260529-address-gap-full-v1",
       runtimeCommit: expect.stringMatching(/^[0-9a-f]{40}$/),
     });
   });
