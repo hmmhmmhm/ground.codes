@@ -2,7 +2,6 @@ FROM node:22-bookworm-slim
 
 ENV BUN_INSTALL=/root/.bun
 ENV PATH="${BUN_INSTALL}/bin:${PATH}"
-ENV NODE_ENV=production
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates curl unzip \
@@ -17,6 +16,8 @@ COPY . .
 
 RUN pnpm install --frozen-lockfile
 RUN pnpm --filter api-ground-codes build
+
+ENV NODE_ENV=production
 
 EXPOSE 3000
 
