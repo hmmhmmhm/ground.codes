@@ -1,0 +1,109 @@
+name: Deploy API to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/api-ground-codes/**"
+      - "packages/ground-codes/**"
+      - "packages/geoint/region-dist/**"
+      - "packages/codebook/codebook-dist/**"
+      - ".github/workflows/deploy-api.yml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+  workflow_dispatch:
+    inputs:
+      import_all_regions:
+        description: "Import every missing region dataset before deploying"
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-api-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          package-manager-cache: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 9.0.0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check API
+        run: pnpm --filter api-ground-codes check-types
+
+      - name: Test API
+        run: pnpm --filter api-ground-codes test
+
+      - name: Build ground-codes package
+        run: pnpm --filter ground-codes build
+
+      - name: Install Wrangler
+        run: pnpm install -g wrangler
+
+      - name: Apply PostGIS schema
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PGSSLMODE: require
+          PGSSLREJECTUNAUTHORIZED: "0"
+        run: pnpm --filter api-ground-codes data:apply-postgis-schema
+
+      - name: Detect changed region datasets
+        id: regions
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.import_all_regions }}" = "true" ]; then
+            echo "datasets=__all_missing__" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "datasets=" >> "$GITHUB_OUTPUT"
+          else
+            DATASETS="$(node apps/api-ground-codes/scripts/list-changed-region-datasets.mjs "${{ github.event.before }}" "${{ github.sha }}")"
+            echo "datasets=${DATASETS}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Import changed region datasets
+        if: steps.regions.outputs.datasets != ''
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PGSSLMODE: require
+          PGSSLREJECTUNAUTHORIZED: "0"
+          REGION_IMPORT_BATCH_SIZE: "1500"
+        run: |
+          if [ "${{ steps.regions.outputs.datasets }}" = "__all_missing__" ]; then
+            REGION_IMPORT_MODE=missing pnpm --filter api-ground-codes data:import-postgis
+          else
+            REGION_DATASETS="${{ steps.regions.outputs.datasets }}" REGION_IMPORT_MODE=replace pnpm --filter api-ground-codes data:import-postgis
+          fi
+
+      - name: Deploy API Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: wrangler deploy --config apps/api-ground-codes/wrangler.toml
+
+      - name: Run production smoke
+        run: pnpm production:smoke

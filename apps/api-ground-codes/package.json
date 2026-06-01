@@ -8,6 +8,7 @@
     "build": "node scripts/build.mjs",
     "start": "bun run src/index.ts",
     "check-types": "tsc --noEmit",
+    "data:apply-postgis-schema": "node scripts/apply-postgis-schema.mjs",
     "data:import-postgis": "node scripts/import-postgis-regions.mjs",
     "test": "bun test src/*.test.ts"
   },
