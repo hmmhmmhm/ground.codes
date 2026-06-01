@@ -2,6 +2,8 @@ import {
   findClosestRegion,
   findRegionByCodeOrName,
   findRegionsByQuery,
+  getRegionStore,
+  setRegionStore,
 } from "./region.js";
 import {
   CelestialBody,
@@ -274,6 +276,9 @@ export {
   reconstructCoordinateDiff,
   getBodyMetersPerDegree,
   normalizeLongitudeForBody,
+  getRegionStore,
+  setRegionStore,
 };
 
 export type { CelestialBody, SupportedLanguage };
+export type { RegionSearchResult, RegionStore } from "./region.js";

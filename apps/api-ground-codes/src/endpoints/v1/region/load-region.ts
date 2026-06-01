@@ -1,4 +1,4 @@
-import { load } from "@ground-codes/geoint/src/index.ts";
+import { getRegionStore } from "ground-codes/src/index.ts";
 
 const pendingLoads = new Map<string, Promise<void>>();
 const regionLoadMetrics = {
@@ -40,10 +40,17 @@ export const loadRegionDataset = async (regionName: string) => {
     regionLoadMetrics.started += 1;
     regionMetrics.started += 1;
 
-    pendingLoad = load([regionName])
+    pendingLoad = (
+      getRegionStore()
+        ? Promise.resolve()
+        : import("@ground-codes/geoint/src/index.ts").then(({ load }) =>
+            load([regionName]),
+          )
+    )
       .then(() => {
         const loadedAt = new Date().toISOString();
-        const durationMs = Math.round((performance.now() - startedAt) * 100) / 100;
+        const durationMs =
+          Math.round((performance.now() - startedAt) * 100) / 100;
 
         regionLoadMetrics.completed += 1;
         regionLoadMetrics.lastLoadedAt = loadedAt;

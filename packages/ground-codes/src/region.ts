@@ -19,8 +19,71 @@ export interface Region {
   population?: number;
 }
 
-const requireRegionJson = createRequire(import.meta.url);
-const loadRegionData = (path: string) => requireRegionJson(path) as Region[];
+export interface RegionSearchResult {
+  lat: number;
+  lng: number;
+  regionLevel?: number;
+  body?: CelestialBody;
+  name: string;
+  code: string;
+  distanceKm?: number;
+  population?: number;
+}
+
+export interface RegionStore {
+  findRegionsAround?(
+    target: { lat: number; lng: number },
+    options?: {
+      regionLevel?: number;
+      language?: SupportedLanguage;
+      body?: CelestialBody;
+      maxResults?: number;
+      maxDistance?: number;
+    },
+  ): Promise<RegionSearchResult[]>;
+  findClosestRegion(
+    target: { lat: number; lng: number },
+    options?: {
+      regionLevel?: number;
+      language?: SupportedLanguage;
+      region2FallbackDistanceKm?: number;
+      body?: CelestialBody;
+    },
+  ): Promise<RegionSearchResult | null>;
+  findRegionsByQuery(
+    codeOrName: string,
+    options?: {
+      regionLevel?: number;
+      language?: SupportedLanguage;
+      body?: CelestialBody;
+      maxResults?: number;
+      biasLat?: number;
+      biasLng?: number;
+    },
+  ): Promise<RegionSearchResult[]>;
+}
+
+let configuredRegionStore: RegionStore | null = null;
+
+export const setRegionStore = (store: RegionStore | null) => {
+  configuredRegionStore = store;
+};
+
+export const getRegionStore = () => configuredRegionStore;
+
+let requireRegionJson: ReturnType<typeof createRequire> | null = null;
+const loadRegionData = (path: string) => {
+  if (!requireRegionJson) {
+    if (typeof import.meta.url !== "string") {
+      throw new Error(
+        "Local region JSON loading is unavailable in this runtime",
+      );
+    }
+    requireRegionJson = createRequire(import.meta.url);
+  }
+
+  return requireRegionJson(path) as Region[];
+};
 
 const DEFAULT_REGION_2_FALLBACK_DISTANCE_KM = 100;
 const DEFAULT_MARS_REGION_2_FALLBACK_DISTANCE_KM = 100;
@@ -1342,6 +1405,11 @@ export const findClosestRegion = async (
     body?: CelestialBody;
   },
 ) => {
+  const regionStore = getRegionStore();
+  if (regionStore) {
+    return await regionStore.findClosestRegion({ lat, lng }, options);
+  }
+
   const body = options?.body ?? "earth";
   const regionLevel = options?.regionLevel ?? (body === "earth" ? 1 : 2);
   const language = options?.language;
@@ -1463,6 +1531,11 @@ export const findRegionsByQuery = async (
 > => {
   if (!codeOrName || codeOrName.trim() === "") {
     return [];
+  }
+
+  const regionStore = getRegionStore();
+  if (regionStore) {
+    return await regionStore.findRegionsByQuery(codeOrName, options);
   }
 
   try {

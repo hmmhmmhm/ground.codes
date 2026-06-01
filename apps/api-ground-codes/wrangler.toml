@@ -1,0 +1,19 @@
+name = "api-ground-codes"
+account_id = "6353b3b978a6ebc8ee4b2953509da274"
+main = "src/worker.ts"
+compatibility_date = "2026-05-30"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+routes = [
+  { pattern = "api.ground.codes/*", zone_name = "ground.codes" },
+]
+
+[observability]
+enabled = true
+
+# Create the Hyperdrive binding with:
+# pnpm --filter api-ground-codes exec wrangler hyperdrive create ground-codes-supabase --connection-string "$SUPABASE_DB_URL"
+# Then replace the placeholder id below.
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "bcd8dcf99beb470b9d4e3f1e0259878e"

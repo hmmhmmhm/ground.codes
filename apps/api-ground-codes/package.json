@@ -8,6 +8,7 @@
     "build": "node scripts/build.mjs",
     "start": "bun run src/index.ts",
     "check-types": "tsc --noEmit",
+    "data:import-postgis": "node scripts/import-postgis-regions.mjs",
     "test": "bun test src/*.test.ts"
   },
   "dependencies": {
@@ -18,9 +19,11 @@
     "@repo/codebook": "workspace:*",
     "@sinclair/typebox": "^0.34.30",
     "elysia": "latest",
-    "ground-codes": "workspace:*"
+    "ground-codes": "workspace:*",
+    "pg": "^8.21.0"
   },
   "devDependencies": {
+    "@types/pg": "^8.20.0",
     "bun-types": "latest"
   },
   "module": "src/index.js"

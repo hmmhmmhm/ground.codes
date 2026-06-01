@@ -1,5 +1,5 @@
 import Elysia, { t } from "elysia";
-import { around } from "@ground-codes/geoint/src/index.ts";
+import { getRegionStore } from "ground-codes/src/index.ts";
 import { getRegionDatasetName, supportedLanguages } from "../language.js";
 import {
   validateBody,
@@ -36,21 +36,46 @@ export const v1RegionAround = new Elysia().post(
     });
     await loadRegionDataset(regionName);
 
-    return (
-      await around({
-        regionName,
-        lat,
-        lng,
-        maxResults,
-        maxDistance,
-      })
-    )?.map((region) => ({
+    const regionStore = getRegionStore();
+    const regions = regionStore
+      ? regionStore.findRegionsAround
+        ? await regionStore.findRegionsAround(
+            { lat, lng },
+            {
+              body: validatedBody,
+              language: validatedLanguage,
+              regionLevel,
+              maxResults,
+              maxDistance,
+            },
+          )
+        : [
+            await regionStore.findClosestRegion(
+              { lat, lng },
+              {
+                body: validatedBody,
+                language: validatedLanguage,
+                regionLevel,
+              },
+            ),
+          ].filter((region) => region !== null)
+      : await import("@ground-codes/geoint/src/index.ts").then(({ around }) =>
+          around({
+            regionName,
+            lat,
+            lng,
+            maxResults,
+            maxDistance,
+          }),
+        );
+
+    return regions?.slice(0, maxResults).map((region) => ({
       name: region.name,
       code: region.code,
       lat: region.lat,
-      lng: region.long,
+      lng: "lng" in region ? region.lng : region.long,
       population: region.population,
-      countryCode: region.countryCode,
+      countryCode: "countryCode" in region ? region.countryCode : undefined,
     }));
   },
   {
