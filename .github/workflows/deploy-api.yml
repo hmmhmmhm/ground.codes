@@ -103,7 +103,14 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: wrangler deploy --config apps/api-ground-codes/wrangler.toml
+        run: |
+          wrangler deploy \
+            --config apps/api-ground-codes/wrangler.toml \
+            --keep-vars \
+            --var API_RUNTIME_TAG:workspace \
+            --var GIT_COMMIT_SHA:${{ github.sha }} \
+            --tag ${{ github.sha }} \
+            --message "Deploy API Worker from ${GITHUB_SHA}"
 
       - name: Run production smoke
         run: pnpm production:smoke

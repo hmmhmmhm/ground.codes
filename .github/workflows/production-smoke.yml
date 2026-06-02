@@ -16,6 +16,10 @@ on:
     types:
       - completed
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   smoke:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
@@ -43,3 +47,41 @@ jobs:
           curl -X POST https://api.getmoshi.app/api/webhook \
             -H "Content-Type: application/json" \
             -d "{\"token\":\"${MOSHI_WEBHOOK_TOKEN}\",\"title\":\"ground.codes smoke failed\",\"message\":\"Production smoke failed on ${GITHUB_REF_NAME}. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
+
+      - name: Open smoke failure issue
+        if: failure() && env.MOSHI_WEBHOOK_TOKEN == ''
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const title = "Production smoke failed";
+            const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const message = [
+              `Production smoke failed on ${process.env.GITHUB_REF_NAME}.`,
+              "",
+              `Run: ${runUrl}`,
+              "",
+              "MOSHI_WEBHOOK_TOKEN is not configured, so this issue is the fallback notification.",
+            ].join("\n");
+            const { owner, repo } = context.repo;
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: "open",
+              per_page: 50,
+            });
+            const existing = issues.find((issue) => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body: message,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body: message,
+              });
+            }

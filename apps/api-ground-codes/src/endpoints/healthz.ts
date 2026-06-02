@@ -44,21 +44,26 @@ const runtimeDependency =
   packageJson.dependencies["ground-codes"] ??
   packageJson.dependencies["@repo/codebook"] ??
   "";
-const runtimeTag =
-  process.env.API_RUNTIME_TAG ??
-  runtimeDependency.match(/#([^&]+)&path:/)?.[1] ??
-  (runtimeDependency.startsWith("workspace:") ? "workspace" : "unknown");
 const lockfilePath = endpointDir ? findUp("pnpm-lock.yaml", endpointDir) : null;
 const lockfileCommit = lockfilePath
   ? readFileSync(lockfilePath, "utf8").match(
       /ground\.codes\/tar\.gz\/([0-9a-f]{40})#path:packages\/ground-codes/,
     )?.[1]
   : undefined;
-const runtimeCommit =
-  lockfileCommit ??
-  process.env.RAILWAY_GIT_COMMIT_SHA ??
-  process.env.GIT_COMMIT_SHA ??
-  "0000000000000000000000000000000000000000";
+
+export const getRuntimeMetadata = () => {
+  const runtimeTag =
+    process.env.API_RUNTIME_TAG ??
+    runtimeDependency.match(/#([^&]+)&path:/)?.[1] ??
+    (runtimeDependency.startsWith("workspace:") ? "workspace" : "unknown");
+  const runtimeCommit =
+    lockfileCommit ??
+    process.env.RAILWAY_GIT_COMMIT_SHA ??
+    process.env.GIT_COMMIT_SHA ??
+    "0000000000000000000000000000000000000000";
+
+  return { runtimeTag, runtimeCommit };
+};
 
 export const healthz = new Elysia().get(
   "/healthz",
@@ -82,6 +87,7 @@ export const readyz = new Elysia().get(
   "/readyz",
   async ({ set }) => {
     set.headers["cache-control"] = "no-store";
+    const { runtimeTag, runtimeCommit } = getRuntimeMetadata();
 
     return {
       status: "ready",
