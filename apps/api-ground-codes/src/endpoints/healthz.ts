@@ -3,12 +3,30 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import Elysia, { t } from "elysia";
 
-const endpointDir = dirname(fileURLToPath(import.meta.url));
-const packagePath = join(endpointDir, "../../package.json");
-const packageJson = JSON.parse(readFileSync(packagePath, "utf8")) as {
+const fallbackPackageJson = {
+  version: "1.0.79",
+  dependencies: {},
+} as {
   version: string;
   dependencies: Record<string, string>;
 };
+
+const getEndpointDir = () => {
+  try {
+    return typeof import.meta.url === "string"
+      ? dirname(fileURLToPath(import.meta.url))
+      : null;
+  } catch {
+    return null;
+  }
+};
+
+const endpointDir = getEndpointDir();
+const packageJson = endpointDir
+  ? (JSON.parse(
+      readFileSync(join(endpointDir, "../../package.json"), "utf8"),
+    ) as typeof fallbackPackageJson)
+  : fallbackPackageJson;
 
 const findUp = (fileName: string, startDir: string) => {
   let currentDir = startDir;
@@ -26,21 +44,26 @@ const runtimeDependency =
   packageJson.dependencies["ground-codes"] ??
   packageJson.dependencies["@repo/codebook"] ??
   "";
-const runtimeTag =
-  process.env.API_RUNTIME_TAG ??
-  runtimeDependency.match(/#([^&]+)&path:/)?.[1] ??
-  (runtimeDependency.startsWith("workspace:") ? "workspace" : "unknown");
-const lockfilePath = findUp("pnpm-lock.yaml", endpointDir);
+const lockfilePath = endpointDir ? findUp("pnpm-lock.yaml", endpointDir) : null;
 const lockfileCommit = lockfilePath
   ? readFileSync(lockfilePath, "utf8").match(
-    /ground\.codes\/tar\.gz\/([0-9a-f]{40})#path:packages\/ground-codes/,
+      /ground\.codes\/tar\.gz\/([0-9a-f]{40})#path:packages\/ground-codes/,
     )?.[1]
   : undefined;
-const runtimeCommit =
-  lockfileCommit ??
-  process.env.RAILWAY_GIT_COMMIT_SHA ??
-  process.env.GIT_COMMIT_SHA ??
-  "0000000000000000000000000000000000000000";
+
+export const getRuntimeMetadata = () => {
+  const runtimeTag =
+    process.env.API_RUNTIME_TAG ??
+    runtimeDependency.match(/#([^&]+)&path:/)?.[1] ??
+    (runtimeDependency.startsWith("workspace:") ? "workspace" : "unknown");
+  const runtimeCommit =
+    lockfileCommit ??
+    process.env.RAILWAY_GIT_COMMIT_SHA ??
+    process.env.GIT_COMMIT_SHA ??
+    "0000000000000000000000000000000000000000";
+
+  return { runtimeTag, runtimeCommit };
+};
 
 export const healthz = new Elysia().get(
   "/healthz",
@@ -57,13 +80,14 @@ export const healthz = new Elysia().get(
       description: "Health check response",
       example: "OK",
     }),
-  }
+  },
 );
 
 export const readyz = new Elysia().get(
   "/readyz",
   async ({ set }) => {
     set.headers["cache-control"] = "no-store";
+    const { runtimeTag, runtimeCommit } = getRuntimeMetadata();
 
     return {
       status: "ready",
@@ -90,11 +114,11 @@ export const readyz = new Elysia().get(
         example: "1.0.68",
       }),
       runtimeTag: t.String({
-        example: "railway-api-runtime-20260522-hindi-v3",
+        example: "unknown",
       }),
       runtimeCommit: t.String({
-        example: "f173ae362a9134d954d8b867c66058c9dcb7a754",
+        example: "0000000000000000000000000000000000000000",
       }),
     }),
-  }
+  },
 );

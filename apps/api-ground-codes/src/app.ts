@@ -35,7 +35,7 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
   const rateLimit =
     "rateLimit" in options ? options.rateLimit : getDefaultRateLimit();
 
-  const app = new Elysia()
+  const app = new Elysia({ aot: false })
     .onError(({ error, code, set }) => formatApiError(error, code, set))
     .use(createCorsEndpoint(options.corsOrigins))
     .use(createRateLimitEndpoint(rateLimit))

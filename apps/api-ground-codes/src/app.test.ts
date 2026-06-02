@@ -35,6 +35,34 @@ describe("Ground Codes API contract", () => {
     });
   });
 
+  test("serves deployment runtime metadata from environment", async () => {
+    const previousRuntimeTag = process.env.API_RUNTIME_TAG;
+    const previousGitCommitSha = process.env.GIT_COMMIT_SHA;
+    process.env.API_RUNTIME_TAG = "workspace";
+    process.env.GIT_COMMIT_SHA = "8ec0c2b6703a179c3be99edb57ac3f3f94322598";
+
+    try {
+      const response = await get("/readyz");
+
+      expect(response.status).toBe(200);
+      expect(await response.json()).toMatchObject({
+        runtimeTag: "workspace",
+        runtimeCommit: "8ec0c2b6703a179c3be99edb57ac3f3f94322598",
+      });
+    } finally {
+      if (previousRuntimeTag === undefined) {
+        delete process.env.API_RUNTIME_TAG;
+      } else {
+        process.env.API_RUNTIME_TAG = previousRuntimeTag;
+      }
+      if (previousGitCommitSha === undefined) {
+        delete process.env.GIT_COMMIT_SHA;
+      } else {
+        process.env.GIT_COMMIT_SHA = previousGitCommitSha;
+      }
+    }
+  });
+
   test("serves lightweight operational metrics", async () => {
     await get("/healthz");
 

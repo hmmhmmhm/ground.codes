@@ -1,5 +1,5 @@
 import Elysia, { t } from "elysia";
-import { info } from "@ground-codes/geoint/src/index.ts";
+import { getRegionStore } from "ground-codes/src/index.ts";
 import { ApiNotFoundError } from "../api-error.js";
 import { getRegionDatasetName, supportedLanguages } from "../language.js";
 import {
@@ -27,10 +27,22 @@ export const v1RegionInfo = new Elysia().post(
     });
     await loadRegionDataset(regionName);
 
-    const data = await info({
-      name: query,
-      regionName,
-    }).catch(() => null);
+    const regionStore = getRegionStore();
+    const data = await (regionStore
+      ? regionStore
+          .findRegionsByQuery(query, {
+            body: validatedBody,
+            language: validatedLanguage,
+            regionLevel,
+            maxResults: 1,
+          })
+          .then((matches) => matches[0] ?? null)
+      : import("@ground-codes/geoint/src/index.ts").then(({ info }) =>
+          info({
+            name: query,
+            regionName,
+          }).catch(() => null),
+        ));
 
     if (!data) {
       throw new ApiNotFoundError(`Region "${query}" was not found.`);
@@ -40,9 +52,9 @@ export const v1RegionInfo = new Elysia().post(
       name: data.name,
       code: data.code,
       lat: data.lat,
-      lng: data.long,
+      lng: "lng" in data ? data.lng : data.long,
       population: data.population,
-      countryCode: data.countryCode,
+      countryCode: "countryCode" in data ? data.countryCode : undefined,
     };
   },
   {

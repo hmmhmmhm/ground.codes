@@ -138,11 +138,44 @@ set does not silently drift back to stale npm artifacts. `pnpm
 runtime:update-pins` rewrites all three package pins together so Railway cannot
 end up with a mixed runtime.
 
+### ☁️ Cloudflare Workers + Supabase PostGIS
+
+The API now has a Worker entrypoint at `src/worker.ts` and a Supabase/PostGIS
+region store. `api.ground.codes/*` is routed to the `api-ground-codes` Worker,
+so Cloudflare is the production serving layer while Supabase/PostGIS holds the
+full generated region lookup data.
+
+Apply the Supabase schema and import a small dataset first:
+
+```bash
+SUPABASE_DB_URL=postgresql://... \
+REGION_DATASETS=region-2,region-2-mongolian \
+REGION_IMPORT_MODE=replace \
+pnpm --filter api-ground-codes data:import-postgis
+```
+
+Omit `REGION_DATASETS` to import every generated `region-dist/*.json` dataset.
+The default `REGION_IMPORT_MODE=missing` skips datasets whose full row count is
+already present, which makes the full import resumable.
+
+Create the Cloudflare Hyperdrive binding against that database, then replace the
+placeholder id in `wrangler.toml`:
+
+```bash
+pnpm dlx wrangler hyperdrive create ground-codes-supabase \
+  --connection-string "$SUPABASE_DB_URL"
+```
+
+At runtime the Worker reads `env.HYPERDRIVE.connectionString` and installs the
+PostGIS-backed region store before handling requests. The Bun entrypoint
+continues to use the existing local file/LevelDB data path unless a store is
+installed explicitly.
+
 ### 🛰️ Production Monitoring
 
 The `Production Smoke` workflow runs every 30 minutes and after the web deploy
-workflow completes. It checks the Railway API, the Cloudflare Pages web app, and
-API route metrics. It records per-check response times for `/readyz`,
+workflow completes. It checks the Cloudflare Worker API, the Cloudflare Pages
+web app, and API route metrics. It records per-check response times for `/readyz`,
 `/v1/encode`, `/v1/search`, `/metrics`, `robots.txt`, and `sitemap.xml`, and
 writes the timing table to the GitHub run summary. Add a `MOSHI_WEBHOOK_TOKEN`
 repository secret to send a webhook alert when the smoke workflow fails.

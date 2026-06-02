@@ -48,8 +48,39 @@ describe("production smoke workflow triggers", () => {
     assert.match(smokeWorkflow, /force_failure:/);
     assert.match(smokeWorkflow, /GROUND_CODES_SMOKE_FORCE_FAILURE/);
     assert.match(smokeWorkflow, /Deploy Web to Cloudflare Pages/);
-    assert.match(smokeWorkflow, /github\.event\.workflow_run\.conclusion == 'success'/);
+    assert.match(smokeWorkflow, /issues: write/);
+    assert.match(smokeWorkflow, /actions\/github-script@v8/);
+    assert.match(smokeWorkflow, /MOSHI_WEBHOOK_TOKEN is not configured/);
+    assert.match(
+      smokeWorkflow,
+      /github\.event\.workflow_run\.conclusion == 'success'/,
+    );
     assert.match(smokeScript, /GITHUB_STEP_SUMMARY/);
     assert.match(smokeScript, /GROUND_CODES_SMOKE_FORCE_FAILURE/);
+  });
+});
+
+describe("API deployment workflow", () => {
+  test("deploys Worker after API data changes and refreshes changed region datasets", () => {
+    const deployApiWorkflow = readText("../.github/workflows/deploy-api.yml");
+
+    assert.match(deployApiWorkflow, /Deploy API to Cloudflare Workers/);
+    assert.match(deployApiWorkflow, /packages\/geoint\/region-dist\/\*\*/);
+    assert.match(deployApiWorkflow, /packages\/codebook\/codebook-dist\/\*\*/);
+    assert.match(deployApiWorkflow, /data:apply-postgis-schema/);
+    assert.match(deployApiWorkflow, /list-changed-region-datasets\.mjs/);
+    assert.match(deployApiWorkflow, /REGION_IMPORT_MODE=replace/);
+    assert.match(deployApiWorkflow, /wrangler deploy/);
+    assert.match(
+      deployApiWorkflow,
+      /--config apps\/api-ground-codes\/wrangler\.toml/,
+    );
+    assert.match(deployApiWorkflow, /--keep-vars/);
+    assert.match(deployApiWorkflow, /--var API_RUNTIME_TAG:workspace/);
+    assert.match(
+      deployApiWorkflow,
+      /--var GIT_COMMIT_SHA:\$\{\{ github\.sha \}\}/,
+    );
+    assert.match(deployApiWorkflow, /pnpm production:smoke/);
   });
 });
