@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { locales, Locale } from "@/i18n";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { LocationMode } from "./types";
 import Compass from "./compass";
@@ -8,12 +7,11 @@ import { EarthMapType } from "./hooks/use-map-container";
 import {
   ChevronIcon,
   GridIcon,
-  LanguageIcon,
   LoadingLocationIcon,
   LocationIcon,
   MapTypeIcon,
 } from "./map-control-icons";
-import { LOCALE_LABELS, LOCALE_SHORT_LABELS } from "./map-control-labels";
+import { LanguageSelector } from "./language-selector";
 
 // Define location mode enum (same as use-map-container.ts)
 // enum LocationMode {
@@ -55,7 +53,7 @@ const MapControls: React.FC<MapControlsProps> = ({
   isEarth = true,
   hasSelectedArea = false,
 }) => {
-  const { t, locale, setLocale } = useI18n();
+  const { t } = useI18n();
   const [showBodyOptions, setShowBodyOptions] = useState(false);
   const [showMapTypeOptions, setShowMapTypeOptions] = useState(false);
   const [showLanguageOptions, setShowLanguageOptions] = useState(false);
@@ -65,11 +63,6 @@ const MapControls: React.FC<MapControlsProps> = ({
     mars: t("map.bodies.mars"),
   };
   const activeBodyLabel = bodyLabels[body];
-
-  const handleLanguageChange = (newLocale: Locale) => {
-    setLocale(newLocale);
-    setShowLanguageOptions(false);
-  };
 
   const handleBodyChange = (newBody: CelestialBody) => {
     selectBody(newBody);
@@ -88,6 +81,11 @@ const MapControls: React.FC<MapControlsProps> = ({
     : ["roadmap", "planetary3d"];
   const mobileUpDesktopDownMenuPosition =
     "absolute bottom-[45px] left-0 right-auto top-auto sm:bottom-auto sm:left-auto sm:right-0 sm:top-[45px]";
+  const languageMenuPosition = `fixed left-3 right-3 top-auto z-20 ${
+    hasSelectedArea
+      ? "bottom-[calc(env(safe-area-inset-bottom)+213px)]"
+      : "bottom-[145px]"
+  } sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-[45px]`;
 
   const handleMapTypeChange = (newMapType: EarthMapType) => {
     selectMapType(newMapType);
@@ -217,54 +215,15 @@ const MapControls: React.FC<MapControlsProps> = ({
           )}
         </div>
 
-        {/* Language Selector Button */}
-        <div className="relative">
-          <button
-            onClick={() => {
-              setShowLanguageOptions(!showLanguageOptions);
-              setShowBodyOptions(false);
-              setShowMapTypeOptions(false);
-            }}
-            className="flex min-h-10 min-w-11 cursor-pointer items-center gap-2 rounded-lg border border-white/20 bg-black/30 px-3 py-2 text-sm backdrop-blur-md"
-            title={t("map.controls.language")}
-            aria-label={t("map.controls.language")}
-            aria-expanded={showLanguageOptions}
-          >
-            <LanguageIcon />
-            <span className="hidden text-white sm:inline">
-              {LOCALE_SHORT_LABELS[locale]}
-            </span>
-          </button>
-
-          {/* Language Options Dropdown */}
-          {showLanguageOptions && (
-            <div
-              className={`${mobileUpDesktopDownMenuPosition} rounded-lg border border-white/20 bg-black/30 backdrop-blur-md cursor-pointer`}
-            >
-              <div className="flex flex-col">
-                {locales.map((localeOption) => (
-                  <button
-                    key={localeOption}
-                    onClick={() => handleLanguageChange(localeOption)}
-                    className={`px-3 py-2 text-sm hover:bg-white/10 flex items-center justify-between gap-3 ${
-                      locale === localeOption ? "bg-white/10 font-bold" : ""
-                    }`}
-                  >
-                    <span className="text-white flex items-center gap-2">
-                      <span className="text-xs text-white/70 min-w-5">
-                        {LOCALE_SHORT_LABELS[localeOption]}
-                      </span>
-                      {LOCALE_LABELS[localeOption]}
-                    </span>
-                    {locale === localeOption && (
-                      <span className="text-green-400">✓</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        <LanguageSelector
+          menuPositionClassName={languageMenuPosition}
+          open={showLanguageOptions}
+          onOpen={() => {
+            setShowLanguageOptions(!showLanguageOptions);
+            setShowBodyOptions(false);
+            setShowMapTypeOptions(false);
+          }}
+        />
       </div>
 
       {/* Grid, Location, and Compass Controls (Bottom Right) */}
