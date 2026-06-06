@@ -9,6 +9,11 @@ export type SupportedLanguage =
   | "french"
   | "german"
   | "portuguese"
+  | "turkish"
+  | "italian"
+  | "dutch"
+  | "polish"
+  | "ukrainian"
   | "indonesian"
   | "thai"
   | "vietnamese"
@@ -73,6 +78,11 @@ export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   french: 5000,
   german: 5000,
   portuguese: 5000,
+  turkish: 5000,
+  italian: 5000,
+  dutch: 5000,
+  polish: 5000,
+  ukrainian: 5000,
   indonesian: 5000,
   thai: 5000,
   vietnamese: 5000,
@@ -161,6 +171,26 @@ const loadWordSet = async (language: SupportedLanguage) => {
   } else if (language.toLowerCase() === "portuguese") {
     // @ts-ignore
     return (await import("@repo/codebook/codebook-dist/portuguese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "turkish") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/turkish.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "italian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/italian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "dutch") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/dutch.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "polish") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/polish.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "ukrainian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/ukrainian.json"))
       .default as string[];
   } else if (language.toLowerCase() === "indonesian") {
     // @ts-ignore

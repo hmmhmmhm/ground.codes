@@ -11,6 +11,14 @@ describe("ground code language mapping", () => {
     expect(getGroundCodeLanguage("pt")).toBe("portuguese");
   });
 
+  test("maps major European UI locales to Ground Codes", () => {
+    expect(getGroundCodeLanguage("tr")).toBe("turkish");
+    expect(getGroundCodeLanguage("it")).toBe("italian");
+    expect(getGroundCodeLanguage("nl")).toBe("dutch");
+    expect(getGroundCodeLanguage("pl")).toBe("polish");
+    expect(getGroundCodeLanguage("uk")).toBe("ukrainian");
+  });
+
   test("maps Indonesian UI locale to Indonesian Ground Codes", () => {
     expect(getGroundCodeLanguage("id")).toBe("indonesian");
   });

@@ -97,6 +97,11 @@ const regionSupportedLanguages = new Set<string>([
   "french",
   "german",
   "portuguese",
+  "turkish",
+  "italian",
+  "dutch",
+  "polish",
+  "ukrainian",
   "indonesian",
   "thai",
   "vietnamese",
@@ -202,6 +207,14 @@ const addressGapLanguages = new Set([
   "shona",
   "ndebele",
   "tok_pisin",
+]);
+
+const englishRegionFallbackLanguages = new Set([
+  "turkish",
+  "italian",
+  "dutch",
+  "polish",
+  "ukrainian",
 ]);
 
 const addressGapRegionLoaders: Record<string, () => Promise<Region[]>> = {
@@ -1213,6 +1226,9 @@ const loadRegions = async (
           "@ground-codes/geoint/region-dist/region-2-russian.json",
         );
       }
+      if (englishRegionFallbackLanguages.has(normalizedLanguage ?? "")) {
+        return loadRegionData("@ground-codes/geoint/region-dist/region-2.json");
+      }
       throw new Error(`Invalid language: ${language}`);
     }
 
@@ -1284,6 +1300,9 @@ const loadRegions = async (
         return loadRegionData(
           "@ground-codes/geoint/region-dist/region-3-russian.json",
         );
+      }
+      if (englishRegionFallbackLanguages.has(normalizedLanguage ?? "")) {
+        return loadRegionData("@ground-codes/geoint/region-dist/region-3.json");
       }
       throw new Error(`Invalid language: ${language}`);
     }

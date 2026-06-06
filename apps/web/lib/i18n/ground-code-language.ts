@@ -8,6 +8,11 @@ export const getGroundCodeLanguage = (locale: Locale) => {
   if (locale === "fr") return "french";
   if (locale === "de") return "german";
   if (locale === "pt") return "portuguese";
+  if (locale === "tr") return "turkish";
+  if (locale === "it") return "italian";
+  if (locale === "nl") return "dutch";
+  if (locale === "pl") return "polish";
+  if (locale === "uk") return "ukrainian";
   if (locale === "id") return "indonesian";
   if (locale === "th") return "thai";
   if (locale === "vi") return "vietnamese";
