@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
+import czechWords from "@repo/codebook/codebook-dist/czech.json";
 import dutchWords from "@repo/codebook/codebook-dist/dutch.json";
+import greekWords from "@repo/codebook/codebook-dist/greek.json";
 import italianWords from "@repo/codebook/codebook-dist/italian.json";
 import polishWords from "@repo/codebook/codebook-dist/polish.json";
+import romanianWords from "@repo/codebook/codebook-dist/romanian.json";
 import turkishWords from "@repo/codebook/codebook-dist/turkish.json";
 import ukrainianWords from "@repo/codebook/codebook-dist/ukrainian.json";
 import { decodeByWordSet, encodeByWordSet } from "../src/wordset.js";
@@ -48,6 +51,24 @@ const fixtures = [
     words: ukrainianWords,
     expected: ["Дім", "Книга", "Мʼята", "Компʼютер", "Мандрівник"],
     rejected: ["Мята", "Компютер"],
+  },
+  {
+    language: "romanian",
+    words: romanianWords,
+    expected: ["Casă", "Râu", "Piață", "Școală", "Brânză", "Țesătură"],
+    rejected: ["Casa", "Rau", "Piata", "Scoala", "Branza", "Tesatura"],
+  },
+  {
+    language: "czech",
+    words: czechWords,
+    expected: ["Dům", "Řeka", "Květina", "Náměstí", "Počítač", "Přístav"],
+    rejected: ["Dum", "Reka", "Kvetina", "Namesti", "Pocitac", "Pristav"],
+  },
+  {
+    language: "greek",
+    words: greekWords,
+    expected: ["Σπίτι", "Νερό", "Βιβλίο", "Πλατεία", "Υπολογιστής"],
+    rejected: ["Spiti", "Nero", "Vivlio", "Plateia", "Ypologistis"],
   },
 ] as const;
 

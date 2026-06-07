@@ -102,6 +102,9 @@ const regionSupportedLanguages = new Set<string>([
   "dutch",
   "polish",
   "ukrainian",
+  "romanian",
+  "czech",
+  "greek",
   "indonesian",
   "thai",
   "vietnamese",
@@ -215,6 +218,9 @@ const englishRegionFallbackLanguages = new Set([
   "dutch",
   "polish",
   "ukrainian",
+  "romanian",
+  "czech",
+  "greek",
 ]);
 
 const addressGapRegionLoaders: Record<string, () => Promise<Region[]>> = {

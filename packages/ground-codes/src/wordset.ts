@@ -14,6 +14,9 @@ export type SupportedLanguage =
   | "dutch"
   | "polish"
   | "ukrainian"
+  | "romanian"
+  | "czech"
+  | "greek"
   | "indonesian"
   | "thai"
   | "vietnamese"
@@ -83,6 +86,9 @@ export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   dutch: 5000,
   polish: 5000,
   ukrainian: 5000,
+  romanian: 5000,
+  czech: 5000,
+  greek: 5000,
   indonesian: 5000,
   thai: 5000,
   vietnamese: 5000,
@@ -191,6 +197,18 @@ const loadWordSet = async (language: SupportedLanguage) => {
   } else if (language.toLowerCase() === "ukrainian") {
     // @ts-ignore
     return (await import("@repo/codebook/codebook-dist/ukrainian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "romanian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/romanian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "czech") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/czech.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "greek") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/greek.json"))
       .default as string[];
   } else if (language.toLowerCase() === "indonesian") {
     // @ts-ignore

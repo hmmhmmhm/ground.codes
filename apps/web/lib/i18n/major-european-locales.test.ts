@@ -1,11 +1,17 @@
 import { describe, expect, test } from "bun:test";
 
+import czechMessages from "@/messages/cs/index.json";
+import czechPlaceTypes from "@/messages/cs/placeTypes.json";
+import greekMessages from "@/messages/el/index.json";
+import greekPlaceTypes from "@/messages/el/placeTypes.json";
 import italianMessages from "@/messages/it/index.json";
 import italianPlaceTypes from "@/messages/it/placeTypes.json";
 import dutchMessages from "@/messages/nl/index.json";
 import dutchPlaceTypes from "@/messages/nl/placeTypes.json";
 import polishMessages from "@/messages/pl/index.json";
 import polishPlaceTypes from "@/messages/pl/placeTypes.json";
+import romanianMessages from "@/messages/ro/index.json";
+import romanianPlaceTypes from "@/messages/ro/placeTypes.json";
 import turkishMessages from "@/messages/tr/index.json";
 import turkishPlaceTypes from "@/messages/tr/placeTypes.json";
 import ukrainianMessages from "@/messages/uk/index.json";
@@ -46,6 +52,27 @@ const localeFixtures = [
     messages: ukrainianMessages,
     placeTypes: ukrainianPlaceTypes,
     bakery: "Пекарня",
+  },
+  {
+    code: "ro",
+    languageName: "Română",
+    messages: romanianMessages,
+    placeTypes: romanianPlaceTypes,
+    bakery: "Brutărie",
+  },
+  {
+    code: "cs",
+    languageName: "Čeština",
+    messages: czechMessages,
+    placeTypes: czechPlaceTypes,
+    bakery: "Pekařství",
+  },
+  {
+    code: "el",
+    languageName: "Ελληνικά",
+    messages: greekMessages,
+    placeTypes: greekPlaceTypes,
+    bakery: "Αρτοποιείο",
   },
 ];
 
