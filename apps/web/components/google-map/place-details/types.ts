@@ -15,6 +15,9 @@ import ukPlaceTypes from "@/messages/uk/placeTypes.json";
 import roPlaceTypes from "@/messages/ro/placeTypes.json";
 import csPlaceTypes from "@/messages/cs/placeTypes.json";
 import elPlaceTypes from "@/messages/el/placeTypes.json";
+import svPlaceTypes from "@/messages/sv/placeTypes.json";
+import huPlaceTypes from "@/messages/hu/placeTypes.json";
+import daPlaceTypes from "@/messages/da/placeTypes.json";
 import idPlaceTypes from "@/messages/id/placeTypes.json";
 import thPlaceTypes from "@/messages/th/placeTypes.json";
 import viPlaceTypes from "@/messages/vi/placeTypes.json";
@@ -97,6 +100,9 @@ export const placeTypes: Record<Locale, PlaceTypesRecord> = {
   ro: roPlaceTypes as PlaceTypesRecord,
   cs: csPlaceTypes as PlaceTypesRecord,
   el: elPlaceTypes as PlaceTypesRecord,
+  sv: svPlaceTypes as PlaceTypesRecord,
+  hu: huPlaceTypes as PlaceTypesRecord,
+  da: daPlaceTypes as PlaceTypesRecord,
   id: idPlaceTypes as PlaceTypesRecord,
   th: thPlaceTypes as PlaceTypesRecord,
   vi: viPlaceTypes as PlaceTypesRecord,

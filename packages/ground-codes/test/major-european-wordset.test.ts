@@ -2,11 +2,14 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import czechWords from "@repo/codebook/codebook-dist/czech.json";
+import danishWords from "@repo/codebook/codebook-dist/danish.json";
 import dutchWords from "@repo/codebook/codebook-dist/dutch.json";
 import greekWords from "@repo/codebook/codebook-dist/greek.json";
+import hungarianWords from "@repo/codebook/codebook-dist/hungarian.json";
 import italianWords from "@repo/codebook/codebook-dist/italian.json";
 import polishWords from "@repo/codebook/codebook-dist/polish.json";
 import romanianWords from "@repo/codebook/codebook-dist/romanian.json";
+import swedishWords from "@repo/codebook/codebook-dist/swedish.json";
 import turkishWords from "@repo/codebook/codebook-dist/turkish.json";
 import ukrainianWords from "@repo/codebook/codebook-dist/ukrainian.json";
 import { decodeByWordSet, encodeByWordSet } from "../src/wordset.js";
@@ -127,6 +130,32 @@ const fixtures = [
       "ΦωςΑυτί",
       "ΛιμάνιΣκόρδο",
     ],
+  },
+  {
+    language: "swedish",
+    words: swedishWords,
+    expected: ["Hus", "Sjö", "Ö", "Fönster", "PunktSten", "ZonVatten"],
+    rejected: ["Sjo", "O", "Fonster", "PunktStol", "KartaBord", "HamnVitlök"],
+  },
+  {
+    language: "hungarian",
+    words: hungarianWords,
+    expected: ["Ház", "Víz", "Folyó", "Ősz", "PontTenger", "ZónaHegy"],
+    rejected: [
+      "Haz",
+      "Viz",
+      "Folo",
+      "Osz",
+      "PontSzék",
+      "TérképAsztal",
+      "KikötőFokhagyma",
+    ],
+  },
+  {
+    language: "danish",
+    words: danishWords,
+    expected: ["Hus", "Æble", "Sø", "Ø", "PunktSten", "ZoneVand"],
+    rejected: ["Aeble", "Soe", "O", "PunktStol", "KortBord", "HavnHvidløg"],
   },
 ] as const;
 

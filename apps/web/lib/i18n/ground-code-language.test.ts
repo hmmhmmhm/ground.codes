@@ -20,6 +20,9 @@ describe("ground code language mapping", () => {
     expect(getGroundCodeLanguage("ro")).toBe("romanian");
     expect(getGroundCodeLanguage("cs")).toBe("czech");
     expect(getGroundCodeLanguage("el")).toBe("greek");
+    expect(getGroundCodeLanguage("sv")).toBe("swedish");
+    expect(getGroundCodeLanguage("hu")).toBe("hungarian");
+    expect(getGroundCodeLanguage("da")).toBe("danish");
   });
 
   test("maps Indonesian UI locale to Indonesian Ground Codes", () => {
