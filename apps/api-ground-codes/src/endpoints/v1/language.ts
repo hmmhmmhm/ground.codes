@@ -72,7 +72,37 @@ export const supportedLanguages = [
   "shona",
   "ndebele",
   "tok_pisin",
+  "marathi",
+  "telugu",
+  "gujarati",
+  "kannada",
+  "malayalam",
+  "yoruba",
+  "persian",
+  "cantonese",
 ] as const;
+
+const englishRegionFallbackLanguages = new Set([
+  "turkish",
+  "italian",
+  "dutch",
+  "polish",
+  "ukrainian",
+  "romanian",
+  "czech",
+  "greek",
+  "swedish",
+  "hungarian",
+  "danish",
+  "marathi",
+  "telugu",
+  "gujarati",
+  "kannada",
+  "malayalam",
+  "yoruba",
+  "persian",
+  "cantonese",
+]);
 
 export const getRegionDatasetName = ({
   body,
@@ -86,7 +116,10 @@ export const getRegionDatasetName = ({
   const normalizedBody = body.toLowerCase();
   const normalizedLanguage = language.toLowerCase();
   const languageSuffix =
-    normalizedLanguage === "english" ? "" : `-${normalizedLanguage}`;
+    normalizedLanguage === "english" ||
+    englishRegionFallbackLanguages.has(normalizedLanguage)
+      ? ""
+      : `-${normalizedLanguage}`;
 
   return normalizedBody === "earth"
     ? `region-${regionLevel}${languageSuffix}`

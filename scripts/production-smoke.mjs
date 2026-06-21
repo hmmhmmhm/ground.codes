@@ -188,6 +188,28 @@ for (const { label, language } of [
   });
 }
 
+for (const { label, language } of [
+  { label: "Marathi", language: "marathi" },
+  { label: "Telugu", language: "telugu" },
+  { label: "Gujarati", language: "gujarati" },
+  { label: "Kannada", language: "kannada" },
+  { label: "Malayalam", language: "malayalam" },
+  { label: "Yoruba", language: "yoruba" },
+  { label: "Persian", language: "persian" },
+  { label: "Cantonese", language: "cantonese" },
+]) {
+  await smoke.check(`${label} Seoul encode`, async () => {
+    const code = await postJson("/v1/encode", {
+      lat: 37.566,
+      lng: 126.978,
+      language,
+      regionLevel: 2,
+      body: "earth",
+    });
+    assert(/^Seoul-/.test(code), `expected ${label} Seoul code, got ${code}`);
+  });
+}
+
 await smoke.check("Indonesian Jakarta encode", async () => {
   const code = await postJson("/v1/encode", {
     lat: -6.1751,

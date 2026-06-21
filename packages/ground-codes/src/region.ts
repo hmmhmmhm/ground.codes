@@ -167,6 +167,14 @@ const regionSupportedLanguages = new Set<string>([
   "shona",
   "ndebele",
   "tok_pisin",
+  "marathi",
+  "telugu",
+  "gujarati",
+  "kannada",
+  "malayalam",
+  "yoruba",
+  "persian",
+  "cantonese",
 ]);
 
 const addressGapLanguages = new Set([
@@ -232,6 +240,14 @@ const englishRegionFallbackLanguages = new Set([
   "swedish",
   "hungarian",
   "danish",
+  "marathi",
+  "telugu",
+  "gujarati",
+  "kannada",
+  "malayalam",
+  "yoruba",
+  "persian",
+  "cantonese",
 ]);
 
 const addressGapRegionLoaders: Record<string, () => Promise<Region[]>> = {

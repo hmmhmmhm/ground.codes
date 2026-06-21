@@ -72,6 +72,14 @@ export const locales = [
   "sn",
   "nde",
   "tpi",
+  "mr",
+  "te",
+  "gu",
+  "kn",
+  "ml",
+  "yo",
+  "fa",
+  "yue",
 ] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "ko";

@@ -99,4 +99,15 @@ describe("ground code language mapping", () => {
     expect(getGroundCodeLanguage("nde")).toBe("ndebele");
     expect(getGroundCodeLanguage("tpi")).toBe("tok_pisin");
   });
+
+  test("maps candidate expansion UI locales to Ground Codes", () => {
+    expect(getGroundCodeLanguage("mr")).toBe("marathi");
+    expect(getGroundCodeLanguage("te")).toBe("telugu");
+    expect(getGroundCodeLanguage("gu")).toBe("gujarati");
+    expect(getGroundCodeLanguage("kn")).toBe("kannada");
+    expect(getGroundCodeLanguage("ml")).toBe("malayalam");
+    expect(getGroundCodeLanguage("yo")).toBe("yoruba");
+    expect(getGroundCodeLanguage("fa")).toBe("persian");
+    expect(getGroundCodeLanguage("yue")).toBe("cantonese");
+  });
 });

@@ -73,7 +73,15 @@ export type SupportedLanguage =
   | "nuer"
   | "shona"
   | "ndebele"
-  | "tok_pisin";
+  | "tok_pisin"
+  | "marathi"
+  | "telugu"
+  | "gujarati"
+  | "kannada"
+  | "malayalam"
+  | "yoruba"
+  | "persian"
+  | "cantonese";
 
 export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   english: 6000,
@@ -149,6 +157,14 @@ export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   shona: 5000,
   ndebele: 5000,
   tok_pisin: 5000,
+  marathi: 5000,
+  telugu: 5000,
+  gujarati: 5000,
+  kannada: 5000,
+  malayalam: 5000,
+  yoruba: 5000,
+  persian: 5000,
+  cantonese: 5000,
 };
 
 const loadWordSet = async (language: SupportedLanguage) => {
@@ -443,6 +459,38 @@ const loadWordSet = async (language: SupportedLanguage) => {
   } else if (language.toLowerCase() === "tok_pisin") {
     // @ts-ignore
     return (await import("@repo/codebook/codebook-dist/tok_pisin.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "marathi") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/marathi.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "telugu") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/telugu.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "gujarati") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/gujarati.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "kannada") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/kannada.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "malayalam") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/malayalam.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "yoruba") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/yoruba.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "persian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/persian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "cantonese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/cantonese.json"))
       .default as string[];
   }
 

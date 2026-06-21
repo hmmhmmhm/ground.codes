@@ -72,6 +72,14 @@ import nusPlaceTypes from "@/messages/nus/placeTypes.json";
 import snPlaceTypes from "@/messages/sn/placeTypes.json";
 import ndePlaceTypes from "@/messages/nde/placeTypes.json";
 import tpiPlaceTypes from "@/messages/tpi/placeTypes.json";
+import mrPlaceTypes from "@/messages/mr/placeTypes.json";
+import tePlaceTypes from "@/messages/te/placeTypes.json";
+import guPlaceTypes from "@/messages/gu/placeTypes.json";
+import knPlaceTypes from "@/messages/kn/placeTypes.json";
+import mlPlaceTypes from "@/messages/ml/placeTypes.json";
+import yoPlaceTypes from "@/messages/yo/placeTypes.json";
+import faPlaceTypes from "@/messages/fa/placeTypes.json";
+import yuePlaceTypes from "@/messages/yue/placeTypes.json";
 
 export interface PlaceDetailsProps {
   map: google.maps.Map | null;
@@ -157,4 +165,12 @@ export const placeTypes: Record<Locale, PlaceTypesRecord> = {
   sn: snPlaceTypes as PlaceTypesRecord,
   nde: ndePlaceTypes as PlaceTypesRecord,
   tpi: tpiPlaceTypes as PlaceTypesRecord,
+  mr: mrPlaceTypes as PlaceTypesRecord,
+  te: tePlaceTypes as PlaceTypesRecord,
+  gu: guPlaceTypes as PlaceTypesRecord,
+  kn: knPlaceTypes as PlaceTypesRecord,
+  ml: mlPlaceTypes as PlaceTypesRecord,
+  yo: yoPlaceTypes as PlaceTypesRecord,
+  fa: faPlaceTypes as PlaceTypesRecord,
+  yue: yuePlaceTypes as PlaceTypesRecord,
 };

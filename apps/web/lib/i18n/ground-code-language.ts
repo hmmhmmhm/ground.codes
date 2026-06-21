@@ -73,5 +73,13 @@ export const getGroundCodeLanguage = (locale: Locale) => {
   if (locale === "sn") return "shona";
   if (locale === "nde") return "ndebele";
   if (locale === "tpi") return "tok_pisin";
+  if (locale === "mr") return "marathi";
+  if (locale === "te") return "telugu";
+  if (locale === "gu") return "gujarati";
+  if (locale === "kn") return "kannada";
+  if (locale === "ml") return "malayalam";
+  if (locale === "yo") return "yoruba";
+  if (locale === "fa") return "persian";
+  if (locale === "yue") return "cantonese";
   return "english";
 };

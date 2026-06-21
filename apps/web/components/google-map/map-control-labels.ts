@@ -74,6 +74,14 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   sn: "chiShona",
   nde: "isiNdebele",
   tpi: "Tok Pisin",
+  mr: "मराठी",
+  te: "తెలుగు",
+  gu: "ગુજરાતી",
+  kn: "ಕನ್ನಡ",
+  ml: "മലയാളം",
+  yo: "Yorùbá",
+  fa: "فارسی",
+  yue: "粵語",
 };
 
 export const LOCALE_SHORT_LABELS: Record<Locale, string> = {
@@ -150,4 +158,12 @@ export const LOCALE_SHORT_LABELS: Record<Locale, string> = {
   sn: "SN",
   nde: "NDE",
   tpi: "TPI",
+  mr: "MR",
+  te: "TE",
+  gu: "GU",
+  kn: "KN",
+  ml: "ML",
+  yo: "YO",
+  fa: "FA",
+  yue: "YUE",
 };
