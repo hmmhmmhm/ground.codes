@@ -6,6 +6,7 @@ import {
   encode,
   findClosestRegion,
   findRegionByCodeOrName,
+  findRegionsByQuery,
 } from "../src/index.js";
 
 const assertClose = (actual: number, expected: number, tolerance: number) => {
@@ -35,6 +36,27 @@ describe("region fallback", () => {
 
     assert.equal((region as { regionLevel?: number } | null)?.regionLevel, 2);
     assert.equal(region?.name, "Seoul");
+  });
+
+  test("prefers a nearby prominent city over a closer satellite city", async () => {
+    const region = await findClosestRegion(
+      { lat: 37.5125, lng: 127.1025 },
+      { regionLevel: 2 },
+    );
+
+    assert.equal(region?.name, "Seoul");
+    assert.equal((region as { regionLevel?: number } | null)?.regionLevel, 2);
+    assert.ok((region?.distanceKm ?? Infinity) < 13);
+  });
+
+  test("includes country core city additions with disambiguated labels", async () => {
+    const [valencia] = await findRegionsByQuery("Valencia ES", {
+      regionLevel: 2,
+      maxResults: 1,
+    });
+
+    assert.equal(valencia?.code, "2509954");
+    assert.equal(valencia?.name, "Valencia ES");
   });
 
   test("default encode/decode roundtrips region-3 fallback labels", async () => {

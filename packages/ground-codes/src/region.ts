@@ -17,6 +17,7 @@ export interface Region {
   regionLevel?: number;
   distanceKm?: number;
   population?: number;
+  countryCode?: string;
 }
 
 export interface RegionSearchResult {
@@ -87,6 +88,10 @@ const loadRegionData = (path: string) => {
 
 const DEFAULT_REGION_2_FALLBACK_DISTANCE_KM = 100;
 const DEFAULT_MARS_REGION_2_FALLBACK_DISTANCE_KM = 100;
+const PROMINENT_REGION_MIN_POPULATION = 1_000_000;
+const PROMINENT_REGION_POPULATION_RATIO = 3;
+const PROMINENT_REGION_MAX_DISTANCE_KM = 25;
+const PROMINENT_REGION_MAX_DISTANCE_RATIO = 1.5;
 const regionDataCache = new Map<string, Promise<Region[]>>();
 const regionSupportedLanguages = new Set<string>([
   "english",
@@ -1338,6 +1343,7 @@ const findClosestInRegions = (
 ) => {
   let closestRegion: Region | null = null;
   let closestRegionDistance = Infinity;
+  const candidateRegions: Region[] = [];
   const targetLng = normalizeLongitudeForBody(target.lng, body);
 
   for (const region of regions) {
@@ -1360,8 +1366,45 @@ const findClosestInRegions = (
         body,
         regionLevel,
         distanceKm: distance,
+        population: region.population,
+        countryCode: region.countryCode,
       };
     }
+
+    candidateRegions.push({
+      name: region.name,
+      code: region.code,
+      lat: region.lat,
+      long: regionLng,
+      body,
+      regionLevel,
+      distanceKm: distance,
+      population: region.population,
+      countryCode: region.countryCode,
+    });
+  }
+
+  if (closestRegion && body === "earth" && regionLevel === 2) {
+    const closestPopulation = closestRegion.population ?? 0;
+    const prominentRegion = [
+      ...candidateRegions.filter(
+        (region) =>
+          region.countryCode &&
+          region.countryCode === closestRegion.countryCode &&
+          (region.population ?? 0) >= PROMINENT_REGION_MIN_POPULATION &&
+          (region.population ?? 0) >=
+            closestPopulation * PROMINENT_REGION_POPULATION_RATIO &&
+          (region.distanceKm ?? Infinity) <= PROMINENT_REGION_MAX_DISTANCE_KM &&
+          (region.distanceKm ?? Infinity) <=
+            closestRegionDistance * PROMINENT_REGION_MAX_DISTANCE_RATIO,
+      ),
+    ].sort((left, right) => {
+      const distanceDelta = (left.distanceKm ?? 0) - (right.distanceKm ?? 0);
+      if (Math.abs(distanceDelta) > 1) return distanceDelta;
+      return (right.population ?? 0) - (left.population ?? 0);
+    })[0];
+
+    if (prominentRegion) return prominentRegion;
   }
 
   return closestRegion;
@@ -1375,6 +1418,7 @@ const toRegionResult = (region: Region) => ({
   body: region.body,
   regionLevel: region.regionLevel,
   distanceKm: region.distanceKm,
+  population: region.population,
 });
 
 const normalizeRegionLookupKey = (value: string) =>

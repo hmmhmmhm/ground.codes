@@ -27,11 +27,17 @@ type RegionRow = {
   body: CelestialBody;
   region_level: number;
   population: number | string | null;
+  country_code?: string | null;
   distance_km?: number | string | null;
 };
 
 const DEFAULT_REGION_2_FALLBACK_DISTANCE_KM = 100;
 const DEFAULT_MARS_REGION_2_FALLBACK_DISTANCE_KM = 100;
+const PROMINENT_REGION_MIN_POPULATION = 1_000_000;
+const PROMINENT_REGION_POPULATION_RATIO = 3;
+const PROMINENT_REGION_MAX_DISTANCE_KM = 25;
+const PROMINENT_REGION_MAX_DISTANCE_RATIO = 1.5;
+const PROMINENT_REGION_CANDIDATE_LIMIT = 50;
 
 const normalizeLookupKey = (value: string) =>
   value
@@ -87,6 +93,66 @@ const calculateDistanceKm = (
       Math.sin(dLng / 2);
 
   return 2 * radiusKm * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+};
+
+const selectProminentRegionRow = (
+  rows: RegionRow[],
+  target: { lat: number; lng: number },
+  body: CelestialBody,
+) => {
+  const candidates = rows.map((row) => ({
+    row,
+    distanceKm: calculateDistanceKm(
+      target.lat,
+      target.lng,
+      Number(row.lat),
+      Number(row.lng),
+      body,
+    ),
+  }));
+  const closest = [...candidates].sort(
+    (left, right) => left.distanceKm - right.distanceKm,
+  )[0];
+  if (!closest) return null;
+
+  const closestPopulation =
+    closest.row.population === null || closest.row.population === undefined
+      ? 0
+      : Number(closest.row.population);
+  const prominent = [
+    ...candidates.filter(
+      (candidate) =>
+        candidate.row.country_code &&
+        candidate.row.country_code === closest.row.country_code &&
+        (candidate.row.population === null ||
+        candidate.row.population === undefined
+          ? 0
+          : Number(candidate.row.population)) >=
+          PROMINENT_REGION_MIN_POPULATION &&
+        (candidate.row.population === null ||
+        candidate.row.population === undefined
+          ? 0
+          : Number(candidate.row.population)) >=
+          closestPopulation * PROMINENT_REGION_POPULATION_RATIO &&
+        candidate.distanceKm <= PROMINENT_REGION_MAX_DISTANCE_KM &&
+        candidate.distanceKm <=
+          closest.distanceKm * PROMINENT_REGION_MAX_DISTANCE_RATIO,
+    ),
+  ].sort((left, right) => {
+    const distanceDelta = left.distanceKm - right.distanceKm;
+    if (Math.abs(distanceDelta) > 1) return distanceDelta;
+    return (
+      (right.row.population === null || right.row.population === undefined
+        ? 0
+        : Number(right.row.population)) -
+      (left.row.population === null || left.row.population === undefined
+        ? 0
+        : Number(left.row.population))
+    );
+  })[0];
+
+  const selected = prominent ?? closest;
+  return { row: selected.row, distanceKm: selected.distanceKm };
 };
 
 const getFallbackSearchLevels = (body: CelestialBody, regionLevel: number) => {
@@ -179,17 +245,26 @@ export class PostgisRegionStore implements RegionStore {
             lng,
             body,
             region_level,
-            population
+            population,
+            country_code
           from ground_code_regions
           where dataset_name = $3
           order by geom <-> ST_SetSRID(ST_MakePoint($2, $1), 4326)
-          limit 1
+          limit $4
         `,
-          [target.lat, target.lng, baseDatasetName],
+          [
+            target.lat,
+            target.lng,
+            baseDatasetName,
+            body === "earth" && candidateRegionLevel === 2
+              ? PROMINENT_REGION_CANDIDATE_LIMIT
+              : 1,
+          ],
         );
 
-        const baseRow = rows[0];
-        if (!baseRow) return null;
+        const selectedBase = selectProminentRegionRow(rows, target, body);
+        if (!selectedBase) return null;
+        const baseRow = selectedBase.row;
 
         let selectedRow = baseRow;
         if (localizedDatasetName !== baseDatasetName) {
@@ -203,7 +278,8 @@ export class PostgisRegionStore implements RegionStore {
                 lng,
                 body,
                 region_level,
-                population
+                population,
+                country_code
               from ground_code_regions
               where dataset_name = $1
                 and code = $2
@@ -217,13 +293,7 @@ export class PostgisRegionStore implements RegionStore {
         const region = toRegionSearchResult(selectedRow);
         return {
           ...region,
-          distanceKm: calculateDistanceKm(
-            target.lat,
-            target.lng,
-            Number(baseRow.lat),
-            Number(baseRow.lng),
-            body,
-          ),
+          distanceKm: selectedBase.distanceKm,
         };
       };
 
@@ -285,7 +355,8 @@ export class PostgisRegionStore implements RegionStore {
             lng,
             body,
             region_level,
-            population
+            population,
+            country_code
           from ground_code_regions
           where body = $3
             and region_level = $4
