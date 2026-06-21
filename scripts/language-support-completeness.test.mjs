@@ -28,6 +28,15 @@ const parseWordsetCounts = () => {
   );
 };
 
+const parseEnglishRegionFallbackLanguages = () => {
+  const source = readText("packages/ground-codes/src/region.ts");
+  const match = source.match(
+    /englishRegionFallbackLanguages\s*=\s*new Set\(\[([\s\S]*?)\]\)/,
+  );
+  assert.ok(match, "englishRegionFallbackLanguages set not found");
+  return new Set([...match[1].matchAll(/"([^"]+)"/g)].map((item) => item[1]));
+};
+
 const languageSuffix = (language) =>
   language === "english" ? "" : `-${language}`;
 const addressingGapLanguages = [
@@ -95,6 +104,8 @@ describe("language support completeness", () => {
 
   test("ships codebook and region assets for every supported language", () => {
     const counts = parseWordsetCounts();
+    const englishRegionFallbackLanguages =
+      parseEnglishRegionFallbackLanguages();
 
     for (const language of languages) {
       const codebookPath = join(
@@ -107,12 +118,15 @@ describe("language support completeness", () => {
       const codebook = JSON.parse(readFileSync(codebookPath, "utf8"));
       assert.equal(codebook.length, counts[language], `${language} count`);
 
+      const suffix = englishRegionFallbackLanguages.has(language)
+        ? ""
+        : languageSuffix(language);
       for (const dataset of [
-        `region-2${languageSuffix(language)}.json`,
-        `region-3${languageSuffix(language)}.json`,
-        `region-2-moon${languageSuffix(language)}.json`,
-        `region-2-mars${languageSuffix(language)}.json`,
-        `region-3-mars${languageSuffix(language)}.json`,
+        `region-2${suffix}.json`,
+        `region-3${suffix}.json`,
+        `region-2-moon${suffix}.json`,
+        `region-2-mars${suffix}.json`,
+        `region-3-mars${suffix}.json`,
       ]) {
         assert.equal(
           existsSync(join(root, "packages/geoint/region-dist", dataset)),

@@ -14,6 +14,17 @@ operational status board for follow-up passes.
 | french      |  5000 | stable         | Keep short reviewed French nouns ahead of BIP39-derived abstract candidates.                                                                     |
 | german      |  5000 | stable         | Keep reviewed standalone German nouns ahead of generated compound fallbacks.                                                                     |
 | portuguese  |  5000 | stable         | Keep Lusophone-neutral short nouns ahead of generated fallback compounds.                                                                        |
+| turkish     |  5000 | active cleanup | Major European pass uses reviewed everyday nouns and map-label compounds; localized region datasets remain English fallback.                     |
+| italian     |  5000 | active cleanup | Major European pass uses reviewed everyday nouns and map-label compounds; localized region datasets remain English fallback.                     |
+| dutch       |  5000 | active cleanup | Major European pass uses reviewed everyday nouns and map-label compounds; localized region datasets remain English fallback.                     |
+| polish      |  5000 | active cleanup | Major European pass uses reviewed everyday nouns and map-label compounds; localized region datasets remain English fallback.                     |
+| ukrainian   |  5000 | active cleanup | Major European pass uses Cyrillic everyday nouns and map-label compounds; localized region datasets remain English fallback.                     |
+| romanian    |  5000 | active cleanup | Follow-up pass removes weak generated combos and keeps map-label-oriented Romanian entries.                                                      |
+| czech       |  5000 | active cleanup | Follow-up pass keeps Czech diacritics and map-label-oriented entries while blocking weak generated combos.                                       |
+| greek       |  5000 | active cleanup | Follow-up pass keeps Greek-script nouns and map-label-oriented entries while blocking weak generated combos.                                     |
+| swedish     |  5000 | active cleanup | Major European pass keeps Swedish diacritics and map-label-oriented entries; localized region datasets remain English fallback.                  |
+| hungarian   |  5000 | active cleanup | Major European pass keeps Hungarian diacritics and map-label-oriented entries; localized region datasets remain English fallback.                |
+| danish      |  5000 | active cleanup | Major European pass keeps Danish letters and map-label-oriented entries; localized region datasets remain English fallback.                      |
 | indonesian  |  5000 | stable         | Keep reviewed standalone growth ahead of generated Indonesian fallback compounds.                                                                |
 | thai        |  5000 | stable         | Grow reviewed Thai-script standalone nouns before adding templates.                                                                              |
 | vietnamese  |  5000 | stable         | Keep native diacritics and avoid broad color, mood, and place templates.                                                                         |

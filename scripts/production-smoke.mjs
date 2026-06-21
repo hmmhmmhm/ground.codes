@@ -163,6 +163,31 @@ await smoke.check("Portuguese Seoul encode", async () => {
   assert(/^Seul-/.test(code), `expected Portuguese Seoul code, got ${code}`);
 });
 
+for (const { label, language } of [
+  { label: "Turkish", language: "turkish" },
+  { label: "Italian", language: "italian" },
+  { label: "Dutch", language: "dutch" },
+  { label: "Polish", language: "polish" },
+  { label: "Ukrainian", language: "ukrainian" },
+  { label: "Romanian", language: "romanian" },
+  { label: "Czech", language: "czech" },
+  { label: "Greek", language: "greek" },
+  { label: "Swedish", language: "swedish" },
+  { label: "Hungarian", language: "hungarian" },
+  { label: "Danish", language: "danish" },
+]) {
+  await smoke.check(`${label} Seoul encode`, async () => {
+    const code = await postJson("/v1/encode", {
+      lat: 37.566,
+      lng: 126.978,
+      language,
+      regionLevel: 2,
+      body: "earth",
+    });
+    assert(/^Seoul-/.test(code), `expected ${label} Seoul code, got ${code}`);
+  });
+}
+
 await smoke.check("Indonesian Jakarta encode", async () => {
   const code = await postJson("/v1/encode", {
     lat: -6.1751,
