@@ -2534,25 +2534,25 @@ describe("reviewed multilingual codebooks", () => {
     assertScriptCodebook({
       words: burmeseWords,
       pattern: /^[\p{Script=Myanmar}\p{Mark}]+$/u,
-      expectedWords: ["ယေ", "ေိန", "မယိတ", "တအု", "စအိုက", "မေေ"],
+      expectedWords: ["ရေ", "အိမ်", "မြစ်", "တောင်", "ပန်း", "စာအုပ်"],
       blockedWords: ["စစ်", "သွေး", "လက်နက်"],
     });
     assertScriptCodebook({
       words: khmerWords,
       pattern: /^[\p{Script=Khmer}\p{Mark}]+$/u,
-      expectedWords: ["តុក", "ពតេអហ", "តូនលេ", "នូម", "សិេវូវ", "បអយ"],
+      expectedWords: ["ទឹក", "ផ្ទះ", "ទន្លេ", "ភ្នំ", "ផ្កា", "សៀវភៅ"],
       blockedWords: ["សង្គ្រាម", "ឈាម", "អាវុធ"],
     });
     assertScriptCodebook({
       words: nepaliWords,
       pattern: /^[\p{Script=Devanagari}\p{Mark}]+$/u,
-      expectedWords: ["पअनि", "अर", "नअदि", "पअहअद", "कितअब", "रोति"],
+      expectedWords: ["पानी", "घर", "नदी", "पहाड", "फूल", "किताब"],
       blockedWords: ["युद्ध", "रगत", "हतियार", "जुवा", "रक्सी"],
     });
     assertScriptCodebook({
       words: pashtoWords,
       pattern: /^[\p{Script=Arabic}\p{Mark}]+$/u,
-      expectedWords: ["وبا", "کور", "سيند", "ار", "ګول", "کيتاب"],
+      expectedWords: ["اوبه", "کور", "سيند", "غر", "ګل", "کتاب"],
       blockedWords: ["جګړه", "وینه", "وسله", "قمار", "شراب"],
     });
   });
