@@ -28,23 +28,18 @@ const scaffoldedTargets = targetManifest.languages
   .filter((item) => hasCodebook(item.language));
 
 describe("180-language expansion batch word sets", () => {
-  test("manifest includes generated target scaffold word sets", () => {
+  test("manifest includes generated target word sets", () => {
     assert.ok(scaffoldedTargets.length >= 5);
   });
 
   for (const { language } of scaffoldedTargets) {
-    test(`${language} ships a unique scaffolded 5000-word codebook`, () => {
+    test(`${language} ships a unique 5000-word codebook`, () => {
       const words = requireJson(codebookPath(language)) as string[];
-      const prefix = language.charAt(0).toUpperCase();
 
       assert.equal(words.length, 5000);
       assert.equal(new Set(words).size, words.length);
       assert.equal(
         words.every((word) => word.length > 0 && !/\s|-/.test(word)),
-        true,
-      );
-      assert.equal(
-        words.slice(0, 100).every((word) => word.startsWith(prefix)),
         true,
       );
     });
