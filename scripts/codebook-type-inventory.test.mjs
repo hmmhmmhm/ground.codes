@@ -161,7 +161,10 @@ describe("codebook type inventory", () => {
       assert.ok(row, `${language} inventory`);
       assert.equal(row.total, 5000);
       assert.ok(row.counts.recognizedCompound > 0, `${language} compounds`);
-      assert.ok(row.counts.otherStandalone > 4000, `${language} standalone`);
+      assert.ok(
+        row.counts.shortStandalone + row.counts.otherStandalone > 4000,
+        `${language} standalone`,
+      );
     }
   });
 });
