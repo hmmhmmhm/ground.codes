@@ -12,6 +12,10 @@
     "data:report-labels": "node scripts/url-label-report.mjs",
     "runtime:check-pins": "node scripts/check-api-runtime-pins.mjs",
     "runtime:update-pins": "node scripts/update-api-runtime-pins.mjs",
+    "language:target-report": "node scripts/language-expansion-target-report.mjs",
+    "language:quality-report": "node scripts/language-quality-status-report.mjs",
+    "language:audit": "node scripts/language-quality-status-report.mjs --assert-current && node scripts/language-expansion-target-report.mjs --assert-complete && node --test scripts/language-support-completeness.test.mjs && node --test scripts/codebook-policy-audit.test.mjs && node --test scripts/address-gap-codebook-quality.test.mjs && node --test scripts/region-label-quality.test.mjs && pnpm --filter web check-types",
+    "language:localization-coverage": "node scripts/apply-localization-coverage-scaffold.mjs",
     "scripts:test": "node --test scripts/*.test.mjs",
     "prepare": "husky install"
   },

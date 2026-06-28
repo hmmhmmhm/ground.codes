@@ -63,7 +63,7 @@
     "temperature": "Suhu",
     "current": "Saat ini",
     "feelsLike": "Terasa seperti",
-    "min": "Min",
+    "min": "Minimal",
     "max": "Maks",
     "conditions": "Kondisi Cuaca",
     "mainCondition": "Kondisi",
@@ -84,7 +84,7 @@
       "dust": "Debu",
       "ash": "Abu",
       "squall": "Angin kencang",
-      "tornado": "Tornado",
+      "tornado": "Angin topan",
       "clear": "Cerah",
       "clouds": "Berawan"
     },

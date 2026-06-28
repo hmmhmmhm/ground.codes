@@ -63,7 +63,7 @@
     "temperature": "Temperatura",
     "current": "Aktualnie",
     "feelsLike": "Odczuwalna",
-    "min": "Min",
+    "min": "Minimalna temperatura",
     "max": "Maks",
     "conditions": "Warunki Pogodowe",
     "mainCondition": "Warunek",
@@ -84,7 +84,7 @@
       "dust": "Pył",
       "ash": "Popiół",
       "squall": "Szkwał",
-      "tornado": "Tornado",
+      "tornado": "Stan pogodowy tornada",
       "clear": "Bezchmurnie",
       "clouds": "Chmury"
     },

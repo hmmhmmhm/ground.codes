@@ -39,3 +39,4 @@ yarn-error.log*
 *.pem
 
 cities500.txt
+.cache/

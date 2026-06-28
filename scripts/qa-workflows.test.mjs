@@ -28,6 +28,20 @@ describe("QA workflow split", () => {
     assert.doesNotMatch(ciWorkflow, /pnpm --filter web test:e2e\s*$/m);
   });
 
+  test("keeps the 180-language audit wired to the full quality gate", () => {
+    const languageAudit = readJson("../package.json").scripts["language:audit"];
+
+    assert.match(languageAudit, /language-quality-status-report\.mjs/);
+    assert.match(languageAudit, /--assert-current/);
+    assert.match(languageAudit, /language-expansion-target-report\.mjs/);
+    assert.match(languageAudit, /--assert-complete/);
+    assert.match(languageAudit, /language-support-completeness\.test\.mjs/);
+    assert.match(languageAudit, /codebook-policy-audit\.test\.mjs/);
+    assert.match(languageAudit, /address-gap-codebook-quality\.test\.mjs/);
+    assert.match(languageAudit, /region-label-quality\.test\.mjs/);
+    assert.match(languageAudit, /--filter web check-types/);
+  });
+
   test("provides a manual visual QA workflow with screenshot artifacts", () => {
     const visualWorkflow = readText("../.github/workflows/visual-qa.yml");
 

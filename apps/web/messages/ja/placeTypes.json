@@ -4,7 +4,7 @@
   "amusement_park": "遊園地",
   "aquarium": "水族館",
   "art_gallery": "美術館",
-  "atm": "ATM",
+  "atm": "ATMコーナー",
   "bakery": "ベーカリー",
   "bank": "銀行",
   "bar": "バー",
@@ -100,6 +100,8 @@
   "administrative_area_level_3": "行政区域",
   "administrative_area_level_4": "行政区域",
   "administrative_area_level_5": "行政区域",
+  "administrative_area_level_6": "行政区域レベル6",
+  "administrative_area_level_7": "行政区域レベル7",
   "archipelago": "群島",
   "colloquial_area": "通称地域",
   "continent": "大陸",
@@ -117,7 +119,7 @@
   "natural_feature": "自然地形",
   "neighborhood": "近隣地区",
   "place_of_worship": "礼拝所",
-  "plus_code": "Plus Code",
+  "plus_code": "Plusコード",
   "point_of_interest": "地点",
   "political": "行政区画",
   "post_box": "郵便ポスト",
@@ -137,7 +139,5 @@
   "sublocality_level_4": "地区",
   "sublocality_level_5": "地区",
   "subpremise": "建物内区画",
-  "town_square": "広場",
-  "administrative_area_level_6": "Administrative Area Level 6",
-  "administrative_area_level_7": "Administrative Area Level 7"
+  "town_square": "広場"
 }

@@ -81,6 +81,105 @@ export type SupportedLanguage =
   | "malayalam"
   | "yoruba"
   | "persian"
+  | "afar"
+  | "abkhazian"
+  | "afrikaans"
+  | "akan"
+  | "albanian"
+  | "aragonese"
+  | "armenian"
+  | "assamese"
+  | "avaric"
+  | "avestan"
+  | "azerbaijani"
+  | "bashkir"
+  | "basque"
+  | "belarusian"
+  | "bislama"
+  | "bosnian"
+  | "breton"
+  | "bulgarian"
+  | "catalan"
+  | "chamorro"
+  | "chechen"
+  | "church_slavic"
+  | "chuvash"
+  | "cornish"
+  | "corsican"
+  | "cree"
+  | "divehi"
+  | "dzongkha"
+  | "esperanto"
+  | "estonian"
+  | "faroese"
+  | "fijian"
+  | "finnish"
+  | "western_frisian"
+  | "georgian"
+  | "gaelic"
+  | "irish"
+  | "galician"
+  | "manx"
+  | "haitian"
+  | "hebrew"
+  | "herero"
+  | "hiri_motu"
+  | "croatian"
+  | "igbo"
+  | "icelandic"
+  | "ido"
+  | "sichuan_yi"
+  | "inuktitut"
+  | "interlingue"
+  | "interlingua"
+  | "inupiaq"
+  | "javanese"
+  | "kalaallisut"
+  | "kashmiri"
+  | "kazakh"
+  | "kikuyu"
+  | "kirghiz"
+  | "komi"
+  | "kuanyama"
+  | "kurdish"
+  | "latin"
+  | "latvian"
+  | "limburgan"
+  | "lithuanian"
+  | "luxembourgish"
+  | "luba_katanga"
+  | "macedonian"
+  | "marshallese"
+  | "maori"
+  | "malay"
+  | "maltese"
+  | "nauru"
+  | "navajo"
+  | "south_ndebele"
+  | "ndonga"
+  | "norwegian_nynorsk"
+  | "norwegian_bokm_l"
+  | "norwegian"
+  | "occitan"
+  | "ojibwa"
+  | "oriya"
+  | "ossetian"
+  | "panjabi"
+  | "pali"
+  | "romansh"
+  | "sanskrit"
+  | "slovak"
+  | "slovenian"
+  | "northern_sami"
+  | "samoan"
+  | "sindhi"
+  | "sotho_southern"
+  | "sardinian"
+  | "serbian"
+  | "swati"
+  | "sundanese"
+  | "tahitian"
+  | "tatar"
   | "cantonese";
 
 export const wordSetBaseCount: Record<SupportedLanguage, number> = {
@@ -165,6 +264,105 @@ export const wordSetBaseCount: Record<SupportedLanguage, number> = {
   yoruba: 5000,
   persian: 5000,
   cantonese: 5000,
+  afar: 5000,
+  abkhazian: 5000,
+  afrikaans: 5000,
+  akan: 5000,
+  albanian: 5000,
+  aragonese: 5000,
+  armenian: 5000,
+  assamese: 5000,
+  avaric: 5000,
+  avestan: 5000,
+  azerbaijani: 5000,
+  bashkir: 5000,
+  basque: 5000,
+  belarusian: 5000,
+  bislama: 5000,
+  bosnian: 5000,
+  breton: 5000,
+  bulgarian: 5000,
+  catalan: 5000,
+  chamorro: 5000,
+  chechen: 5000,
+  church_slavic: 5000,
+  chuvash: 5000,
+  cornish: 5000,
+  corsican: 5000,
+  cree: 5000,
+  divehi: 5000,
+  dzongkha: 5000,
+  esperanto: 5000,
+  estonian: 5000,
+  faroese: 5000,
+  fijian: 5000,
+  finnish: 5000,
+  western_frisian: 5000,
+  georgian: 5000,
+  gaelic: 5000,
+  irish: 5000,
+  galician: 5000,
+  manx: 5000,
+  haitian: 5000,
+  hebrew: 5000,
+  herero: 5000,
+  hiri_motu: 5000,
+  croatian: 5000,
+  igbo: 5000,
+  icelandic: 5000,
+  ido: 5000,
+  sichuan_yi: 5000,
+  inuktitut: 5000,
+  interlingue: 5000,
+  interlingua: 5000,
+  inupiaq: 5000,
+  javanese: 5000,
+  kalaallisut: 5000,
+  kashmiri: 5000,
+  kazakh: 5000,
+  kikuyu: 5000,
+  kirghiz: 5000,
+  komi: 5000,
+  kuanyama: 5000,
+  kurdish: 5000,
+  latin: 5000,
+  latvian: 5000,
+  limburgan: 5000,
+  lithuanian: 5000,
+  luxembourgish: 5000,
+  luba_katanga: 5000,
+  macedonian: 5000,
+  marshallese: 5000,
+  maori: 5000,
+  malay: 5000,
+  maltese: 5000,
+  nauru: 5000,
+  navajo: 5000,
+  south_ndebele: 5000,
+  ndonga: 5000,
+  norwegian_nynorsk: 5000,
+  norwegian_bokm_l: 5000,
+  norwegian: 5000,
+  occitan: 5000,
+  ojibwa: 5000,
+  oriya: 5000,
+  ossetian: 5000,
+  panjabi: 5000,
+  pali: 5000,
+  romansh: 5000,
+  sanskrit: 5000,
+  slovak: 5000,
+  slovenian: 5000,
+  northern_sami: 5000,
+  samoan: 5000,
+  sindhi: 5000,
+  sotho_southern: 5000,
+  sardinian: 5000,
+  serbian: 5000,
+  swati: 5000,
+  sundanese: 5000,
+  tahitian: 5000,
+  tatar: 5000,
 };
 
 const loadWordSet = async (language: SupportedLanguage) => {
@@ -491,6 +689,402 @@ const loadWordSet = async (language: SupportedLanguage) => {
   } else if (language.toLowerCase() === "cantonese") {
     // @ts-ignore
     return (await import("@repo/codebook/codebook-dist/cantonese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "afar") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/afar.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "abkhazian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/abkhazian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "afrikaans") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/afrikaans.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "akan") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/akan.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "albanian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/albanian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "aragonese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/aragonese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "armenian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/armenian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "assamese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/assamese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "avaric") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/avaric.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "avestan") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/avestan.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "azerbaijani") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/azerbaijani.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "bashkir") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/bashkir.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "basque") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/basque.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "belarusian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/belarusian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "bislama") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/bislama.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "bosnian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/bosnian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "breton") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/breton.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "bulgarian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/bulgarian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "catalan") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/catalan.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "chamorro") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/chamorro.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "chechen") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/chechen.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "church_slavic") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/church_slavic.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "chuvash") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/chuvash.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "cornish") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/cornish.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "corsican") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/corsican.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "cree") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/cree.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "divehi") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/divehi.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "dzongkha") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/dzongkha.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "esperanto") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/esperanto.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "estonian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/estonian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "faroese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/faroese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "fijian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/fijian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "finnish") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/finnish.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "western_frisian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/western_frisian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "georgian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/georgian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "gaelic") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/gaelic.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "irish") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/irish.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "galician") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/galician.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "manx") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/manx.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "haitian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/haitian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "hebrew") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/hebrew.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "herero") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/herero.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "hiri_motu") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/hiri_motu.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "croatian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/croatian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "igbo") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/igbo.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "icelandic") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/icelandic.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "ido") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/ido.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "sichuan_yi") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/sichuan_yi.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "inuktitut") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/inuktitut.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "interlingue") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/interlingue.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "interlingua") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/interlingua.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "inupiaq") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/inupiaq.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "javanese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/javanese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "kalaallisut") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/kalaallisut.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "kashmiri") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/kashmiri.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "kazakh") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/kazakh.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "kikuyu") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/kikuyu.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "kirghiz") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/kirghiz.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "komi") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/komi.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "kuanyama") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/kuanyama.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "kurdish") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/kurdish.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "latin") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/latin.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "latvian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/latvian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "limburgan") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/limburgan.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "lithuanian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/lithuanian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "luxembourgish") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/luxembourgish.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "luba_katanga") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/luba_katanga.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "macedonian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/macedonian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "marshallese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/marshallese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "maori") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/maori.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "malay") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/malay.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "maltese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/maltese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "nauru") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/nauru.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "navajo") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/navajo.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "south_ndebele") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/south_ndebele.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "ndonga") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/ndonga.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "norwegian_nynorsk") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/norwegian_nynorsk.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "norwegian_bokm_l") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/norwegian_bokm_l.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "norwegian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/norwegian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "occitan") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/occitan.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "ojibwa") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/ojibwa.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "oriya") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/oriya.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "ossetian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/ossetian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "panjabi") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/panjabi.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "pali") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/pali.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "romansh") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/romansh.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "sanskrit") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/sanskrit.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "slovak") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/slovak.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "slovenian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/slovenian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "northern_sami") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/northern_sami.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "samoan") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/samoan.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "sindhi") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/sindhi.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "sotho_southern") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/sotho_southern.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "sardinian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/sardinian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "serbian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/serbian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "swati") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/swati.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "sundanese") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/sundanese.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "tahitian") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/tahitian.json"))
+      .default as string[];
+  } else if (language.toLowerCase() === "tatar") {
+    // @ts-ignore
+    return (await import("@repo/codebook/codebook-dist/tatar.json"))
       .default as string[];
   }
 

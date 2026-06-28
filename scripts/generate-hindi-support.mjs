@@ -1295,7 +1295,16 @@ const translateEarthRegionName = (row) =>
   hindiRegionOverrides.get(String(row.code)) ?? removeUnsafeRegionChars(row.name);
 
 const marineTerms = [
+  ["OCEAN", "महासागर"],
   ["Ocean", "महासागर"],
+  ["PACIFIC", "प्रशांत"],
+  ["Pacific", "प्रशांत"],
+  ["ATLANTIC", "अटलांटिक"],
+  ["Atlantic", "अटलांटिक"],
+  ["INDIAN", "हिंद"],
+  ["Indian", "हिंद"],
+  ["SOUTHERN", "दक्षिणी"],
+  ["Southern", "दक्षिणी"],
   ["Sea", "सागर"],
   ["Bay", "खाड़ी"],
   ["Gulf", "खाड़ी"],
@@ -1306,6 +1315,93 @@ const marineTerms = [
   ["Plateau", "पठार"],
   ["Plain", "मैदान"],
 ];
+
+const earthTerrainTerms = [
+  ["Mount", "पर्वत"],
+  ["Glacier", "हिमनद"],
+  ["Peak", "शिखर"],
+  ["Peaks", "शिखर"],
+  ["Mountains", "पर्वतमाला"],
+  ["Mountain", "पर्वत"],
+  ["Island", "द्वीप"],
+  ["Islands", "द्वीपसमूह"],
+  ["Point", "अंतरीप"],
+  ["Nunatak", "नुनाटक"],
+  ["Nunataks", "नुनाटक"],
+  ["nunatak", "नुनाटक"],
+  ["Cape", "अंतरीप"],
+  ["Rock", "चट्टान"],
+  ["Rocks", "चट्टानें"],
+  ["Cliffs", "चट्टानें"],
+  ["Coast", "तट"],
+  ["Dome", "गुंबद"],
+  ["Area", "क्षेत्र"],
+  ["Heights", "ऊँचाइयाँ"],
+  ["Bay", "खाड़ी"],
+  ["Mt", "पर्वत"],
+  ["Monte", "पर्वत"],
+  ["monte", "पर्वत"],
+  ["gora", "पर्वत"],
+  ["bahia", "खाड़ी"],
+  ["glaciar", "हिमनद"],
+  ["Islote", "द्वीपिका"],
+  ["islote", "द्वीपिका"],
+  ["Hill", "पहाड़ी"],
+  ["Cove", "खाड़ी"],
+  ["Bluff", "कगार"],
+  ["Lake", "झील"],
+  ["Valley", "घाटी"],
+  ["Ridge", "कटक"],
+  ["Hills", "पहाड़ियाँ"],
+  ["Spur", "प्रक्षेप"],
+  ["Range", "श्रेणी"],
+  ["Peninsula", "प्रायद्वीप"],
+  ["Inlet", "प्रवेशिका"],
+  ["Pass", "दर्रा"],
+  ["Head", "शीर्ष"],
+  ["Punta", "अंतरीप"],
+  ["punta", "अंतरीप"],
+  ["Cabo", "अंतरीप"],
+  ["cabo", "अंतरीप"],
+  ["Isla", "द्वीप"],
+  ["isla", "द्वीप"],
+  ["Ice", "हिम"],
+  ["Sound", "जलडमरू"],
+  ["Bank", "तटबंध"],
+  ["Stream", "धारा"],
+  ["Knoll", "टीला"],
+  ["Crag", "चट्टान"],
+  ["Saddle", "दर्रा"],
+  ["Pond", "तालाब"],
+  ["Passage", "मार्ग"],
+  ["Canyon", "घाटी"],
+  ["Icefall", "हिमप्रपात"],
+  ["Station", "स्टेशन"],
+  ["Col", "दर्रा"],
+  ["caleta", "खाड़ी"],
+  ["Caleta", "खाड़ी"],
+  ["islotes", "द्वीपिकाएँ"],
+  ["rocas", "चट्टानें"],
+  ["roca", "चट्टान"],
+  ["Roca", "चट्टान"],
+  ["mys", "अंतरीप"],
+  ["ozero", "झील"],
+  ["lednik", "हिमनद"],
+  ["The", "द"],
+  ["the", "द"],
+  ["of", "ऑफ"],
+  ["North", "उत्तर"],
+  ["South", "दक्षिण"],
+  ["Arctic", "आर्कटिक"],
+];
+
+const applyEarthTerrainTerms = (value) => {
+  let name = value;
+  for (const [english, hindi] of earthTerrainTerms) {
+    name = name.replace(new RegExp(`\\b${english}\\b`, "g"), hindi);
+  }
+  return name;
+};
 
 const hindiMarineProperFragments = new Map([
   ["Ross", "रॉस"],
@@ -1330,16 +1426,16 @@ const translateHindiMarineProper = (value) => {
 const translateRegion3Name = (row) => {
   let name = removeUnsafeRegionChars(row.name);
   if (row.source === "synthetic-antarctic-grid") {
-    return name.replace(/^Antarctic Grid/, "दक्षिणग्रिड");
+    return applyEarthTerrainTerms(name.replace(/^Antarctic Grid/, "दक्षिणग्रिड"));
   }
   if (row.source === "synthetic-arctic-grid") {
-    return name.replace(/^Arctic Grid/, "उत्तरग्रिड");
+    return applyEarthTerrainTerms(name.replace(/^Arctic Grid/, "उत्तरग्रिड"));
   }
   if (row.source === "synthetic-sahara-grid") {
-    return name.replace(/^Sahara Grid/, "सहारा ग्रिड");
+    return applyEarthTerrainTerms(name.replace(/^Sahara Grid/, "सहारा ग्रिड"));
   }
   if (row.source === "synthetic-named-gap") {
-    return name.replace(/^Gap/, "क्षेत्र");
+    return applyEarthTerrainTerms(name.replace(/^Gap/, "क्षेत्र"));
   }
 
   for (const [english, hindi] of marineTerms) {
@@ -1352,7 +1448,7 @@ const translateRegion3Name = (row) => {
     name = name.replace(new RegExp(` ${english} `), ` ${hindi} `);
     name = name.replace(new RegExp(` ${english}( \\d+)$`), ` ${hindi}$1`);
   }
-  return name;
+  return applyEarthTerrainTerms(name);
 };
 
 const planetaryExactNames = new Map([
@@ -1386,12 +1482,43 @@ const planetaryLeadingTerms = [
   ["Fossa", "खाई"],
   ["Fossae", "खाइयाँ"],
   ["Cavus", "गुहा"],
+  ["Cavi", "गुहाएँ"],
   ["Mensa", "मेजभूमि"],
+  ["Mensae", "मेजभूमियाँ"],
   ["Vastitas", "विस्तार"],
+  ["Patera", "कटोरा"],
+  ["Tholus", "गुंबद"],
+  ["Chasma", "दरारघाटी"],
+  ["Colles", "पहाड़ियाँ"],
+  ["Dorsum", "कटक"],
+  ["Sulci", "खांचे"],
+  ["Catena", "श्रृंखला"],
+  ["Palus", "दलदल"],
+  ["Regio", "प्रदेश"],
+  ["Sinus", "खाड़ी"],
+  ["Scopulus", "कगार"],
+  ["Scopuli", "कगार"],
+  ["Undae", "तरंगक्षेत्र"],
+  ["Labes", "भूस्खलन"],
+  ["Labyrinthus", "भूलभुलैया"],
+  ["Rima", "दरार"],
+  ["Rimae", "दरारें"],
+];
+
+const planetaryTerrainTerms = [
+  ["Bay", "खाड़ी"],
+  ["Lacus", "झील"],
+  ["Mountains", "पर्वतमाला"],
+  ["Mountain", "पर्वत"],
+  ["Mount", "पर्वत"],
+  ["Hills", "पहाड़ियाँ"],
+  ["Hill", "पहाड़ी"],
+  ["Spur", "प्रक्षेप"],
+  ["Head", "शीर्ष"],
 ];
 
 const translatePlanetaryName = (value) => {
-  const name = removeUnsafeRegionChars(value);
+  let name = removeUnsafeRegionChars(value);
   const exact = planetaryExactNames.get(name);
   if (exact) return exact;
 
@@ -1407,6 +1534,9 @@ const translatePlanetaryName = (value) => {
     if (name.endsWith(` ${english}`)) {
       return `${hindi} ${name.slice(0, -english.length - 1)}`;
     }
+  }
+  for (const [english, hindi] of planetaryTerrainTerms) {
+    name = name.replace(new RegExp(`\\b${english}\\b`, "g"), hindi);
   }
   return name;
 };
