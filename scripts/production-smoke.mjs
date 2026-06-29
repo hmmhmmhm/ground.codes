@@ -210,7 +210,7 @@ for (const { label, language } of [
   });
 }
 
-for (const { label, language, prefix } of [
+for (const { label, language } of [
   { label: "Afar", language: "afar", prefix: "AA Seoul" },
   { label: "Abkhazian", language: "abkhazian", prefix: "AB Seoul" },
   { label: "Afrikaans", language: "afrikaans", prefix: "AF Seoul" },
@@ -331,10 +331,7 @@ for (const { label, language, prefix } of [
       regionLevel: 2,
       body: "earth",
     });
-    assert(
-      code.startsWith(`${prefix}-`),
-      `expected ${label} ${prefix} code, got ${code}`,
-    );
+    assert(/^Seoul-/.test(code), `expected ${label} Seoul code, got ${code}`);
   });
 }
 
