@@ -23,6 +23,10 @@ describe("QA workflow split", () => {
       readJson("../package.json").scripts["data:report-labels"],
       "node scripts/url-label-report.mjs",
     );
+    assert.equal(
+      readJson("../package.json").scripts["language:quality-score"],
+      "node scripts/language-quality-score-report.mjs",
+    );
     assert.match(ciWorkflow, /pnpm --filter web test:e2e:smoke/);
     assert.match(ciWorkflow, /pnpm data:report-labels/);
     assert.doesNotMatch(ciWorkflow, /pnpm --filter web test:e2e\s*$/m);
@@ -33,6 +37,8 @@ describe("QA workflow split", () => {
 
     assert.match(languageAudit, /language-quality-status-report\.mjs/);
     assert.match(languageAudit, /--assert-current/);
+    assert.match(languageAudit, /language-quality-score-report\.mjs/);
+    assert.match(languageAudit, /--assert-min 80/);
     assert.match(languageAudit, /language-expansion-target-report\.mjs/);
     assert.match(languageAudit, /--assert-complete/);
     assert.match(languageAudit, /language-support-completeness\.test\.mjs/);

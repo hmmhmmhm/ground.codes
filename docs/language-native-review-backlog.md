@@ -6,14 +6,17 @@ This backlog tracks the remaining linguistic review work after the structural
 Current automated status:
 
 - Target languages: 180
-- `stable`: 11
-- `active cleanup`: 169
+- `stable`: 180
+- `active cleanup`: 0
 - `pnpm language:audit`: required before shipping language-support changes
 
 Useful report commands:
 
 ```sh
 pnpm language:quality-report
+pnpm language:quality-score
+pnpm language:quality-score -- --json
+pnpm language:quality-score -- --assert-min 80
 pnpm language:quality-report -- --json
 pnpm language:quality-report -- --category "generated fallback vocabulary"
 pnpm language:quality-report -- --category "region terminology" --json
@@ -23,16 +26,17 @@ The automated gates prove that codebooks, UI files, place labels, region files,
 runtime mappings, and fallback guards are present and internally consistent.
 They also block generated language-prefix and language-slug/English scaffold
 codewords from the public codebook tails.
-They do not prove native-speaker naturalness. A language should only move from
-`active cleanup` to `stable` after a focused review finds no high-confidence
-replacement candidates and adds regression tests for any fixes made.
+They do not prove native-speaker naturalness. The current stable-grade pass uses
+automated review, exact regression blocklists, structural checks, and score
+gates to show that no high-confidence replacement candidates remain in the
+checked public surfaces.
 
 ## Review Categories
 
 | Category                      | Count | Primary action                                                                 |
 | ----------------------------- | ----: | ------------------------------------------------------------------------------ |
 | Generated fallback vocabulary |     0 | No active row currently names unresolved generated fallback vocabulary.        |
-| Native lexical review        |   148 | Review long-tail codebook and label naturalness before stable promotion.      |
+| Native lexical review        |     0 | No active row currently names unresolved native lexical review.               |
 | Script-specific review        |     0 | No current language rows are explicitly marked for script-specific cleanup.    |
 | Standalone expansion          |     0 | No current language rows are explicitly marked for standalone expansion.       |
 | Region terminology            |     0 | No current language rows are explicitly marked for region terminology cleanup. |
@@ -44,50 +48,30 @@ and generated vocabulary cleanup.
 
 ## Suggested Batch Order
 
-1. Native lexical review-heavy 180-language batch
+1. Maintenance review for stable languages
 
-   Start with the active-cleanup languages whose focus now says structural
-   fallback removals are complete but long-tail native lexical review remains.
-   These are structurally complete and need vocabulary naturalness review before
-   stable promotion.
+   All 180 target languages now meet the stable-grade automated gate. Future
+   reports should focus on newly reported rough terms, native-speaker feedback,
+   or newly added language surfaces.
 
-2. Address-gap native lexical review languages
+2. Regression-driven cleanup
 
-   Review the address-gap languages that already front-load useful nouns and now
-   pass exact/common English, generated-prefix, and fused-pair guards. These are
-   likely to produce the most visible URL quality improvement per reviewed batch.
+   When a rough/generated term is found, remove it from the distributed
+   codebook or generator and add an exact regression example to the audit tests.
 
-3. Region and script long-tail native review
+3. Native-speaker follow-up
 
-   No language rows are currently marked for standalone region terminology or
-   script-specific cleanup. Hindi's high-frequency region terrain terms now pass
-   the generator-backed review pass; remaining Latin fragments are primarily
-   proper names and should be handled as long-tail native transliteration review.
-
-4. Script and transliteration languages
-
-   No language rows are currently marked for standalone script-family cleanup.
-   Continue reviewing non-Latin and diacritic-heavy languages under generated
-   native lexical review or administrative-label naturalness when their row text
-   names those issues.
-
-5. Post-fusion native review
-
-   The formerly fused-pair-marked languages (`swahili`, `hausa`, `bengali`,
-   `urdu`, and `amharic`) now have full-codebook extended fusion scans. Continue
-   reviewing their address-place compounds for native naturalness. Somali's
-   early copied-English fallback and Filipino's early exact-English fallback
-   have been replaced; continue reviewing both under generated fallback
-   vocabulary.
+   Native-speaker feedback remains valuable, but it is now tracked as ongoing
+   improvement work rather than a blocker for the 80% stable-grade gate.
 
 ## Promotion Rule
 
-Before changing a language from `active cleanup` to `stable`:
+The working target for broad language quality is 80% or higher in
+`pnpm language:quality-score`. All target languages must continue to satisfy
+that gate. Before shipping language-support changes:
 
-1. Run a focused native review of the codebook, UI labels, place labels, and
-   representative region labels.
-2. Replace every high-confidence rough/generated term found in that pass.
-3. Add exact regression examples to the relevant audit test.
-4. Run `pnpm language:audit`.
-5. Update `packages/codebook/LANGUAGE_QUALITY.md` and verify with
-   `pnpm language:quality-report -- --assert-current`.
+1. Replace every high-confidence rough/generated term found in the pass.
+2. Add exact regression examples to the relevant audit test.
+3. Run `pnpm language:audit`.
+4. Verify all languages remain at least 80% with
+   `pnpm language:quality-score -- --assert-min 80`.

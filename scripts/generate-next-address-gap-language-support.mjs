@@ -4451,7 +4451,6 @@ const extraQualityStandaloneSeeds = {
 
 const qualityBackfillSuffixes = {
   mongolian: [
-    "ын",
     "тай",
     "хан",
     "лаг",
@@ -5137,6 +5136,41 @@ const soundKey = (spec, word) =>
         .replace(/[\u200c\u200d\s]/g, "")
         .replace(/(.)\1+/gu, "$1");
 
+const qualityRejectPatterns = {
+  bislama: /(?:Harbou?r|Beach|Hotel|Road|River|Bridge|Market|Bay|Spring)$/,
+  chamorro: /(?:Harbor|Road|River|Bridge|Bay|Beach|Hill|Falls|Market)$/,
+  cornish: /CarbisBay|(?:Bay|Road|River|Bridge|Market|Harbour)$/,
+  corsican:
+    /(?:BorguRoad|SarteneRoad|AcquaLumioRoad)|(?:Road|Bridge|Market|Bay|Beach|Harbou?r)$/,
+  cree: /NemaskaVillage|(?:Road|River|Bridge|Bay|House|Village)$/,
+  fijian: /(?:Harbour)$/,
+  herero: /(?:Bay|Beach)$/,
+  ido: /^Ido[A-Z].*(?:Path|Gate|Field|Forest|Garden|Road|River|Bridge|Market|Bay|Village|School|Hospital|Hotel|Station|Harbou?r)$/,
+  igbo:
+    /OjiRiver|(?:^[A-Z][\p{Letter}]{1,12}(?:Ala|Bela|Dara|Branch)[A-Z\p{Lu}]|Ala(?:Larịị|Ahihia|DịElu|Onyinyo|Mpio|Mmiriuzo|Ifufe|Akwa))|(?:River)$/u,
+  inupiaq: /(?:Bay|Village|Station)$/,
+  interlingue:
+    /(?:Village|Hotel|Station|Hospital|ClarHospital|GrandHospital)$/,
+  manx: /(?:Road|Bridge|Harbour|Bay|Beach|Hill|Gate|Village|Station|Hospital)$/,
+  marshallese: /(?:Village|Bridge|Hospital|Market|Beach|Harbou?r|School)$/,
+  kikuyu: /(?:River|Bay|Forest|Bridge|Hill)$/,
+  maltese: /(?:Harbour|Bay|Village|Hill)$/,
+  nauru:
+    /AnibareBay|(?:Bay|Village|House|Harbor|Road|Hotel|Market|Beach|School|Hospital)$/,
+  ndonga: /(?:WalvisBay|HentiesBay|DolphinBeach)|(?:Bay|Village|Beach)$/,
+  ojibwa: /(?:Bay|River|Falls|Forest|Village)$/,
+  samoan: /(?:Bay)$/,
+  swati: /(?:AirportRoad|WhiteRiver)|(?:Road|River)$/,
+};
+
+const generatedLanguagePrefixRejectPattern =
+  /^[A-Z][a-z]{1,12}(?:Ala|Bela|Dara|Branch)[A-Z]/;
+
+const shouldRejectQualityCandidate = (spec, word) => {
+  const pattern = qualityRejectPatterns[spec.language];
+  return generatedLanguagePrefixRejectPattern.test(word) || (pattern?.test(word) ?? false);
+};
+
 const syllables = [
   "ma",
   "na",
@@ -5216,6 +5250,7 @@ const buildCodebook = (spec) => {
   const add = (word) => {
     const candidate = normalizeCodeWord(spec, word);
     if (!candidate || seen.has(candidate)) return;
+    if (shouldRejectQualityCandidate(spec, candidate)) return;
     const key = soundKey(spec, candidate);
     if (seenSoundKeys.has(key)) return;
     seen.add(candidate);
