@@ -9,6 +9,13 @@ export type PlanetaryLayerConfig = {
   attribution: string;
 };
 
+export type PlanetaryLandmarkLabel = {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+};
+
 type PlanetaryBodyConfig = {
   body: PlanetaryBody;
   label: string;
@@ -154,6 +161,60 @@ export const PLANETARY_LAYER_CONFIGS: Record<
     layer: PLANETARY_BODY_CONFIGS.mars.layers[0].layer,
     attribution: PLANETARY_BODY_CONFIGS.mars.layers[0].attribution,
   },
+};
+
+export const PLANETARY_LANDMARK_LABELS: Record<
+  PlanetaryBody,
+  PlanetaryLandmarkLabel[]
+> = {
+  moon: [
+    { id: "mare-imbrium", name: "Mare Imbrium", lat: 32.8, lng: -15.6 },
+    {
+      id: "oceanus-procellarum",
+      name: "Oceanus Procellarum",
+      lat: 18.4,
+      lng: -57.4,
+    },
+    {
+      id: "mare-tranquillitatis",
+      name: "Mare Tranquillitatis",
+      lat: 8.5,
+      lng: 31.4,
+    },
+    { id: "mare-serenitatis", name: "Mare Serenitatis", lat: 28, lng: 17.5 },
+    { id: "mare-crisium", name: "Mare Crisium", lat: 17, lng: 59.1 },
+    { id: "tycho", name: "Tycho", lat: -43.3, lng: -11.4 },
+    { id: "copernicus", name: "Copernicus", lat: 9.6, lng: -20.1 },
+    { id: "aristarchus", name: "Aristarchus", lat: 23.7, lng: -47.4 },
+    { id: "apollo-11", name: "Apollo 11", lat: 0.7, lng: 23.5 },
+    { id: "clavius", name: "Clavius", lat: -58.4, lng: -14.4 },
+    { id: "shackleton", name: "Shackleton", lat: -89.5, lng: 0 },
+    { id: "south-pole-aitken", name: "South Pole-Aitken", lat: -53, lng: 169 },
+  ],
+  mars: [
+    { id: "olympus-mons", name: "Olympus Mons", lat: 18.7, lng: -133.8 },
+    {
+      id: "valles-marineris",
+      name: "Valles Marineris",
+      lat: -13.9,
+      lng: -59.2,
+    },
+    { id: "gale-crater", name: "Gale Crater", lat: -5.4, lng: 137.8 },
+    { id: "jezero-crater", name: "Jezero Crater", lat: 18.4, lng: 77.6 },
+    { id: "hellas-planitia", name: "Hellas Planitia", lat: -42.4, lng: 70.5 },
+    { id: "utopia-planitia", name: "Utopia Planitia", lat: 46.7, lng: 117.5 },
+    { id: "syrtis-major", name: "Syrtis Major", lat: 8.4, lng: 69.5 },
+    { id: "elysium-mons", name: "Elysium Mons", lat: 25, lng: 147.2 },
+    { id: "tharsis", name: "Tharsis", lat: 0, lng: -105 },
+    {
+      id: "noctis-labyrinthus",
+      name: "Noctis Labyrinthus",
+      lat: -7,
+      lng: -102,
+    },
+    { id: "viking-1", name: "Viking 1", lat: 22.5, lng: -48 },
+    { id: "arsia-mons", name: "Arsia Mons", lat: -8.4, lng: -120.1 },
+  ],
 };
 
 export const parseCelestialBody = (
