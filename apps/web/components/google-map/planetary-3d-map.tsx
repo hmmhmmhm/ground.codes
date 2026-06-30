@@ -10,7 +10,10 @@ import {
   DEFAULT_GROUND_CODE_PRECISION_METERS,
   formatPrecisionMeters,
 } from "@/lib/code/ground-codes";
+import type { Locale } from "@/i18n";
+import { getGroundCodeLanguage } from "@/lib/i18n/ground-code-language";
 import { useI18n } from "@/lib/i18n/i18n-context";
+import { PLANETARY_LANDMARK_LOCALIZED_LABELS } from "@/lib/map/planetary-landmark-labels";
 import { Coordinates } from "./types";
 
 type Planetary3DMapProps = {
@@ -240,11 +243,17 @@ const createLandmarkLabels = (
   viewer: CesiumViewer,
   Cesium: CesiumModule,
   body: Exclude<CelestialBody, "earth">,
+  locale: Locale,
 ) => {
   const ellipsoid = getEllipsoid(Cesium, body);
   const fillColor = Cesium.Color.fromCssColorString(
     LANDMARK_LABEL_COLORS[body],
   );
+  const language = getGroundCodeLanguage(locale);
+  const localizedLabels =
+    PLANETARY_LANDMARK_LOCALIZED_LABELS[language]?.[body] ??
+    PLANETARY_LANDMARK_LOCALIZED_LABELS.english?.[body] ??
+    {};
   const distanceDisplayCondition = new Cesium.DistanceDisplayCondition(
     LANDMARK_LABEL_NEAR_DISTANCE_METERS,
     LANDMARK_LABEL_FAR_DISTANCE_METERS,
@@ -281,7 +290,7 @@ const createLandmarkLabels = (
         translucencyByDistance,
       },
       label: {
-        text: landmark.name,
+        text: localizedLabels[landmark.id] ?? landmark.name,
         fillColor,
         font: "600 12px sans-serif",
         showBackground: true,
@@ -337,7 +346,7 @@ const Planetary3DMap = ({
   showGrid,
   setSelectedArea,
 }: Planetary3DMapProps) => {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const groundCodePrecisionLabel = t("map.coordinates.precision", {
     precision: formatPrecisionMeters(DEFAULT_GROUND_CODE_PRECISION_METERS),
   });
@@ -474,6 +483,7 @@ const Planetary3DMap = ({
           viewer,
           Cesium,
           body,
+          locale,
         );
 
         const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
@@ -571,7 +581,14 @@ const Planetary3DMap = ({
       markerRef.current = null;
       container.replaceChildren();
     };
-  }, [body, center.lat, center.lng, onCameraHeadingChange, setSelectedArea]);
+  }, [
+    body,
+    center.lat,
+    center.lng,
+    locale,
+    onCameraHeadingChange,
+    setSelectedArea,
+  ]);
 
   useEffect(() => {
     const viewer = viewerRef.current;

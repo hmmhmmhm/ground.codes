@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { PLANETARY_LANDMARK_LABELS } from "./celestial-bodies";
+import { PLANETARY_LANDMARK_LOCALIZED_LABELS } from "./planetary-landmark-labels";
 
 describe("planetary landmark labels", () => {
   test("keeps a compact global orientation set for each planetary body", () => {
@@ -46,5 +47,20 @@ describe("planetary landmark labels", () => {
         "Jezero Crater",
       ]),
     );
+  });
+
+  test("provides localized landmark labels for active UI languages", () => {
+    expect(
+      PLANETARY_LANDMARK_LOCALIZED_LABELS.korean.moon?.["mare-tranquillitatis"],
+    ).toBe("고요의 바다");
+    expect(PLANETARY_LANDMARK_LOCALIZED_LABELS.korean.moon?.["apollo-11"]).toBe(
+      "아폴로 11",
+    );
+    expect(
+      PLANETARY_LANDMARK_LOCALIZED_LABELS.korean.mars?.["olympus-mons"],
+    ).toBe("올림푸스 산");
+    expect(
+      PLANETARY_LANDMARK_LOCALIZED_LABELS.chinese.mars?.["jezero-crater"],
+    ).toBe("吉埃泽罗撞击坑");
   });
 });
