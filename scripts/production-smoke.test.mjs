@@ -5,7 +5,7 @@ import {
   createSmokeRecorder,
   fetchWithRetry,
   formatGitHubStepSummary,
-  getMissingMetricRoutes,
+  validateMetricsSnapshot,
 } from "./production-smoke-helpers.mjs";
 
 describe("production smoke monitoring helpers", () => {
@@ -29,19 +29,34 @@ describe("production smoke monitoring helpers", () => {
     assert.ok(recorder.results.every((result) => result.durationMs >= 0));
   });
 
-  test("identifies required API routes missing from metrics", () => {
-    const metrics = {
-      requests: {
-        routes: {
-          "/readyz": { count: 1 },
-          "/v1/encode": { count: 2 },
-        },
-      },
-    };
-
+  test("accepts an empty Worker-isolate metrics snapshot", () => {
     assert.deepEqual(
-      getMissingMetricRoutes(metrics, ["/readyz", "/v1/encode", "/v1/search"]),
-      ["/v1/search"],
+      validateMetricsSnapshot({
+        service: "api-ground-codes",
+        scope: "worker-isolate",
+        uptimeSeconds: 0,
+        requests: { total: 0, avgMs: 0, byPath: {}, routes: {} },
+      }),
+      [],
+    );
+  });
+
+  test("reports invalid metrics snapshot fields", () => {
+    assert.deepEqual(
+      validateMetricsSnapshot({
+        service: "api-ground-codes",
+        scope: "global",
+        uptimeSeconds: -1,
+        requests: { total: -1, avgMs: "fast", byPath: [], routes: null },
+      }),
+      [
+        'scope must be "worker-isolate"',
+        "uptimeSeconds must be a non-negative number",
+        "requests.total must be a non-negative number",
+        "requests.avgMs must be a non-negative number",
+        "requests.byPath must be an object",
+        "requests.routes must be an object",
+      ],
     );
   });
 

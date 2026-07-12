@@ -9,11 +9,13 @@ export const createSmokeRecorder = ({ logger = console } = {}) => {
       const startedAt = performance.now();
       try {
         await run();
-        const durationMs = Math.round((performance.now() - startedAt) * 100) / 100;
+        const durationMs =
+          Math.round((performance.now() - startedAt) * 100) / 100;
         results.push({ name, ok: true, durationMs });
         logger.log?.(`ok ${name} ${durationMs}ms`);
       } catch (error) {
-        const durationMs = Math.round((performance.now() - startedAt) * 100) / 100;
+        const durationMs =
+          Math.round((performance.now() - startedAt) * 100) / 100;
         const message = error instanceof Error ? error.message : String(error);
         failures.push(`${name}: ${message}`);
         results.push({ name, ok: false, durationMs });
@@ -31,12 +33,7 @@ const sleep = (delayMs) =>
 
 export const fetchWithRetry = async (
   url,
-  {
-    fetchImpl = fetch,
-    retries = 2,
-    retryDelayMs = 500,
-    ...init
-  } = {},
+  { fetchImpl = fetch, retries = 2, retryDelayMs = 500, ...init } = {},
 ) => {
   let lastError;
 
@@ -53,12 +50,35 @@ export const fetchWithRetry = async (
   throw lastError;
 };
 
-export const getMissingMetricRoutes = (metrics, requiredRoutes) => {
-  const routes = metrics?.requests?.routes ?? {};
-  return requiredRoutes.filter((route) => {
-    const count = routes[route]?.count;
-    return typeof count !== "number" || count < 1;
-  });
+const isRecord = (value) =>
+  value !== null && typeof value === "object" && !Array.isArray(value);
+
+const isNonNegativeNumber = (value) =>
+  typeof value === "number" && Number.isFinite(value) && value >= 0;
+
+export const validateMetricsSnapshot = (metrics) => {
+  const errors = [];
+
+  if (metrics?.scope !== "worker-isolate") {
+    errors.push('scope must be "worker-isolate"');
+  }
+  if (!isNonNegativeNumber(metrics?.uptimeSeconds)) {
+    errors.push("uptimeSeconds must be a non-negative number");
+  }
+  if (!isNonNegativeNumber(metrics?.requests?.total)) {
+    errors.push("requests.total must be a non-negative number");
+  }
+  if (!isNonNegativeNumber(metrics?.requests?.avgMs)) {
+    errors.push("requests.avgMs must be a non-negative number");
+  }
+  if (!isRecord(metrics?.requests?.byPath)) {
+    errors.push("requests.byPath must be an object");
+  }
+  if (!isRecord(metrics?.requests?.routes)) {
+    errors.push("requests.routes must be an object");
+  }
+
+  return errors;
 };
 
 export const formatSmokeSummary = (results) =>
