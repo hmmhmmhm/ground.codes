@@ -109,7 +109,7 @@ Current verified baseline:
 - Codebook count, uniqueness, URL-safety, and English-mirroring checks covered
   by `language-support-completeness.test.mjs`.
 
-The remaining quality risk is linguistic rather than structural: many languages
-still need native-speaker review before they should be marked `stable` in
-`packages/codebook/LANGUAGE_QUALITY.md`. Track that work in
-`docs/language-native-review-backlog.md`.
+All 180 languages meet the repository's automated `stable` gate. Here,
+`stable` means structural, regression, and minimum-score checks pass; it does
+not mean native-speaker certification. Native-speaker review remains ongoing
+maintenance tracked in `docs/language-native-review-backlog.md`.

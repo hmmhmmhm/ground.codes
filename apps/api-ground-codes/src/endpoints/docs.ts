@@ -91,7 +91,8 @@ const docsHtml = `<!doctype html>
         </section>
         <section>
           <h2>Languages</h2>
-          <p>Ground Codes supports <code>english</code>, <code>korean</code>, <code>chinese</code>, <code>japanese</code>, <code>spanish</code>, <code>french</code>, <code>german</code>, <code>portuguese</code>, <code>indonesian</code>, <code>thai</code>, <code>vietnamese</code>, <code>hindi</code>, <code>arabic</code>, <code>russian</code>, <code>swahili</code>, <code>filipino</code>, <code>hausa</code>, <code>bengali</code>, <code>urdu</code>, <code>amharic</code>, <code>burmese</code>, <code>khmer</code>, <code>nepali</code>, <code>somali</code>, <code>pashto</code>, and <code>lingala</code> for codebooks and localized region labels.</p>
+          <p>Ground Codes ships 180 automated-stable language sets with codebooks, UI copy, and localized Earth, Moon, and Mars region labels. Automated-stable means the structural, regression, and minimum-score gates pass; native-speaker review remains ongoing maintenance.</p>
+          <p>Examples include <code>english</code>, <code>korean</code>, <code>chinese</code>, <code>japanese</code>, <code>spanish</code>, <code>french</code>, <code>german</code>, <code>portuguese</code>, <code>indonesian</code>, <code>thai</code>, <code>vietnamese</code>, <code>hindi</code>, <code>arabic</code>, <code>russian</code>, <code>swahili</code>, <code>filipino</code>, <code>hausa</code>, <code>bengali</code>, <code>urdu</code>, <code>amharic</code>, <code>burmese</code>, <code>khmer</code>, <code>nepali</code>, <code>somali</code>, <code>pashto</code>, and <code>lingala</code>.</p>
         </section>
         <section>
           <h2>Share URL Rules</h2>
@@ -138,10 +139,11 @@ const docsHtml = `<!doctype html>
         </section>
         <section>
           <h2>Operational Endpoints</h2>
+          <p>Worker-isolate metrics are lightweight diagnostics for the Cloudflare Worker instance that serves the request. They are not a globally aggregated request history.</p>
           <ul>
             <li><code>/healthz</code> liveness</li>
             <li><code>/readyz</code> deployment readiness</li>
-            <li><code>/metrics</code> request counts and latency</li>
+            <li><code>/metrics</code> Worker-isolate request counts and latency</li>
           </ul>
           <pre><code>curl https://api.ground.codes/metrics</code></pre>
         </section>
@@ -160,27 +162,19 @@ const docsHtml = `<!doctype html>
 </html>`;
 
 const serveDocs = ({ set }: { set: { headers: Record<string, string> } }) => {
-    set.headers["cache-control"] = "public, max-age=300";
-    set.headers["content-type"] = "text/html; charset=utf-8";
-    return docsHtml;
+  set.headers["cache-control"] = "public, max-age=300";
+  set.headers["content-type"] = "text/html; charset=utf-8";
+  return docsHtml;
 };
 
 export const docsEndpoint = new Elysia()
-  .get(
-    "/",
-    serveDocs,
-    {
-      detail: {
-        hide: true,
-      },
-    },
-  )
-  .get(
-    "/docs",
-    serveDocs,
-  {
+  .get("/", serveDocs, {
     detail: {
       hide: true,
     },
-  },
-);
+  })
+  .get("/docs", serveDocs, {
+    detail: {
+      hide: true,
+    },
+  });

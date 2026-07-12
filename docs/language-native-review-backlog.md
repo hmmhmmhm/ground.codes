@@ -10,6 +10,9 @@ Current automated status:
 - `active cleanup`: 0
 - `pnpm language:audit`: required before shipping language-support changes
 
+In this repository, `stable` means structural, regression, and minimum-score
+checks pass. It does not mean native-speaker certification.
+
 Useful report commands:
 
 ```sh
@@ -36,7 +39,7 @@ checked public surfaces.
 | Category                      | Count | Primary action                                                                 |
 | ----------------------------- | ----: | ------------------------------------------------------------------------------ |
 | Generated fallback vocabulary |     0 | No active row currently names unresolved generated fallback vocabulary.        |
-| Native lexical review        |     0 | No active row currently names unresolved native lexical review.               |
+| Native lexical review         |     0 | No active row currently names unresolved native lexical review.                |
 | Script-specific review        |     0 | No current language rows are explicitly marked for script-specific cleanup.    |
 | Standalone expansion          |     0 | No current language rows are explicitly marked for standalone expansion.       |
 | Region terminology            |     0 | No current language rows are explicitly marked for region terminology cleanup. |

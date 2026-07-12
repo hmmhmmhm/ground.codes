@@ -93,6 +93,8 @@ describe("Ground Codes API contract", () => {
     expect(firstPartyDocs).toContain("https://api.ground.codes/v1/encode");
     expect(firstPartyDocs).toContain("https://ground.codes/moon/");
     expect(firstPartyDocs).toContain("curl https://api.ground.codes/metrics");
+    expect(firstPartyDocs).toContain("Worker-isolate metrics");
+    expect(firstPartyDocs).toContain("180 automated-stable language sets");
     expect(firstPartyDocs).toContain("biasLat");
     expect(firstPartyDocs).toContain("Copy-ready Examples");
     expect(firstPartyDocs).toContain("https://api.ground.codes/v1/decode");
