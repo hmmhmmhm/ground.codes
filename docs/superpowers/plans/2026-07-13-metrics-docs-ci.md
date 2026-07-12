@@ -1,6 +1,6 @@
 # Metrics, Documentation, and CI Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Remove Cloudflare isolate-related production smoke flakiness, align public documentation with the deployed 180-language architecture, and enforce format/lint/build checks in CI.
 
@@ -17,7 +17,7 @@
 - Modify: `scripts/production-smoke.test.mjs`
 - Modify: `scripts/production-smoke-helpers.mjs`
 
-- [ ] **Step 1: Replace the route-affinity test with failing snapshot tests**
+- [x] **Step 1: Replace the route-affinity test with failing snapshot tests**
 
 Update the helper import to use `validateMetricsSnapshot`, then add these tests:
 
@@ -54,13 +54,13 @@ test("reports invalid metrics snapshot fields", () => {
 });
 ```
 
-- [ ] **Step 2: Run the helper test and verify RED**
+- [x] **Step 2: Run the helper test and verify RED**
 
 Run: `node --test scripts/production-smoke.test.mjs`
 
 Expected: FAIL because `validateMetricsSnapshot` is not exported.
 
-- [ ] **Step 3: Implement the snapshot validator**
+- [x] **Step 3: Implement the snapshot validator**
 
 Replace `getMissingMetricRoutes` with a `validateMetricsSnapshot(metrics)` export. It returns an array of exact error strings and uses a local `isRecord` helper:
 
@@ -95,13 +95,13 @@ export const validateMetricsSnapshot = (metrics) => {
 };
 ```
 
-- [ ] **Step 4: Run the helper test and verify GREEN**
+- [x] **Step 4: Run the helper test and verify GREEN**
 
 Run: `node --test scripts/production-smoke.test.mjs`
 
 Expected: all production smoke helper tests pass.
 
-- [ ] **Step 5: Commit the contract helper**
+- [x] **Step 5: Commit the contract helper**
 
 ```bash
 git add scripts/production-smoke.test.mjs scripts/production-smoke-helpers.mjs
@@ -116,7 +116,7 @@ git commit -m "test(smoke): define isolate metrics contract"
 - Modify: `apps/api-ground-codes/src/endpoints/metrics.ts`
 - Modify: `scripts/production-smoke.mjs`
 
-- [ ] **Step 1: Add a failing API contract assertion**
+- [x] **Step 1: Add a failing API contract assertion**
 
 In `serves lightweight operational metrics`, assert:
 
@@ -124,13 +124,13 @@ In `serves lightweight operational metrics`, assert:
 expect(body.scope).toBe("worker-isolate");
 ```
 
-- [ ] **Step 2: Run the focused API test and verify RED**
+- [x] **Step 2: Run the focused API test and verify RED**
 
 Run: `pnpm --filter api-ground-codes test -- --test-name-pattern "lightweight operational metrics"`
 
 Expected: FAIL because the response does not have `scope`.
 
-- [ ] **Step 3: Return the scope from `/metrics`**
+- [x] **Step 3: Return the scope from `/metrics`**
 
 Add the field next to `service`:
 
@@ -143,7 +143,7 @@ return {
 };
 ```
 
-- [ ] **Step 4: Replace the smoke route-affinity assertion**
+- [x] **Step 4: Replace the smoke route-affinity assertion**
 
 Import `validateMetricsSnapshot`, rename the smoke check to `API metrics snapshot`, and validate the fetched payload:
 
@@ -156,7 +156,7 @@ await smoke.check("API metrics snapshot", async () => {
 });
 ```
 
-- [ ] **Step 5: Run focused and helper tests**
+- [x] **Step 5: Run focused and helper tests**
 
 Run:
 
@@ -167,7 +167,7 @@ node --test scripts/production-smoke.test.mjs
 
 Expected: both commands pass.
 
-- [ ] **Step 6: Commit the runtime change**
+- [x] **Step 6: Commit the runtime change**
 
 ```bash
 git add apps/api-ground-codes/src/app.test.ts apps/api-ground-codes/src/endpoints/metrics.ts scripts/production-smoke.mjs
@@ -185,7 +185,7 @@ git commit -m "fix(smoke): respect Worker isolate metrics"
 - Modify: `apps/api-ground-codes/src/endpoints/docs.ts`
 - Modify: `apps/api-ground-codes/src/app.test.ts`
 
-- [ ] **Step 1: Add failing documentation assertions**
+- [x] **Step 1: Add failing documentation assertions**
 
 Extend the API docs test with:
 
@@ -194,17 +194,17 @@ expect(firstPartyDocs).toContain("Worker-isolate metrics");
 expect(firstPartyDocs).toContain("180 automated-stable language sets");
 ```
 
-- [ ] **Step 2: Run the API docs test and verify RED**
+- [x] **Step 2: Run the API docs test and verify RED**
 
 Run: `pnpm --filter api-ground-codes test -- --test-name-pattern "public API documentation"`
 
 Expected: FAIL because the phrases are absent.
 
-- [ ] **Step 3: Update API documentation content**
+- [x] **Step 3: Update API documentation content**
 
 In the monitoring section, state that `/metrics` contains Worker-isolate counters and is not a globally aggregated request history. In the language section, state that 180 sets satisfy automated structural and quality gates while native-speaker review is ongoing.
 
-- [ ] **Step 4: Update repository documentation consistently**
+- [x] **Step 4: Update repository documentation consistently**
 
 Replace the root README's 11-language/60-language statements with 180 automated-stable language sets. Update the comparison and technical-detail sections to use the same wording. In `language-expansion-180.md`, replace the final paragraph with:
 
@@ -215,7 +215,7 @@ not mean native-speaker certification. Native-speaker review remains ongoing
 maintenance tracked in `docs/language-native-review-backlog.md`.
 ```
 
-- [ ] **Step 5: Run documentation tests and format checks for touched files**
+- [x] **Step 5: Run documentation tests and format checks for touched files**
 
 Run:
 
@@ -226,7 +226,7 @@ pnpm exec prettier --check README.md apps/api-ground-codes/README.md docs/langua
 
 Expected: both commands pass.
 
-- [ ] **Step 6: Commit documentation alignment**
+- [x] **Step 6: Commit documentation alignment**
 
 ```bash
 git add README.md apps/api-ground-codes/README.md docs/language-expansion-180.md docs/language-native-review-backlog.md apps/api-ground-codes/src/endpoints/docs.ts apps/api-ground-codes/src/app.test.ts
@@ -241,7 +241,7 @@ git commit -m "docs: align production and language status"
 - Modify: `.github/workflows/ci.yml`
 - Modify: `scripts/qa-workflows.test.mjs`
 
-- [ ] **Step 1: Add failing workflow assertions**
+- [x] **Step 1: Add failing workflow assertions**
 
 Add a test that reads `.github/workflows/ci.yml` and asserts the commands are present:
 
@@ -257,13 +257,13 @@ test("enforces format lint and build gates in CI", () => {
 });
 ```
 
-- [ ] **Step 2: Run the workflow test and verify RED**
+- [x] **Step 2: Run the workflow test and verify RED**
 
 Run: `node --test scripts/qa-workflows.test.mjs`
 
 Expected: FAIL because the commands are not in CI.
 
-- [ ] **Step 3: Add package scripts**
+- [x] **Step 3: Add package scripts**
 
 Add:
 
@@ -271,11 +271,11 @@ Add:
 "format:check": "prettier --check \"**/*.{ts,tsx,md}\""
 ```
 
-- [ ] **Step 4: Add format, lint, and build CI steps**
+- [x] **Step 4: Add format, lint, and build CI steps**
 
 Place format immediately after dependency installation, lint before type checking, and build after unit tests.
 
-- [ ] **Step 5: Run workflow and JSON validation**
+- [x] **Step 5: Run workflow and JSON validation**
 
 Run:
 
@@ -286,7 +286,7 @@ pnpm exec prettier --check package.json .github/workflows/ci.yml scripts/qa-work
 
 Expected: both commands pass.
 
-- [ ] **Step 6: Commit the CI gate wiring**
+- [x] **Step 6: Commit the CI gate wiring**
 
 ```bash
 git add package.json .github/workflows/ci.yml scripts/qa-workflows.test.mjs
@@ -299,19 +299,19 @@ git commit -m "ci: enforce repository quality gates"
 
 - Modify: all files reported by `pnpm format:check`
 
-- [ ] **Step 1: Capture the failing format gate**
+- [x] **Step 1: Capture the failing format gate**
 
 Run: `pnpm format:check`
 
 Expected: FAIL and report the existing 67 files.
 
-- [ ] **Step 2: Apply only Prettier's mechanical rewrite**
+- [x] **Step 2: Apply only Prettier's mechanical rewrite**
 
 Run: `pnpm format`
 
 Expected: Prettier rewrites supported TypeScript, TSX, and Markdown files.
 
-- [ ] **Step 3: Verify formatting and inspect scope**
+- [x] **Step 3: Verify formatting and inspect scope**
 
 Run:
 
@@ -323,7 +323,7 @@ git diff --check
 
 Expected: format check passes; diff contains formatting-only changes with no whitespace errors.
 
-- [ ] **Step 4: Re-run behavior gates affected by formatted source**
+- [x] **Step 4: Re-run behavior gates affected by formatted source**
 
 Run:
 
@@ -336,7 +336,7 @@ node --test scripts/production-smoke.test.mjs scripts/qa-workflows.test.mjs
 
 Expected: all commands pass.
 
-- [ ] **Step 5: Commit the mechanical change separately**
+- [x] **Step 5: Commit the mechanical change separately**
 
 ```bash
 git add --all
@@ -349,7 +349,7 @@ git commit -m "style: format repository sources"
 
 - Verify only
 
-- [ ] **Step 1: Run the slice verification suite**
+- [x] **Step 1: Run the slice verification suite**
 
 Run:
 
@@ -365,6 +365,6 @@ git status --short
 
 Expected: every command exits zero and the worktree is clean.
 
-- [ ] **Step 2: Record the plan checkpoint**
+- [x] **Step 2: Record the plan checkpoint**
 
 Update this plan's checkboxes to reflect executed steps and commit the plan-state update together with the next implementation checkpoint rather than creating a documentation-only completion commit.
