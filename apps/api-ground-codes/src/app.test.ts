@@ -71,6 +71,7 @@ describe("Ground Codes API contract", () => {
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.service).toBe("api-ground-codes");
+    expect(body.scope).toBe("worker-isolate");
     expect(body.requests.total).toBeGreaterThan(0);
   });
 

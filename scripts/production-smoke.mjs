@@ -5,7 +5,7 @@ import {
   fetchWithRetry,
   formatGitHubStepSummary,
   formatSmokeSummary,
-  getMissingMetricRoutes,
+  validateMetricsSnapshot,
 } from "./production-smoke-helpers.mjs";
 
 const apiBaseUrl = (
@@ -1063,17 +1063,14 @@ await smoke.check("Unsupported route is not a server error", async () => {
   );
 });
 
-await smoke.check("API route metrics cover smoke paths", async () => {
+await smoke.check("API metrics snapshot", async () => {
   const metrics = JSON.parse(await fetchText(`${apiBaseUrl}/metrics`));
-  const missingRoutes = getMissingMetricRoutes(metrics, [
-    "/readyz",
-    "/v1/encode",
-    "/v1/search",
-  ]);
   assert(
-    missingRoutes.length === 0,
-    `metrics missing route samples: ${missingRoutes.join(", ")}`,
+    metrics.service === "api-ground-codes",
+    `unexpected metrics service: ${metrics.service}`,
   );
+  const errors = validateMetricsSnapshot(metrics);
+  assert(errors.length === 0, `invalid metrics snapshot: ${errors.join("; ")}`);
 });
 
 await smoke.check("Web robots", async () => {
