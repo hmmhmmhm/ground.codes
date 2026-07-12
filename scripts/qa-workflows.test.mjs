@@ -6,6 +6,14 @@ const readText = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 const readJson = (path) => JSON.parse(readText(path));
 
 describe("QA workflow split", () => {
+  test("enforces format lint and build gates in CI", () => {
+    const ciWorkflow = readText("../.github/workflows/ci.yml");
+
+    for (const command of ["pnpm format:check", "pnpm lint", "pnpm build"]) {
+      assert.match(ciWorkflow, new RegExp(command));
+    }
+  });
+
   test("keeps default CI on the lightweight browser smoke script", () => {
     const webPackage = readJson("../apps/web/package.json");
     const ciWorkflow = readText("../.github/workflows/ci.yml");
