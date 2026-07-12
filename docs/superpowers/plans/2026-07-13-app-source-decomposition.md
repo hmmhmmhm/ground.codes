@@ -16,7 +16,7 @@
 
 - Modify: `scripts/code-size-policy.test.mjs`
 
-- [ ] **Step 1: Add a failing test for the targeted runtime modules**
+- [x] **Step 1: Add a failing test for the targeted runtime modules**
 
 Add a filesystem-backed test that evaluates these maintained files with the existing policy:
 
@@ -44,13 +44,13 @@ test("keeps app runtime modules within the maintained-source limit", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test and verify RED**
+- [x] **Step 2: Run the test and verify RED**
 
 Run: `node --test scripts/code-size-policy.test.mjs`
 
 Expected: FAIL and list all four oversized maintained files.
 
-- [ ] **Step 3: Commit the contract**
+- [x] **Step 3: Commit the contract**
 
 ```bash
 git add scripts/code-size-policy.test.mjs
@@ -65,19 +65,24 @@ git commit -m "test: define app source boundaries"
 - Modify: `apps/grok-spiral/lib/grok-spiral.ts`
 - Modify: `pnpm-lock.yaml`
 
-- [ ] **Step 1: Add the canonical package dependency**
+- [x] **Step 1: Add the canonical package dependency**
 
 Add `"ground-codes": "workspace:*"` to the Grok app dependencies and run `pnpm install --lockfile-only`.
 
-- [ ] **Step 2: Replace the duplicate implementation with re-exports**
+- [x] **Step 2: Replace the duplicate implementation with re-exports**
 
-Replace the entire local implementation with:
+Replace the entire local implementation with the browser-safe canonical source
+module. The package root also imports Node-only region loading, so the Grok app
+must use the focused spiral module:
 
 ```ts
-export { getCoordinates, getNFromCoordinates } from "ground-codes";
+export {
+  getCoordinates,
+  getNFromCoordinates,
+} from "ground-codes/src/spiral";
 ```
 
-- [ ] **Step 3: Verify the focused boundary and app checks**
+- [x] **Step 3: Verify the focused boundary and app checks**
 
 Run:
 
@@ -90,7 +95,7 @@ pnpm --filter grok-spiral build
 
 Expected: the boundary test still fails for Earth, planetary, and PostGIS only; Grok type-check, lint, and build pass.
 
-- [ ] **Step 4: Commit the deduplication**
+- [x] **Step 4: Commit the deduplication**
 
 ```bash
 git add apps/grok-spiral/package.json apps/grok-spiral/lib/grok-spiral.ts pnpm-lock.yaml
