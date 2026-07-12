@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { describe, test } from "node:test";
 
 import {
@@ -61,5 +62,25 @@ describe("code size policy", () => {
     assert.equal(isCheckedSourcePath("scripts/a.mjs"), true);
     assert.equal(isCheckedSourcePath("src/a.d.ts"), false);
     assert.equal(isCheckedSourcePath("data/a.json"), false);
+  });
+
+  test("keeps app runtime modules within the maintained-source limit", () => {
+    const paths = [
+      "apps/grok-spiral/lib/grok-spiral.ts",
+      "apps/web/components/google-map/earth-3d-map.tsx",
+      "apps/web/components/google-map/planetary-3d-map.tsx",
+      "apps/api-ground-codes/src/postgis-region-store.ts",
+    ];
+
+    assert.deepEqual(
+      paths.flatMap((path) => {
+        const violation = evaluateSourceFile({
+          path,
+          source: readFileSync(path, "utf8"),
+        });
+        return violation ? [violation] : [];
+      }),
+      [],
+    );
   });
 });
