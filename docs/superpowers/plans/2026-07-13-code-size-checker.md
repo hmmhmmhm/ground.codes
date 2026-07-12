@@ -1,6 +1,6 @@
 # Code Size Checker Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Turn the repository's 450-line source-file policy into an accurate, tested command that distinguishes maintained code from explicitly reproducible generated output.
 
@@ -17,7 +17,7 @@
 - Create: `scripts/code-size-policy.mjs`
 - Create: `scripts/code-size-policy.test.mjs`
 
-- [ ] **Step 1: Write failing unit tests**
+- [x] **Step 1: Write failing unit tests**
 
 Create tests using in-memory file descriptors rather than filesystem mocks:
 
@@ -77,13 +77,13 @@ describe("code size policy", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests and verify RED**
+- [x] **Step 2: Run tests and verify RED**
 
 Run: `node --test scripts/code-size-policy.test.mjs`
 
 Expected: FAIL because `code-size-policy.mjs` does not exist.
 
-- [ ] **Step 3: Implement the minimal policy module**
+- [x] **Step 3: Implement the minimal policy module**
 
 Create:
 
@@ -115,13 +115,13 @@ export const evaluateSourceFile = ({
 };
 ```
 
-- [ ] **Step 4: Run tests and verify GREEN**
+- [x] **Step 4: Run tests and verify GREEN**
 
 Run: `node --test scripts/code-size-policy.test.mjs`
 
 Expected: 3 tests pass.
 
-- [ ] **Step 5: Commit the policy unit**
+- [x] **Step 5: Commit the policy unit**
 
 ```bash
 git add scripts/code-size-policy.mjs scripts/code-size-policy.test.mjs
@@ -136,7 +136,7 @@ git commit -m "test: define source size policy"
 - Modify: `scripts/code-size-policy.test.mjs`
 - Modify: `package.json`
 
-- [ ] **Step 1: Add a failing source-extension test**
+- [x] **Step 1: Add a failing source-extension test**
 
 Extend the policy module contract:
 
@@ -152,13 +152,13 @@ test("checks TypeScript and MJS source but not declarations or data", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests and verify RED**
+- [x] **Step 2: Run tests and verify RED**
 
 Run: `node --test scripts/code-size-policy.test.mjs`
 
 Expected: FAIL because `isCheckedSourcePath` is not exported.
 
-- [ ] **Step 3: Implement source-path filtering**
+- [x] **Step 3: Implement source-path filtering**
 
 Add:
 
@@ -167,7 +167,7 @@ export const isCheckedSourcePath = (path) =>
   !path.endsWith(".d.ts") && /\.(?:ts|tsx|mjs)$/.test(path);
 ```
 
-- [ ] **Step 4: Create the CLI**
+- [x] **Step 4: Create the CLI**
 
 The CLI obtains tracked paths from Git, reads only checked source, evaluates each
 file, prints `lines<TAB>path<TAB>reason` sorted by descending line count, and
@@ -207,7 +207,7 @@ if (violations.length > 0) {
 }
 ```
 
-- [ ] **Step 5: Add the package command**
+- [x] **Step 5: Add the package command**
 
 Add:
 
@@ -215,7 +215,7 @@ Add:
 "code:size-check": "node scripts/check-code-size.mjs"
 ```
 
-- [ ] **Step 6: Verify the checker reports the known debt**
+- [x] **Step 6: Verify the checker reports the known debt**
 
 Run:
 
@@ -227,7 +227,7 @@ pnpm code:size-check
 Expected: unit tests pass; the CLI exits 1 and reports 34 maintained source
 violations while accepting the generated landmark-label module.
 
-- [ ] **Step 7: Commit the scanner**
+- [x] **Step 7: Commit the scanner**
 
 ```bash
 git add scripts/check-code-size.mjs scripts/code-size-policy.mjs scripts/code-size-policy.test.mjs package.json
@@ -240,14 +240,14 @@ git commit -m "chore: report oversized maintained sources"
 
 - Modify: `docs/superpowers/plans/2026-07-13-code-size-checker.md`
 
-- [ ] **Step 1: Record the exact violation inventory**
+- [x] **Step 1: Record the exact violation inventory**
 
 Replace the expected count in Task 2 if the authoritative CLI output differs,
 and append the sorted path/count output under a `Baseline Inventory` heading.
 Every later source-size plan must reduce this inventory without adding an
 exception unless it satisfies the generated-output rule.
 
-- [ ] **Step 2: Verify unrelated quality gates remain green**
+- [x] **Step 2: Verify unrelated quality gates remain green**
 
 Run:
 
@@ -262,9 +262,52 @@ git status --short
 Expected: all commands except the intentionally failing `pnpm code:size-check`
 exit zero; only the plan inventory update remains uncommitted.
 
-- [ ] **Step 3: Commit the baseline inventory**
+- [x] **Step 3: Commit the baseline inventory**
 
 ```bash
 git add docs/superpowers/plans/2026-07-13-code-size-checker.md
 git commit -m "docs: record source size baseline"
+```
+
+## Baseline Inventory
+
+`pnpm code:size-check` reports 34 maintained source violations. The generated
+`apps/web/lib/map/planetary-landmark-labels.ts` output is accepted because its
+declared generator header matches the exact policy entry.
+
+```text
+5654 scripts/generate-next-address-gap-language-support.mjs
+3823 packages/ground-codes/src/region.ts
+3051 scripts/codebook-policy-findings.mjs
+2774 scripts/codebook-policy-audit.mjs
+2563 packages/ground-codes/test/multilingual-codebook-review.test.ts
+2528 scripts/generate-major-european-codebooks.mjs
+2369 scripts/generate-thai-support.mjs
+2336 scripts/generate-russian-support.mjs
+1708 scripts/generate-vietnamese-support.mjs
+1655 scripts/generate-hindi-support.mjs
+1524 scripts/codebook-type-inventory.mjs
+1481 apps/grok-spiral/lib/grok-spiral.ts
+1481 packages/ground-codes/src/spiral.ts
+1334 scripts/generate-french-support.mjs
+1318 scripts/generate-indonesian-support.mjs
+1309 apps/api-ground-codes/src/app.test.ts
+1290 scripts/codebook-policy-audit.test.mjs
+1198 scripts/generate-candidate-language-codebooks.mjs
+1148 packages/ground-codes/src/wordset.ts
+1147 apps/web/components/google-map/hooks/use-map-container.ts
+1116 scripts/production-smoke.mjs
+938 scripts/address-gap-codebook-quality.test.mjs
+915 scripts/generate-german-support.mjs
+903 scripts/generate-arabic-support.mjs
+886 scripts/language-support-completeness.test.mjs
+862 scripts/generate-portuguese-support.mjs
+795 packages/ground-codes/test/celestial-body.test.ts
+754 apps/web/components/google-map/planetary-3d-map.tsx
+749 packages/ground-codes/scripts/explore-lattice-count-research.ts
+693 scripts/generate-planetary-landmark-labels.mjs
+585 scripts/apply-language-expansion-batch.mjs
+559 scripts/generate-address-gap-language-support.mjs
+558 apps/web/components/google-map/earth-3d-map.tsx
+508 apps/api-ground-codes/src/postgis-region-store.ts
 ```
