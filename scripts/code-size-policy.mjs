@@ -9,6 +9,9 @@ export const GENERATED_SOURCE_FILES = new Map([
 
 const countLines = (source) => source.split(/\r?\n/).length;
 
+export const isCheckedSourcePath = (path) =>
+  !path.endsWith(".d.ts") && /\.(?:ts|tsx|mjs)$/.test(path);
+
 export const evaluateSourceFile = ({
   path,
   source,

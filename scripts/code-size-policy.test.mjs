@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { MAX_SOURCE_LINES, evaluateSourceFile } from "./code-size-policy.mjs";
+import {
+  MAX_SOURCE_LINES,
+  evaluateSourceFile,
+  isCheckedSourcePath,
+} from "./code-size-policy.mjs";
 
 describe("code size policy", () => {
   test("accepts maintained source at the line limit", () => {
@@ -49,5 +53,13 @@ describe("code size policy", () => {
         reason: "maintained source",
       },
     );
+  });
+
+  test("checks TypeScript and MJS source but not declarations or data", () => {
+    assert.equal(isCheckedSourcePath("src/a.ts"), true);
+    assert.equal(isCheckedSourcePath("src/a.tsx"), true);
+    assert.equal(isCheckedSourcePath("scripts/a.mjs"), true);
+    assert.equal(isCheckedSourcePath("src/a.d.ts"), false);
+    assert.equal(isCheckedSourcePath("data/a.json"), false);
   });
 });
