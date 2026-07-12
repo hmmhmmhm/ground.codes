@@ -13,7 +13,6 @@ Ground.codes web application is an interactive map service utilizing the Google 
 ## ✨ Features
 
 - **🗺️ Google Maps Integration**
-
   - 🌓 Custom dark/light theme support
   - 📍 POI (Point of Interest) markers and place details display
   - 📱 User location tracking and display
@@ -22,14 +21,12 @@ Ground.codes web application is an interactive map service utilizing the Google 
   - 🔍 Place search functionality
 
 - **📏 Grid System**
-
   - 🧩 Grid display on the map
   - 🌐 Body-aware grid sizing for Earth, Moon, and Mars
   - 👆 Grid cell click event handling
   - 👁️ Grid visibility management
 
 - **🌐 Multilingual Support**
-
   - 🇬🇧 English (default), 🇰🇷 Korean, 🇨🇳 Chinese, 🇯🇵 Japanese
   - 🍪 Cookie-based language settings without URL locale prefixes
   - 🏷️ Multilingual display of place types
@@ -179,29 +176,24 @@ docs screenshots. The `Visual QA` GitHub workflow uploads the screenshots from
 ### 🔐 How to obtain API keys:
 
 - **NEXT_PUBLIC_GOOGLE_MAPS_API_KEY** (Required):
-
   - 📝 Create a project in the [Google Cloud Console](https://console.cloud.google.com/)
   - ✅ Enable the Maps JavaScript API, Places API, and Geocoding API
   - 🔑 Create an API key with appropriate restrictions
   - 📚 More info: [Google Maps Platform Documentation](https://developers.google.com/maps/documentation/javascript/get-api-key)
 
 - **NEXT_PUBLIC_GOOGLE_MAPS_ROADMAP_ID** (Optional):
-
   - 🎨 Create a custom map style in the [Google Cloud Console Map Management](https://console.cloud.google.com/google/maps-apis/studio/maps)
   - 🆔 Use the generated Map ID for this variable
 
 - **NEXT_PUBLIC_CESIUM_ION_TOKEN** (Optional):
-
   - 🌕 Enables Cesium ion Moon/Mars 3D Tiles in experimental planetary 3D mode
   - 🔑 Create a token in [Cesium ion](https://ion.cesium.com/tokens)
 
 - **NEXT_PUBLIC_CESIUM_MOON_ASSET_ID / NEXT_PUBLIC_CESIUM_MARS_ASSET_ID** (Optional):
-
   - 🪐 Add Cesium Moon or Cesium Mars from the Cesium ion Asset Depot to your assets
   - 🆔 Use the corresponding asset IDs with the Cesium ion token
 
 - **GOOGLE_MAPS_NODEJS_API_KEY** (Optional):
-
   - 🖥️ Similar to the NEXT_PUBLIC_GOOGLE_MAPS_API_KEY, but with server-side restrictions
   - 🔧 Used for server-side Google Maps API calls
 

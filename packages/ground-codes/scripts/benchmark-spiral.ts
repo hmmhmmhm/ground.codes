@@ -29,12 +29,12 @@ function time(label: string, callback: () => void) {
   const worst = Math.max(...samples);
 
   console.log(
-    `${label}: avg=${average.toFixed(2)}ms best=${best.toFixed(2)}ms worst=${worst.toFixed(2)}ms rounds=${ROUNDS}`
+    `${label}: avg=${average.toFixed(2)}ms best=${best.toFixed(2)}ms worst=${worst.toFixed(2)}ms rounds=${ROUNDS}`,
   );
 }
 
 const coordinates = Array.from({ length: COUNT }, (_, index) =>
-  getCoordinates(index + 1)
+  getCoordinates(index + 1),
 );
 
 time(`getCoordinates 1..${COUNT}`, () => {

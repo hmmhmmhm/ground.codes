@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-const waitForShareUrlToResolve = async (page: import("@playwright/test").Page) => {
+const waitForShareUrlToResolve = async (
+  page: import("@playwright/test").Page,
+) => {
   const searchResponse = page.waitForResponse((response) =>
     response.url().includes("/v1/search"),
   );
@@ -49,8 +51,9 @@ test.describe("visual QA capture", () => {
     });
 
     await page.goto("http://127.0.0.1:3000/docs");
-    await expect(page.getByRole("heading", { name: "Ground Codes API" }))
-      .toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Ground Codes API" }),
+    ).toBeVisible();
     await page.screenshot({
       path: testInfo.outputPath("api-docs.png"),
       fullPage: true,

@@ -4,32 +4,32 @@ Measured with `tsx scripts/benchmark-spiral.ts` on 2026-05-08.
 
 The compatibility fixture in `test/fixtures/spiral-10000.json` was generated from the original implementation before optimization and contains 10,000 `getCoordinates(n)` outputs plus the corresponding `getNFromCoordinates(x, y)` outputs.
 
-| Implementation | getCoordinates 1..10000 | getNFromCoordinates first 10000 generated coordinates |
-| --- | ---: | ---: |
-| Original | avg 21.73ms, best 21.19ms, worst 22.76ms | avg 5.84ms, best 5.14ms, worst 8.13ms |
-| Cached lattice counts and shells | avg 2.30ms, best 1.82ms, worst 3.18ms | avg 1.23ms, best 1.03ms, worst 1.44ms |
-| Cached counts plus integer-angle factorized shells | avg 3.06ms, best 2.26ms, worst 4.17ms | avg 1.11ms, best 0.95ms, worst 1.51ms |
+| Implementation                                     |                  getCoordinates 1..10000 | getNFromCoordinates first 10000 generated coordinates |
+| -------------------------------------------------- | ---------------------------------------: | ----------------------------------------------------: |
+| Original                                           | avg 21.73ms, best 21.19ms, worst 22.76ms |                 avg 5.84ms, best 5.14ms, worst 8.13ms |
+| Cached lattice counts and shells                   |    avg 2.30ms, best 1.82ms, worst 3.18ms |                 avg 1.23ms, best 1.03ms, worst 1.44ms |
+| Cached counts plus integer-angle factorized shells |    avg 3.06ms, best 2.26ms, worst 4.17ms |                 avg 1.11ms, best 0.95ms, worst 1.51ms |
 
 Cold-call exploration with `CASES=10000 MAX_N=100000000 tsx scripts/explore-spiral-math.ts`:
 
-| Candidate | n -> xy | xy -> n |
-| --- | ---: | ---: |
-| Original atan2 + full x scan | 1461.73ms | 252.81ms |
-| Integer angle + full x scan | 1510.96ms | 261.77ms |
+| Candidate                                  |   n -> xy |  xy -> n |
+| ------------------------------------------ | --------: | -------: |
+| Original atan2 + full x scan               | 1461.73ms | 252.81ms |
+| Integer angle + full x scan                | 1510.96ms | 261.77ms |
 | Integer angle + factorized symmetric shell | 1421.15ms | 181.83ms |
 
 The integer-angle factorized shell candidate preserves the baseline outputs and improves cold `xy -> n` by avoiding `atan2` and scanning only non-duplicate symmetric representatives for `x^2 + y^2 = m`.
 
 Issue [hmmhmmhm/spiral-position-problem#1](https://github.com/hmmhmmhm/spiral-position-problem/issues/1) suggested a Stern-Brocot / convex-hull strategy for counting lattice points in a circle. In local checks, the suggested count matched the original implementation for `m = 0..100000` and random `m <= 100000000`. It was slower for small `m`, but faster once `m` was large enough. The production implementation now uses a hybrid: first-quadrant counting below `m = 1000000000`, and convex-hull counting at or above that threshold.
 
-| Count method | Random m range | 10000 counts |
-| --- | ---: | ---: |
-| Original sqrt sum | 10000000..20000000 | 87.27ms |
-| Convex hull count | 10000000..20000000 | 81.73ms |
-| Original sqrt sum | 20000000..40000000 | 120.13ms |
-| Convex hull count | 20000000..40000000 | 102.49ms |
-| Original sqrt sum | 50000000..80000000 | 190.55ms |
-| Convex hull count | 50000000..80000000 | 142.73ms |
+| Count method      |     Random m range | 10000 counts |
+| ----------------- | -----------------: | -----------: |
+| Original sqrt sum | 10000000..20000000 |      87.27ms |
+| Convex hull count | 10000000..20000000 |      81.73ms |
+| Original sqrt sum | 20000000..40000000 |     120.13ms |
+| Convex hull count | 20000000..40000000 |     102.49ms |
+| Original sqrt sum | 50000000..80000000 |     190.55ms |
+| Convex hull count | 50000000..80000000 |     142.73ms |
 
 Additional candidates checked and rejected:
 
@@ -41,70 +41,70 @@ The current implementation also reuses the last below-threshold count from binar
 
 Further research pass with `CASES=10000 MAX_M=100000000 tsx scripts/explore-lattice-count-research.ts` found a simpler count formula that beat both the original sqrt-sum and convex-hull candidate in JavaScript:
 
-| Count method | Random m <= 100000000, 10000 counts |
-| --- | ---: |
-| Original x = 0..r sqrt sum | 157.75ms |
-| First-quadrant formula `4 * (sum_{x=1..r} floor(sqrt(m - x*x)) + r) + 1` | 71.69ms |
-| First-octant formula | 91.55ms |
-| Convex-hull count | 140.91ms |
+| Count method                                                             | Random m <= 100000000, 10000 counts |
+| ------------------------------------------------------------------------ | ----------------------------------: |
+| Original x = 0..r sqrt sum                                               |                            157.75ms |
+| First-quadrant formula `4 * (sum_{x=1..r} floor(sqrt(m - x*x)) + r) + 1` |                             71.69ms |
+| First-octant formula                                                     |                             91.55ms |
+| Convex-hull count                                                        |                            140.91ms |
 
 For shell point generation:
 
-| Shell method | Random m <= 100000000, 10000 shells |
-| --- | ---: |
-| Full x scan | 181.97ms |
-| Symmetric representative scan | 119.82ms |
-| Sum-of-two-squares filter + symmetric representatives | 36.72ms |
+| Shell method                                          | Random m <= 100000000, 10000 shells |
+| ----------------------------------------------------- | ----------------------------------: |
+| Full x scan                                           |                            181.97ms |
+| Symmetric representative scan                         |                            119.82ms |
+| Sum-of-two-squares filter + symmetric representatives |                             36.72ms |
 
 The implementation now uses the first-quadrant count formula for normal-sized counts and symmetric shell generation without a factorization filter on known-representable shells.
 
 Large-count follow-up:
 
-| Count method | Random m range | Cases | Time |
-| --- | ---: | ---: | ---: |
-| First-quadrant formula | 100000000..1000000000 | 2000 | 52.63ms |
-| Convex-hull count | 100000000..1000000000 | 2000 | 72.72ms |
-| First-quadrant formula | 1000000000..10000000000 | 2000 | 861.12ms |
-| Convex-hull count | 1000000000..10000000000 | 2000 | 173.06ms |
-| First-quadrant formula | 10000000000..100000000000 | 1000 | 1330.38ms |
-| Convex-hull count | 10000000000..100000000000 | 1000 | 191.35ms |
+| Count method           |            Random m range | Cases |      Time |
+| ---------------------- | ------------------------: | ----: | --------: |
+| First-quadrant formula |     100000000..1000000000 |  2000 |   52.63ms |
+| Convex-hull count      |     100000000..1000000000 |  2000 |   72.72ms |
+| First-quadrant formula |   1000000000..10000000000 |  2000 |  861.12ms |
+| Convex-hull count      |   1000000000..10000000000 |  2000 |  173.06ms |
+| First-quadrant formula | 10000000000..100000000000 |  1000 | 1330.38ms |
+| Convex-hull count      | 10000000000..100000000000 |  1000 |  191.35ms |
 
 Further paper-derived candidates:
 
-| Candidate | Range | Cases | Result |
-| --- | ---: | ---: | --- |
-| Convex-hull flat stack plus no-division slope check | random m <= 100000000 | 5000 | 72.69ms vs 74.74ms for tuple convex-hull |
-| Convex-hull flat stack plus no-division slope check | 1000000000..10000000000 | 2000 | 160.38ms vs 178.75ms for tuple convex-hull |
-| Convex-hull flat stack plus no-division slope check | 10000000000..100000000000 | 1000 | 170.93ms vs 189.27ms for tuple convex-hull |
-| Gaussian integer shell generation | representable m <= 100000000 | 5000 | 28.00ms vs 71.64ms for symmetric scan |
-| Gaussian integer shell generation | representable m 1000000000..10000000000 | 2000 | 380.06ms vs 150.77ms for symmetric scan |
+| Candidate                                           |                                   Range | Cases | Result                                     |
+| --------------------------------------------------- | --------------------------------------: | ----: | ------------------------------------------ |
+| Convex-hull flat stack plus no-division slope check |                   random m <= 100000000 |  5000 | 72.69ms vs 74.74ms for tuple convex-hull   |
+| Convex-hull flat stack plus no-division slope check |                 1000000000..10000000000 |  2000 | 160.38ms vs 178.75ms for tuple convex-hull |
+| Convex-hull flat stack plus no-division slope check |               10000000000..100000000000 |  1000 | 170.93ms vs 189.27ms for tuple convex-hull |
+| Gaussian integer shell generation                   |            representable m <= 100000000 |  5000 | 28.00ms vs 71.64ms for symmetric scan      |
+| Gaussian integer shell generation                   | representable m 1000000000..10000000000 |  2000 | 380.06ms vs 150.77ms for symmetric scan    |
 
 The flat convex-hull variant is used for large counts. Gaussian integer shell generation matched the scan output, but it only won on smaller representable shells and slowed broad `xy -> n` stress cases because trial factorization runs for every coordinate, so it remains an experiment only.
 
 Second paper-derived pass:
 
-| Candidate | Range | Cases | Result |
-| --- | ---: | ---: | --- |
-| Convex-hull threshold `0.75 * cbrt(m)` with squared slope test | 1000000000..10000000000 | 2000 | 165.08ms vs 167.37ms for current flat convex-hull |
-| Convex-hull threshold `0.75 * cbrt(m)` with squared slope test | 10000000000..100000000000 | 1000 | 190.84ms vs 182.61ms for current flat convex-hull |
-| Convex-hull threshold `0.75 * cbrt(m)` with squared slope test | 100000000000..1000000000000 | 500 | 201.38ms vs 211.76ms for current flat convex-hull |
-| Convex-hull threshold `1.25 * cbrt(m)` with squared slope test | 10000000000..100000000000 | 1000 | 208.47ms, slower |
-| Convex-hull threshold `1.5 * cbrt(m)` with squared slope test | 100000000000..1000000000000 | 500 | 227.10ms, slower |
-| Gaussian shell with small-`m` gate | 1000000000..10000000000 representable shells | 2000 | 153.32ms vs 154.16ms for symmetric scan |
-| Area/Bessel-style leading approximation `round(pi*m)` | exact check up to 100000 plus random samples | 101000 | around 99000 mismatches |
+| Candidate                                                      |                                        Range |  Cases | Result                                            |
+| -------------------------------------------------------------- | -------------------------------------------: | -----: | ------------------------------------------------- |
+| Convex-hull threshold `0.75 * cbrt(m)` with squared slope test |                      1000000000..10000000000 |   2000 | 165.08ms vs 167.37ms for current flat convex-hull |
+| Convex-hull threshold `0.75 * cbrt(m)` with squared slope test |                    10000000000..100000000000 |   1000 | 190.84ms vs 182.61ms for current flat convex-hull |
+| Convex-hull threshold `0.75 * cbrt(m)` with squared slope test |                  100000000000..1000000000000 |    500 | 201.38ms vs 211.76ms for current flat convex-hull |
+| Convex-hull threshold `1.25 * cbrt(m)` with squared slope test |                    10000000000..100000000000 |   1000 | 208.47ms, slower                                  |
+| Convex-hull threshold `1.5 * cbrt(m)` with squared slope test  |                  100000000000..1000000000000 |    500 | 227.10ms, slower                                  |
+| Gaussian shell with small-`m` gate                             | 1000000000..10000000000 representable shells |   2000 | 153.32ms vs 154.16ms for symmetric scan           |
+| Area/Bessel-style leading approximation `round(pi*m)`          | exact check up to 100000 plus random samples | 101000 | around 99000 mismatches                           |
 
 The tuned convex-hull thresholds were mixed by range, so the current `cbrt(m) + 1` flat implementation remains the production choice. The squared slope test is exact in the tested ranges, but it did not produce a stable speedup over the existing no-division form. The area/Bessel-style leading approximation is useful only as a heuristic bracket, not as an exact count, because it fails the original-output identity requirement.
 
 Katai / Barvinok / fractional-sum pass:
 
-| Candidate | Range | Cases | Result |
-| --- | ---: | ---: | --- |
-| Fractional-part identity `sqrt - frac(sqrt)` | random m <= 1000000 | 1000 | exact, 12.72ms vs 0.79ms for first-quadrant |
-| Katai-style boundary walk with decreasing `y` | random m <= 1000000 | 1000 | exact, 2.83ms vs 0.79ms |
-| Katai-style boundary walk with decreasing `y` | 100000000..1000000000 | 2000 | exact, 192.28ms vs 52.84ms |
-| Katai-style boundary walk with decreasing `y` | 1000000000..10000000000 | 1000 | exact, 458.64ms vs 432.66ms first-quadrant and 80.19ms convex-hull |
-| Boundary-corrected area approximation | exact check up to 100000 plus random samples | varies | roughly all samples mismatched |
-| Barvinok-style 64-gon area approximation | exact check up to 100000 plus random samples | varies | roughly all samples mismatched |
+| Candidate                                     |                                        Range |  Cases | Result                                                             |
+| --------------------------------------------- | -------------------------------------------: | -----: | ------------------------------------------------------------------ |
+| Fractional-part identity `sqrt - frac(sqrt)`  |                          random m <= 1000000 |   1000 | exact, 12.72ms vs 0.79ms for first-quadrant                        |
+| Katai-style boundary walk with decreasing `y` |                          random m <= 1000000 |   1000 | exact, 2.83ms vs 0.79ms                                            |
+| Katai-style boundary walk with decreasing `y` |                        100000000..1000000000 |   2000 | exact, 192.28ms vs 52.84ms                                         |
+| Katai-style boundary walk with decreasing `y` |                      1000000000..10000000000 |   1000 | exact, 458.64ms vs 432.66ms first-quadrant and 80.19ms convex-hull |
+| Boundary-corrected area approximation         | exact check up to 100000 plus random samples | varies | roughly all samples mismatched                                     |
+| Barvinok-style 64-gon area approximation      | exact check up to 100000 plus random samples | varies | roughly all samples mismatched                                     |
 
 The Katai/fractional-part family gave exact rewrites of the same count, but not a faster JavaScript implementation. Barvinok/LattE-style polygon counting is exact for polytopes, not disks; polygon area replacement fails the identity requirement, and exact polygon decomposition would still need a disk-boundary correction comparable to the current circle-specific count.
 
@@ -129,12 +129,12 @@ Lookup/index experiments:
 - A full exact `m -> count` table is fast after loading, but covering `n <= 100000000` requires roughly 31.8 million `m` entries, about 127MB as `Uint32Array`, plus generation time. This is only attractive as an optional serialized data artifact for a known max range.
 - A representable-shell cumulative index was tested with `tsx scripts/explore-spiral-index.ts`. It stores only shell radii `m` that have at least one representation plus cumulative point counts.
 
-| Index range | Build time | Shells | Typed array bytes | Indexed n -> xy | Current n -> xy | Indexed xy -> n | Current xy -> n |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| `MAX_N=1000000`, no shell cache, 10000 cases | 232.26ms | 72338 | 578704 | 4.79ms | 9.67ms | 3.66ms | 3.38ms |
-| `MAX_N=10000000`, no shell cache, 50000 cases | 7035.23ms | 658320 | 5266560 | 75.15ms | 30.11ms | 43.68ms | 23.31ms |
-| `MAX_N=10000000`, shell cache, 50000 cases | 9560.12ms | 658320 | 5266560 plus Map/shell objects | 276.92ms | 28.62ms | 84.74ms | 31.26ms |
-| `MAX_N=100000000`, no shell cache, 100000 cases | 198768.70ms | 6083988 | 48671904 | 101.23ms | 103.83ms | 82.68ms | 60.87ms |
+| Index range                                     |  Build time |  Shells |              Typed array bytes | Indexed n -> xy | Current n -> xy | Indexed xy -> n | Current xy -> n |
+| ----------------------------------------------- | ----------: | ------: | -----------------------------: | --------------: | --------------: | --------------: | --------------: |
+| `MAX_N=1000000`, no shell cache, 10000 cases    |    232.26ms |   72338 |                         578704 |          4.79ms |          9.67ms |          3.66ms |          3.38ms |
+| `MAX_N=10000000`, no shell cache, 50000 cases   |   7035.23ms |  658320 |                        5266560 |         75.15ms |         30.11ms |         43.68ms |         23.31ms |
+| `MAX_N=10000000`, shell cache, 50000 cases      |   9560.12ms |  658320 | 5266560 plus Map/shell objects |        276.92ms |         28.62ms |         84.74ms |         31.26ms |
+| `MAX_N=100000000`, no shell cache, 100000 cases | 198768.70ms | 6083988 |                       48671904 |        101.23ms |        103.83ms |         82.68ms |         60.87ms |
 
 This makes query complexity closer to predecessor search over representable shells, but JavaScript build time and lookup overhead erase the benefit for the current implementation. It is still a plausible optional serialized artifact if a known max range is reused across many process starts, especially with a lower-overhead predecessor structure such as Elias-Fano rather than raw binary search plus Map-based shell handling.
 
@@ -157,10 +157,10 @@ Cache policy:
 - Disabling the cache also clears existing cached number and BigInt counts/shells.
 - Tests and comparison scripts run with cache disabled unless `SPIRAL_CACHE=1` is set.
 
-| Cache mode | getCoordinates 1..10000 | getNFromCoordinates first 10000 generated coordinates |
-| --- | ---: | ---: |
-| Disabled by default | avg 18.21ms, best 17.99ms, worst 18.49ms | avg 3.59ms, best 2.53ms, worst 6.75ms |
-| Enabled with `SPIRAL_CACHE=1` | avg 2.54ms, best 1.84ms, worst 3.04ms | avg 1.18ms, best 0.88ms, worst 1.61ms |
+| Cache mode                    |                  getCoordinates 1..10000 | getNFromCoordinates first 10000 generated coordinates |
+| ----------------------------- | ---------------------------------------: | ----------------------------------------------------: |
+| Disabled by default           | avg 18.21ms, best 17.99ms, worst 18.49ms |                 avg 3.59ms, best 2.53ms, worst 6.75ms |
+| Enabled with `SPIRAL_CACHE=1` |    avg 2.54ms, best 1.84ms, worst 3.04ms |                 avg 1.18ms, best 0.88ms, worst 1.61ms |
 
 Scale benchmark notes:
 
@@ -168,17 +168,17 @@ Scale benchmark notes:
 - Exact BigInt `n -> xy` for 16-20 digit `n` is skipped by default because it uses the conservative BigInt count path and is not practical for routine benchmarking. Set `RUN_SLOW_BIGINT=1` to force it.
 - Number coordinate inputs automatically route to the BigInt path when `x * x + y * y` is not a safe integer. This preserves correctness, but large coordinate `xy -> n` can be slow; scale benchmarks skip 8+ digit coordinates by default unless `RUN_SLOW_BIGINT=1` is set.
 
-| Input | Cache | Average |
-| --- | --- | ---: |
-| `n -> xy`, 10 digit `n` | off | 890.01us |
-| `n -> xy`, 11 digit `n` | off | 2.246ms |
-| `n -> xy`, 12 digit `n` | off | 6.103ms |
-| `n -> xy`, 13 digit `n` | off | 15.296ms |
-| `n -> xy`, 14 digit `n` | off | 37.577ms |
-| `n -> xy`, 15 digit `n` | off | 103.853ms |
-| `n -> xy`, 16 digit `n`, BigInt convex-hull | off | 122.372ms |
-| `n -> xy`, 17 digit `n`, BigInt convex-hull | off | 6134.535ms |
-| `n -> xy`, 17 digit `n`, BigInt convex-hull plus approximate root seed | off | 3138.776ms |
+| Input                                                                  | Cache |    Average |
+| ---------------------------------------------------------------------- | ----- | ---------: |
+| `n -> xy`, 10 digit `n`                                                | off   |   890.01us |
+| `n -> xy`, 11 digit `n`                                                | off   |    2.246ms |
+| `n -> xy`, 12 digit `n`                                                | off   |    6.103ms |
+| `n -> xy`, 13 digit `n`                                                | off   |   15.296ms |
+| `n -> xy`, 14 digit `n`                                                | off   |   37.577ms |
+| `n -> xy`, 15 digit `n`                                                | off   |  103.853ms |
+| `n -> xy`, 16 digit `n`, BigInt convex-hull                            | off   |  122.372ms |
+| `n -> xy`, 17 digit `n`, BigInt convex-hull                            | off   | 6134.535ms |
+| `n -> xy`, 17 digit `n`, BigInt convex-hull plus approximate root seed | off   | 3138.776ms |
 
 The BigInt root helper now uses a `Number` square-root/cube-root estimate with BigInt correction for values up to `10^30`, preserving exactness while avoiding many BigInt division iterations. This roughly halves the tested 17-digit `n -> xy` time, but 17+ digit exact queries remain expensive.
 

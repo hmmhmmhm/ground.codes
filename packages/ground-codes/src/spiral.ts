@@ -9,15 +9,17 @@ export function getNFromCoordinates(x: number, y: number): number | bigint;
 export function getNFromCoordinates(x: bigint, y: bigint): bigint;
 export function getNFromCoordinates(
   x: number | bigint,
-  y: number | bigint
+  y: number | bigint,
 ): number | bigint;
 export function getNFromCoordinates(
   x: number | bigint,
-  y: number | bigint
+  y: number | bigint,
 ): number | bigint {
   if (typeof x === "bigint" || typeof y === "bigint") {
     if (typeof x !== "bigint" || typeof y !== "bigint") {
-      throw new Error("x and y must both be bigint when using BigInt coordinates.");
+      throw new Error(
+        "x and y must both be bigint when using BigInt coordinates.",
+      );
     }
     return getNFromBigIntCoordinates(x, y);
   }
@@ -50,19 +52,16 @@ export function getNFromCoordinates(
 export function getCoordinates(n: number): { x: number; y: number };
 export function getCoordinates(n: bigint): { x: bigint; y: bigint };
 export function getCoordinates(
-  n: number | bigint
+  n: number | bigint,
 ): { x: number; y: number } | { x: bigint; y: bigint };
 export function getCoordinates(
-  n: number | bigint
+  n: number | bigint,
 ): { x: number; y: number } | { x: bigint; y: bigint } {
   if (typeof n === "bigint") return getBigIntCoordinates(n);
 
   if (n <= 0) throw new Error("Invalid value for n.");
   if (n === 1) return { x: 0, y: 0 };
-  if (
-    Number.isInteger(n) &&
-    n >= Number(BIGINT_COORDINATE_SEARCH_THRESHOLD)
-  ) {
+  if (Number.isInteger(n) && n >= Number(BIGINT_COORDINATE_SEARCH_THRESHOLD)) {
     const coordinates = getBigIntCoordinates(BigInt(n));
     return { x: Number(coordinates.x), y: Number(coordinates.y) };
   }
@@ -213,7 +212,7 @@ function countLatticePointsByConvexHullFlat(m: number): number {
       !pointInCircle(
         currentX + stackX[stackLength - 1]!,
         currentY - stackY[stackLength - 1]!,
-        m
+        m,
       )
     ) {
       stackLength--;
@@ -261,7 +260,7 @@ function slopeOutNoDivision(
   slopeX: number,
   slopeY: number,
   x: number,
-  m: number
+  m: number,
 ): boolean {
   return slopeY * Math.sqrt(m - x * x) > slopeX * x;
 }
@@ -282,7 +281,7 @@ function addSymmetricPoints(points: [number, number][], x: number, y: number) {
       [y, x],
       [y, -x],
       [-y, x],
-      [-y, -x]
+      [-y, -x],
     );
   }
 }
@@ -347,7 +346,7 @@ function angleHalf([, y]: [number, number]): 0 | 1 {
 
 function compareByAngleDescending(
   a: [number, number],
-  b: [number, number]
+  b: [number, number],
 ): number {
   const halfA = angleHalf(a);
   const halfB = angleHalf(b);
@@ -438,13 +437,18 @@ function getBigIntCoordinates(n: bigint): { x: bigint; y: bigint } {
   let { low, high } =
     getBigIntSearchBoundsByInterpolation(n, count) ??
     getBigIntSearchBounds(n, count);
-  ({ low, high } = refineBigIntSearchBoundsByInterpolation(n, low, high, count));
+  ({ low, high } = refineBigIntSearchBoundsByInterpolation(
+    n,
+    low,
+    high,
+    count,
+  ));
   ({ low, high } = refineBigIntSearchBoundsBySecant(n, low, high, count));
   const scannedCoordinates = tryResolveBigIntCoordinatesByShellScan(
     n,
     low,
     high,
-    count
+    count,
   );
   if (scannedCoordinates) return scannedCoordinates;
 
@@ -470,7 +474,7 @@ function tryResolveBigIntCoordinatesByShellScan(
   n: bigint,
   low: bigint,
   high: bigint,
-  count: BigIntCountFunction
+  count: BigIntCountFunction,
 ): { x: bigint; y: bigint } | undefined {
   const threshold = getBigIntShellScanSearchThreshold(high);
   if (low === 0n || high - low > threshold) {
@@ -501,9 +505,10 @@ function refineBigIntSearchBoundsBySecant(
   n: bigint,
   low: bigint,
   high: bigint,
-  count: BigIntCountFunction
+  count: BigIntCountFunction,
 ): { low: bigint; high: bigint } {
-  if (high - low <= getBigIntShellScanSearchThreshold(high)) return { low, high };
+  if (high - low <= getBigIntShellScanSearchThreshold(high))
+    return { low, high };
 
   let lowCount = low > 0n ? count(low - 1n) : 0n;
   let highCount = count(high);
@@ -537,7 +542,7 @@ function refineBigIntSearchBoundsByInterpolation(
   n: bigint,
   low: bigint,
   high: bigint,
-  count: BigIntCountFunction
+  count: BigIntCountFunction,
 ): { low: bigint; high: bigint } {
   let current = (low + high) / 2n;
 
@@ -588,7 +593,7 @@ function createLocalBigIntCount(): BigIntCountFunction {
 
 function getBigIntSearchBoundsByInterpolation(
   n: bigint,
-  count: BigIntCountFunction
+  count: BigIntCountFunction,
 ): { low: bigint; high: bigint } | undefined {
   const numericN = Number(n);
   if (!Number.isFinite(numericN)) return undefined;
@@ -624,7 +629,7 @@ function getBigIntSearchBoundsByInterpolation(
 
 function getBigIntSearchBounds(
   n: bigint,
-  count: BigIntCountFunction = countBigIntLatticePoints
+  count: BigIntCountFunction = countBigIntLatticePoints,
 ): { low: bigint; high: bigint } {
   const numericN = Number(n);
   if (!Number.isFinite(numericN)) return { low: 0n, high: n };
@@ -636,10 +641,7 @@ function getBigIntSearchBounds(
     const low = approx > delta ? approx - delta : 0n;
     const high = approx + delta;
 
-    if (
-      (low === 0n || count(low - 1n) < n) &&
-      count(high) >= n
-    ) {
+    if ((low === 0n || count(low - 1n) < n) && count(high) >= n) {
       return { low, high };
     }
 
@@ -685,7 +687,7 @@ function countBigIntLatticePointsByConvexHull(m: bigint): bigint {
   if (sqrtForGuidedPath <= MAX_NUMBER_GUIDED_BIGINT_ROOT) {
     return countBigIntLatticePointsByNumberGuidedConvexHull(
       m,
-      Number(sqrtForGuidedPath)
+      Number(sqrtForGuidedPath),
     );
   }
 
@@ -726,7 +728,7 @@ function countBigIntLatticePointsByConvexHull(m: bigint): bigint {
       !bigIntPointInCircle(
         currentX + stackX[stackLength - 1]!,
         currentY - stackY[stackLength - 1]!,
-        m
+        m,
       )
     ) {
       stackLength--;
@@ -764,7 +766,7 @@ function countBigIntLatticePointsByConvexHull(m: bigint): bigint {
 
 function countBigIntLatticePointsByNumberGuidedConvexHull(
   m: bigint,
-  sqrt: number
+  sqrt: number,
 ): bigint {
   let count = 0n;
   const numericM = Number(m);
@@ -776,9 +778,9 @@ function countBigIntLatticePointsByNumberGuidedConvexHull(
   const naiveThreshold = Math.min(
     Math.max(
       1,
-      Math.floor(cbrt / BIGINT_CONVEX_HULL_NAIVE_THRESHOLD_DIVISOR) + 1
+      Math.floor(cbrt / BIGINT_CONVEX_HULL_NAIVE_THRESHOLD_DIVISOR) + 1,
     ),
-    sqrt
+    sqrt,
   );
 
   count += sumNumberGuidedYInCircleRange(1, naiveThreshold, m, numericM);
@@ -794,8 +796,7 @@ function countBigIntLatticePointsByNumberGuidedConvexHull(
     const bigSlopeX = BigInt(slopeX);
     const bigSlopeY = BigInt(slopeY);
     let bigCurrentY = BigInt(currentY);
-    const areaCorrection =
-      (BigInt(slopeX - 1) * (bigSlopeY - 1n)) / 2n;
+    const areaCorrection = (BigInt(slopeX - 1) * (bigSlopeY - 1n)) / 2n;
 
     while (true) {
       const nextX = currentX + slopeX;
@@ -815,7 +816,7 @@ function countBigIntLatticePointsByNumberGuidedConvexHull(
         currentX + stackX[stackLength - 1]!,
         currentY - stackY[stackLength - 1]!,
         m,
-        numericM
+        numericM,
       )
     ) {
       stackLength--;
@@ -855,7 +856,7 @@ function sumNumberGuidedYInCircleRange(
   start: number,
   end: number,
   m: bigint,
-  numericM: number
+  numericM: number,
 ): bigint {
   if (start > end) return 0n;
 
@@ -864,7 +865,9 @@ function sumNumberGuidedYInCircleRange(
   let squareStep = BigInt(2 * start + 1);
 
   for (let x = start; x <= end; x++) {
-    total += BigInt(maxNumberGuidedYInCircleWithSquare(x, xSquared, m, numericM));
+    total += BigInt(
+      maxNumberGuidedYInCircleWithSquare(x, xSquared, m, numericM),
+    );
     xSquared += squareStep;
     squareStep += 2n;
   }
@@ -875,7 +878,7 @@ function sumNumberGuidedYInCircleRange(
 function maxNumberGuidedYInCircle(
   x: number,
   m: bigint,
-  numericM: number
+  numericM: number,
 ): number {
   const bigX = BigInt(x);
   return maxNumberGuidedYInCircleWithSquare(x, bigX * bigX, m, numericM);
@@ -885,7 +888,7 @@ function maxNumberGuidedYInCircleWithSquare(
   x: number,
   xSquared: bigint,
   m: bigint,
-  numericM: number
+  numericM: number,
 ): number {
   let y = Math.floor(Math.sqrt(Math.max(0, numericM - x * x)));
   let bigY = BigInt(y);
@@ -910,7 +913,7 @@ function numberGuidedPointInCircle(
   x: number,
   y: number,
   m: bigint,
-  numericM?: number
+  numericM?: number,
 ): boolean {
   if (numericM !== undefined) {
     const delta = numericM - (x * x + y * y);
@@ -927,14 +930,14 @@ function numberGuidedPointInCircle(
 function getNumberGuidedPointCheckTolerance(
   numericM: number,
   x: number,
-  y: number
+  y: number,
 ): number {
   if (numericM <= NUMBER_GUIDED_DYNAMIC_EPSILON_THRESHOLD) {
     return NUMBER_GUIDED_POINT_CHECK_EPSILON;
   }
 
   return (
-      (Math.abs(numericM) + Math.abs(x * x) + Math.abs(y * y)) *
+    (Math.abs(numericM) + Math.abs(x * x) + Math.abs(y * y)) *
       Number.EPSILON *
       NUMBER_GUIDED_LARGE_POINT_CHECK_ULP_FACTOR +
     NUMBER_GUIDED_POINT_CHECK_EPSILON
@@ -946,7 +949,7 @@ function numberGuidedSlopeOutSquared(
   slopeY: number,
   x: number,
   m: bigint,
-  numericM?: number
+  numericM?: number,
 ): boolean {
   if (numericM !== undefined) {
     const xSquared = x * x;
@@ -971,7 +974,6 @@ function numberGuidedSlopeOutSquared(
   return bigSlopeYSquared * (m - bigXSquared) > bigSlopeXSquared * bigXSquared;
 }
 
-
 function maxBigIntYInCircle(x: bigint, m: bigint): bigint {
   return integerSqrt(m - x * x);
 }
@@ -984,7 +986,7 @@ function bigIntSlopeOutSquared(
   slopeX: bigint,
   slopeY: bigint,
   x: bigint,
-  m: bigint
+  m: bigint,
 ): boolean {
   return slopeY * slopeY * (m - x * x) > slopeX * slopeX * x * x;
 }
@@ -1037,7 +1039,7 @@ function getBigIntShellIndexDirect(m: bigint, x: bigint, y: bigint): bigint {
 
     for (const [px, py] of getBigIntSymmetricPointCandidates(
       representativeX,
-      representativeY
+      representativeY,
     )) {
       if (px === x && py === y) found = true;
       if (compareBigIntByAngleDescending([px, py], [x, y]) < 0) count++;
@@ -1084,8 +1086,8 @@ function getBigIntPointsByFactorization(m: bigint): [bigint, bigint][] {
         options.push(
           gaussianBigIntMultiply(
             gaussianBigIntPow(primeRep, k),
-            gaussianBigIntPow(conjugate, exponent - k)
-          )
+            gaussianBigIntPow(conjugate, exponent - k),
+          ),
         );
       }
 
@@ -1151,7 +1153,7 @@ function getBigIntSymmetricPoints(m: bigint): [bigint, bigint][] {
 function addBigIntSymmetricPoints(
   points: [bigint, bigint][],
   x: bigint,
-  y: bigint
+  y: bigint,
 ) {
   if (x === 0n && y === 0n) {
     points.push([0n, 0n]);
@@ -1168,18 +1170,30 @@ function addBigIntSymmetricPoints(
       [y, x],
       [y, -x],
       [-y, x],
-      [-y, -x]
+      [-y, -x],
     );
   }
 }
 
 function getBigIntSymmetricPointCandidates(
   x: bigint,
-  y: bigint
+  y: bigint,
 ): [bigint, bigint][] {
   if (x === 0n && y === 0n) return [[0n, 0n]];
-  if (x === 0n) return [[0n, y], [0n, -y], [y, 0n], [-y, 0n]];
-  if (x === y) return [[x, y], [x, -y], [-x, y], [-x, -y]];
+  if (x === 0n)
+    return [
+      [0n, y],
+      [0n, -y],
+      [y, 0n],
+      [-y, 0n],
+    ];
+  if (x === y)
+    return [
+      [x, y],
+      [x, -y],
+      [-x, y],
+      [-x, -y],
+    ];
 
   return [
     [x, y],
@@ -1195,7 +1209,7 @@ function getBigIntSymmetricPointCandidates(
 
 function compareBigIntByAngleDescending(
   a: [bigint, bigint],
-  b: [bigint, bigint]
+  b: [bigint, bigint],
 ): number {
   const halfA = a[1] >= 0n ? 0 : 1;
   const halfB = b[1] >= 0n ? 0 : 1;
@@ -1236,7 +1250,9 @@ function factorBigInt(value: bigint): Array<[bigint, number]> {
   }
 
   addFactor(n);
-  return [...factors.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+  return [...factors.entries()].sort(([a], [b]) =>
+    a < b ? -1 : a > b ? 1 : 0,
+  );
 }
 
 function pollardRho(n: bigint): bigint {
@@ -1361,7 +1377,7 @@ function tonelliShanks(n: bigint, prime: bigint): bigint {
 
 function gaussianBigIntPow(
   base: [bigint, bigint],
-  exponent: number
+  exponent: number,
 ): [bigint, bigint] {
   let result: [bigint, bigint] = [1n, 0n];
   let power = base;
@@ -1378,7 +1394,7 @@ function gaussianBigIntPow(
 
 function gaussianBigIntMultiply(
   a: [bigint, bigint],
-  b: [bigint, bigint]
+  b: [bigint, bigint],
 ): [bigint, bigint] {
   return [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
 }
@@ -1415,7 +1431,8 @@ function absBigInt(value: bigint): bigint {
 }
 
 function integerSqrt(value: bigint): bigint {
-  if (value < 0n) throw new Error("Cannot calculate square root of negative bigint.");
+  if (value < 0n)
+    throw new Error("Cannot calculate square root of negative bigint.");
   if (value < 2n) return value;
 
   if (value <= MAX_FAST_BIGINT_ROOT) {
@@ -1437,7 +1454,8 @@ function integerSqrt(value: bigint): bigint {
 }
 
 function integerCubeRoot(value: bigint): bigint {
-  if (value < 0n) throw new Error("Cannot calculate cube root of negative bigint.");
+  if (value < 0n)
+    throw new Error("Cannot calculate cube root of negative bigint.");
   if (value < 8n) return value >= 1n ? 1n : 0n;
 
   if (value <= MAX_FAST_BIGINT_ROOT) {

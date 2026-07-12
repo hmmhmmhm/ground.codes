@@ -61,7 +61,10 @@ const assertScriptCodebook = ({
 }) => {
   assert.equal(words.length, 5000);
   assert.equal(new Set(words).size, words.length);
-  assert.deepEqual(words.filter((word) => !pattern.test(word)), []);
+  assert.deepEqual(
+    words.filter((word) => !pattern.test(word)),
+    [],
+  );
   assertWordsPresent(words, expectedWords);
   assertBlockedWordsAbsent(words, blockedWords);
 };

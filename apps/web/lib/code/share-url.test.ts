@@ -41,7 +41,9 @@ describe("Ground Code share URLs", () => {
       body: "earth",
       code: "서울-안방",
     });
-    expect(parseGroundCodeSharePath("/mars/Olympus%20Mons-Happy-Tiger")).toEqual({
+    expect(
+      parseGroundCodeSharePath("/mars/Olympus%20Mons-Happy-Tiger"),
+    ).toEqual({
       body: "mars",
       code: "Olympus Mons-Happy-Tiger",
     });

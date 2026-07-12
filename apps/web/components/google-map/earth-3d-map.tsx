@@ -487,9 +487,8 @@ const Earth3DMap = ({
 
     const markerLabel = getMarkerLabel(isEncoding, encodedCoordinates);
     markerRef.current.setAttribute("title", markerLabel);
-    const content = markerPopoverRef.current.firstElementChild as
-      | HTMLElement
-      | null;
+    const content = markerPopoverRef.current
+      .firstElementChild as HTMLElement | null;
     const label = content?.firstElementChild;
     const precision = content?.lastElementChild;
     if (label) {

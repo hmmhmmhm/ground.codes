@@ -36,7 +36,7 @@ const PhotoModal: React.FC<PhotoModalProps> = ({ photoUrl, onClose }) => {
         />
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
 

@@ -14,8 +14,8 @@ export default async () => {
   if (language === "english") {
     console.log(
       chalk.yellow(
-        "English is the base language, so you don't need to build translations."
-      )
+        "English is the base language, so you don't need to build translations.",
+      ),
     );
     return;
   }
@@ -27,31 +27,31 @@ export default async () => {
       "region-dataset",
       "region-level-2",
       "pre-translation",
-      language
+      language,
     ),
     preTranslationTxt: path.join(
       process.cwd(),
       "region-dataset",
       "region-level-2",
-      `all-${language}-translations.txt`
+      `all-${language}-translations.txt`,
     ),
     postTranslationJson: path.join(
       process.cwd(),
       "region-dist",
-      `region-2-${language}.json`
+      `region-2-${language}.json`,
     ),
   };
 
   if (!fs.existsSync(filePaths.originalJson)) {
     console.log(
-      chalk.yellow(`The original region-2.json file does not exist.`)
+      chalk.yellow(`The original region-2.json file does not exist.`),
     );
     return;
   }
 
   // Function to extract region name and coordinates from a translation line
   function parseTranslationLine(
-    line: string
+    line: string,
   ): { name: string; lat: number; long: number } | null {
     const match = line.match(/(.*?)\s*\(([0-9.-]+),\s*([0-9.-]+)\)/);
 
@@ -114,7 +114,7 @@ export default async () => {
         if (regionName) {
           regionNameCounts.set(
             regionName,
-            (regionNameCounts.get(regionName) || 0) + 1
+            (regionNameCounts.get(regionName) || 0) + 1,
           );
         }
       }
@@ -125,9 +125,9 @@ export default async () => {
     console.log(
       chalk.green(
         `Combined all translations into ${chalk.bold(
-          chalk.underline(`all-${language}-translations.txt`)
-        )}`
-      )
+          chalk.underline(`all-${language}-translations.txt`),
+        )}`,
+      ),
     );
 
     if (!fs.existsSync(filePaths.preTranslationTxt)) {
@@ -143,17 +143,17 @@ export default async () => {
     console.log(
       chalk.green(
         `Found ${chalk.bold(
-          chalk.underline(duplicateRegions.length)
-        )} region names that appear multiple times.`
-      )
+          chalk.underline(duplicateRegions.length),
+        )} region names that appear multiple times.`,
+      ),
     );
 
     console.log(
       chalk.green(
         `Total translations combined: ${chalk.bold(
-          chalk.underline(allTranslations.length)
-        )}`
-      )
+          chalk.underline(allTranslations.length),
+        )}`,
+      ),
     );
   }
 
@@ -162,28 +162,28 @@ export default async () => {
     console.log(
       chalk.green(
         `\nStarting to generate ${chalk.underline(
-          chalk.bold(language)
-        )} region-2 JSON...`
-      )
+          chalk.bold(language),
+        )} region-2 JSON...`,
+      ),
     );
 
     // Read original JSON file
     const originalData = JSON.parse(
-      fs.readFileSync(filePaths.originalJson, "utf8")
+      fs.readFileSync(filePaths.originalJson, "utf8"),
     ) as RegionData[];
 
     console.log(
       chalk.green(
         `Loaded original region-2.json with ${chalk.bold(
-          chalk.underline(originalData.length)
-        )} regions`
-      )
+          chalk.underline(originalData.length),
+        )} regions`,
+      ),
     );
 
     // Read translations file
     const translationsContent = fs.readFileSync(
       filePaths.preTranslationTxt,
-      "utf8"
+      "utf8",
     );
     const translationLines = translationsContent
       .split("\n")
@@ -192,9 +192,9 @@ export default async () => {
     console.log(
       chalk.green(
         `Loaded ${chalk.bold(
-          chalk.underline(translationLines.length)
-        )} ${language} translations`
-      )
+          chalk.underline(translationLines.length),
+        )} ${language} translations`,
+      ),
     );
 
     // Parse translations into a map for easy lookup
@@ -212,9 +212,9 @@ export default async () => {
     console.log(
       chalk.green(
         `Successfully parsed ${chalk.bold(
-          chalk.underline(translationsMap.size)
-        )} translations`
-      )
+          chalk.underline(translationsMap.size),
+        )} translations`,
+      ),
     );
 
     // Create translated version of the JSON
@@ -234,15 +234,15 @@ export default async () => {
 
     // Count how many translations were found
     const translatedCount = translatedData.filter(
-      (region, index) => region.name !== originalData[index]?.name
+      (region, index) => region.name !== originalData[index]?.name,
     ).length;
 
     console.log(
       chalk.green(
         `Found translations for ${chalk.bold(
-          chalk.underline(translatedCount)
-        )} out of ${originalData.length} regions`
-      )
+          chalk.underline(translatedCount),
+        )} out of ${originalData.length} regions`,
+      ),
     );
 
     // Handle duplicate region names by keeping only the one with the highest population
@@ -271,16 +271,16 @@ export default async () => {
     console.log(
       chalk.green(
         `Found ${chalk.bold(
-          chalk.underline(duplicateCount)
-        )} duplicate region names`
-      )
+          chalk.underline(duplicateCount),
+        )} duplicate region names`,
+      ),
     );
     console.log(
       chalk.green(
         `Replaced ${chalk.bold(
-          chalk.underline(replacedCount)
-        )} regions with higher population alternatives`
-      )
+          chalk.underline(replacedCount),
+        )} regions with higher population alternatives`,
+      ),
     );
 
     // Convert map back to array
@@ -289,22 +289,22 @@ export default async () => {
     console.log(
       chalk.green(
         `Final dataset contains ${chalk.bold(
-          chalk.underline(filteredLanguageDataSet.length)
-        )} regions (reduced from ${originalData.length})`
-      )
+          chalk.underline(filteredLanguageDataSet.length),
+        )} regions (reduced from ${originalData.length})`,
+      ),
     );
 
     // Write the JSON file
     fs.writeFileSync(
       filePaths.postTranslationJson,
-      JSON.stringify(filteredLanguageDataSet, null, 2)
+      JSON.stringify(filteredLanguageDataSet, null, 2),
     );
     console.log(
       chalk.green(
         `Successfully wrote ${chalk.bold(
-          chalk.underline(language)
-        )} region data`
-      )
+          chalk.underline(language),
+        )} region data`,
+      ),
     );
   }
 };

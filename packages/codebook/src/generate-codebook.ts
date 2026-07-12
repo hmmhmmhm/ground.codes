@@ -11,8 +11,8 @@ const timeout = 60_000; // 30 seconds timeout
 export default async () => {
   console.log(
     chalk.green(
-      "This command runs through the process of generating a codebook using generative AI. Read CODEBOOK_GUIDE.md before using the output."
-    )
+      "This command runs through the process of generating a codebook using generative AI. Read CODEBOOK_GUIDE.md before using the output.",
+    ),
   );
 
   const openAIModel = await input({
@@ -29,13 +29,13 @@ export default async () => {
     questionSubjects: path.join(
       process.cwd(),
       "codebook-dataset",
-      "question-subjects.json"
+      "question-subjects.json",
     ),
     generated: path.join(
       process.cwd(),
       "codebook-dataset",
       language,
-      "generated"
+      "generated",
     ),
   };
 
@@ -43,16 +43,16 @@ export default async () => {
 
   console.log(
     chalk.green(
-      "This total process will use an average of $0.5 or less, but it can often be more."
-    )
+      "This total process will use an average of $0.5 or less, but it can often be more.",
+    ),
   );
 
   const questions = JSON.parse(
-    fs.readFileSync(filePaths.questionSubjects, "utf8")
+    fs.readFileSync(filePaths.questionSubjects, "utf8"),
   ) as string[];
 
   console.log(
-    chalk.green(`Loaded ${questions.length} questions for ${language}.`)
+    chalk.green(`Loaded ${questions.length} questions for ${language}.`),
   );
 
   fs.mkdirSync(filePaths.generated, { recursive: true });
@@ -63,21 +63,21 @@ export default async () => {
         // Skip if file exists
         if (
           fs.existsSync(
-            path.join(filePaths.generated, `generated-${index}.json`)
+            path.join(filePaths.generated, `generated-${index}.json`),
           )
         ) {
           console.log(
             chalk.yellow(
-              `Skipping "${question}" (${index}/${questions.length}) because file exists.`
-            )
+              `Skipping "${question}" (${index}/${questions.length}) because file exists.`,
+            ),
           );
           return;
         }
 
         console.log(
           chalk.green(
-            `Generating codebook for "${question}" (${index}/${questions.length})...`
-          )
+            `Generating codebook for "${question}" (${index}/${questions.length})...`,
+          ),
         );
 
         const prompt = `Please write at least 100 "${language}" noun words related to the given topic and return the data in the form of a JSON array. Output JSON data directly. Don't include any other answers or messages. You must answer only words that are unconditionally related to the topic.
@@ -124,18 +124,18 @@ ${question}
           if (!Array.isArray(data) || data.length === 0) {
             console.error(
               chalk.yellow(`Failed to parse JSON(Index: ${index}):`),
-              data
+              data,
             );
             fs.writeFileSync(
               path.join(filePaths.generated, `generated-failed-${index}.txt`),
-              cleanText
+              cleanText,
             );
             return { status: "failed", index };
           }
 
           fs.writeFileSync(
             path.join(filePaths.generated, `generated-${index}.json`),
-            JSON.stringify(data)
+            JSON.stringify(data),
           );
 
           return { status: "success", index };
@@ -143,25 +143,25 @@ ${question}
           if (e.message === "Timeout exceeded") {
             console.log(
               chalk.yellow(
-                `Timeout exceeded for "${question}" (${index}/${questions.length})`
-              )
+                `Timeout exceeded for "${question}" (${index}/${questions.length})`,
+              ),
             );
           } else {
             console.error(e);
             console.log(
               chalk.yellow(
-                `Failed to generate codebook for "${question}" (${index}/${questions.length})`
-              )
+                `Failed to generate codebook for "${question}" (${index}/${questions.length})`,
+              ),
             );
 
             fs.writeFileSync(
               path.join(filePaths.generated, `generated-failed-${index}.txt`),
-              parseFailedText
+              parseFailedText,
             );
           }
           return { status: "failed", index, error: e };
         }
-      })
+      }),
     );
 
     return results;
@@ -188,9 +188,9 @@ ${question}
         `Found ${
           needsProcessing.length
         } questions that need to be processed: \n${JSON.stringify(
-          needsProcessing.map((item) => item.index)
-        )}`
-      )
+          needsProcessing.map((item) => item.index),
+        )}`,
+      ),
     );
 
   if (needsProcessing.length > 0) {
@@ -205,8 +205,8 @@ ${question}
   } else {
     console.log(
       chalk.yellow(
-        `No need to generate set for ${language}. Already whole set exists.`
-      )
+        `No need to generate set for ${language}. Already whole set exists.`,
+      ),
     );
   }
 
@@ -215,8 +215,8 @@ ${question}
     const batch = needsProcessing.slice(i, i + batchSize);
     console.log(
       chalk.green(
-        `\nProcessing batch: ${JSON.stringify(batch.map((item) => item.index))}`
-      )
+        `\nProcessing batch: ${JSON.stringify(batch.map((item) => item.index))}`,
+      ),
     );
     await processBatch(batch);
   }

@@ -165,7 +165,7 @@ export const I18nProvider: React.FC<{
                         ? "भाषा बदलने पर पेज रीफ्रेश होगा और वर्तमान दृश्य रीसेट हो जाएगा। क्या आप जारी रखना चाहते हैं?"
                         : locale === "ru"
                           ? "При смене языка страница обновится, а текущий вид будет сброшен. Продолжить?"
-                      : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
+                          : "Changing the language will refresh the page and reset your current view. Do you want to continue?";
 
     const userConfirmed = window.confirm(confirmMessage);
 

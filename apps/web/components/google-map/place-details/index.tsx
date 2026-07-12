@@ -17,7 +17,12 @@ import {
 } from "react-icons/fa";
 
 import { PlaceDetailsProps } from "./types";
-import { getCurrentDayIndex, getDayIndexFromString, isOpenNow, getPlaceTypeName } from "./helpers";
+import {
+  getCurrentDayIndex,
+  getDayIndexFromString,
+  isOpenNow,
+  getPlaceTypeName,
+} from "./helpers";
 import { usePlaceDetails } from "./use-place-details";
 import { useGroundCode } from "./use-ground-code";
 import { useCopy } from "./use-copy";
@@ -46,15 +51,19 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
     map,
     placeId,
     visible,
-    resetPhotoState
+    resetPhotoState,
   );
 
   const { groundCode, isLoadingGroundCode } = useGroundCode(location, visible);
 
-  const { address: addressCopy, groundCode: groundCodeCopy, phone: phoneCopy } = useCopy(
+  const {
+    address: addressCopy,
+    groundCode: groundCodeCopy,
+    phone: phoneCopy,
+  } = useCopy(
     useCallback(() => placeDetails?.formatted_address, [placeDetails]),
     useCallback(() => groundCode || undefined, [groundCode]),
-    useCallback(() => placeDetails?.formatted_phone_number, [placeDetails])
+    useCallback(() => placeDetails?.formatted_phone_number, [placeDetails]),
   );
 
   const handleImageError = (index: number) => {
@@ -108,7 +117,10 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                 <div className="flex items-center mb-3">
                   <FaStoreAlt className="text-gray-300 mr-2" />
                   <span className="text-gray-300 text-sm">
-                    {getPlaceTypeName(placeDetails.types?.[0], locale as Locale)}
+                    {getPlaceTypeName(
+                      placeDetails.types?.[0],
+                      locale as Locale,
+                    )}
                   </span>
                 </div>
               )}
@@ -157,7 +169,10 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                           </span>
                         )}
                         <button
-                          onClick={(e) => { e.stopPropagation(); addressCopy.copy(); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addressCopy.copy();
+                          }}
                           className="text-blue-400 hover:text-blue-300 transition-colors p-2 rounded-md hover:bg-white/10"
                           title={t("common.copyAddress")}
                         >
@@ -194,7 +209,10 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                           </span>
                         )}
                         <button
-                          onClick={(e) => { e.stopPropagation(); groundCodeCopy.copy(); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            groundCodeCopy.copy();
+                          }}
                           className="text-purple-400 hover:text-purple-300 transition-colors p-2 rounded-md hover:bg-white/10"
                           title={t("common.copyGroundCode")}
                         >
@@ -204,11 +222,15 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                     </div>
                     <p className="font-mono tracking-wider">
                       {isLoadingGroundCode ? (
-                        <span className="text-gray-400">{t("common.loading")}</span>
+                        <span className="text-gray-400">
+                          {t("common.loading")}
+                        </span>
                       ) : groundCode ? (
                         groundCode
                       ) : (
-                        <span className="text-gray-400">{t("common.unavailable")}</span>
+                        <span className="text-gray-400">
+                          {t("common.unavailable")}
+                        </span>
                       )}
                     </p>
                   </div>
@@ -239,7 +261,10 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                           </span>
                         )}
                         <button
-                          onClick={(e) => { e.stopPropagation(); phoneCopy.copy(); }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            phoneCopy.copy();
+                          }}
                           className="text-green-400 hover:text-green-300 transition-colors p-2 rounded-md hover:bg-white/10 mr-2"
                           title={t("common.copyPhone")}
                         >
@@ -282,9 +307,15 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline break-all overflow-hidden text-ellipsis max-w-full inline-block"
                       onClick={(e) => e.stopPropagation()}
-                      style={{ wordWrap: "break-word", overflowWrap: "break-word", hyphens: "auto" }}
+                      style={{
+                        wordWrap: "break-word",
+                        overflowWrap: "break-word",
+                        hyphens: "auto",
+                      }}
                     >
-                      {placeDetails.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                      {placeDetails.website
+                        .replace(/^https?:\/\//, "")
+                        .replace(/\/$/, "")}
                     </a>
                   </div>
                 </div>
@@ -302,15 +333,24 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                     <h3 className="text-sm font-medium text-gray-300 mb-1">
                       {t("common.hours")}
                     </h3>
-                    <p className={isOpenNow(placeDetails) ? "text-green-400 font-medium" : "text-red-400 font-medium"}>
-                      {isOpenNow(placeDetails) ? t("common.openNow") : t("common.closedNow")}
+                    <p
+                      className={
+                        isOpenNow(placeDetails)
+                          ? "text-green-400 font-medium"
+                          : "text-red-400 font-medium"
+                      }
+                    >
+                      {isOpenNow(placeDetails)
+                        ? t("common.openNow")
+                        : t("common.closedNow")}
                     </p>
                     <div className="mt-2 text-sm">
                       {placeDetails.opening_hours.weekday_text &&
                         placeDetails.opening_hours.weekday_text.map(
                           (day: string, index: number) => {
                             const dayIndex = getDayIndexFromString(day);
-                            const isCurrentDay = dayIndex === getCurrentDayIndex();
+                            const isCurrentDay =
+                              dayIndex === getCurrentDayIndex();
                             return (
                               <p
                                 key={index}
@@ -323,7 +363,7 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
                                 {day}
                               </p>
                             );
-                          }
+                          },
                         )}
                     </div>
                   </div>
@@ -349,7 +389,10 @@ const PlaceDetails: React.FC<PlaceDetailsProps> = ({
 
       {/* Full-screen photo modal */}
       {selectedPhoto && (
-        <PhotoModal photoUrl={selectedPhoto} onClose={() => setSelectedPhoto(null)} />
+        <PhotoModal
+          photoUrl={selectedPhoto}
+          onClose={() => setSelectedPhoto(null)}
+        />
       )}
     </div>
   );

@@ -155,7 +155,10 @@ describe("region-3 dataset", () => {
       findRegionNameByCode(region2Vietnamese, "1566083"),
       "TP Hồ Chí Minh",
     );
-    assert.equal(findRegionNameByCode(region3Vietnamese, "OCN0"), "Biển Ross 1");
+    assert.equal(
+      findRegionNameByCode(region3Vietnamese, "OCN0"),
+      "Biển Ross 1",
+    );
     assert.equal(findRegionNameByCode(region2Hindi, "1273294"), "दिल्ली");
     assert.equal(findRegionNameByCode(region2Hindi, "1261481"), "नईदिल्ली");
     assert.equal(findRegionNameByCode(region3Hindi, "OCN0"), "रॉस सागर 1");
@@ -166,10 +169,7 @@ describe("region-3 dataset", () => {
       findRegionNameByCode(region2Russian, "498817"),
       "Санкт Петербург",
     );
-    assert.equal(
-      findRegionNameByCode(region3Russian, "OCN0"),
-      "Море Росса 1",
-    );
+    assert.equal(findRegionNameByCode(region3Russian, "OCN0"), "Море Росса 1");
 
     assert.deepEqual(
       region2Korean

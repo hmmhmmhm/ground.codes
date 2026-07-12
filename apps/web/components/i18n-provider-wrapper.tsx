@@ -21,9 +21,5 @@ export default function I18nProviderWrapper({
     return null;
   }
 
-  return (
-    <I18nProvider initialLocale={initialLocale}>
-      {children}
-    </I18nProvider>
-  );
+  return <I18nProvider initialLocale={initialLocale}>{children}</I18nProvider>;
 }

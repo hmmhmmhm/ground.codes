@@ -54,7 +54,7 @@ export const swaggerEndpoint = swagger({
     info: {
       title: "Ground Codes API Documentation",
       description:
-        "Production API documentation for Ground Codes. Use the versioned `/v1/*` endpoints for new integrations. Quick start: POST `/v1/encode` with `{ \"lat\": 37.566, \"lng\": 126.978, \"language\": \"english\", \"regionLevel\": 2 }`, then POST `/v1/search` with the returned code or share it as `https://ground.codes/{encoded-code}`. Earth share URLs are code-only; Moon and Mars use `/moon/{encoded-code}` and `/mars/{encoded-code}`.",
+        'Production API documentation for Ground Codes. Use the versioned `/v1/*` endpoints for new integrations. Quick start: POST `/v1/encode` with `{ "lat": 37.566, "lng": 126.978, "language": "english", "regionLevel": 2 }`, then POST `/v1/search` with the returned code or share it as `https://ground.codes/{encoded-code}`. Earth share URLs are code-only; Moon and Mars use `/moon/{encoded-code}` and `/mars/{encoded-code}`.',
       version: "1.0.0",
     },
     tags: [
@@ -116,59 +116,35 @@ export const openApiReferenceEndpoint = new Elysia()
       },
     },
   )
-  .get(
-    "/openapi/json",
-    () => redirect("/openapi-json/json"),
-    {
-      detail: {
-        hide: true,
-      },
+  .get("/openapi/json", () => redirect("/openapi-json/json"), {
+    detail: {
+      hide: true,
     },
-  );
+  });
 
 export const swaggerRedirectEndpoint = new Elysia()
-  .get(
-    "/json",
-    () => redirect("/openapi-json/json"),
-    {
-      detail: {
-        hide: true,
-      },
+  .get("/json", () => redirect("/openapi-json/json"), {
+    detail: {
+      hide: true,
     },
-  )
-  .get(
-    "/reference",
-    () => redirect("/openapi/"),
-    {
-      detail: {
-        hide: true,
-      },
+  })
+  .get("/reference", () => redirect("/openapi/"), {
+    detail: {
+      hide: true,
     },
-  )
-  .get(
-    "/swagger",
-    () => redirect("/openapi/"),
-    {
-      detail: {
-        hide: true,
-      },
+  })
+  .get("/swagger", () => redirect("/openapi/"), {
+    detail: {
+      hide: true,
     },
-  )
-  .get(
-    "/swagger/",
-    () => redirect("/openapi/"),
-    {
-      detail: {
-        hide: true,
-      },
+  })
+  .get("/swagger/", () => redirect("/openapi/"), {
+    detail: {
+      hide: true,
     },
-  )
-  .get(
-    "/swagger/json",
-    () => redirect("/openapi-json/json"),
-    {
-      detail: {
-        hide: true,
-      },
+  })
+  .get("/swagger/json", () => redirect("/openapi-json/json"), {
+    detail: {
+      hide: true,
     },
-  );
+  });

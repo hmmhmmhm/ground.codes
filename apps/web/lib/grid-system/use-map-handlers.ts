@@ -18,7 +18,7 @@ export function useMapEventHandlers(
     setSelectedLocation?: (location: google.maps.LatLng | null) => void;
     setSelectedArea?: (area: Coordinates | null) => void;
     setShowInfoWindow?: (show: boolean) => void;
-  }
+  },
 ) {
   return useCallback(
     (mapInstance: google.maps.Map) => {
@@ -31,7 +31,7 @@ export function useMapEventHandlers(
       // Add click event listener to map
       mapInstance.addListener("click", (e: google.maps.MapMouseEvent) => {
         console.log("Map click from use-map-handlers", e);
-        
+
         // Handle location mode if provided
         if (options?.locationMode === "TRACKING" && options.setLocationMode) {
           options.setLocationMode("OFF");
@@ -85,7 +85,7 @@ export function useMapEventHandlers(
         handleGridCellClick(e);
       });
     },
-    [drawGrid, showGrid, handleGridCellClick, options]
+    [drawGrid, showGrid, handleGridCellClick, options],
   );
 }
 
@@ -97,7 +97,7 @@ export function useGridCellClickHandler(
   mapInstanceRef: React.MutableRefObject<google.maps.Map | null>,
   setSelectedArea: React.Dispatch<React.SetStateAction<Coordinates | null>>,
   drawGrid: (mapInstance: google.maps.Map) => void,
-  metersPerDegree?: number
+  metersPerDegree?: number,
 ) {
   return useCallback(
     (e: google.maps.MapMouseEvent) => {
@@ -133,7 +133,7 @@ export function useGridCellClickHandler(
         clickedLat,
         clickedLng,
         centerLat,
-        metersPerDegree
+        metersPerDegree,
       );
 
       // Update selected area state
@@ -150,7 +150,7 @@ export function useGridCellClickHandler(
       setSelectedArea,
       drawGrid,
       metersPerDegree,
-    ]
+    ],
   );
 }
 

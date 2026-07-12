@@ -99,7 +99,7 @@ export const useMapContextState = (): MapContextType => {
       removeMapEventHandlers(mapInstance);
       setMap(null);
     },
-    [clearAllGridLines, removeMapEventHandlers]
+    [clearAllGridLines, removeMapEventHandlers],
   );
 
   return {

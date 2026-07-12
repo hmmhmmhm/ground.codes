@@ -105,7 +105,7 @@ function oldIsAngleGreater(
   px: number,
   py: number,
   x: number,
-  y: number
+  y: number,
 ): boolean {
   const atan2A = Math.atan2(py, px);
   const atan2B = Math.atan2(y, x);
@@ -113,12 +113,19 @@ function oldIsAngleGreater(
   return atan2A > atan2B;
 }
 
-function fail(kind: string, input: unknown, oldValue: unknown, newValue: unknown) {
+function fail(
+  kind: string,
+  input: unknown,
+  oldValue: unknown,
+  newValue: unknown,
+) {
   console.error(JSON.stringify({ kind, input, oldValue, newValue }, null, 2));
   process.exit(1);
 }
 
-console.log(`seed=${seedStart} maxN=${MAX_N} cases=${CASES} spiralCache=${CACHE}`);
+console.log(
+  `seed=${seedStart} maxN=${MAX_N} cases=${CASES} spiralCache=${CACHE}`,
+);
 
 console.time("random n -> xy compare");
 for (let i = 0; i < CASES; i++) {

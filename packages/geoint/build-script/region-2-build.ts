@@ -9,7 +9,7 @@ export default async () => {
       process.cwd(),
       "region-dataset",
       "region-level-2",
-      "cities500.txt"
+      "cities500.txt",
     ),
     outputFile: path.join(process.cwd(), "region-dist", "region-2.json"),
   };
@@ -17,7 +17,7 @@ export default async () => {
   if (!fs.existsSync(filePaths.inputFile)) {
     console.error(`Input file not found: ${filePaths.inputFile}`);
     console.error(
-      "Please download the cities500.txt file from here: https://download.geonames.org/export/dump/cities500.zip"
+      "Please download the cities500.txt file from here: https://download.geonames.org/export/dump/cities500.zip",
     );
     return;
   }
@@ -28,9 +28,9 @@ export default async () => {
   console.log(
     chalk.green(
       `File read complete. Total lines: ${chalk.bold(
-        chalk.underline(lines.length)
-      )}`
-    )
+        chalk.underline(lines.length),
+      )}`,
+    ),
   );
 
   const cityMap = new Map<string, any>();
@@ -54,8 +54,8 @@ export default async () => {
         if (columns.length < 19) {
           console.log(
             chalk.yellow(
-              `Skipping line with insufficient columns (wrong format): ${columns.length}`
-            )
+              `Skipping line with insufficient columns (wrong format): ${columns.length}`,
+            ),
           );
           skippedCount++;
           continue;
@@ -82,8 +82,8 @@ export default async () => {
         if (!latitude || !longitude) {
           console.log(
             chalk.yellow(
-              `Skipping line with insufficient columns (no coordinates): ${columns.length}`
-            )
+              `Skipping line with insufficient columns (no coordinates): ${columns.length}`,
+            ),
           );
           skippedCount++;
           continue;
@@ -103,8 +103,8 @@ export default async () => {
         if (!cityName) {
           console.log(
             chalk.yellow(
-              `Skipping line with insufficient columns (no name): ${columns.length}`
-            )
+              `Skipping line with insufficient columns (no name): ${columns.length}`,
+            ),
           );
           skippedCount++;
           continue;
@@ -151,34 +151,34 @@ export default async () => {
           setTitle(`Processed ${processedCount} cities so far...`);
       }
       return processedCount;
-    }
+    },
   );
   processTask.clear();
   console.log(
     chalk.green(
-      `Processed ${chalk.bold(chalk.underline(processTask.result))} cities`
-    )
+      `Processed ${chalk.bold(chalk.underline(processTask.result))} cities`,
+    ),
   );
 
   const cities = Array.from(cityMap.values());
   await fs.promises.writeFile(
     filePaths.outputFile,
     JSON.stringify(cities, null, 2),
-    "utf8"
+    "utf8",
   );
 
   const statistics = `\nProcessing statistics:
 - Total lines processed: ${chalk.bold(
-    chalk.underline(processedCount + skippedCount)
+    chalk.underline(processedCount + skippedCount),
   )}
 - Valid cities processed: ${chalk.bold(chalk.underline(processedCount))}
 - Lines skipped: ${chalk.bold(chalk.underline(skippedCount))}
 - Duplicate city names found: ${chalk.bold(chalk.underline(duplicateCount))}
 - Cities replaced due to higher population: ${chalk.bold(
-    chalk.underline(replacedCount)
+    chalk.underline(replacedCount),
   )}
 - Cities excluded due to name length > 20: ${chalk.bold(
-    chalk.underline(longNameCount)
+    chalk.underline(longNameCount),
   )}
 \nCollected ${cities.length} unique cities.`;
 

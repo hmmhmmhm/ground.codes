@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { Coordinates } from "../types";
-import type { 
-  WeatherData, 
+import type {
+  WeatherData,
   AirQualityData,
-  CombinedWeatherData
+  CombinedWeatherData,
 } from "@/app/api/weather-data/route";
 import { useI18n } from "@/lib/i18n/i18n-context";
 
@@ -33,7 +33,7 @@ interface UseAirQualityOptions {
  */
 export const useAirQuality = (
   coordinates: Coordinates | null,
-  options: UseAirQualityOptions = {}
+  options: UseAirQualityOptions = {},
 ) => {
   const { debounceMs = 1000 } = options;
   const { locale } = useI18n();
@@ -107,7 +107,9 @@ export const useAirQuality = (
 
         // Handle error if both failed
         if (!data.airQuality && !data.weather) {
-          setError(data.error || "Failed to fetch weather and air quality data");
+          setError(
+            data.error || "Failed to fetch weather and air quality data",
+          );
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to fetch data");

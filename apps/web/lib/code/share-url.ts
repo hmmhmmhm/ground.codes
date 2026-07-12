@@ -51,7 +51,12 @@ export const parseGroundCodeSharePath = (
   }
 
   const [rawBody, rawCode] = segments;
-  if (segments.length === 2 && rawBody && rawCode && bodyPrefixes.has(rawBody)) {
+  if (
+    segments.length === 2 &&
+    rawBody &&
+    rawCode &&
+    bodyPrefixes.has(rawBody)
+  ) {
     const code = decodeURIComponent(rawCode);
     if (!isCodeLikeShareSegment(code)) return null;
     return {

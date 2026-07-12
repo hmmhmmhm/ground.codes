@@ -384,8 +384,12 @@ describe("Japanese word set", () => {
 
     assert.equal(japaneseWords.length, 5000);
     assert.equal(new Set(japaneseWords).size, japaneseWords.length);
-    assert.ok(japaneseWords.every((word) => /^[\p{Script=Hiragana}]+$/u.test(word)));
-    assert.ok(japaneseWords.every((word) => word.length >= 2 && word.length <= 7));
+    assert.ok(
+      japaneseWords.every((word) => /^[\p{Script=Hiragana}]+$/u.test(word)),
+    );
+    assert.ok(
+      japaneseWords.every((word) => word.length >= 2 && word.length <= 7),
+    );
     assert.ok(japaneseWords.every((word) => !blockedWords.has(word)));
     assert.ok(japaneseWords.every((word) => !/[っん]$/u.test(word)));
 
@@ -402,10 +406,16 @@ describe("Japanese word set", () => {
   });
 
   test("roundtrips Japanese word-set codes", async () => {
-    const encoded = await encodeByWordSet({ n: 123456789, language: "japanese" });
+    const encoded = await encodeByWordSet({
+      n: 123456789,
+      language: "japanese",
+    });
 
     assert.match(encoded, /[\p{Script=Hiragana}\p{Script=Katakana}ー]/u);
-    assert.equal(await decodeByWordSet({ encoded, language: "japanese" }), 123456789);
+    assert.equal(
+      await decodeByWordSet({ encoded, language: "japanese" }),
+      123456789,
+    );
   });
 
   test("detects Japanese encoded ground codes", async () => {

@@ -74,7 +74,7 @@ const MapSearch: React.FC<MapSearchProps> = ({
       searchInputRef.current,
       {
         fields: ["address_components", "geometry", "name", "formatted_address"],
-      }
+      },
     );
 
     autocompleteRef.current.bindTo("bounds", map);
@@ -87,14 +87,14 @@ const MapSearch: React.FC<MapSearchProps> = ({
 
         if (!place?.geometry?.location) {
           window.alert(
-            `No details available for: ${place?.name || "this place"}`
+            `No details available for: ${place?.name || "this place"}`,
           );
           return;
         }
 
         setQuery(place.name ?? searchInputRef.current?.value ?? "");
         onPlaceSelect(place);
-      }
+      },
     );
 
     return () => {
@@ -162,7 +162,7 @@ const MapSearch: React.FC<MapSearchProps> = ({
           }
 
           setPlacePredictions(nextPredictions);
-        }
+        },
       );
     }, 300);
 
@@ -204,8 +204,9 @@ const MapSearch: React.FC<MapSearchProps> = ({
           const nextSuggestions = results.slice(0, 5);
           groundSuggestionCacheRef.current.set(cacheKey, nextSuggestions);
           if (groundSuggestionCacheRef.current.size > 30) {
-            const oldestQuery = groundSuggestionCacheRef.current.keys().next()
-              .value;
+            const oldestQuery = groundSuggestionCacheRef.current
+              .keys()
+              .next().value;
             if (oldestQuery) {
               groundSuggestionCacheRef.current.delete(oldestQuery);
             }
@@ -243,14 +244,15 @@ const MapSearch: React.FC<MapSearchProps> = ({
   };
 
   const selectPlacePrediction = async (
-    prediction: google.maps.places.AutocompletePrediction
+    prediction: google.maps.places.AutocompletePrediction,
   ) => {
     if (isGroundSearchLoading) return;
 
     predictionRequestIdRef.current += 1;
     groundSuggestionRequestIdRef.current += 1;
-    suppressedPredictionQueryRef.current =
-      prediction.description.trim().toLocaleLowerCase();
+    suppressedPredictionQueryRef.current = prediction.description
+      .trim()
+      .toLocaleLowerCase();
     setQuery(prediction.description);
     setPlacePredictions([]);
     setGroundSuggestions([]);
@@ -411,7 +413,8 @@ const MapSearch: React.FC<MapSearchProps> = ({
                   {result.label}
                 </span>
                 <span className="block truncate text-xs text-white/60">
-                  {result.code ?? `${result.lat.toFixed(4)}, ${result.lng.toFixed(4)}`}
+                  {result.code ??
+                    `${result.lat.toFixed(4)}, ${result.lng.toFixed(4)}`}
                 </span>
               </span>
               <span className="shrink-0 text-xs uppercase text-white/50">

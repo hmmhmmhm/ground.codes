@@ -60,7 +60,7 @@ for (const [x, y] of bigIntCoordinates) {
   const coordinates = getCoordinates(n);
   if (coordinates.x !== x || coordinates.y !== y) {
     throw new Error(
-      `bigint roundtrip mismatch: ${x},${y} -> ${n} -> ${coordinates.x},${coordinates.y}`
+      `bigint roundtrip mismatch: ${x},${y} -> ${n} -> ${coordinates.x},${coordinates.y}`,
     );
   }
   console.log(`${x},${y} -> ${n}`);

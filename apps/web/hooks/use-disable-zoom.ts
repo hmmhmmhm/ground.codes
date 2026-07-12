@@ -47,7 +47,9 @@ export function useDisableZoom() {
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("keydown", handleKeyDown);
     document.addEventListener("touchmove", handleTouchMove, { passive: false });
-    document.addEventListener("gesturestart", handleGesture, { passive: false });
+    document.addEventListener("gesturestart", handleGesture, {
+      passive: false,
+    });
     document.addEventListener("gesturechange", handleGesture, {
       passive: false,
     });

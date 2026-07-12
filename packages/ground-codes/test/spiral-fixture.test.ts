@@ -20,7 +20,7 @@ type SpiralFixture = {
 
 const dirname = fileURLToPath(new URL(".", import.meta.url));
 const fixture = JSON.parse(
-  readFileSync(join(dirname, "fixtures", "spiral-10000.json"), "utf8")
+  readFileSync(join(dirname, "fixtures", "spiral-10000.json"), "utf8"),
 ) as SpiralFixture;
 
 describe("Grok Spiral compatibility fixture", () => {
@@ -72,7 +72,7 @@ describe("Grok Spiral compatibility fixture", () => {
     for (const expected of fixture.nByCoordinate) {
       assert.equal(
         getNFromCoordinates(BigInt(expected.x), BigInt(expected.y)),
-        BigInt(expected.n)
+        BigInt(expected.n),
       );
     }
   });
@@ -140,19 +140,19 @@ describe("Grok Spiral compatibility fixture", () => {
 
     assert.equal(
       getNFromCoordinates(-2_742_364_216, 3_368_918_423),
-      59_282_396_347_346_210_502n
+      59_282_396_347_346_210_502n,
     );
     assert.equal(
       getNFromCoordinates(8_462_522_219, 8_256_445_255),
-      439_141_781_713_843_920_926n
+      439_141_781_713_843_920_926n,
     );
     assert.equal(
       getNFromCoordinates(4_941_966_020, 3_234_148_727),
-      109_587_378_982_785_380_307n
+      109_587_378_982_785_380_307n,
     );
     assert.equal(
       getNFromCoordinates(9_113_563_565, -8_232_229_350),
-      473_835_867_093_396_624_363n
+      473_835_867_093_396_624_363n,
     );
   });
 
@@ -162,7 +162,7 @@ describe("Grok Spiral compatibility fixture", () => {
 
     assert.equal(
       getNFromCoordinates(-64_791_796_609n, 57_777_086_992n),
-      23_675_572_189_899_908_565_477n
+      23_675_572_189_899_908_565_477n,
     );
   });
 

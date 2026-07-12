@@ -17,7 +17,7 @@ export const useLocationTracking = ({
 }: UseLocationTrackingProps) => {
   // Default value is OFF
   const [locationMode, setLocationMode] = useState<LocationMode>(
-    LocationMode.OFF
+    LocationMode.OFF,
   );
 
   // Location information loaded flag
@@ -29,7 +29,7 @@ export const useLocationTracking = ({
   // Loading state getter function
   const getIsLoadingLocation = useCallback(
     () => isLoadingLocationRef.current,
-    []
+    [],
   );
 
   // Watch position ID reference
@@ -138,7 +138,7 @@ export const useLocationTracking = ({
             enableHighAccuracy: true,
             timeout: 5000,
             maximumAge: 0,
-          }
+          },
         );
       } else if (currentLocationMode === LocationMode.TRACKING) {
         // TRACKING mode: start location tracking
@@ -187,7 +187,7 @@ export const useLocationTracking = ({
             enableHighAccuracy: true,
             maximumAge: 0,
             timeout: 5000,
-          }
+          },
         );
 
         // watchPosition ID storage

@@ -86,7 +86,7 @@ function oldIsAngleGreater(
   px: number,
   py: number,
   x: number,
-  y: number
+  y: number,
 ): boolean {
   const atan2A = Math.atan2(py, px);
   const atan2B = Math.atan2(y, x);
@@ -100,7 +100,7 @@ function assertCoordinateMatch(n: number) {
 
   if (expected.x !== actual.x || expected.y !== actual.y) {
     throw new Error(
-      `n->xy mismatch for n=${n}: expected ${expected.x},${expected.y}, actual ${actual.x},${actual.y}`
+      `n->xy mismatch for n=${n}: expected ${expected.x},${expected.y}, actual ${actual.x},${actual.y}`,
     );
   }
 }
@@ -111,7 +111,7 @@ function assertNMatch(x: number, y: number) {
 
   if (expected !== actual) {
     throw new Error(
-      `xy->n mismatch for ${x},${y}: expected ${expected}, actual ${actual}`
+      `xy->n mismatch for ${x},${y}: expected ${expected}, actual ${actual}`,
     );
   }
 }

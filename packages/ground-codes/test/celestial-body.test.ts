@@ -561,10 +561,7 @@ describe("celestial bodies", () => {
       { lat: 64.3, lng: -86.4 },
       { body: "mars", regionLevel: 2, language: "vietnamese" },
     );
-    assert.match(
-      marsFallback,
-      /^Hố va chạm [\p{Script=Latin}\p{Mark}\s\d]+-/u,
-    );
+    assert.match(marsFallback, /^Hố va chạm [\p{Script=Latin}\p{Mark}\s\d]+-/u);
 
     const decoded = await decode(moonCode, {
       body: "moon",

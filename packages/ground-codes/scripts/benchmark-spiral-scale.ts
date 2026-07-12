@@ -36,7 +36,7 @@ const rng = createRandom(SEED);
 
 function measure(
   samples: NumericInput[],
-  callback: (value: NumericInput) => void
+  callback: (value: NumericInput) => void,
 ): Sample {
   const timings: number[] = [];
 
@@ -58,12 +58,14 @@ function summarize(label: string, samples: number[]) {
   const p99 = percentile(samples, 0.99);
 
   console.log(
-    `${label}: avg=${formatMs(avg)} median=${formatMs(median)} p95=${formatMs(p95)} p99=${formatMs(p99)} min=${formatMs(samples[0]!)} max=${formatMs(samples[samples.length - 1]!)} cases=${samples.length}`
+    `${label}: avg=${formatMs(avg)} median=${formatMs(median)} p95=${formatMs(p95)} p99=${formatMs(p99)} min=${formatMs(samples[0]!)} max=${formatMs(samples[samples.length - 1]!)} cases=${samples.length}`,
   );
 }
 
 function percentile(samples: number[], ratio: number) {
-  return samples[Math.min(samples.length - 1, Math.floor(samples.length * ratio))]!;
+  return samples[
+    Math.min(samples.length - 1, Math.floor(samples.length * ratio))
+  ]!;
 }
 
 function formatMs(value: number) {
@@ -90,7 +92,7 @@ function randomBigIntsByDigits(digits: number) {
   return Array.from({ length: CASES }, () => {
     const high = BigInt(rng.int(0, 0xfffff));
     const low = BigInt(rng.int(0, 0xfffff));
-    return min + ((high << 20n) + low) % span;
+    return min + (((high << 20n) + low) % span);
   });
 }
 
@@ -107,19 +109,21 @@ function randomCoordinatesByDigits(digits: number) {
 }
 
 console.log(
-  `seed=${SEED} cases=${CASES} maxDigits=${MAX_DIGITS} spiralCache=${isSpiralCacheEnabled()}`
+  `seed=${SEED} cases=${CASES} maxDigits=${MAX_DIGITS} spiralCache=${isSpiralCacheEnabled()}`,
 );
 
 for (let digits = 1; digits <= MAX_DIGITS; digits++) {
   if (digits > 15 && process.env.RUN_SLOW_BIGINT !== "1") {
     console.log(
-      `n->xy ${digits} digit n: skipped exact BigInt path; set RUN_SLOW_BIGINT=1 to run`
+      `n->xy ${digits} digit n: skipped exact BigInt path; set RUN_SLOW_BIGINT=1 to run`,
     );
     continue;
   }
 
   const values =
-    digits <= 15 ? randomNumbersByDigits(digits) : randomBigIntsByDigits(digits);
+    digits <= 15
+      ? randomNumbersByDigits(digits)
+      : randomBigIntsByDigits(digits);
   const result = measure(values, (n) => {
     getCoordinates(n);
   });
@@ -129,7 +133,7 @@ for (let digits = 1; digits <= MAX_DIGITS; digits++) {
 for (let digits = 1; digits <= MAX_DIGITS; digits++) {
   if (digits > 7 && process.env.RUN_SLOW_BIGINT !== "1") {
     console.log(
-      `xy->n ${digits} digit |x|,|y|: skipped possible BigInt path; set RUN_SLOW_BIGINT=1 to run`
+      `xy->n ${digits} digit |x|,|y|: skipped possible BigInt path; set RUN_SLOW_BIGINT=1 to run`,
     );
     continue;
   }

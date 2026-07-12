@@ -167,7 +167,9 @@ function convexHullCount(m: number): number {
 
     if (current[0] >= sqrt - naiveThreshold) break;
 
-    while (!pointInCircle(goDown(current, slopeStack[slopeStack.length - 1]!), m)) {
+    while (
+      !pointInCircle(goDown(current, slopeStack[slopeStack.length - 1]!), m)
+    ) {
       slope = slopeStack.pop()!;
     }
 
@@ -234,7 +236,7 @@ function convexHullCountFlat(m: number): number {
       !pointInCircleXY(
         currentX + stackX[stackLength - 1]!,
         currentY - stackY[stackLength - 1]!,
-        m
+        m,
       )
     ) {
       stackLength--;
@@ -281,7 +283,10 @@ function convexHullCountFlatTuned(m: number, multiplier: number): number {
 
   const cbrt = Math.floor(Math.cbrt(m));
   const sqrt = Math.floor(Math.sqrt(m));
-  const naiveThreshold = Math.min(Math.max(1, Math.floor(cbrt * multiplier)), sqrt);
+  const naiveThreshold = Math.min(
+    Math.max(1, Math.floor(cbrt * multiplier)),
+    sqrt,
+  );
 
   for (let x = 1; x <= naiveThreshold; x++) {
     count += maxYInCircle(x, m);
@@ -311,7 +316,7 @@ function convexHullCountFlatTuned(m: number, multiplier: number): number {
       !pointInCircleXY(
         currentX + stackX[stackLength - 1]!,
         currentY - stackY[stackLength - 1]!,
-        m
+        m,
       )
     ) {
       stackLength--;
@@ -389,7 +394,7 @@ function slopeOutNoDivision(
   slopeX: number,
   slopeY: number,
   x: number,
-  m: number
+  m: number,
 ): boolean {
   return slopeY * Math.sqrt(m - x * x) > slopeX * x;
 }
@@ -398,7 +403,7 @@ function slopeOutSquared(
   slopeX: number,
   slopeY: number,
   x: number,
-  m: number
+  m: number,
 ): boolean {
   return slopeY * slopeY * (m - x * x) > slopeX * slopeX * x * x;
 }
@@ -465,8 +470,8 @@ function gaussianIntegerShell(m: number): Point[] {
         options.push(
           gaussianMultiply(
             gaussianPow(primeRep, k),
-            gaussianPow([primeRep[0], -primeRep[1]], exponent - k)
-          )
+            gaussianPow([primeRep[0], -primeRep[1]], exponent - k),
+          ),
         );
       }
 
@@ -605,7 +610,7 @@ function assertCountCandidate(candidate: CountCandidate) {
     const actual = candidate.count(m);
     if (expected !== actual) {
       throw new Error(
-        `${candidate.name} count mismatch at m=${m}: expected ${expected}, actual ${actual}`
+        `${candidate.name} count mismatch at m=${m}: expected ${expected}, actual ${actual}`,
       );
     }
   }
@@ -614,7 +619,7 @@ function assertCountCandidate(candidate: CountCandidate) {
     const actual = candidate.count(m);
     if (expected !== actual) {
       throw new Error(
-        `${candidate.name} count mismatch at m=${m}: expected ${expected}, actual ${actual}`
+        `${candidate.name} count mismatch at m=${m}: expected ${expected}, actual ${actual}`,
       );
     }
   }
@@ -655,7 +660,10 @@ console.log(`seed=${seedStart} minM=${MIN_M} maxM=${MAX_M} cases=${CASES}`);
 
 const countCandidates: CountCandidate[] = [
   { name: "first quadrant sqrt sum", count: firstQuadrantCount },
-  { name: "fractional-part identity sqrt sum", count: fractionalPartIdentityCount },
+  {
+    name: "fractional-part identity sqrt sum",
+    count: fractionalPartIdentityCount,
+  },
   { name: "Katai-style boundary walk", count: boundaryWalkCount },
   { name: "first octant sqrt sum", count: firstOctantCount },
   { name: "Jacobi divisor summatory", count: jacobiDivisorSummatoryCount },
@@ -694,11 +702,15 @@ const shellCandidates: ShellCandidate[] = [
 ];
 
 for (const candidate of countCandidates) {
-  measure(`${candidate.name} compatibility`, () => assertCountCandidate(candidate));
+  measure(`${candidate.name} compatibility`, () =>
+    assertCountCandidate(candidate),
+  );
 }
 
 for (const candidate of shellCandidates) {
-  measure(`${candidate.name} compatibility`, () => assertShellCandidate(candidate));
+  measure(`${candidate.name} compatibility`, () =>
+    assertShellCandidate(candidate),
+  );
 }
 
 const countBenchmarks: CountCandidate[] = [

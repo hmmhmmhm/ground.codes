@@ -30,7 +30,7 @@ const useCopyText = (getText: () => string | undefined) => {
 export const useCopy = (
   getAddress: () => string | undefined,
   getGroundCode: () => string | undefined,
-  getPhone: () => string | undefined
+  getPhone: () => string | undefined,
 ) => {
   const address = useCopyText(getAddress);
   const groundCode = useCopyText(getGroundCode);
