@@ -86,6 +86,6 @@
 - Modify: this plan
 
 - [x] Run `pnpm code:size-check` and verify zero maintained-source violations.
-- [ ] Run workspace format, lint, type-check, unit tests, and production builds.
+- [x] Run workspace format, lint, type-check, unit tests, and production builds.
 - [x] Confirm generated outputs have no unintended diff.
-- [ ] Mark this plan complete and commit the final decomposition.
+- [x] Mark this plan complete and commit the final decomposition.
