@@ -13,13 +13,14 @@ const packageJson = JSON.parse(
 );
 
 const runtimeTag = process.env.API_RUNTIME_TAG ?? getRuntimeTag(packageJson);
+const workspaceRuntime =
+  usesWorkspaceRuntime(packageJson) && !process.env.API_RUNTIME_TAG;
 
-const failures =
-  usesWorkspaceRuntime(packageJson) && !process.env.API_RUNTIME_TAG
-    ? []
-    : runtimeTag
-      ? getRuntimePinFailures(packageJson, runtimeTag)
-      : ["unable to infer API runtime tag from package pins"];
+const failures = workspaceRuntime
+  ? getRuntimePinFailures(packageJson, "workspace")
+  : runtimeTag
+    ? getRuntimePinFailures(packageJson, runtimeTag)
+    : ["unable to infer API runtime tag from package pins"];
 
 if (failures.length > 0) {
   console.error("API runtime package pins are not aligned:");
@@ -28,7 +29,7 @@ if (failures.length > 0) {
 }
 
 console.log(
-  usesWorkspaceRuntime(packageJson) && !process.env.API_RUNTIME_TAG
-    ? "API runtime packages use workspace dependencies."
-    : `API runtime package pins are aligned on ${runtimeTag}.`,
+  workspaceRuntime
+    ? "API runtime packages use workspace dependencies with exact Elysia pins."
+    : `API runtime package pins and exact Elysia pins are aligned on ${runtimeTag}.`,
 );
