@@ -1,10 +1,16 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { describe, test } from "node:test";
 
 import {
   analyzeProductionAudit,
   evaluateProductionAudit,
 } from "./production-audit-policy.mjs";
+
+const repositoryRoot = new URL("../", import.meta.url);
+
+const readJson = (relativePath) =>
+  JSON.parse(readFileSync(new URL(relativePath, repositoryRoot), "utf8"));
 
 const auditDocument = ({
   critical,
@@ -61,6 +67,49 @@ const fixtures = [
 ];
 
 describe("production audit policy", () => {
+  test("locks audited Web runtime fixes, including high-severity transitives", () => {
+    const rootPackage = readJson("package.json");
+    const webPackage = readJson("apps/web/package.json");
+    const lockfile = readFileSync(
+      new URL("pnpm-lock.yaml", repositoryRoot),
+      "utf8",
+    );
+    const expectedOverrides = {
+      "dompurify@3.4.2": "3.4.12",
+      "picomatch@2.3.1": "2.3.2",
+      "postcss@8.4.31": "8.4.49",
+      "postcss@8.5.3": "8.5.19",
+      "protobufjs@8.2.0": "8.7.1",
+    };
+
+    for (const vulnerableResolution of Object.keys(expectedOverrides)) {
+      const packageName = vulnerableResolution.slice(
+        0,
+        vulnerableResolution.lastIndexOf("@"),
+      );
+
+      assert.equal(
+        webPackage.dependencies[packageName],
+        undefined,
+        `${packageName} must be covered as a transitive Web dependency`,
+      );
+      assert.equal(
+        lockfile.includes(`\n  ${vulnerableResolution}:\n`),
+        false,
+        `${vulnerableResolution} must not remain in the production lock graph`,
+      );
+    }
+
+    assert.deepEqual(
+      {
+        cesium: webPackage.dependencies.cesium,
+        "next-intl": webPackage.dependencies["next-intl"],
+      },
+      { cesium: "1.143.0", "next-intl": "4.13.2" },
+    );
+    assert.deepEqual(rootPackage.pnpm?.overrides, expectedOverrides);
+  });
+
   for (const fixture of fixtures) {
     test(fixture.name, () => {
       assert.deepEqual(evaluateProductionAudit(fixture.raw), fixture.expected);
