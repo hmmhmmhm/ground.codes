@@ -1,6 +1,7 @@
 export const runOperationsSmokeChecks = async ({
   smoke,
   assert,
+  fetchWithRetry,
   fetchText,
   postJson,
   postJsonBody,

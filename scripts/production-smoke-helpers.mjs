@@ -56,6 +56,38 @@ const isRecord = (value) =>
 const isNonNegativeNumber = (value) =>
   typeof value === "number" && Number.isFinite(value) && value >= 0;
 
+const validateCounterRecord = (value, path, errors) => {
+  for (const [key, count] of Object.entries(value)) {
+    if (!isNonNegativeNumber(count)) {
+      errors.push(
+        `${path}[${JSON.stringify(key)}] must be a non-negative number`,
+      );
+    }
+  }
+};
+
+const validateRouteMetrics = (routes, errors) => {
+  for (const [route, metrics] of Object.entries(routes)) {
+    const path = `requests.routes[${JSON.stringify(route)}]`;
+    if (!isRecord(metrics)) {
+      errors.push(`${path} must be an object`);
+      continue;
+    }
+
+    for (const field of ["count", "avgMs", "minMs", "maxMs"]) {
+      if (!isNonNegativeNumber(metrics[field])) {
+        errors.push(`${path}.${field} must be a non-negative number`);
+      }
+    }
+
+    if (!isRecord(metrics.byStatus)) {
+      errors.push(`${path}.byStatus must be an object`);
+    } else {
+      validateCounterRecord(metrics.byStatus, `${path}.byStatus`, errors);
+    }
+  }
+};
+
 export const validateMetricsSnapshot = (metrics) => {
   const errors = [];
 
@@ -73,9 +105,13 @@ export const validateMetricsSnapshot = (metrics) => {
   }
   if (!isRecord(metrics?.requests?.byPath)) {
     errors.push("requests.byPath must be an object");
+  } else {
+    validateCounterRecord(metrics.requests.byPath, "requests.byPath", errors);
   }
   if (!isRecord(metrics?.requests?.routes)) {
     errors.push("requests.routes must be an object");
+  } else {
+    validateRouteMetrics(metrics.requests.routes, errors);
   }
 
   return errors;

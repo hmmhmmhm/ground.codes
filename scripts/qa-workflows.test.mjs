@@ -9,7 +9,12 @@ describe("QA workflow split", () => {
   test("enforces format lint and build gates in CI", () => {
     const ciWorkflow = readText("../.github/workflows/ci.yml");
 
-    for (const command of ["pnpm format:check", "pnpm lint", "pnpm build"]) {
+    for (const command of [
+      "pnpm format:check",
+      "pnpm code:size-check",
+      "pnpm lint",
+      "pnpm build",
+    ]) {
       assert.match(ciWorkflow, new RegExp(command));
     }
   });

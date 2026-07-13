@@ -53,6 +53,7 @@ const postJsonBody = async (path, body) =>
 const smokeContext = {
   smoke,
   assert,
+  fetchWithRetry,
   fetchText,
   postJson,
   postJsonBody,

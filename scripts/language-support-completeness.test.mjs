@@ -137,7 +137,15 @@ describe("language support completeness", () => {
   });
 
   test("covers every API language in production smoke", () => {
-    const smokeSource = readText("scripts/production-smoke.mjs");
+    const smokeSource = [
+      "scripts/production-smoke-core.mjs",
+      "scripts/production-smoke-expanded.mjs",
+      "scripts/production-smoke-additional.mjs",
+      "scripts/production-smoke-additional-latin.mjs",
+      "scripts/production-smoke-operations.mjs",
+    ]
+      .map(readText)
+      .join("\n");
     const smokeLanguages = new Set(
       [...smokeSource.matchAll(/language:\s*"([^"]+)"/g)].map(
         (item) => item[1],
