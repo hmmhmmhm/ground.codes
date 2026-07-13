@@ -2,18 +2,23 @@ import assert from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import {
+  analyzeProductionAudit,
   evaluateProductionAudit,
-  getProductionAuditPackageNames,
 } from "./production-audit-policy.mjs";
 
-const auditDocument = ({ critical, high, moderate, low }) => ({
-  advisories: {
-    1001: { module_name: "example-high-package" },
-    1002: { module_name: "example-low-package" },
-  },
+const auditDocument = ({
+  critical,
+  high,
+  moderate,
+  low,
+  advisories = {},
+  vulnerabilities = {},
+}) => ({
+  advisories,
   metadata: {
     vulnerabilities: { critical, high, moderate, low },
   },
+  vulnerabilities,
 });
 
 const fixtures = [
@@ -30,7 +35,8 @@ const fixtures = [
   {
     name: "rejects a high finding after newline-delimited diagnostics",
     raw: [
-      "WARN audit endpoint returned a diagnostic",
+      "WARN audit endpoint returned { retry: true }",
+      JSON.stringify({ level: "warn", context: { attempt: 2 } }),
       JSON.stringify(
         auditDocument({ critical: 0, high: 4, moderate: 2, low: 1 }),
         null,
@@ -61,21 +67,66 @@ describe("production audit policy", () => {
     });
   }
 
-  test("reports unique advisory package names without advisory details", () => {
+  test("analyzes unique package names from advisories and vulnerabilities", () => {
     const raw = JSON.stringify(
-      auditDocument({ critical: 0, high: 0, moderate: 1, low: 1 }),
+      auditDocument({
+        critical: 0,
+        high: 0,
+        moderate: 1,
+        low: 1,
+        advisories: {
+          1001: { module_name: "duplicate-package" },
+          1002: { module_name: "advisory-package" },
+        },
+        vulnerabilities: {
+          duplicate: { name: "duplicate-package" },
+          vulnerability: { name: "vulnerability-package" },
+        },
+      }),
     );
 
-    assert.deepEqual(getProductionAuditPackageNames(raw), [
-      "example-high-package",
-      "example-low-package",
-    ]);
+    assert.deepEqual(analyzeProductionAudit(raw), {
+      ok: true,
+      counts: { critical: 0, high: 0, moderate: 1, low: 1 },
+      packageNames: [
+        "advisory-package",
+        "duplicate-package",
+        "vulnerability-package",
+      ],
+    });
   });
 
-  test("rejects an unreadable audit result", () => {
-    assert.throws(
-      () => evaluateProductionAudit("audit failed without JSON"),
-      /readable pnpm audit JSON document/,
-    );
-  });
+  for (const fixture of [
+    {
+      name: "rejects an unreadable audit result",
+      raw: "audit failed without JSON",
+    },
+    {
+      name: "rejects a malformed severity count",
+      raw: JSON.stringify(
+        auditDocument({ critical: 0, high: "4", moderate: 0, low: 0 }),
+      ),
+    },
+    {
+      name: "rejects a missing severity count",
+      raw: JSON.stringify({
+        metadata: {
+          vulnerabilities: { critical: 0, high: 0, moderate: 0 },
+        },
+      }),
+    },
+    {
+      name: "rejects a negative severity count",
+      raw: JSON.stringify(
+        auditDocument({ critical: 0, high: 0, moderate: 0, low: -1 }),
+      ),
+    },
+  ]) {
+    test(fixture.name, () => {
+      assert.throws(
+        () => evaluateProductionAudit(fixture.raw),
+        /readable pnpm audit JSON document/,
+      );
+    });
+  }
 });

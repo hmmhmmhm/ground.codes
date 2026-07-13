@@ -3,28 +3,47 @@ const AUDIT_SEVERITIES = ["critical", "high", "moderate", "low"];
 const unreadableAudit = () =>
   new Error("Expected a readable pnpm audit JSON document.");
 
+const findFinalObjectStart = (text) => {
+  let depth = 0;
+  let insideString = false;
+
+  for (let index = text.length - 1; index >= 0; index -= 1) {
+    const character = text[index];
+    if (character === '"') {
+      let precedingBackslashes = 0;
+      for (
+        let escapeIndex = index - 1;
+        escapeIndex >= 0 && text[escapeIndex] === "\\";
+        escapeIndex -= 1
+      ) {
+        precedingBackslashes += 1;
+      }
+      if (precedingBackslashes % 2 === 0) insideString = !insideString;
+    } else if (!insideString && character === "}") {
+      depth += 1;
+    } else if (!insideString && character === "{") {
+      depth -= 1;
+      if (depth === 0) return index;
+    }
+  }
+
+  return -1;
+};
+
 export const parseProductionAudit = (rawAuditJson) => {
   if (typeof rawAuditJson !== "string") throw unreadableAudit();
 
   const trimmed = rawAuditJson.trim();
-  const objectStarts = [];
-  for (let index = trimmed.length - 1; index >= 0; index -= 1) {
-    if (trimmed[index] === "{") objectStarts.push(index);
-  }
+  const finalDocumentStart = findFinalObjectStart(trimmed);
+  if (finalDocumentStart === -1) throw unreadableAudit();
 
-  for (const index of [0, ...objectStarts]) {
-    try {
-      const document = JSON.parse(trimmed.slice(index));
-      if (
-        document &&
-        typeof document === "object" &&
-        !Array.isArray(document)
-      ) {
-        return document;
-      }
-    } catch {
-      // Try the next object start so diagnostics may precede the final document.
+  try {
+    const document = JSON.parse(trimmed.slice(finalDocumentStart));
+    if (document && typeof document === "object" && !Array.isArray(document)) {
+      return document;
     }
+  } catch {
+    // Normalize parser details so raw audit diagnostics are never propagated.
   }
 
   throw unreadableAudit();
@@ -43,17 +62,7 @@ const getSeverityCounts = (auditDocument) => {
   return counts;
 };
 
-export const evaluateProductionAudit = (rawAuditJson) => {
-  const counts = getSeverityCounts(parseProductionAudit(rawAuditJson));
-
-  return {
-    ok: counts.high === 0 && counts.critical === 0,
-    counts,
-  };
-};
-
-export const getProductionAuditPackageNames = (rawAuditJson) => {
-  const auditDocument = parseProductionAudit(rawAuditJson);
+const getPackageNames = (auditDocument) => {
   const advisoryNames = Object.values(auditDocument.advisories ?? {}).map(
     (advisory) => advisory?.module_name,
   );
@@ -64,4 +73,21 @@ export const getProductionAuditPackageNames = (rawAuditJson) => {
   return [...new Set([...advisoryNames, ...vulnerabilityNames])]
     .filter((name) => typeof name === "string" && name.length > 0)
     .sort((left, right) => left.localeCompare(right));
+};
+
+export const analyzeProductionAudit = (rawAuditJson) => {
+  const auditDocument = parseProductionAudit(rawAuditJson);
+  const counts = getSeverityCounts(auditDocument);
+
+  return {
+    ok: counts.high === 0 && counts.critical === 0,
+    counts,
+    packageNames: getPackageNames(auditDocument),
+  };
+};
+
+export const evaluateProductionAudit = (rawAuditJson) => {
+  const { counts, ok } = analyzeProductionAudit(rawAuditJson);
+
+  return { ok, counts };
 };
