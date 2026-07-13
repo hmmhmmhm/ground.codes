@@ -42,7 +42,7 @@
     "tasuku": "^2.0.1",
     "tsup": "^8.5.1",
     "tsx": "^4.22.3",
-    "typescript": "latest"
+    "typescript": "5.8.2"
   },
   "dependencies": {
     "geokdbush": "^2.1.0",

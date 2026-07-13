@@ -188,6 +188,20 @@ describe("GitHub automation supply-chain policy", () => {
     }
   });
 
+  test("pins every setup-bun toolchain input", () => {
+    for (const workflowUrl of workflowUrls) {
+      const workflow = readFileSync(workflowUrl, "utf8");
+      const setupCount = [...workflow.matchAll(/uses: oven-sh\/setup-bun@/g)]
+        .length;
+      const versionMatches = [
+        ...workflow.matchAll(/^\s*bun-version:\s*["']?([^"'\s]+)["']?\s*$/gm),
+      ];
+
+      assert.equal(versionMatches.length, setupCount);
+      versionMatches.forEach((match) => assert.equal(match[1], "1.3.1"));
+    }
+  });
+
   test("rejects Dependabot groups nested under a sibling policy key", () => {
     const source = [
       "groups:",

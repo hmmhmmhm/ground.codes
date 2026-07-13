@@ -64,6 +64,19 @@ describe("API runtime package pins", () => {
     assert.equal(packageJson.dependencies["@elysiajs/swagger"], "1.3.1");
   });
 
+  test("pins the compiler used by generated runtime packages", () => {
+    for (const packagePath of [
+      "../packages/codebook/package.json",
+      "../packages/geoint/package.json",
+    ]) {
+      assert.equal(
+        readJson(new URL(packagePath, import.meta.url)).devDependencies
+          .typescript,
+        "5.8.2",
+      );
+    }
+  });
+
   test("rejects moving and unbounded Elysia and Bun type pins", () => {
     for (const dependencyName of ["elysia", "bun-types"]) {
       for (const invalidPin of [
