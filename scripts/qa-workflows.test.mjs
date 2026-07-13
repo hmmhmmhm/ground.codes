@@ -1,9 +1,45 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { describe, test } from "node:test";
 
 const readText = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 const readJson = (path) => JSON.parse(readText(path));
+const workflowPaths = [
+  "../.github/workflows/ci.yml",
+  "../.github/workflows/deploy-api.yml",
+  "../.github/workflows/deploy-web.yml",
+  "../.github/workflows/deploy-grok-spiral.yml",
+  "../.github/workflows/production-smoke.yml",
+  "../.github/workflows/visual-qa.yml",
+];
+
+const approvedActionPins = new Map([
+  ["actions/checkout", "df4cb1c069e1874edd31b4311f1884172cec0e10 # v6"],
+  ["actions/setup-node", "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6"],
+  ["actions/cache", "caa296126883cff596d87d8935842f9db880ef25 # v5"],
+  ["actions/upload-artifact", "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7"],
+  ["actions/github-script", "ed597411d8f924073f98dfc5c65a23a2325f34cd # v8"],
+  ["pnpm/action-setup", "0ebf47130e4866e96fce0953f49152a61190b271 # v6"],
+  ["oven-sh/setup-bun", "0c5077e51419868618aeaa5fe8019c62421857d6 # v2"],
+]);
+
+const externalActionPattern =
+  /^uses:\s+([^@\s#]+)@([0-9a-f]{40})\s+#\s+(v[^\s#]+)\s*$/i;
+
+const dependabotSection = (source, ecosystem) => {
+  const sections = [
+    ...source.matchAll(
+      /^\s*-\s+package-ecosystem:\s*["']?([^"'\s]+)["']?\s*$/gm,
+    ),
+  ];
+  const sectionIndex = sections.findIndex((match) => match[1] === ecosystem);
+
+  assert.notEqual(sectionIndex, -1, `${ecosystem} update entry is required`);
+
+  const start = sections[sectionIndex].index;
+  const end = sections[sectionIndex + 1]?.index ?? source.length;
+  return source.slice(start, end);
+};
 
 describe("QA workflow split", () => {
   test("enforces format lint and build gates in CI", () => {
@@ -67,8 +103,65 @@ describe("QA workflow split", () => {
     assert.match(visualWorkflow, /workflow_dispatch:/);
     assert.match(visualWorkflow, /pnpm --filter web test:e2e:layout/);
     assert.match(visualWorkflow, /pnpm --filter web qa:visual/);
-    assert.match(visualWorkflow, /actions\/upload-artifact@v7/);
+    assert.match(visualWorkflow, /actions\/upload-artifact@/);
     assert.match(visualWorkflow, /apps\/web\/test-results/);
+  });
+});
+
+describe("GitHub automation supply-chain policy", () => {
+  test("pins every external action to an approved SHA with a release comment", () => {
+    for (const workflowPath of workflowPaths) {
+      const usesLines = readText(workflowPath)
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.startsWith("uses:"));
+
+      for (const line of usesLines) {
+        if (/^uses:\s+\.\//.test(line)) continue;
+
+        const match = externalActionPattern.exec(line);
+        assert.ok(match, `${workflowPath} has an unpinned action: ${line}`);
+
+        const [, action, sha, release] = match;
+        assert.equal(
+          `${sha} # ${release}`,
+          approvedActionPins.get(action),
+          `${workflowPath} has an unapproved pin for ${action}`,
+        );
+      }
+    }
+  });
+
+  test("configures grouped weekly Dependabot updates", () => {
+    const dependabotUrl = new URL("../.github/dependabot.yml", import.meta.url);
+
+    assert.ok(existsSync(dependabotUrl), ".github/dependabot.yml is required");
+
+    const dependabot = readFileSync(dependabotUrl, "utf8");
+    const npmUpdates = dependabotSection(dependabot, "npm");
+    const actionUpdates = dependabotSection(dependabot, "github-actions");
+
+    for (const section of [npmUpdates, actionUpdates]) {
+      assert.match(section, /^\s+directory:\s*["']\/["']\s*$/m);
+      assert.match(section, /^\s+interval:\s*["']?weekly["']?\s*$/m);
+      assert.match(section, /^\s+day:\s*["']?monday["']?\s*$/m);
+      assert.match(section, /^\s+timezone:\s*["']?Asia\/Seoul["']?\s*$/m);
+      assert.match(section, /^\s+open-pull-requests-limit:\s*10\s*$/m);
+    }
+
+    assert.match(npmUpdates, /^\s+runtime-security:\s*$/m);
+    assert.match(
+      npmUpdates,
+      /^\s+dependency-type:\s*["']?production["']?\s*$/m,
+    );
+    assert.match(npmUpdates, /^\s+development-tooling:\s*$/m);
+    assert.match(
+      npmUpdates,
+      /^\s+dependency-type:\s*["']?development["']?\s*$/m,
+    );
+    assert.match(actionUpdates, /^\s+github-actions:\s*$/m);
+    assert.match(actionUpdates, /^\s+patterns:\s*$/m);
+    assert.match(actionUpdates, /^\s+-\s*["']\*["']\s*$/m);
   });
 });
 
@@ -82,7 +175,7 @@ describe("production smoke workflow triggers", () => {
     assert.match(smokeWorkflow, /GROUND_CODES_SMOKE_FORCE_FAILURE/);
     assert.match(smokeWorkflow, /Deploy Web to Cloudflare Pages/);
     assert.match(smokeWorkflow, /issues: write/);
-    assert.match(smokeWorkflow, /actions\/github-script@v8/);
+    assert.match(smokeWorkflow, /actions\/github-script@/);
     assert.match(smokeWorkflow, /MOSHI_WEBHOOK_TOKEN is not configured/);
     assert.match(
       smokeWorkflow,
