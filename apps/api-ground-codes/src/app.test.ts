@@ -1,8 +1,10 @@
 import { describe, expect, test } from "bun:test";
 import { createApp } from "./app.js";
 
-const app = createApp();
+const silentMetrics = { writeLog: () => undefined };
+const app = createApp({ metrics: silentMetrics });
 const rateLimitedApp = createApp({
+  metrics: silentMetrics,
   rateLimit: {
     max: 1,
     windowMs: 60_000,
@@ -64,10 +66,11 @@ describe("Ground Codes API contract", () => {
   });
 
   test("serves lightweight operational metrics", async () => {
-    const firstApp = createApp({ rateLimit: null });
-    const secondApp = createApp({ rateLimit: null });
+    const firstApp = createApp({ metrics: silentMetrics, rateLimit: null });
+    const secondApp = createApp({ metrics: silentMetrics, rateLimit: null });
 
     await firstApp.handle(new Request("http://localhost/healthz"));
+    await new Promise<void>((resolve) => setImmediate(resolve));
 
     const firstResponse = await firstApp.handle(
       new Request("http://localhost/metrics"),
@@ -89,7 +92,7 @@ describe("Ground Codes API contract", () => {
   });
 
   test("serves public API documentation without exposing legacy routes", async () => {
-    const docsResponse = await createApp().handle(
+    const docsResponse = await createApp({ metrics: silentMetrics }).handle(
       new Request("http://localhost/"),
     );
     expect(docsResponse.status).toBe(200);
@@ -164,9 +167,9 @@ describe("Ground Codes API contract", () => {
     expect(docsResponse.status).toBe(302);
     expect(docsResponse.headers.get("location")).toBe("/openapi/");
 
-    const referenceResponse = await createApp().handle(
-      new Request("http://localhost/reference"),
-    );
+    const referenceResponse = await createApp({
+      metrics: silentMetrics,
+    }).handle(new Request("http://localhost/reference"));
     expect(referenceResponse.status).toBe(302);
     expect(referenceResponse.headers.get("location")).toBe("/openapi/");
 

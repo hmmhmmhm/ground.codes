@@ -42,31 +42,54 @@ const systemClock: MetricsClock = {
   monotonicMs: () => performance.now(),
 };
 
+const defaultWriteLog = (record: RequestCompletionLog) => {
+  console.log(JSON.stringify(record));
+};
+
 const getStatusCode = (status: unknown): string => {
   if (typeof status === "number") return String(status);
   if (typeof status === "string" && status.length > 0) return status;
   return "200";
 };
 
+const getRouteLabel = (request: Request, matchedRoute: string | undefined) =>
+  matchedRoute || (request.method === "OPTIONS" ? "/*" : "<unmatched>");
+
+const getFinalStatus = (response: unknown, setStatus: unknown) =>
+  response instanceof Response ? response.status : setStatus;
+
 const recordRequest = (
   requestMetrics: RequestMetricsSnapshot,
   request: Request,
+  matchedRoute: string | undefined,
   status: unknown,
   durationMs: number,
+  writeLog: (record: RequestCompletionLog) => void,
 ) => {
-  const pathname = new URL(request.url).pathname;
-  if (pathname === "/metrics") return;
-
+  const route = getRouteLabel(request, matchedRoute);
   const roundedDurationMs = Math.max(0, Math.round(durationMs * 100) / 100);
   const statusCode = getStatusCode(status);
+  const { runtimeCommit } = getRuntimeMetadata();
+
+  writeLog({
+    event: "api.request.completed",
+    service: "api-ground-codes",
+    route,
+    method: request.method,
+    status: statusCode,
+    durationMs: roundedDurationMs,
+    runtimeCommit,
+  });
+
+  if (route === "/metrics") return;
 
   requestMetrics.total += 1;
   requestMetrics.totalMs += roundedDurationMs;
-  requestMetrics.byPath[pathname] = (requestMetrics.byPath[pathname] ?? 0) + 1;
+  requestMetrics.byPath[route] = (requestMetrics.byPath[route] ?? 0) + 1;
 
   const routeMetrics =
-    requestMetrics.routes[pathname] ??
-    (requestMetrics.routes[pathname] = {
+    requestMetrics.routes[route] ??
+    (requestMetrics.routes[route] = {
       count: 0,
       totalMs: 0,
       minMs: Number.POSITIVE_INFINITY,
@@ -105,6 +128,7 @@ const serializeRoutes = (requestMetrics: RequestMetricsSnapshot) =>
 
 export const createMetricsEndpoint = (options: MetricsOptions = {}) => {
   const clock = options.clock ?? systemClock;
+  const writeLog = options.writeLog ?? defaultWriteLog;
   let startedAtMs: number | undefined;
   const requestMetrics: RequestMetricsSnapshot = {
     total: 0,
@@ -114,28 +138,32 @@ export const createMetricsEndpoint = (options: MetricsOptions = {}) => {
   };
   const requestStartTimes = new WeakMap<Request, number>();
 
+  const completeRequest = (
+    request: Request,
+    matchedRoute: string | undefined,
+    status: unknown,
+  ) => {
+    const startedAt = requestStartTimes.get(request);
+    if (startedAt === undefined) return;
+
+    requestStartTimes.delete(request);
+    recordRequest(
+      requestMetrics,
+      request,
+      matchedRoute,
+      status,
+      clock.monotonicMs() - startedAt,
+      writeLog,
+    );
+  };
+
   return new Elysia()
     .onRequest(({ request }) => {
       startedAtMs ??= clock.nowMs();
       requestStartTimes.set(request, clock.monotonicMs());
     })
-    .onAfterHandle({ as: "global" }, ({ request, set }) => {
-      const startedAt = requestStartTimes.get(request) ?? clock.monotonicMs();
-      recordRequest(
-        requestMetrics,
-        request,
-        set.status,
-        clock.monotonicMs() - startedAt,
-      );
-    })
-    .onError({ as: "global" }, ({ request, set, code }) => {
-      const startedAt = requestStartTimes.get(request) ?? clock.monotonicMs();
-      recordRequest(
-        requestMetrics,
-        request,
-        set.status ?? code,
-        clock.monotonicMs() - startedAt,
-      );
+    .onAfterResponse({ as: "global" }, ({ request, response, route, set }) => {
+      completeRequest(request, route, getFinalStatus(response, set.status));
     })
     .get("/metrics", ({ set }) => {
       set.headers["cache-control"] = "no-store";

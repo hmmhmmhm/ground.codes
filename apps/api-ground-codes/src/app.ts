@@ -41,9 +41,9 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
 
   const app = new Elysia({ aot: false })
     .onError(({ error, code, set }) => formatApiError(error, code, set))
+    .use(createMetricsEndpoint(options.metrics))
     .use(createCorsEndpoint(options.corsOrigins))
     .use(createRateLimitEndpoint(rateLimit))
-    .use(createMetricsEndpoint(options.metrics))
     .use(swaggerRedirectEndpoint)
     .use(openApiReferenceEndpoint)
     .use(docsEndpoint)
