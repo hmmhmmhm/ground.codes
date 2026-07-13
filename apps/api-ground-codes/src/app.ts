@@ -10,7 +10,10 @@ import { codeEndpoint } from "./endpoints/code.js";
 import { docsEndpoint } from "./endpoints/docs.js";
 import { legacyEndpoints, v1Endpoints } from "./endpoints/v1/v1-endpoints.js";
 import { formatApiError } from "./endpoints/v1/api-error.js";
-import { metricsEndpoint } from "./endpoints/metrics.js";
+import {
+  createMetricsEndpoint,
+  type MetricsOptions,
+} from "./endpoints/metrics.js";
 import {
   createRateLimitEndpoint,
   getDefaultRateLimit,
@@ -21,6 +24,7 @@ interface AppOptions {
   port?: string | number;
   rateLimit?: RateLimitOptions | null;
   corsOrigins?: string[];
+  metrics?: MetricsOptions;
 }
 
 /**
@@ -30,7 +34,7 @@ interface AppOptions {
  * @returns An Elysia application instance.
  */
 export const createApp = (portOrOptions?: string | number | AppOptions) => {
-  const options =
+  const options: AppOptions =
     typeof portOrOptions === "object" ? portOrOptions : { port: portOrOptions };
   const rateLimit =
     "rateLimit" in options ? options.rateLimit : getDefaultRateLimit();
@@ -39,7 +43,7 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
     .onError(({ error, code, set }) => formatApiError(error, code, set))
     .use(createCorsEndpoint(options.corsOrigins))
     .use(createRateLimitEndpoint(rateLimit))
-    .use(metricsEndpoint)
+    .use(createMetricsEndpoint(options.metrics))
     .use(swaggerRedirectEndpoint)
     .use(openApiReferenceEndpoint)
     .use(docsEndpoint)

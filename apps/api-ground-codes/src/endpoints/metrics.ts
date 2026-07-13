@@ -1,4 +1,5 @@
 import Elysia from "elysia";
+import { getRuntimeMetadata } from "./healthz.js";
 import { getRegionLoadMetrics } from "./v1/region/load-region.js";
 
 interface PathMetrics {
@@ -10,22 +11,36 @@ interface PathMetrics {
 }
 
 interface RequestMetricsSnapshot {
-  startedAt: string;
   total: number;
   totalMs: number;
   byPath: Record<string, number>;
   routes: Record<string, PathMetrics>;
 }
 
-const requestMetrics: RequestMetricsSnapshot = {
-  startedAt: new Date().toISOString(),
-  total: 0,
-  totalMs: 0,
-  byPath: {},
-  routes: {},
-};
+export interface MetricsClock {
+  nowMs(): number;
+  monotonicMs(): number;
+}
 
-const requestStartTimes = new WeakMap<Request, number>();
+export interface RequestCompletionLog {
+  event: "api.request.completed";
+  service: "api-ground-codes";
+  route: string;
+  method: string;
+  status: string;
+  durationMs: number;
+  runtimeCommit: string;
+}
+
+export interface MetricsOptions {
+  clock?: MetricsClock;
+  writeLog?: (record: RequestCompletionLog) => void;
+}
+
+const systemClock: MetricsClock = {
+  nowMs: () => Date.now(),
+  monotonicMs: () => performance.now(),
+};
 
 const getStatusCode = (status: unknown): string => {
   if (typeof status === "number") return String(status);
@@ -34,6 +49,7 @@ const getStatusCode = (status: unknown): string => {
 };
 
 const recordRequest = (
+  requestMetrics: RequestMetricsSnapshot,
   request: Request,
   status: unknown,
   durationMs: number,
@@ -66,7 +82,7 @@ const recordRequest = (
     (routeMetrics.byStatus[statusCode] ?? 0) + 1;
 };
 
-const serializeRoutes = () =>
+const serializeRoutes = (requestMetrics: RequestMetricsSnapshot) =>
   Object.fromEntries(
     Object.entries(requestMetrics.routes).map(([path, routeMetrics]) => [
       path,
@@ -87,39 +103,67 @@ const serializeRoutes = () =>
     ]),
   );
 
-export const metricsEndpoint = new Elysia()
-  .onRequest(({ request }) => {
-    requestStartTimes.set(request, performance.now());
-  })
-  .onAfterHandle({ as: "global" }, ({ request, set }) => {
-    const startedAt = requestStartTimes.get(request) ?? performance.now();
-    recordRequest(request, set.status, performance.now() - startedAt);
-  })
-  .onError({ as: "global" }, ({ request, set, code }) => {
-    const startedAt = requestStartTimes.get(request) ?? performance.now();
-    recordRequest(request, set.status ?? code, performance.now() - startedAt);
-  })
-  .get("/metrics", ({ set }) => {
-    set.headers["cache-control"] = "no-store";
+export const createMetricsEndpoint = (options: MetricsOptions = {}) => {
+  const clock = options.clock ?? systemClock;
+  let startedAtMs: number | undefined;
+  const requestMetrics: RequestMetricsSnapshot = {
+    total: 0,
+    totalMs: 0,
+    byPath: {},
+    routes: {},
+  };
+  const requestStartTimes = new WeakMap<Request, number>();
 
-    return {
-      service: "api-ground-codes",
-      scope: "worker-isolate",
-      startedAt: requestMetrics.startedAt,
-      uptimeSeconds: Math.round(
-        (Date.now() - Date.parse(requestMetrics.startedAt)) / 1000,
-      ),
-      requests: {
-        total: requestMetrics.total,
-        avgMs:
-          requestMetrics.total === 0
-            ? 0
-            : Math.round(
-                (requestMetrics.totalMs / requestMetrics.total) * 100,
-              ) / 100,
-        byPath: requestMetrics.byPath,
-        routes: serializeRoutes(),
-      },
-      regionLoads: getRegionLoadMetrics(),
-    };
-  });
+  return new Elysia()
+    .onRequest(({ request }) => {
+      startedAtMs ??= clock.nowMs();
+      requestStartTimes.set(request, clock.monotonicMs());
+    })
+    .onAfterHandle({ as: "global" }, ({ request, set }) => {
+      const startedAt = requestStartTimes.get(request) ?? clock.monotonicMs();
+      recordRequest(
+        requestMetrics,
+        request,
+        set.status,
+        clock.monotonicMs() - startedAt,
+      );
+    })
+    .onError({ as: "global" }, ({ request, set, code }) => {
+      const startedAt = requestStartTimes.get(request) ?? clock.monotonicMs();
+      recordRequest(
+        requestMetrics,
+        request,
+        set.status ?? code,
+        clock.monotonicMs() - startedAt,
+      );
+    })
+    .get("/metrics", ({ set }) => {
+      set.headers["cache-control"] = "no-store";
+      const requestStartedAtMs = startedAtMs ?? clock.nowMs();
+      startedAtMs ??= requestStartedAtMs;
+      const { runtimeCommit } = getRuntimeMetadata();
+
+      return {
+        service: "api-ground-codes",
+        scope: "worker-isolate",
+        startedAt: new Date(requestStartedAtMs).toISOString(),
+        uptimeSeconds: Math.max(
+          0,
+          Math.round((clock.nowMs() - requestStartedAtMs) / 1000),
+        ),
+        runtimeCommit,
+        requests: {
+          total: requestMetrics.total,
+          avgMs:
+            requestMetrics.total === 0
+              ? 0
+              : Math.round(
+                  (requestMetrics.totalMs / requestMetrics.total) * 100,
+                ) / 100,
+          byPath: requestMetrics.byPath,
+          routes: serializeRoutes(requestMetrics),
+        },
+        regionLoads: getRegionLoadMetrics(),
+      };
+    });
+};

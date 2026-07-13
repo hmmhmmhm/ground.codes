@@ -64,15 +64,28 @@ describe("Ground Codes API contract", () => {
   });
 
   test("serves lightweight operational metrics", async () => {
-    await get("/healthz");
+    const firstApp = createApp({ rateLimit: null });
+    const secondApp = createApp({ rateLimit: null });
 
-    const response = await get("/metrics");
+    await firstApp.handle(new Request("http://localhost/healthz"));
 
-    expect(response.status).toBe(200);
-    const body = await response.json();
-    expect(body.service).toBe("api-ground-codes");
-    expect(body.scope).toBe("worker-isolate");
-    expect(body.requests.total).toBeGreaterThan(0);
+    const firstResponse = await firstApp.handle(
+      new Request("http://localhost/metrics"),
+    );
+    const secondResponse = await secondApp.handle(
+      new Request("http://localhost/metrics"),
+    );
+
+    expect(firstResponse.status).toBe(200);
+    const first = await firstResponse.json();
+    expect(first.service).toBe("api-ground-codes");
+    expect(first.scope).toBe("worker-isolate");
+    expect(first.runtimeCommit).toMatch(/^[0-9a-f]{40}$/);
+    expect(first.requests.total).toBe(1);
+
+    expect(secondResponse.status).toBe(200);
+    const second = await secondResponse.json();
+    expect(second.requests.total).toBe(0);
   });
 
   test("serves public API documentation without exposing legacy routes", async () => {
