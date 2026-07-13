@@ -1,6 +1,6 @@
 # Spiral Decomposition Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Split the 1,481-line spiral implementation into dependency-directed modules under 450 lines without changing number or BigInt coordinates.
 
@@ -16,9 +16,9 @@
 
 - Modify: `scripts/code-size-policy.test.mjs`
 
-- [ ] Add `packages/ground-codes/src/spiral.ts` to the runtime boundary assertion.
-- [ ] Run the policy test and verify RED reports 1,481 lines.
-- [ ] Commit with `test(core): define spiral source boundary`.
+- [x] Add `packages/ground-codes/src/spiral.ts` to the runtime boundary assertion.
+- [x] Run the policy test and verify RED reports 1,481 lines.
+- [x] Commit with `test(core): define spiral source boundary`.
 
 ### Task 2: Extract cache and number theory
 
@@ -28,8 +28,8 @@
 - Create: `packages/ground-codes/src/spiral-bigint-number-theory.ts`
 - Modify: `packages/ground-codes/src/spiral.ts`
 
-- [ ] Move number and BigInt shell types, cache maps, enable state, and clear/set/get functions to `spiral-cache.ts`.
-- [ ] Move `factorBigInt` through `integerCubeRoot`, including trial primes and root constants, to the number-theory module and export only the functions required by shell/lattice modules.
+- [x] Move number and BigInt shell types, cache maps, enable state, and clear/set/get functions to `spiral-cache.ts`.
+- [x] Move `factorBigInt` through `integerCubeRoot`, including trial primes and root constants, to the number-theory module and export only the functions required by shell/lattice modules.
 
 ### Task 3: Extract BigInt lattice, shell, and coordinate search
 
@@ -40,10 +40,10 @@
 - Create: `packages/ground-codes/src/spiral-bigint-search.ts`
 - Modify: `packages/ground-codes/src/spiral.ts`
 
-- [ ] Move BigInt lattice counting and number-guided convex-hull functions to the lattice module.
-- [ ] Move BigInt shell construction, indexing, symmetry, and factorization representation functions to the shell module.
-- [ ] Move BigInt N/coordinate conversion, interpolation, secant refinement, and local counting to the search module.
-- [ ] Import `getNFromBigIntCoordinates` and `getBigIntCoordinates` into the public façade and preserve overloads unchanged.
+- [x] Move BigInt lattice counting and number-guided convex-hull functions to the lattice module.
+- [x] Move BigInt shell construction, indexing, symmetry, and factorization representation functions to the shell module.
+- [x] Move BigInt N/coordinate conversion, interpolation, secant refinement, and local counting to the search module.
+- [x] Import `getNFromBigIntCoordinates` and `getBigIntCoordinates` into the public façade and preserve overloads unchanged.
 
 ### Task 4: Verify the split
 
@@ -51,6 +51,6 @@
 
 - Modify: `scripts/code-size-policy.test.mjs`
 
-- [ ] Add all six spiral source modules to the runtime boundary assertion and verify GREEN.
-- [ ] Run spiral fixture, BigInt edge, cache, and package build checks.
-- [ ] Run workspace format/lint/type gates, mark this plan complete, and commit with `refactor(core): decompose spiral implementation`.
+- [x] Add all six spiral source modules to the runtime boundary assertion and verify GREEN.
+- [x] Run spiral fixture, BigInt edge, cache, and package build checks.
+- [x] Run workspace format/lint/type gates, mark this plan complete, and commit with `refactor(core): decompose spiral implementation`.

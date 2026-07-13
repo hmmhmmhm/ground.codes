@@ -81,6 +81,11 @@ describe("code size policy", () => {
       "packages/ground-codes/src/region-store.ts",
       "packages/ground-codes/src/region-types.ts",
       "packages/ground-codes/src/spiral.ts",
+      "packages/ground-codes/src/spiral-bigint-lattice.ts",
+      "packages/ground-codes/src/spiral-bigint-number-theory.ts",
+      "packages/ground-codes/src/spiral-bigint-search.ts",
+      "packages/ground-codes/src/spiral-bigint-shell.ts",
+      "packages/ground-codes/src/spiral-cache.ts",
     ];
 
     assert.deepEqual(
