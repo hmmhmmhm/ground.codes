@@ -16,9 +16,9 @@
 
 - Modify: `scripts/code-size-policy.test.mjs`
 
-- [ ] Add every currently oversized generator, policy, smoke, research, and test entry point to a maintained-source boundary assertion.
-- [ ] Run the policy test and verify RED reports the known oversized files.
-- [ ] Commit the failing contract.
+- [x] Add every currently oversized generator, policy, smoke, research, and test entry point to a maintained-source boundary assertion.
+- [x] Run the policy test and verify RED reports the known oversized files.
+- [x] Commit the failing contract.
 
 ### Task 2: Extract compact generator data sets
 
@@ -31,9 +31,9 @@
 - Modify: `scripts/codebook-type-inventory.mjs`
 - Create: focused modules under `scripts/data/`
 
-- [ ] Move literal tables into semantic modules below 450 lines.
-- [ ] Preserve exported values and generator output byte-for-byte where practical.
-- [ ] Run focused tests and generation dry runs.
+- [x] Move literal tables into semantic modules below 450 lines.
+- [x] Preserve exported values and generator output byte-for-byte where practical.
+- [x] Run focused tests and generation dry runs.
 
 ### Task 3: Extract language-support generator data
 
@@ -44,9 +44,9 @@
 - Modify: `scripts/generate-next-address-gap-language-support.mjs`
 - Create: language-specific modules under `scripts/data/`
 
-- [ ] Split word waves, transliteration tables, label rules, and suffix inventories by semantic group.
-- [ ] Keep each entry point focused on validation, normalization, and output orchestration.
-- [ ] Verify each generator parses and its focused tests pass.
+- [x] Split word waves, transliteration tables, label rules, and suffix inventories by semantic group.
+- [x] Keep each entry point focused on validation, normalization, and output orchestration.
+- [x] Verify each generator parses and its focused tests pass.
 
 ### Task 4: Decompose policy audit and operational scripts
 
@@ -58,10 +58,10 @@
 - Modify: `packages/ground-codes/scripts/explore-lattice-count-research.ts`
 - Create: focused policy, smoke-check, batch, and research modules
 
-- [ ] Separate policy configuration from evaluators and report formatting.
-- [ ] Group smoke checks by API, language, planetary, and web concerns.
-- [ ] Update batch source-registration paths to the decomposed runtime layout.
-- [ ] Split research math, shell, factorization, and benchmark orchestration.
+- [x] Separate policy configuration from evaluators and report formatting.
+- [x] Group smoke checks by API, language, planetary, and web concerns.
+- [x] Update batch source-registration paths to the decomposed runtime layout.
+- [x] Split research math, shell, factorization, and benchmark orchestration.
 
 ### Task 5: Decompose oversized tests
 
@@ -74,9 +74,9 @@
 - Split: `scripts/language-support-completeness.test.mjs`
 - Split: `packages/ground-codes/test/celestial-body.test.ts`
 
-- [ ] Extract shared fixtures and assertions.
-- [ ] Divide suites by capability or language family, preserving every test case.
-- [ ] Run each affected package or script test suite.
+- [x] Extract shared fixtures and assertions.
+- [x] Divide suites by capability or language family, preserving every test case.
+- [x] Run each affected package or script test suite.
 
 ### Task 6: Verify the repository-wide boundary
 
@@ -85,7 +85,7 @@
 - Modify: `scripts/code-size-policy.test.mjs`
 - Modify: this plan
 
-- [ ] Run `pnpm code:size-check` and verify zero maintained-source violations.
+- [x] Run `pnpm code:size-check` and verify zero maintained-source violations.
 - [ ] Run workspace format, lint, type-check, unit tests, and production builds.
-- [ ] Confirm generated outputs have no unintended diff.
+- [x] Confirm generated outputs have no unintended diff.
 - [ ] Mark this plan complete and commit the final decomposition.

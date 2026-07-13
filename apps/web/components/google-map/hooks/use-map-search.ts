@@ -17,6 +17,7 @@ import {
   type CelestialBody,
   parseCelestialBody,
 } from "@/lib/map/celestial-bodies";
+import { canConstructGoogleMapsClass } from "@/lib/map/google-maps-availability";
 import { type Coordinates, LocationMode } from "../types";
 
 type UseMapSearchOptions = {
@@ -117,7 +118,12 @@ export const useMapSearch = ({
   );
 
   useEffect(() => {
-    if (typeof google !== "undefined" && google.maps && !infoWindow) {
+    if (
+      typeof google !== "undefined" &&
+      google.maps &&
+      canConstructGoogleMapsClass(google.maps.InfoWindow) &&
+      !infoWindow
+    ) {
       setInfoWindow(new google.maps.InfoWindow());
     }
   }, [infoWindow]);
