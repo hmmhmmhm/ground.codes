@@ -1,4 +1,1 @@
-export {
-  getCoordinates,
-  getNFromCoordinates,
-} from "ground-codes/src/spiral";
+export { getCoordinates, getNFromCoordinates } from "ground-codes/src/spiral";
