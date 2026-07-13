@@ -109,23 +109,28 @@ git commit -m "refactor(grok): reuse canonical spiral implementation"
 - Create: `apps/web/components/google-map/earth-3d-grid.ts`
 - Modify: `apps/web/components/google-map/earth-3d-map.tsx`
 
-- [ ] **Step 1: Move pure grid types and functions**
+- [x] **Step 1: Move pure grid types and functions**
 
-Move `Map3DElementInstance`, `GRID_ALTITUDE_METERS`, the grid color constants, `GridViewport`, and the functions from `getGridStepDegrees` through `appendGrid` into `earth-3d-grid.ts`. Export only:
+Move `Map3DElementInstance`, `GRID_ALTITUDE_METERS`, the grid color constants, `GridViewport`, and the grid functions into `earth-3d-grid.ts`. Export the shared camera type, initial range, grid viewport/signature functions, and append function:
 
 ```ts
-export type EarthMap3DElement = HTMLElement & {
+export type Map3DElementInstance = HTMLElement & {
   center?: { lat: number; lng: number; altitude?: number };
+  flyCameraTo?: (options: Record<string, unknown>) => void;
   heading?: number;
   range?: number;
+  tilt?: number;
 };
 
-export const appendEarthGrid = (map3d: EarthMap3DElement): HTMLElement[];
+export const INITIAL_CAMERA_RANGE_METERS = 32000000;
+export const getGridViewport: (map3d: Map3DElementInstance) => GridViewport;
+export const getGridSignature: (viewport: GridViewport) => string;
+export const appendGrid: (map3d: Map3DElementInstance) => HTMLElement[];
 ```
 
 Keep marker-label and heading helpers in the component because they are UI/camera behavior, then import `appendEarthGrid` and `EarthMap3DElement` from the new module.
 
-- [ ] **Step 2: Verify web behavior and the boundary test**
+- [x] **Step 2: Verify web behavior and the boundary test**
 
 Run:
 
@@ -138,7 +143,7 @@ node --test scripts/code-size-policy.test.mjs
 
 Expected: web checks pass; the boundary test now fails for planetary and PostGIS only.
 
-- [ ] **Step 3: Commit the Earth split**
+- [x] **Step 3: Commit the Earth split**
 
 ```bash
 git add apps/web/components/google-map/earth-3d-grid.ts apps/web/components/google-map/earth-3d-map.tsx
