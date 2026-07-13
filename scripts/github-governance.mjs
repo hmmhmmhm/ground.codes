@@ -14,6 +14,13 @@ const CORE_SECURITY_FEATURES = [
 ];
 const MAX_GH_OUTPUT_BYTES = 16 * 1024 * 1024;
 const REPOSITORY_PATTERN = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;
+const PULL_REQUEST_PARAMETERS = {
+  dismiss_stale_reviews_on_push: false,
+  require_code_owner_review: false,
+  require_last_push_approval: false,
+  required_approving_review_count: 0,
+  required_review_thread_resolution: false,
+};
 
 export class GovernanceError extends Error {
   constructor(message) {
@@ -44,7 +51,7 @@ export const buildMainRuleset = () => ({
     { type: "non_fast_forward" },
     {
       type: "pull_request",
-      parameters: { required_approving_review_count: 0 },
+      parameters: { ...PULL_REQUEST_PARAMETERS },
     },
     {
       type: "required_status_checks",
@@ -146,6 +153,15 @@ const requestSafely = (api, request, setting) => {
   }
 };
 
+const requestOptionally = (api, request) => {
+  try {
+    api.request(request);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const findRuleset = (api, repository) => {
   const endpoint = `/repos/${repository}/rulesets`;
   const rulesets = requestSafely(
@@ -203,7 +219,9 @@ const rulesMatchPolicy = (rules) => {
   return (
     byType.has("deletion") &&
     byType.has("non_fast_forward") &&
-    pullRequest?.parameters?.required_approving_review_count === 0 &&
+    Object.entries(PULL_REQUEST_PARAMETERS).every(
+      ([name, value]) => pullRequest?.parameters?.[name] === value,
+    ) &&
     statusChecks?.parameters?.strict_required_status_checks_policy === true &&
     isDeepStrictEqual(contexts, [{ context: "verify" }])
   );
@@ -262,6 +280,14 @@ const applyRepositorySettings = (api, repository, currentRepository) => {
     api,
     {
       method: "PUT",
+      endpoint: `${endpoint}/vulnerability-alerts`,
+    },
+    "dependabot_alerts",
+  );
+  requestSafely(
+    api,
+    {
+      method: "PUT",
       endpoint: `${endpoint}/automated-security-fixes`,
     },
     "dependabot_security_updates",
@@ -269,15 +295,11 @@ const applyRepositorySettings = (api, repository, currentRepository) => {
 
   const supported = optionalSupport(currentRepository);
   for (const feature of supported) {
-    requestSafely(
-      api,
-      {
-        method: "PATCH",
-        endpoint,
-        body: buildOptionalSecurityPatch(feature),
-      },
-      feature,
-    );
+    requestOptionally(api, {
+      method: "PATCH",
+      endpoint,
+      body: buildOptionalSecurityPatch(feature),
+    });
   }
   return supported;
 };
@@ -297,10 +319,23 @@ const verifyRepositorySettings = (api, repository, supportedOptionals) => {
     api,
     {
       method: "GET",
+      endpoint: `/repos/${repository}/vulnerability-alerts`,
+    },
+    "dependabot_alerts",
+  );
+  settings.dependabot_alerts = "enabled";
+
+  const dependabot = requestSafely(
+    api,
+    {
+      method: "GET",
       endpoint: `/repos/${repository}/automated-security-fixes`,
     },
     "dependabot_security_updates",
   );
+  if (dependabot?.enabled !== true || dependabot.paused === true) {
+    fail("dependabot_security_updates: expected enabled");
+  }
   settings.dependabot_security_updates = "enabled";
 
   for (const feature of CORE_SECURITY_FEATURES) {
@@ -313,12 +348,11 @@ const verifyRepositorySettings = (api, repository, supportedOptionals) => {
   for (const feature of OPTIONAL_SECURITY_FEATURES) {
     const supported = supportedOptionals.has(feature);
     const status = current.security_and_analysis?.[feature]?.status;
-    if (!supported || status === undefined) {
+    if (!supported || status !== "enabled") {
       settings[feature] = "unsupported";
       warnings.push(`${feature}: unsupported`);
     } else {
       settings[feature] = status;
-      if (status !== "enabled") fail(`${feature}: expected enabled`);
     }
   }
 

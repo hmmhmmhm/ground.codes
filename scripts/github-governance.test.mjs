@@ -35,9 +35,16 @@ const mergeRepositoryPatch = (repository, patch) => ({
   },
 });
 
-const createStatefulApi = ({ ruleset, optional = true, failCore } = {}) => {
+const createStatefulApi = ({
+  ruleset,
+  optional = true,
+  failCore,
+  dependabot = Boolean(ruleset),
+  ignoreOptional = false,
+} = {}) => {
   const state = {
-    dependabot: Boolean(ruleset),
+    dependabot,
+    vulnerabilityAlerts: Boolean(ruleset),
     repository: {
       visibility: "public",
       delete_branch_on_merge: Boolean(ruleset),
@@ -75,11 +82,18 @@ const createStatefulApi = ({ ruleset, optional = true, failCore } = {}) => {
         return state.ruleset;
       }
       if (method === "GET" && endpoint.endsWith("/automated-security-fixes")) {
-        if (!state.dependabot) throw new Error("disabled");
-        return null;
+        return { enabled: state.dependabot, paused: false };
       }
       if (method === "PUT" && endpoint.endsWith("/automated-security-fixes")) {
         state.dependabot = true;
+        return null;
+      }
+      if (method === "GET" && endpoint.endsWith("/vulnerability-alerts")) {
+        if (!state.vulnerabilityAlerts) throw new Error("disabled");
+        return null;
+      }
+      if (method === "PUT" && endpoint.endsWith("/vulnerability-alerts")) {
+        state.vulnerabilityAlerts = true;
         return null;
       }
       if (method === "GET" && endpoint === `/repos/${REPOSITORY}`) {
@@ -92,6 +106,13 @@ const createStatefulApi = ({ ruleset, optional = true, failCore } = {}) => {
         ) {
           throw new Error("token=do-not-leak");
         }
+        if (
+          ignoreOptional &&
+          OPTIONAL_SECURITY_FEATURES.some(
+            (feature) => body.security_and_analysis?.[feature],
+          )
+        )
+          return state.repository;
         state.repository = mergeRepositoryPatch(state.repository, body);
         return state.repository;
       }
@@ -124,7 +145,13 @@ describe("GitHub repository governance", () => {
       { type: "non_fast_forward" },
       {
         type: "pull_request",
-        parameters: { required_approving_review_count: 0 },
+        parameters: {
+          dismiss_stale_reviews_on_push: false,
+          require_code_owner_review: false,
+          require_last_push_approval: false,
+          required_approving_review_count: 0,
+          required_review_thread_resolution: false,
+        },
       },
       {
         type: "required_status_checks",
@@ -164,6 +191,7 @@ describe("GitHub repository governance", () => {
       settings: {
         main_protection: "active",
         delete_branch_on_merge: "enabled",
+        dependabot_alerts: "enabled",
         dependabot_security_updates: "enabled",
         secret_scanning: "enabled",
         secret_scanning_push_protection: "enabled",
@@ -181,6 +209,15 @@ describe("GitHub repository governance", () => {
       ),
       true,
     );
+    const alertsCall = calls.findIndex(
+      ({ method, endpoint }) =>
+        method === "PUT" && endpoint.endsWith("/vulnerability-alerts"),
+    );
+    const fixesCall = calls.findIndex(
+      ({ method, endpoint }) =>
+        method === "PUT" && endpoint.endsWith("/automated-security-fixes"),
+    );
+    assert.ok(alertsCall !== -1 && alertsCall < fixesCall);
     assert.equal(
       calls.some(
         ({ method, endpoint }) =>
@@ -241,8 +278,21 @@ describe("GitHub repository governance", () => {
     );
   });
 
-  test("names unsupported optional features as warnings", () => {
-    const { api, calls } = createStatefulApi({ optional: false });
+  test("rejects a successful response that reports Dependabot disabled", () => {
+    const { api } = createStatefulApi({
+      ruleset: { id: 42, ...buildMainRuleset() },
+      dependabot: false,
+    });
+
+    assert.throws(
+      () =>
+        runGitHubGovernance({ api, mode: "verify", repository: REPOSITORY }),
+      /dependabot_security_updates: expected enabled/,
+    );
+  });
+
+  test("names attempted but unavailable optional features as warnings", () => {
+    const { api, calls } = createStatefulApi({ ignoreOptional: true });
 
     const result = runGitHubGovernance({
       api,
@@ -259,7 +309,7 @@ describe("GitHub repository governance", () => {
         ({ body }) =>
           body?.security_and_analysis?.secret_scanning_non_provider_patterns,
       ),
-      false,
+      true,
     );
   });
 
