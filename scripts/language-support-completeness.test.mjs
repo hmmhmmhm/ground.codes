@@ -29,7 +29,7 @@ const parseSupportedLanguages = () => {
 };
 
 const parseWordsetCounts = () => {
-  const source = readText("packages/ground-codes/src/wordset.ts");
+  const source = readText("packages/ground-codes/src/wordset-language.ts");
   const match = source.match(/wordSetBaseCount[^=]*=\s*\{([\s\S]*?)\}/);
   assert.ok(match, "wordSetBaseCount object not found");
   return Object.fromEntries(

@@ -71,6 +71,9 @@ describe("code size policy", () => {
       "apps/web/components/google-map/planetary-3d-map.tsx",
       "apps/api-ground-codes/src/postgis-region-store.ts",
       "packages/ground-codes/src/wordset.ts",
+      "packages/ground-codes/src/wordset-language.ts",
+      "packages/ground-codes/src/wordset-loader-primary.ts",
+      "packages/ground-codes/src/wordset-loader-secondary.ts",
     ];
 
     assert.deepEqual(
