@@ -158,21 +158,21 @@ git commit -m "refactor(web): extract Earth grid helpers"
 - Create: `apps/web/components/google-map/planetary-grid.ts`
 - Modify: `apps/web/components/google-map/planetary-3d-map.tsx`
 
-- [ ] **Step 1: Move Cesium loading and camera helpers**
+- [x] **Step 1: Move Cesium loading and camera helpers**
 
 Move Cesium URL constants, module/viewer types, `getErrorMessage`, heading-delta helpers, `loadCesium`, `getAssetId`, `getEllipsoid`, and `getScreenNorthHeading` to `planetary-cesium.ts`. Export the types and functions used by the component.
 
-- [ ] **Step 2: Move grid and label helpers**
+- [x] **Step 2: Move grid and label helpers**
 
-Move grid constants and functions from `getGridStepDegrees` through `getGridBounds`, plus `createLandmarkLabels`, to `planetary-grid.ts`. Export:
+Move grid constants and calculations, `createLandmarkLabels`, and entity creation to `planetary-grid.ts`. Export:
 
 ```ts
-export { createLandmarkLabels, getGridBounds, getGridStepDegrees };
+export { createGridEntities, createLandmarkLabels };
 ```
 
 Import the required Cesium types from `planetary-cesium.ts` and retain the existing calculations unchanged.
 
-- [ ] **Step 3: Verify web behavior and the boundary test**
+- [x] **Step 3: Verify web behavior and the boundary test**
 
 Run:
 
@@ -185,7 +185,7 @@ node --test scripts/code-size-policy.test.mjs
 
 Expected: web checks pass; the boundary test now fails for PostGIS only.
 
-- [ ] **Step 4: Commit the planetary split**
+- [x] **Step 4: Commit the planetary split**
 
 ```bash
 git add apps/web/components/google-map/planetary-cesium.ts apps/web/components/google-map/planetary-grid.ts apps/web/components/google-map/planetary-3d-map.tsx
