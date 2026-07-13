@@ -105,4 +105,46 @@ describe("code size policy", () => {
       [],
     );
   });
+
+  test("keeps tooling and test entry points within the maintained-source limit", () => {
+    const paths = [
+      "scripts/generate-next-address-gap-language-support.mjs",
+      "scripts/codebook-policy-findings.mjs",
+      "scripts/codebook-policy-audit.mjs",
+      "packages/ground-codes/test/multilingual-codebook-review.test.ts",
+      "scripts/generate-major-european-codebooks.mjs",
+      "scripts/generate-thai-support.mjs",
+      "scripts/generate-russian-support.mjs",
+      "scripts/generate-vietnamese-support.mjs",
+      "scripts/generate-hindi-support.mjs",
+      "scripts/codebook-type-inventory.mjs",
+      "scripts/generate-french-support.mjs",
+      "scripts/generate-indonesian-support.mjs",
+      "apps/api-ground-codes/src/app.test.ts",
+      "scripts/codebook-policy-audit.test.mjs",
+      "scripts/generate-candidate-language-codebooks.mjs",
+      "scripts/production-smoke.mjs",
+      "scripts/address-gap-codebook-quality.test.mjs",
+      "scripts/generate-german-support.mjs",
+      "scripts/generate-arabic-support.mjs",
+      "scripts/language-support-completeness.test.mjs",
+      "scripts/generate-portuguese-support.mjs",
+      "packages/ground-codes/test/celestial-body.test.ts",
+      "packages/ground-codes/scripts/explore-lattice-count-research.ts",
+      "scripts/generate-planetary-landmark-labels.mjs",
+      "scripts/apply-language-expansion-batch.mjs",
+      "scripts/generate-address-gap-language-support.mjs",
+    ];
+
+    assert.deepEqual(
+      paths.flatMap((path) => {
+        const violation = evaluateSourceFile({
+          path,
+          source: readFileSync(path, "utf8"),
+        });
+        return violation ? [violation] : [];
+      }),
+      [],
+    );
+  });
 });
