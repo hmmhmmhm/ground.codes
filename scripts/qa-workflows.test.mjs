@@ -188,19 +188,26 @@ describe("GitHub automation supply-chain policy", () => {
     }
   });
 
-  test("keeps Dependabot group policies inside their named subtree", () => {
+  test("rejects Dependabot groups nested under a sibling policy key", () => {
     const source = [
       "groups:",
+      "  enabled:",
+      "    patterns:",
+      '      - "*"',
+      "disabled-groups:",
       "  runtime-security:",
       "    patterns:",
       '      - "*"',
-      "  sibling:",
       '    dependency-type: "production"',
+      "    update-types:",
+      '      - "minor"',
+      '      - "patch"',
     ].join("\n");
+    const groups = indentedYamlBlock(source, "groups");
 
-    assert.equal(
-      indentedYamlBlock(source, "runtime-security"),
-      ["  runtime-security:", "    patterns:", '      - "*"'].join("\n"),
+    assert.throws(
+      () => indentedYamlBlock(groups, "runtime-security"),
+      /runtime-security must appear exactly once/,
     );
   });
 
@@ -223,16 +230,19 @@ describe("GitHub automation supply-chain policy", () => {
       assert.match(section, /^\s+open-pull-requests-limit:\s*10\s*$/m);
     }
 
+    const npmGroups = indentedYamlBlock(npmUpdates, "groups");
+    const actionGroups = indentedYamlBlock(actionUpdates, "groups");
+
     assert.equal(
-      indentedYamlBlock(npmUpdates, "runtime-security"),
+      indentedYamlBlock(npmGroups, "runtime-security"),
       expectedDependabotGroups.get("runtime-security"),
     );
     assert.equal(
-      indentedYamlBlock(npmUpdates, "development-tooling"),
+      indentedYamlBlock(npmGroups, "development-tooling"),
       expectedDependabotGroups.get("development-tooling"),
     );
     assert.equal(
-      indentedYamlBlock(actionUpdates, "github-actions"),
+      indentedYamlBlock(actionGroups, "github-actions"),
       expectedDependabotGroups.get("github-actions"),
     );
   });
