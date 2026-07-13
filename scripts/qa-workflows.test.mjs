@@ -1,17 +1,14 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { describe, test } from "node:test";
 
 const readText = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 const readJson = (path) => JSON.parse(readText(path));
-const workflowPaths = [
-  "../.github/workflows/ci.yml",
-  "../.github/workflows/deploy-api.yml",
-  "../.github/workflows/deploy-web.yml",
-  "../.github/workflows/deploy-grok-spiral.yml",
-  "../.github/workflows/production-smoke.yml",
-  "../.github/workflows/visual-qa.yml",
-];
+const workflowDirectory = new URL("../.github/workflows/", import.meta.url);
+const workflowUrls = readdirSync(workflowDirectory, { withFileTypes: true })
+  .filter((entry) => entry.isFile() && /\.ya?ml$/i.test(entry.name))
+  .map((entry) => new URL(entry.name, workflowDirectory))
+  .sort((left, right) => left.pathname.localeCompare(right.pathname));
 
 const approvedActionPins = new Map([
   ["actions/checkout", "df4cb1c069e1874edd31b4311f1884172cec0e10 # v6"],
@@ -40,6 +37,62 @@ const dependabotSection = (source, ecosystem) => {
   const end = sections[sectionIndex + 1]?.index ?? source.length;
   return source.slice(start, end);
 };
+
+const indentedYamlBlock = (source, key) => {
+  const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const headerPattern = new RegExp(`^( *)${escapedKey}:\\s*$`);
+  const lines = source.replace(/\r\n?/g, "\n").split("\n");
+  const headers = lines.flatMap((line, index) => {
+    const match = headerPattern.exec(line);
+    return match ? [{ index, indent: match[1].length }] : [];
+  });
+
+  assert.equal(headers.length, 1, `${key} must appear exactly once`);
+
+  const [{ index: start, indent }] = headers;
+  let end = start + 1;
+
+  while (end < lines.length) {
+    const line = lines[end];
+    if (line.trim() !== "" && line.match(/^ */)[0].length <= indent) break;
+    end += 1;
+  }
+
+  return lines.slice(start, end).join("\n").trimEnd();
+};
+
+const expectedDependabotGroups = new Map([
+  [
+    "runtime-security",
+    [
+      "      runtime-security:",
+      "        patterns:",
+      '          - "*"',
+      '        dependency-type: "production"',
+      "        update-types:",
+      '          - "minor"',
+      '          - "patch"',
+    ].join("\n"),
+  ],
+  [
+    "development-tooling",
+    [
+      "      development-tooling:",
+      "        patterns:",
+      '          - "*"',
+      '        dependency-type: "development"',
+      "        update-types:",
+      '          - "minor"',
+      '          - "patch"',
+    ].join("\n"),
+  ],
+  [
+    "github-actions",
+    ["      github-actions:", "        patterns:", '          - "*"'].join(
+      "\n",
+    ),
+  ],
+]);
 
 describe("QA workflow split", () => {
   test("enforces format lint and build gates in CI", () => {
@@ -110,26 +163,45 @@ describe("QA workflow split", () => {
 
 describe("GitHub automation supply-chain policy", () => {
   test("pins every external action to an approved SHA with a release comment", () => {
-    for (const workflowPath of workflowPaths) {
-      const usesLines = readText(workflowPath)
+    for (const workflowUrl of workflowUrls) {
+      const usesLines = readFileSync(workflowUrl, "utf8")
         .split("\n")
-        .map((line) => line.trim())
+        .map((line) => line.trim().replace(/^-\s+/, ""))
         .filter((line) => line.startsWith("uses:"));
 
       for (const line of usesLines) {
         if (/^uses:\s+\.\//.test(line)) continue;
 
         const match = externalActionPattern.exec(line);
-        assert.ok(match, `${workflowPath} has an unpinned action: ${line}`);
+        assert.ok(
+          match,
+          `${workflowUrl.pathname} has an unpinned action: ${line}`,
+        );
 
         const [, action, sha, release] = match;
         assert.equal(
           `${sha} # ${release}`,
           approvedActionPins.get(action),
-          `${workflowPath} has an unapproved pin for ${action}`,
+          `${workflowUrl.pathname} has an unapproved pin for ${action}`,
         );
       }
     }
+  });
+
+  test("keeps Dependabot group policies inside their named subtree", () => {
+    const source = [
+      "groups:",
+      "  runtime-security:",
+      "    patterns:",
+      '      - "*"',
+      "  sibling:",
+      '    dependency-type: "production"',
+    ].join("\n");
+
+    assert.equal(
+      indentedYamlBlock(source, "runtime-security"),
+      ["  runtime-security:", "    patterns:", '      - "*"'].join("\n"),
+    );
   });
 
   test("configures grouped weekly Dependabot updates", () => {
@@ -138,6 +210,8 @@ describe("GitHub automation supply-chain policy", () => {
     assert.ok(existsSync(dependabotUrl), ".github/dependabot.yml is required");
 
     const dependabot = readFileSync(dependabotUrl, "utf8");
+    assert.match(dependabot, /^version:\s*2\s*$/m);
+
     const npmUpdates = dependabotSection(dependabot, "npm");
     const actionUpdates = dependabotSection(dependabot, "github-actions");
 
@@ -149,19 +223,18 @@ describe("GitHub automation supply-chain policy", () => {
       assert.match(section, /^\s+open-pull-requests-limit:\s*10\s*$/m);
     }
 
-    assert.match(npmUpdates, /^\s+runtime-security:\s*$/m);
-    assert.match(
-      npmUpdates,
-      /^\s+dependency-type:\s*["']?production["']?\s*$/m,
+    assert.equal(
+      indentedYamlBlock(npmUpdates, "runtime-security"),
+      expectedDependabotGroups.get("runtime-security"),
     );
-    assert.match(npmUpdates, /^\s+development-tooling:\s*$/m);
-    assert.match(
-      npmUpdates,
-      /^\s+dependency-type:\s*["']?development["']?\s*$/m,
+    assert.equal(
+      indentedYamlBlock(npmUpdates, "development-tooling"),
+      expectedDependabotGroups.get("development-tooling"),
     );
-    assert.match(actionUpdates, /^\s+github-actions:\s*$/m);
-    assert.match(actionUpdates, /^\s+patterns:\s*$/m);
-    assert.match(actionUpdates, /^\s+-\s*["']\*["']\s*$/m);
+    assert.equal(
+      indentedYamlBlock(actionUpdates, "github-actions"),
+      expectedDependabotGroups.get("github-actions"),
+    );
   });
 });
 
