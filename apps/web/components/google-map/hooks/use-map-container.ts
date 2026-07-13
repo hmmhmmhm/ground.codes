@@ -2,138 +2,34 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useGridSystem } from "@/lib/grid-system";
 import { useMapCoordinates } from "./use-map-coordinates";
 import { useGeolocation } from "./use-geolocation";
-import { googleMapDarkTheme } from "@/lib/map/google-map-theme";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useLanguage } from "./use-language";
 import { useI18n } from "@/lib/i18n/i18n-context";
 import { useLocationTracking } from "./use-location-tracking";
 import { Coordinates, LocationMode } from "../types";
 import {
-  GroundCodeSearchResult,
-  searchGroundCodes,
-} from "@/lib/code/ground-codes";
-import { parseGroundCodeSharePath } from "@/lib/code/share-url";
-import { getGroundCodeLanguage } from "@/lib/i18n/ground-code-language";
-import {
   CelestialBody,
-  createPlanetaryMapType,
   getDefaultPlanetaryLayerId,
   getDefaultViewForBody,
   getPlanetaryLayerConfig,
   METERS_PER_DEGREE_BY_BODY,
-  parseCelestialBody,
 } from "@/lib/map/celestial-bodies";
+import {
+  type EarthMapType,
+  getDefaultMapTypeForBody,
+  getInitialBody,
+  getInitialCenter,
+  getInitialMapType,
+  getInitialPlanetaryLayerId,
+  getInitialZoom,
+  libraries,
+} from "./map-container-initial-state";
+import { useMapSearch } from "./use-map-search";
+import { useMapControls } from "./use-map-controls";
+import { useMapPresentation } from "./use-map-presentation";
+import { useMapLifecycle } from "./use-map-lifecycle";
 
-// Define libraries array as a constant to prevent recreation on each render
-const libraries: "places"[] = ["places"];
-export type EarthMapType = "roadmap" | "satellite" | "earth3d" | "planetary3d";
-
-const getMapTypeFromCookie = (): EarthMapType => {
-  try {
-    if (typeof window === "undefined") return "roadmap";
-
-    const params = new URLSearchParams(window.location.search);
-    const queryBody = parseCelestialBody(params.get("body"));
-    const queryMapType = params.get("map") ?? params.get("view");
-    if (
-      queryMapType === "planetary3d" ||
-      (queryMapType === "3d" && queryBody !== "earth")
-    ) {
-      return "planetary3d";
-    }
-    if (
-      queryMapType === "earth3d" ||
-      (queryMapType === "3d" && queryBody === "earth")
-    ) {
-      return "earth3d";
-    }
-    if (queryMapType === "satellite") return "satellite";
-    if (queryMapType === "roadmap" || queryMapType === "2d") return "roadmap";
-
-    const cookieMapTypeMatch = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("MAP_TYPE="));
-
-    const cookieMapType = cookieMapTypeMatch
-      ? cookieMapTypeMatch.split("=")[1]
-      : undefined;
-
-    if (
-      cookieMapType &&
-      (cookieMapType === "roadmap" ||
-        cookieMapType === "satellite" ||
-        cookieMapType === "earth3d" ||
-        cookieMapType === "planetary3d")
-    ) {
-      return cookieMapType;
-    }
-
-    return "roadmap";
-  } catch (error) {
-    console.error("Error getting map type from cookie:", error);
-    return "roadmap";
-  }
-};
-
-const getDefaultMapTypeForBody = (body: CelestialBody): EarthMapType =>
-  body === "earth" ? "earth3d" : "planetary3d";
-
-const getInitialMapType = (body: CelestialBody): EarthMapType => {
-  try {
-    if (typeof window === "undefined") return getDefaultMapTypeForBody(body);
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.has("map") || params.has("view")) {
-      return getMapTypeFromCookie();
-    }
-
-    return getDefaultMapTypeForBody(body);
-  } catch (error) {
-    console.error("Error getting initial map type:", error);
-    return getDefaultMapTypeForBody(body);
-  }
-};
-
-const getInitialBody = (): CelestialBody => {
-  if (typeof window === "undefined") return "earth";
-  const sharedCode = parseGroundCodeSharePath(window.location.pathname);
-  if (sharedCode) return sharedCode.body;
-
-  return parseCelestialBody(
-    new URLSearchParams(window.location.search).get("body"),
-  );
-};
-
-const getInitialPlanetaryLayerId = (body: CelestialBody) => {
-  if (body === "earth") return getDefaultPlanetaryLayerId("moon");
-
-  return getDefaultPlanetaryLayerId(body);
-};
-
-const getInitialCenter = (body: CelestialBody): google.maps.LatLngLiteral => {
-  const defaultView = getDefaultViewForBody(body);
-  if (typeof window === "undefined") return defaultView.center;
-
-  const params = new URLSearchParams(window.location.search);
-  if (!params.has("lat") || !params.has("lng")) return defaultView.center;
-
-  const lat = Number(params.get("lat"));
-  const lng = Number(params.get("lng"));
-  if (Number.isFinite(lat) && Number.isFinite(lng)) return { lat, lng };
-
-  return defaultView.center;
-};
-
-const getInitialZoom = (body: CelestialBody): number => {
-  const defaultView = getDefaultViewForBody(body);
-  if (typeof window === "undefined") return defaultView.zoom;
-
-  const params = new URLSearchParams(window.location.search);
-  if (!params.has("zoom")) return defaultView.zoom;
-
-  const zoom = Number(params.get("zoom"));
-  return Number.isFinite(zoom) ? zoom : defaultView.zoom;
-};
+export type { EarthMapType } from "./map-container-initial-state";
 
 export const useMapContainer = () => {
   const { getUserLanguage } = useLanguage();
@@ -167,9 +63,6 @@ export const useMapContainer = () => {
   );
   const [zoom, setZoom] = useState(() => getInitialZoom(body));
   const userZoomRef = useRef<number>(getInitialZoom(body));
-  const [mapHeading, setMapHeading] = useState(0);
-  const [mapTilt, setMapTilt] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   // User location state
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
@@ -187,30 +80,27 @@ export const useMapContainer = () => {
 
   // Grid state
   const [showGrid, setShowGrid] = useState(true);
-  const [gridWasVisible, setGridWasVisible] = useState(true);
+  const {
+    isFullscreen,
+    mapHeading,
+    mapTilt,
+    onHeadingChanged,
+    onTiltChanged,
+    resetMapHeading,
+    selectMapType,
+    setMapHeadingValue,
+    toggleFullscreen,
+  } = useMapControls({
+    map,
+    mapType,
+    setMapType,
+    setShowGrid,
+    showGrid,
+  });
 
   // Selected area state
   const [selectedArea, setSelectedArea] = useState<Coordinates | null>(null);
   const [selectedAreaAddress, setSelectedAreaAddress] = useState<string | null>(
-    null,
-  );
-
-  // Search result state
-  const [searchedPlace, setSearchedPlace] =
-    useState<google.maps.places.PlaceResult | null>(null);
-  const [isGroundSearchLoading, setIsGroundSearchLoading] = useState(false);
-  const [groundSearchError, setGroundSearchError] = useState<string | null>(
-    null,
-  );
-  const [groundSearchResults, setGroundSearchResults] = useState<
-    GroundCodeSearchResult[]
-  >([]);
-  const [initialGroundSearchQuery, setInitialGroundSearchQuery] = useState("");
-  const restoredSharePathRef = useRef(false);
-  const [searchMarker, setSearchMarker] = useState<google.maps.Marker | null>(
-    null,
-  );
-  const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow | null>(
     null,
   );
 
@@ -315,111 +205,6 @@ export const useMapContainer = () => {
     setLocationMode,
   ]);
 
-  const selectMapType = useCallback(
-    (newType: EarthMapType) => {
-      if (newType === mapType) return;
-
-      try {
-        // Store map type in cookie (1 year validity)
-        document.cookie = `MAP_TYPE=${newType};path=/;max-age=31536000`;
-        setMapType(newType);
-
-        if (!map || newType === "earth3d" || newType === "planetary3d") return;
-
-        if (newType === "roadmap") {
-          map.setOptions({
-            styles: googleMapDarkTheme,
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-          });
-        } else {
-          map.setOptions({
-            styles: [],
-            mapTypeControlOptions: {
-              mapTypeIds: [google.maps.MapTypeId.HYBRID],
-            },
-          });
-          map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-        }
-      } catch (error) {
-        console.error("Failed to change map type:", error);
-      }
-    },
-    [map, mapType],
-  );
-
-  // Reset map heading to 0 (north)
-  const resetMapHeading = useCallback(() => {
-    if (map) {
-      map.setHeading(0);
-    }
-    setMapHeading(0);
-  }, [map]);
-
-  // Set map heading to a specific value
-  const setMapHeadingValue = useCallback(
-    (heading: number) => {
-      if (map) {
-        // Set map to be rotatable
-        map.setOptions({ rotateControl: true });
-        map.setHeading(heading);
-      }
-      setMapHeading(heading);
-    },
-    [map],
-  );
-
-  // Map heading change handler
-  const onHeadingChanged = useCallback(() => {
-    if (map) {
-      const newHeading = map.getHeading();
-      if (newHeading !== undefined) {
-        setMapHeading(newHeading);
-
-        // If rotation is present, turn off grid
-        if (newHeading !== 0 && showGrid) {
-          setGridWasVisible(true); // Store current grid state
-          setShowGrid(false); // Turn off grid
-        }
-        // If rotation is absent and grid was previously on, turn it back on
-        else if (
-          newHeading === 0 &&
-          !showGrid &&
-          gridWasVisible &&
-          mapTilt === 0
-        ) {
-          setShowGrid(true); // Turn grid back on
-          setGridWasVisible(false); // Reset state
-        }
-      }
-    }
-  }, [map, showGrid, mapTilt, gridWasVisible]);
-
-  // Map tilt change handler
-  const onTiltChanged = useCallback(() => {
-    if (map) {
-      const newTilt = map.getTilt();
-      if (newTilt !== undefined) {
-        setMapTilt(newTilt);
-
-        // If tilt is present, turn off grid
-        if (newTilt !== 0 && showGrid) {
-          setGridWasVisible(true); // Store current grid state
-          setShowGrid(false); // Turn off grid
-        }
-        // If tilt is absent and grid was previously on, turn it back on
-        else if (
-          newTilt === 0 &&
-          !showGrid &&
-          gridWasVisible &&
-          mapHeading === 0
-        ) {
-          setShowGrid(true); // Turn grid back on
-          setGridWasVisible(false); // Reset state
-        }
-      }
-    }
-  }, [map, showGrid, mapHeading, gridWasVisible]);
-
   // Get user location function
   const getUserLocation = useCallback(() => {
     if (!isEarth) return;
@@ -433,36 +218,6 @@ export const useMapContainer = () => {
       setLocationMode(LocationMode.OFF);
     }
   }, [locationMode, setLocationMode, isEarth]);
-
-  // Toggle fullscreen function
-  const toggleFullscreen = useCallback(() => {
-    const mapContainer = document.querySelector(".map-container");
-
-    if (!mapContainer) return;
-
-    if (!document.fullscreenElement) {
-      mapContainer.requestFullscreen().catch((err) => {
-        console.error(`Error attempting to enable fullscreen: ${err.message}`);
-      });
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
-    }
-  }, []);
-
-  // Listen for fullscreen change events
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
 
   // Get encoded coordinates using the hook
   const { encodedCoordinates, isEncoding, encodeSelectedAreaCoordinates } =
@@ -520,97 +275,47 @@ export const useMapContainer = () => {
     [body, map],
   );
 
-  useEffect(() => {
-    if (!map) return;
-
-    if (body === "earth") {
-      if (mapType === "earth3d" || mapType === "planetary3d") {
-        clearAllGridLines();
-        return;
-      }
-
-      map.setOptions({ clickableIcons: true });
-      if (mapType === "roadmap") {
-        map.setOptions({
-          styles: googleMapDarkTheme,
-          mapTypeId: google.maps.MapTypeId.ROADMAP,
-        });
-      } else {
-        map.setOptions({
-          styles: [],
-          mapTypeControlOptions: {
-            mapTypeIds: [google.maps.MapTypeId.HYBRID],
-          },
-        });
-        map.setMapTypeId(google.maps.MapTypeId.HYBRID);
-      }
-      return;
-    }
-
-    if (mapType === "planetary3d") {
-      clearAllGridLines();
-      return;
-    }
-
-    const planetaryMapType = createPlanetaryMapType(body, planetaryLayerId);
-    map.mapTypes.set(body, planetaryMapType);
-    map.setOptions({
-      clickableIcons: false,
-      styles: [],
-      backgroundColor: "#050505",
-      mapTypeControlOptions: { mapTypeIds: [body] },
-    });
-    map.setMapTypeId(body);
-
-    if (showGrid) {
-      window.requestAnimationFrame(() => drawGrid(map));
-    }
-  }, [
+  const {
+    applyGroundSearchResult,
+    cleanupSearch,
+    groundSearchError,
+    groundSearchResults,
+    handleGroundSearch,
+    handleGroundSuggest,
+    handlePlaceSelect,
+    initialGroundSearchQuery,
+    isGroundSearchLoading,
+    searchedPlace,
+  } = useMapSearch({
     body,
+    center,
+    locale,
+    locationMode,
+    map,
+    selectBody,
+    setCenter,
+    setLocationMode: (mode) => setLocationMode(mode),
+    setPlaceDetailsVisible,
+    setSelectedArea,
+    setSelectedAreaAddress,
+    setSelectedLocation,
+    setSelectedPlaceId,
+    setShowInfoWindow,
+    setZoom,
+    userZoomRef,
+  });
+
+  useMapPresentation({
+    body,
+    center,
+    clearAllGridLines,
+    drawGrid,
     map,
     mapType,
     planetaryLayerId,
     showGrid,
-    drawGrid,
-    clearAllGridLines,
-  ]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (parseGroundCodeSharePath(window.location.pathname)) return;
-
-    const params = new URLSearchParams(window.location.search);
-    if (body === "earth") {
-      params.delete("body");
-      params.delete("layer");
-      params.delete("lat");
-      params.delete("lng");
-      params.delete("zoom");
-      if (mapType === "earth3d") {
-        params.delete("map");
-        params.delete("view");
-      } else {
-        params.delete("view");
-        params.set("map", mapType);
-      }
-    } else {
-      params.set("body", body);
-      params.delete("map");
-      params.delete("layer");
-      params.set("lat", center.lat.toFixed(5));
-      params.set("lng", center.lng.toFixed(5));
-      params.set("zoom", String(zoom));
-      if (mapType === "planetary3d") {
-        params.set("view", "3d");
-      } else {
-        params.set("view", "2d");
-      }
-    }
-
-    const query = params.toString();
-    const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}`;
-    window.history.replaceState(null, "", nextUrl);
-  }, [body, center, zoom, mapType]);
+    zoom,
+  });
 
   // Close place details
   const closePlaceDetails = useCallback(() => {
@@ -622,445 +327,31 @@ export const useMapContainer = () => {
     setShowInfoWindow(true);
   }, [setShowInfoWindow]);
 
-  // Setup map event handlers when map is ready
-  useEffect(() => {
-    if (map) {
-      removeMapEventHandlers(map);
-      setupMapEventHandlers(map);
-
-      if (!showGrid) {
-        clearAllGridLines();
-      } else {
-        drawGrid(map);
-      }
-
-      // Add map drag start listener
-      map.addListener("dragstart", handleMapInteraction);
-
-      // Add heading changed listener
-      map.addListener("heading_changed", () => {
-        onHeadingChanged();
-      });
-
-      // Add tilt changed listener
-      map.addListener("tilt_changed", () => {
-        onTiltChanged();
-      });
-
-      return () => {
-        if (map) {
-          google.maps.event.clearListeners(map, "dragstart");
-          google.maps.event.clearListeners(map, "heading_changed");
-          google.maps.event.clearListeners(map, "tilt_changed");
-        }
-      };
-    }
-  }, [
-    showGrid,
-    map,
-    setupMapEventHandlers,
-    removeMapEventHandlers,
+  const { onLoad, onUnmount, onZoomChanged } = useMapLifecycle({
+    body,
+    cleanupSearch,
     clearAllGridLines,
     drawGrid,
-    selectedArea,
+    encodeSelectedAreaCoordinates,
     handleMapInteraction,
-    onHeadingChanged,
-    onTiltChanged,
-  ]);
-
-  // Encode coordinates when selected area changes
-  useEffect(() => {
-    if (selectedArea) {
-      encodeSelectedAreaCoordinates();
-    }
-  }, [selectedArea, encodeSelectedAreaCoordinates]);
-
-  useEffect(() => {
-    if (!selectedArea) {
-      setSelectedAreaAddress(null);
-      return;
-    }
-
-    if (
-      !isEarth ||
-      !hasGoogleMapsApiKey ||
-      !isGoogleMapsLoaded ||
-      typeof google === "undefined" ||
-      !google.maps?.Geocoder
-    ) {
-      setSelectedAreaAddress(null);
-      return;
-    }
-
-    let isActive = true;
-    const geocoder = new google.maps.Geocoder();
-
-    geocoder.geocode({ location: selectedArea }, (results, status) => {
-      if (!isActive) return;
-
-      if (status !== google.maps.GeocoderStatus.OK || !results?.length) {
-        setSelectedAreaAddress(null);
-        return;
-      }
-
-      setSelectedAreaAddress(results[0]?.formatted_address ?? null);
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [
     hasGoogleMapsApiKey,
     isEarth,
     isGoogleMapsLoaded,
+    map,
+    mapType,
+    onHeadingChanged,
+    onTiltChanged,
+    planetaryLayerId,
+    removeMapEventHandlers,
     selectedArea,
-    selectedArea?.lat,
-    selectedArea?.lng,
-  ]);
-
-  // Initialize InfoWindow
-  useEffect(() => {
-    if (hasGoogleMapsApiKey && isGoogleMapsLoaded && !infoWindow) {
-      setInfoWindow(new google.maps.InfoWindow());
-    }
-  }, [hasGoogleMapsApiKey, isGoogleMapsLoaded, infoWindow]);
-
-  // Handle place selection from search
-  const handlePlaceSelect = useCallback(
-    (place: google.maps.places.PlaceResult) => {
-      if (!place.geometry || !place.geometry.location || !map) return;
-
-      // When place is selected, disable location tracking
-      if (locationMode === LocationMode.TRACKING) {
-        setLocationMode(LocationMode.OFF);
-      }
-
-      setSearchedPlace(place);
-      setSelectedAreaAddress(place.formatted_address ?? place.name ?? null);
-
-      // Adjust map view based on place geometry
-      if (place.geometry.viewport) {
-        map.fitBounds(place.geometry.viewport);
-      } else {
-        map.setCenter(place.geometry.location);
-        map.setZoom(17);
-      }
-
-      // Create or update marker
-      if (!searchMarker) {
-        const marker = new google.maps.Marker({
-          map,
-          position: place.geometry.location,
-          animation: google.maps.Animation.DROP,
-        });
-        setSearchMarker(marker);
-      } else {
-        searchMarker.setPosition(place.geometry.location);
-      }
-
-      // Show info window
-      if (infoWindow && searchMarker) {
-        const content = `
-        <div>
-          <strong>${place.name || ""}</strong><br>
-          ${place.formatted_address || ""}
-        </div>
-      `;
-        infoWindow.setContent(content);
-
-        // Keep search result InfoWindow open
-        // Hide ground codes InfoWindow
-        setShowInfoWindow(false);
-
-        infoWindow.open(map, searchMarker);
-      }
-
-      // Update selected area
-      const location = place.geometry.location.toJSON();
-      setSelectedArea(location);
-    },
-    [map, searchMarker, infoWindow, locationMode, setLocationMode],
-  );
-
-  const applyGroundSearchResult = useCallback(
-    (result: GroundCodeSearchResult) => {
-      const resultBody = parseCelestialBody(String(result.body));
-      const nextLocation = { lat: result.lat, lng: result.lng };
-      const nextZoom = resultBody === "earth" ? 14 : 5;
-
-      if (resultBody !== body) {
-        selectBody(resultBody);
-      }
-
-      if (locationMode === LocationMode.TRACKING) {
-        setLocationMode(LocationMode.OFF);
-      }
-
-      setPlaceDetailsVisible(false);
-      setSelectedPlaceId(null);
-      setSelectedLocation(null);
-      setCenter(nextLocation);
-      setZoom(nextZoom);
-      userZoomRef.current = nextZoom;
-      setSelectedArea(nextLocation);
-      setSelectedAreaAddress(
-        resultBody === "earth" && result.type !== "ground-code"
-          ? result.label
-          : null,
-      );
-      setShowInfoWindow(true);
-
-      if (map && resultBody === body) {
-        map.setCenter(nextLocation);
-        map.setZoom(nextZoom);
-      }
-    },
-    [body, locationMode, map, selectBody, setLocationMode],
-  );
-
-  const handleGroundSearch = useCallback(
-    async (query: string, options?: { body?: CelestialBody }) => {
-      const trimmedQuery = query.trim();
-      if (!trimmedQuery) return;
-      const searchBody = options?.body ?? body;
-
-      try {
-        setIsGroundSearchLoading(true);
-        setGroundSearchError(null);
-        let results: GroundCodeSearchResult[] = [];
-
-        let apiSearchUnavailable = false;
-        try {
-          const response = await searchGroundCodes({
-            query: trimmedQuery,
-            language: getGroundCodeLanguage(locale),
-            body: searchBody,
-            maxResults: 5,
-            biasLat: center.lat,
-            biasLng: center.lng,
-          });
-          results = response.results;
-        } catch (apiError) {
-          apiSearchUnavailable = true;
-          console.warn("Ground code API search unavailable:", apiError);
-        }
-
-        if (results.length === 0 && searchBody === "earth") {
-          const geocodedResult =
-            await new Promise<GroundCodeSearchResult | null>((resolve) => {
-              if (typeof google === "undefined" || !google.maps?.Geocoder) {
-                resolve(null);
-                return;
-              }
-
-              const geocoder = new google.maps.Geocoder();
-              let settled = false;
-              const timeoutId = window.setTimeout(() => {
-                if (settled) return;
-                settled = true;
-                resolve(null);
-              }, 3_500);
-              const finish = (result: GroundCodeSearchResult | null) => {
-                if (settled) return;
-                settled = true;
-                window.clearTimeout(timeoutId);
-                resolve(result);
-              };
-
-              geocoder.geocode(
-                { address: trimmedQuery },
-                (geocodeResults, status) => {
-                  if (
-                    status !== google.maps.GeocoderStatus.OK ||
-                    !geocodeResults?.[0]?.geometry?.location
-                  ) {
-                    finish(null);
-                    return;
-                  }
-
-                  const geocodeResult = geocodeResults[0];
-                  const location = geocodeResult.geometry.location;
-                  finish({
-                    type: "region",
-                    label: geocodeResult.formatted_address ?? trimmedQuery,
-                    lat: location.lat(),
-                    lng: location.lng(),
-                    body: "earth",
-                    regionLevel: 2,
-                  });
-                },
-              );
-            });
-
-          if (geocodedResult) {
-            results = [geocodedResult];
-          }
-        }
-
-        setGroundSearchResults(results);
-        const result = results[0];
-
-        if (!result) {
-          setGroundSearchError(
-            apiSearchUnavailable
-              ? "map.search.unavailable"
-              : "map.search.noResults",
-          );
-          return;
-        }
-
-        applyGroundSearchResult(result);
-      } catch (error) {
-        console.error("Ground code search failed:", error);
-        setGroundSearchError("map.search.error");
-      } finally {
-        setIsGroundSearchLoading(false);
-      }
-    },
-    [applyGroundSearchResult, body, center.lat, center.lng, locale],
-  );
-
-  const handleGroundSuggest = useCallback(
-    async (query: string) => {
-      const trimmedQuery = query.trim();
-      if (!trimmedQuery) return [];
-
-      const response = await searchGroundCodes({
-        query: trimmedQuery,
-        language: getGroundCodeLanguage(locale),
-        body,
-        maxResults: 5,
-        biasLat: center.lat,
-        biasLng: center.lng,
-      });
-
-      return response.results;
-    },
-    [body, center.lat, center.lng, locale],
-  );
-
-  useEffect(() => {
-    if (restoredSharePathRef.current || typeof window === "undefined") return;
-
-    const sharedCode = parseGroundCodeSharePath(window.location.pathname);
-    if (!sharedCode) return;
-
-    restoredSharePathRef.current = true;
-    setInitialGroundSearchQuery(sharedCode.code);
-    void handleGroundSearch(sharedCode.code, { body: sharedCode.body });
-  }, [handleGroundSearch]);
-
-  // Map load handler
-  const onLoad = useCallback(
-    (mapInstance: google.maps.Map) => {
-      setMap(mapInstance);
-
-      // Set map options to allow rotation
-      mapInstance.setOptions({
-        rotateControl: true,
-        tilt: 0, // Start without tilt
-      });
-
-      // Apply styles based on initial map type
-      if (body !== "earth") {
-        const planetaryMapType = createPlanetaryMapType(body, planetaryLayerId);
-        mapInstance.mapTypes.set(body, planetaryMapType);
-        mapInstance.setOptions({
-          clickableIcons: false,
-          styles: [],
-          backgroundColor: "#050505",
-          mapTypeControlOptions: { mapTypeIds: [body] },
-        });
-        mapInstance.setMapTypeId(body);
-      } else if (mapType === "roadmap") {
-        mapInstance.setOptions({
-          styles: googleMapDarkTheme,
-          mapTypeId: google.maps.MapTypeId.ROADMAP,
-        });
-      } else {
-        mapInstance.setOptions({
-          styles: [],
-          mapTypeControlOptions: {
-            mapTypeIds: [google.maps.MapTypeId.HYBRID],
-          },
-        });
-        mapInstance.setMapTypeId(google.maps.MapTypeId.HYBRID);
-      }
-
-      // Set up grid and event handlers
-      drawGrid(mapInstance);
-      setupMapEventHandlers(mapInstance);
-
-      // Intercept POI click event to prevent default InfoWindow display
-      mapInstance.addListener("click", (e: google.maps.MapMouseEvent) => {
-        if ((e as google.maps.IconMouseEvent).placeId) {
-          // Stop default POI click action
-          (e as google.maps.IconMouseEvent).stop();
-        }
-      });
-
-      // Add heading changed listener
-      mapInstance.addListener("heading_changed", () => {
-        onHeadingChanged();
-      });
-
-      // Add tilt changed listener
-      mapInstance.addListener("tilt_changed", () => {
-        onTiltChanged();
-      });
-    },
-    [
-      drawGrid,
-      setupMapEventHandlers,
-      mapType,
-      onHeadingChanged,
-      onTiltChanged,
-      body,
-      planetaryLayerId,
-    ],
-  );
-
-  // Map unload handler
-  const onUnmount = useCallback(
-    (mapInstance: google.maps.Map) => {
-      // Clean up grid
-      clearAllGridLines();
-      removeMapEventHandlers(mapInstance);
-
-      // Clean up search-related objects
-      if (searchMarker) {
-        searchMarker.setMap(null);
-        setSearchMarker(null);
-      }
-
-      if (infoWindow) {
-        infoWindow.close();
-      }
-
-      // Stop location tracking
-      stopLocationTracking();
-
-      setMap(null);
-    },
-    [
-      clearAllGridLines,
-      removeMapEventHandlers,
-      searchMarker,
-      infoWindow,
-      stopLocationTracking,
-    ],
-  );
-
-  // Map zoom change handler
-  const onZoomChanged = useCallback(() => {
-    if (map) {
-      const newZoom = map.getZoom();
-      if (newZoom) {
-        setZoom(newZoom);
-        userZoomRef.current = newZoom;
-      }
-    }
-  }, [map]);
+    setMap,
+    setSelectedAreaAddress,
+    setZoom,
+    setupMapEventHandlers,
+    showGrid,
+    stopLocationTracking,
+    userZoomRef,
+  });
 
   const activePlanetaryLayer =
     body === "earth" ? null : getPlanetaryLayerConfig(body, planetaryLayerId);

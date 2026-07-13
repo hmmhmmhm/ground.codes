@@ -87,6 +87,11 @@ describe("code size policy", () => {
       "packages/ground-codes/src/spiral-bigint-shell.ts",
       "packages/ground-codes/src/spiral-cache.ts",
       "apps/web/components/google-map/hooks/use-map-container.ts",
+      "apps/web/components/google-map/hooks/map-container-initial-state.ts",
+      "apps/web/components/google-map/hooks/use-map-controls.ts",
+      "apps/web/components/google-map/hooks/use-map-lifecycle.ts",
+      "apps/web/components/google-map/hooks/use-map-presentation.ts",
+      "apps/web/components/google-map/hooks/use-map-search.ts",
     ];
 
     assert.deepEqual(
