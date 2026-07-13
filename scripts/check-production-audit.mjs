@@ -17,7 +17,14 @@ export const runProductionAudit = ({
       encoding: "utf8",
       maxBuffer: AUDIT_MAX_BUFFER_BYTES,
     });
-    if (audit.error) throw audit.error;
+    if (
+      audit.error ||
+      audit.signal != null ||
+      !Number.isInteger(audit.status) ||
+      (audit.status !== 0 && audit.status !== 1)
+    ) {
+      throw new Error("Audit process did not complete normally.");
+    }
 
     const result = analyzeProductionAudit(audit.stdout);
 

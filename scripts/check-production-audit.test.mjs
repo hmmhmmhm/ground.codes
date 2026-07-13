@@ -100,4 +100,47 @@ describe("production audit command runner", () => {
     assert.deepEqual(report.output, []);
     assert.deepEqual(report.errors, ["Production audit result is unreadable."]);
   });
+
+  for (const fixture of [
+    {
+      name: "rejects a signaled audit process",
+      processResult: {
+        signal: "SIGTERM",
+        status: null,
+        stderr: "DEPENDENCY_TOKEN=signaled-secret",
+        stdout: readableAudit,
+      },
+    },
+    {
+      name: "rejects an abnormal audit process status",
+      processResult: {
+        signal: null,
+        status: 2,
+        stderr: "DEPENDENCY_TOKEN=status-secret",
+        stdout: readableAudit,
+      },
+    },
+    {
+      name: "rejects a missing audit process status",
+      processResult: {
+        signal: null,
+        stderr: "DEPENDENCY_TOKEN=missing-status-secret",
+        stdout: readableAudit,
+      },
+    },
+  ]) {
+    test(fixture.name, () => {
+      const report = captureReport();
+      const exitCode = runProductionAudit({
+        ...report,
+        spawn: () => fixture.processResult,
+      });
+
+      assert.equal(exitCode, 1);
+      assert.deepEqual(report.output, []);
+      assert.deepEqual(report.errors, [
+        "Production audit result is unreadable.",
+      ]);
+    });
+  }
 });
