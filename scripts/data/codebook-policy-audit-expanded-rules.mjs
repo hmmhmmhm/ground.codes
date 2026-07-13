@@ -1,3 +1,5 @@
+import { hasGeneratedPair } from "./codebook-policy-audit-european-rules.mjs";
+
 export const THAI_AWKWARD_ATTRIBUTE_ROOTS = [
   "น้ำ",
   "ไฟ",
