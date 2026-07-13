@@ -104,6 +104,7 @@ export const metricsEndpoint = new Elysia()
 
     return {
       service: "api-ground-codes",
+      scope: "worker-isolate",
       startedAt: requestMetrics.startedAt,
       uptimeSeconds: Math.round(
         (Date.now() - Date.parse(requestMetrics.startedAt)) / 1000,
@@ -113,8 +114,9 @@ export const metricsEndpoint = new Elysia()
         avgMs:
           requestMetrics.total === 0
             ? 0
-            : Math.round((requestMetrics.totalMs / requestMetrics.total) * 100) /
-              100,
+            : Math.round(
+                (requestMetrics.totalMs / requestMetrics.total) * 100,
+              ) / 100,
         byPath: requestMetrics.byPath,
         routes: serializeRoutes(),
       },

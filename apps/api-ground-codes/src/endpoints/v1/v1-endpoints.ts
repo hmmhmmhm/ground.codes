@@ -7,11 +7,11 @@ import { v1Search } from "./search";
 
 const endpointGroup = () =>
   new Elysia()
-  .use(v1Encode)
-  .use(v1Decode)
-  .use(v1Search)
-  .use(v1RegionAround)
-  .use(v1RegionInfo);
+    .use(v1Encode)
+    .use(v1Decode)
+    .use(v1Search)
+    .use(v1RegionAround)
+    .use(v1RegionInfo);
 
 export const v1Endpoints = new Elysia({ prefix: "/v1" }).use(endpointGroup());
 

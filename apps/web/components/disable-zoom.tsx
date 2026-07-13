@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useDisableZoom } from '@/hooks/use-disable-zoom';
+import { useDisableZoom } from "@/hooks/use-disable-zoom";
 
 /**
  * A component that prevents browser zoom functionality
@@ -9,7 +9,7 @@ import { useDisableZoom } from '@/hooks/use-disable-zoom';
 export function DisableZoom() {
   // Apply the zoom disabling hook
   useDisableZoom();
-  
+
   // This component doesn't render anything
   return null;
 }

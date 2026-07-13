@@ -123,7 +123,8 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
             });
             debounceTimerRef.current = null;
           },
-          MIN_UPDATE_INTERVAL - (currentTime - lastHeadingUpdateTimeRef.current)
+          MIN_UPDATE_INTERVAL -
+            (currentTime - lastHeadingUpdateTimeRef.current),
         );
       } else {
         requestAnimationFrame(() => {
@@ -131,7 +132,7 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
         });
       }
     },
-    [updateHeading]
+    [updateHeading],
   );
 
   // Request permission for device orientation
@@ -142,7 +143,7 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
         window.addEventListener(
           "deviceorientationabsolute",
           handleOrientation,
-          true
+          true,
         );
         if (!window.DeviceOrientationEvent) {
           window.addEventListener("deviceorientation", handleOrientation, true);
@@ -171,7 +172,7 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
             window.addEventListener(
               "deviceorientation",
               handleOrientation,
-              true
+              true,
             );
             orientationListenerAddedRef.current = true;
           }
@@ -218,12 +219,12 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
         window.removeEventListener(
           "deviceorientationabsolute",
           handleOrientation,
-          true
+          true,
         );
         window.removeEventListener(
           "deviceorientation",
           handleOrientation,
-          true
+          true,
         );
         orientationListenerAddedRef.current = false;
       }
@@ -254,7 +255,7 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
         window.addEventListener(
           "deviceorientationabsolute",
           handleOrientation,
-          true
+          true,
         );
         if (!window.DeviceOrientationEvent) {
           window.addEventListener("deviceorientation", handleOrientation, true);
@@ -270,12 +271,12 @@ export const useDeviceOrientation = (): UseDeviceOrientationReturn => {
         window.removeEventListener(
           "deviceorientationabsolute",
           handleOrientation,
-          true
+          true,
         );
         window.removeEventListener(
           "deviceorientation",
           handleOrientation,
-          true
+          true,
         );
         orientationListenerAddedRef.current = false;
       }

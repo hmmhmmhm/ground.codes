@@ -11,8 +11,8 @@ const timeout = 60_000; // 60 seconds timeout
 export default async () => {
   console.log(
     chalk.green(
-      "This command runs through the process of refining a codebook using generative AI. Read CODEBOOK_GUIDE.md before accepting the output."
-    )
+      "This command runs through the process of refining a codebook using generative AI. Read CODEBOOK_GUIDE.md before accepting the output.",
+    ),
   );
 
   const openAIModel = await input({
@@ -29,13 +29,13 @@ export default async () => {
     questionSubjects: path.join(
       process.cwd(),
       "codebook-dataset",
-      "question-subjects.json"
+      "question-subjects.json",
     ),
     generated: path.join(
       process.cwd(),
       "codebook-dataset",
       language,
-      "generated"
+      "generated",
     ),
     refined: path.join(process.cwd(), "codebook-dataset", language, "refined"),
   };
@@ -44,16 +44,16 @@ export default async () => {
 
   console.log(
     chalk.green(
-      "This total process will use an average of $10 or less, but it can often be more."
-    )
+      "This total process will use an average of $10 or less, but it can often be more.",
+    ),
   );
 
   const questions = JSON.parse(
-    fs.readFileSync(filePaths.questionSubjects, "utf8")
+    fs.readFileSync(filePaths.questionSubjects, "utf8"),
   ) as string[];
 
   console.log(
-    chalk.green(`Loaded ${questions.length} questions for ${language}.`)
+    chalk.green(`Loaded ${questions.length} questions for ${language}.`),
   );
 
   fs.mkdirSync(filePaths.refined, { recursive: true });
@@ -78,9 +78,9 @@ export default async () => {
         `Found ${
           needsProcessing.length
         } questions that need to be processed: \n${JSON.stringify(
-          needsProcessing.map((item) => item.index)
-        )}`
-      )
+          needsProcessing.map((item) => item.index),
+        )}`,
+      ),
     );
 
   if (needsProcessing.length > 0) {
@@ -95,8 +95,8 @@ export default async () => {
   } else {
     console.log(
       chalk.yellow(
-        `No need to generate set for ${language}. Already whole set exists.`
-      )
+        `No need to generate set for ${language}. Already whole set exists.`,
+      ),
     );
   }
 
@@ -105,8 +105,8 @@ export default async () => {
     const batch = needsProcessing.slice(i, i + batchSize);
     console.log(
       chalk.green(
-        `\nProcessing batch: ${JSON.stringify(batch.map((item) => item.index))}`
-      )
+        `\nProcessing batch: ${JSON.stringify(batch.map((item) => item.index))}`,
+      ),
     );
     await processBatch(batch);
   }
@@ -120,21 +120,21 @@ export default async () => {
         ) {
           console.log(
             chalk.yellow(
-              `Skipping "${question}" (${index}/${questions.length}) because file exists.`
-            )
+              `Skipping "${question}" (${index}/${questions.length}) because file exists.`,
+            ),
           );
           return;
         }
 
         console.log(
           chalk.green(
-            `Generating codebook for "${question}" (${index}/${questions.length})...`
-          )
+            `Generating codebook for "${question}" (${index}/${questions.length})...`,
+          ),
         );
 
         const beforeData = fs.readFileSync(
           path.join(filePaths.generated, `generated-${index}.json`),
-          "utf8"
+          "utf8",
         );
 
         const prompt = `You are a word-checking AI. Based on the generated wordset, your job is to remove words from the existing array that don't fit the given word rules, and return the resulting value. Return the data in the form of a JSON array. Output JSON data directly. Don't include any other answers or messages.
@@ -180,7 +180,7 @@ ${beforeData}`;
 
           fs.writeFileSync(
             path.join(filePaths.refined, `refined-${index}.json`),
-            JSON.stringify(data)
+            JSON.stringify(data),
           );
 
           return { status: "success", index };
@@ -188,25 +188,25 @@ ${beforeData}`;
           if (e.message === "Timeout exceeded") {
             console.log(
               chalk.yellow(
-                `Timeout exceeded for "${question}" (${index}/${questions.length})`
-              )
+                `Timeout exceeded for "${question}" (${index}/${questions.length})`,
+              ),
             );
           } else {
             console.error(e);
             console.log(
               chalk.yellow(
-                `Failed to generate codebook for "${question}" (${index}/${questions.length})`
-              )
+                `Failed to generate codebook for "${question}" (${index}/${questions.length})`,
+              ),
             );
 
             fs.writeFileSync(
               path.join(filePaths.refined, `refined-failed-${index}.txt`),
-              parseFailedText
+              parseFailedText,
             );
           }
           return { status: "failed", index, error: e };
         }
-      })
+      }),
     );
 
     return results;

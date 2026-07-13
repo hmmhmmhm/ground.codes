@@ -1,20 +1,38 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import {
-  CelestialBody,
+  type CelestialBody,
   getPlanetaryLayerConfig,
-  METERS_PER_DEGREE_BY_BODY,
   PLANETARY_BODY_CONFIGS,
-  PLANETARY_LANDMARK_LABELS,
 } from "@/lib/map/celestial-bodies";
 import {
   DEFAULT_GROUND_CODE_PRECISION_METERS,
   formatPrecisionMeters,
 } from "@/lib/code/ground-codes";
-import type { Locale } from "@/i18n";
-import { getGroundCodeLanguage } from "@/lib/i18n/ground-code-language";
 import { useI18n } from "@/lib/i18n/i18n-context";
-import { PLANETARY_LANDMARK_LOCALIZED_LABELS } from "@/lib/map/planetary-landmark-labels";
-import { Coordinates } from "./types";
+import {
+  type CesiumEntity,
+  type CesiumEventHandler,
+  type CesiumModule,
+  type CesiumViewer,
+  getAssetId,
+  getEllipsoid,
+  getErrorMessage,
+  getHeadingDelta,
+  getScreenNorthHeading,
+  getSignedHeadingDelta,
+  INITIAL_CAMERA_HEIGHT_METERS_BY_BODY,
+  loadCesium,
+  MARKER_ALTITUDE_METERS,
+  MARS_IMAGERY_CONTRAST,
+  MARS_IMAGERY_SATURATION,
+  MIN_CAMERA_HEIGHT_METERS,
+  normalizeHeading,
+  PLANETARY_FALLBACK_LABELS,
+  PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR,
+  PLANETARY_IMAGERY_TILE_SIZE,
+} from "./planetary-cesium";
+import { createGridEntities, createLandmarkLabels } from "./planetary-grid";
+import type { Coordinates } from "./types";
 
 type Planetary3DMapProps = {
   body: Exclude<CelestialBody, "earth">;
@@ -26,313 +44,6 @@ type Planetary3DMapProps = {
   selectedArea: Coordinates | null;
   showGrid: boolean;
   setSelectedArea: Dispatch<SetStateAction<Coordinates | null>>;
-};
-
-type CesiumModule = typeof import("cesium");
-type CesiumViewer = import("cesium").Viewer;
-type CesiumEntity = import("cesium").Entity;
-type CesiumEventHandler = import("cesium").ScreenSpaceEventHandler;
-
-const CESIUM_BASE_URL = "https://unpkg.com/cesium@1.141.0/Build/Cesium/";
-const CESIUM_SCRIPT_URL = `${CESIUM_BASE_URL}Cesium.js`;
-const INITIAL_CAMERA_HEIGHT_METERS_BY_BODY: Record<
-  Exclude<CelestialBody, "earth">,
-  number
-> = {
-  moon: 6500000,
-  mars: 9500000,
-};
-const MIN_CAMERA_HEIGHT_METERS = 2000;
-const PLANETARY_GLOBE_MAXIMUM_SCREEN_SPACE_ERROR = 1;
-const PLANETARY_IMAGERY_TILE_SIZE = 2048;
-const MARS_IMAGERY_CONTRAST = 1.05;
-const MARS_IMAGERY_SATURATION = 1.08;
-const GRID_COLOR_ALPHA = 0.06;
-const GRID_ALTITUDE_METERS = 1200;
-const MARKER_ALTITUDE_METERS = 120;
-const LANDMARK_LABEL_ALTITUDE_METERS = 6000;
-const MAX_GRID_LINE_COUNT = 96;
-const LANDMARK_LABEL_NEAR_DISTANCE_METERS = 100000;
-const LANDMARK_LABEL_FAR_DISTANCE_METERS = 32000000;
-const LANDMARK_LABEL_COLORS: Record<Exclude<CelestialBody, "earth">, string> = {
-  moon: "#d8eefb",
-  mars: "#ffd0a3",
-};
-const PLANETARY_FALLBACK_LABELS: Record<
-  Exclude<CelestialBody, "earth">,
-  string
-> = {
-  moon: "USGS Moon imagery",
-  mars: "USGS Mars imagery",
-};
-const getErrorMessage = (error: unknown) =>
-  error instanceof Error ? error.message : String(error);
-
-const normalizeHeading = (heading: number) => ((heading % 360) + 360) % 360;
-
-const getHeadingDelta = (a: number, b: number) => {
-  const delta = Math.abs(normalizeHeading(a) - normalizeHeading(b));
-  return Math.min(delta, 360 - delta);
-};
-
-const getSignedHeadingDelta = (from: number, to: number) => {
-  const delta = normalizeHeading(to) - normalizeHeading(from);
-  if (delta > 180) return delta - 360;
-  if (delta < -180) return delta + 360;
-  return delta;
-};
-
-declare global {
-  interface Window {
-    Cesium?: CesiumModule;
-    CESIUM_BASE_URL?: string;
-  }
-}
-
-let cesiumLoadPromise: Promise<CesiumModule> | null = null;
-
-const loadCesium = () => {
-  if (window.Cesium) return Promise.resolve(window.Cesium);
-  if (cesiumLoadPromise) return cesiumLoadPromise;
-
-  window.CESIUM_BASE_URL = CESIUM_BASE_URL;
-  cesiumLoadPromise = new Promise<CesiumModule>((resolve, reject) => {
-    const existingScript = document.querySelector<HTMLScriptElement>(
-      `script[src="${CESIUM_SCRIPT_URL}"]`,
-    );
-    if (existingScript) {
-      existingScript.addEventListener("load", () => {
-        if (window.Cesium) resolve(window.Cesium);
-        else reject(new Error("Cesium script loaded without window.Cesium"));
-      });
-      existingScript.addEventListener("error", () =>
-        reject(new Error("Failed to load Cesium script")),
-      );
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = CESIUM_SCRIPT_URL;
-    script.onload = () => {
-      if (window.Cesium) resolve(window.Cesium);
-      else reject(new Error("Cesium script loaded without window.Cesium"));
-    };
-    script.onerror = () => reject(new Error("Failed to load Cesium script"));
-    document.head.append(script);
-  });
-
-  return cesiumLoadPromise;
-};
-
-const getAssetId = (body: Exclude<CelestialBody, "earth">) => {
-  const value =
-    body === "moon"
-      ? process.env.NEXT_PUBLIC_CESIUM_MOON_ASSET_ID
-      : process.env.NEXT_PUBLIC_CESIUM_MARS_ASSET_ID;
-  const assetId = Number(value);
-  return Number.isFinite(assetId) && assetId > 0 ? assetId : null;
-};
-
-const getEllipsoid = (
-  Cesium: CesiumModule,
-  body: Exclude<CelestialBody, "earth">,
-) => (body === "moon" ? Cesium.Ellipsoid.MOON : Cesium.Ellipsoid.MARS);
-
-const getScreenNorthHeading = (
-  viewer: CesiumViewer,
-  Cesium: CesiumModule,
-  body: Exclude<CelestialBody, "earth">,
-) => {
-  const canvas = viewer.scene.canvas;
-  const screenCenter = new Cesium.Cartesian2(
-    canvas.clientWidth / 2,
-    canvas.clientHeight / 2,
-  );
-  const ellipsoid = getEllipsoid(Cesium, body);
-  const centerCartesian = viewer.camera.pickEllipsoid(screenCenter, ellipsoid);
-  if (!centerCartesian) return null;
-
-  const centerCartographic = Cesium.Cartographic.fromCartesian(
-    centerCartesian,
-    ellipsoid,
-  );
-  const northCartographic = new Cesium.Cartographic(
-    centerCartographic.longitude,
-    Math.min(
-      Cesium.Math.toRadians(89.5),
-      centerCartographic.latitude + Cesium.Math.toRadians(0.25),
-    ),
-    0,
-  );
-  const northCartesian = Cesium.Cartographic.toCartesian(
-    northCartographic,
-    ellipsoid,
-  );
-  const centerWindow = Cesium.SceneTransforms.worldToWindowCoordinates(
-    viewer.scene,
-    centerCartesian,
-  );
-  const northWindow = Cesium.SceneTransforms.worldToWindowCoordinates(
-    viewer.scene,
-    northCartesian,
-  );
-  if (!centerWindow || !northWindow) return null;
-
-  const dx = northWindow.x - centerWindow.x;
-  const dy = northWindow.y - centerWindow.y;
-  if (Math.abs(dx) < 0.001 && Math.abs(dy) < 0.001) return null;
-
-  return normalizeHeading((Math.atan2(dx, -dy) * 180) / Math.PI);
-};
-
-const getGridStepDegrees = (
-  body: Exclude<CelestialBody, "earth">,
-  cameraHeight: number,
-) => {
-  if (cameraHeight > 6000000) return 5;
-  if (cameraHeight > 2000000) return 2.5;
-  if (cameraHeight > 600000) return 0.5;
-  if (cameraHeight > 180000) return 0.1;
-  if (cameraHeight > 60000) return 0.025;
-  if (cameraHeight > 20000) return 0.005;
-  if (cameraHeight > 5000) return 0.001;
-  if (cameraHeight > 1000) return 0.00025;
-  if (cameraHeight > 250) return 0.0001;
-  if (cameraHeight > 75) return 0.00005;
-
-  return 3 / METERS_PER_DEGREE_BY_BODY[body];
-};
-
-const getGridSpanDegrees = (cameraHeight: number) => {
-  if (cameraHeight > 6000000) return 360;
-  if (cameraHeight > 2000000) return 140;
-  if (cameraHeight > 600000) return 24;
-  if (cameraHeight > 180000) return 8;
-  if (cameraHeight > 60000) return 2;
-  if (cameraHeight > 20000) return 0.5;
-  if (cameraHeight > 5000) return 0.12;
-  if (cameraHeight > 1000) return 0.02;
-  if (cameraHeight > 250) return 0.005;
-  if (cameraHeight > 75) return 0.002;
-  return 0.0003;
-};
-
-const normalizeGridStep = (step: number, span: number) => {
-  let normalizedStep = step;
-  while (span / normalizedStep > MAX_GRID_LINE_COUNT) {
-    normalizedStep *= 2;
-  }
-
-  return normalizedStep;
-};
-
-const snapDown = (value: number, step: number) =>
-  Math.floor(value / step) * step;
-
-const snapUp = (value: number, step: number) => Math.ceil(value / step) * step;
-
-const createGridValues = (start: number, end: number, step: number) => {
-  const count = Math.max(0, Math.round((end - start) / step));
-  return Array.from({ length: count + 1 }, (_, index) =>
-    Number((start + index * step).toFixed(6)),
-  );
-};
-
-const createLandmarkLabels = (
-  viewer: CesiumViewer,
-  Cesium: CesiumModule,
-  body: Exclude<CelestialBody, "earth">,
-  locale: Locale,
-) => {
-  const ellipsoid = getEllipsoid(Cesium, body);
-  const fillColor = Cesium.Color.fromCssColorString(
-    LANDMARK_LABEL_COLORS[body],
-  );
-  const language = getGroundCodeLanguage(locale);
-  const localizedLabels =
-    PLANETARY_LANDMARK_LOCALIZED_LABELS[language]?.[body] ??
-    PLANETARY_LANDMARK_LOCALIZED_LABELS.english?.[body] ??
-    {};
-  const distanceDisplayCondition = new Cesium.DistanceDisplayCondition(
-    LANDMARK_LABEL_NEAR_DISTANCE_METERS,
-    LANDMARK_LABEL_FAR_DISTANCE_METERS,
-  );
-  const scaleByDistance = new Cesium.NearFarScalar(
-    500000,
-    1.02,
-    14000000,
-    0.72,
-  );
-  const translucencyByDistance = new Cesium.NearFarScalar(
-    1200000,
-    1,
-    LANDMARK_LABEL_FAR_DISTANCE_METERS,
-    0.72,
-  );
-
-  return PLANETARY_LANDMARK_LABELS[body].map((landmark) =>
-    viewer.entities.add({
-      id: `planetary-landmark-${body}-${landmark.id}`,
-      position: Cesium.Cartesian3.fromDegrees(
-        landmark.lng,
-        landmark.lat,
-        LANDMARK_LABEL_ALTITUDE_METERS,
-        ellipsoid,
-      ),
-      point: {
-        color: fillColor.withAlpha(0.82),
-        distanceDisplayCondition,
-        pixelSize: 5,
-        outlineColor: Cesium.Color.BLACK.withAlpha(0.55),
-        outlineWidth: 1,
-        scaleByDistance,
-        translucencyByDistance,
-      },
-      label: {
-        text: localizedLabels[landmark.id] ?? landmark.name,
-        fillColor,
-        font: "600 12px sans-serif",
-        showBackground: true,
-        backgroundColor: Cesium.Color.BLACK.withAlpha(0.42),
-        backgroundPadding: new Cesium.Cartesian2(7, 4),
-        distanceDisplayCondition,
-        outlineColor: Cesium.Color.BLACK.withAlpha(0.9),
-        outlineWidth: 2,
-        pixelOffset: new Cesium.Cartesian2(0, -16),
-        scaleByDistance,
-        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-        translucencyByDistance,
-      },
-    }),
-  );
-};
-
-const getGridBounds = (
-  body: Exclude<CelestialBody, "earth">,
-  center: Coordinates,
-  cameraHeight: number,
-) => {
-  const span = getGridSpanDegrees(cameraHeight);
-  const step = normalizeGridStep(getGridStepDegrees(body, cameraHeight), span);
-
-  if (span >= 360) {
-    return {
-      east: 180,
-      north: 85,
-      south: -85,
-      step,
-      west: -180,
-    };
-  }
-
-  return {
-    east: Math.min(180, snapUp(center.lng + span / 2, step)),
-    north: Math.min(85, snapUp(center.lat + span / 2, step)),
-    south: Math.max(-85, snapDown(center.lat - span / 2, step)),
-    step,
-    west: Math.max(-180, snapDown(center.lng - span / 2, step)),
-  };
 };
 
 const Planetary3DMap = ({
@@ -616,64 +327,12 @@ const Planetary3DMap = ({
     gridEntitiesRef.current = [];
     if (!showGrid) return;
 
-    const ellipsoid = getEllipsoid(Cesium, body);
-    const cartographic = viewer.camera.positionCartographic;
-    const cameraCenter = selectedArea ?? {
-      lat: Cesium.Math.toDegrees(cartographic.latitude),
-      lng: Cesium.Math.toDegrees(cartographic.longitude),
-    };
-    const bounds = getGridBounds(body, cameraCenter, cartographic.height);
-    const color = Cesium.Color.WHITE.withAlpha(GRID_COLOR_ALPHA);
-
-    for (const lat of createGridValues(
-      bounds.south,
-      bounds.north,
-      bounds.step,
-    )) {
-      const positions = createGridValues(
-        bounds.west,
-        bounds.east,
-        bounds.step,
-      ).map((lng) =>
-        Cesium.Cartesian3.fromDegrees(
-          lng,
-          lat,
-          GRID_ALTITUDE_METERS,
-          ellipsoid,
-        ),
-      );
-      const entity = viewer.entities.add({
-        polyline: {
-          positions,
-          width: 1,
-          material: color,
-        },
-      });
-      gridEntitiesRef.current.push(entity);
-    }
-
-    for (const lng of createGridValues(bounds.west, bounds.east, bounds.step)) {
-      const positions = createGridValues(
-        bounds.south,
-        bounds.north,
-        bounds.step,
-      ).map((lat) =>
-        Cesium.Cartesian3.fromDegrees(
-          lng,
-          lat,
-          GRID_ALTITUDE_METERS,
-          ellipsoid,
-        ),
-      );
-      const entity = viewer.entities.add({
-        polyline: {
-          positions,
-          width: 1,
-          material: color,
-        },
-      });
-      gridEntitiesRef.current.push(entity);
-    }
+    gridEntitiesRef.current = createGridEntities(
+      viewer,
+      Cesium,
+      body,
+      selectedArea,
+    );
   }, [body, gridRevision, selectedArea, showGrid]);
 
   useEffect(() => {

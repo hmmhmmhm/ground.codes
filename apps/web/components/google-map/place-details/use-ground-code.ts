@@ -11,7 +11,7 @@ import { CelestialBody } from "@/lib/map/celestial-bodies";
 export const useGroundCode = (
   location: google.maps.LatLng | null,
   visible: boolean,
-  body: CelestialBody = "earth"
+  body: CelestialBody = "earth",
 ) => {
   const { locale } = useI18n();
   const [groundCode, setGroundCode] = useState<string>("");

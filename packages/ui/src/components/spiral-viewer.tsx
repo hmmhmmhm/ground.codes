@@ -180,7 +180,7 @@ export default function SpiralViewer({
                         getCoordinates && getNFromCoordinates
                           ? getNFromCoordinates(
                               getCoordinates(n).x,
-                              getCoordinates(n).y
+                              getCoordinates(n).y,
                             ) === n
                             ? "text-green-400"
                             : "text-red-400"

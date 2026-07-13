@@ -12,8 +12,8 @@ const timeout = 60_000;
 export default async () => {
   console.log(
     chalk.green(
-      "This command runs through the process of generating a region translation data set using generative AI."
-    )
+      "This command runs through the process of generating a region translation data set using generative AI.",
+    ),
   );
 
   const openAIModel = await input({
@@ -29,7 +29,7 @@ export default async () => {
   const regionLevel2Path = path.join(
     process.cwd(),
     "region-dataset",
-    "region-level-2"
+    "region-level-2",
   );
   const filePaths = {
     baseSets: path.join(regionLevel2Path, "pre-translation", "baseset"),
@@ -40,16 +40,16 @@ export default async () => {
 
   console.log(
     chalk.green(
-      "This total process will use an average of $0.5 or less, but it can often be more."
-    )
+      "This total process will use an average of $0.5 or less, but it can often be more.",
+    ),
   );
 
   const baseSets = glob.sync(path.join(filePaths.baseSets, "batch-*.txt"));
 
   console.log(
     chalk.green(
-      `Founded ${baseSets.length} baseset for ${language} translation.`
-    )
+      `Founded ${baseSets.length} baseset for ${language} translation.`,
+    ),
   );
 
   fs.mkdirSync(filePaths.languageSet, {
@@ -65,14 +65,14 @@ export default async () => {
         ) {
           console.log(
             chalk.yellow(
-              `Skipping (${index}/${baseSets.length}) because file exists.`
-            )
+              `Skipping (${index}/${baseSets.length}) because file exists.`,
+            ),
           );
           return;
         }
 
         console.log(
-          chalk.green(`Generating Set of (${index}/${baseSets.length})...`)
+          chalk.green(`Generating Set of (${index}/${baseSets.length})...`),
         );
 
         const prompt = `You are an AI that takes a region name and translates it to "${language}".
@@ -122,42 +122,42 @@ export default async () => {
 
           if (cleanText.length === 0) {
             console.error(
-              chalk.yellow(`Failed to parse JSON(Index: ${index}):`)
+              chalk.yellow(`Failed to parse JSON(Index: ${index}):`),
             );
             fs.writeFileSync(
               path.join(filePaths.languageSet, `batch-${index}-failed.txt`),
-              cleanText
+              cleanText,
             );
             return { status: "failed", index };
           }
 
           fs.writeFileSync(
             path.join(filePaths.languageSet, `batch-${index}.txt`),
-            cleanText
+            cleanText,
           );
 
           return { status: "success", index };
         } catch (e: any) {
           if (e.message === "Timeout exceeded") {
             console.log(
-              chalk.yellow(`Timeout exceeded of (${index}/${baseSets.length})`)
+              chalk.yellow(`Timeout exceeded of (${index}/${baseSets.length})`),
             );
           } else {
             console.error(e);
             console.log(
               chalk.yellow(
-                `Failed to generate Set for (${index}/${baseSets.length})`
-              )
+                `Failed to generate Set for (${index}/${baseSets.length})`,
+              ),
             );
 
             fs.writeFileSync(
               path.join(filePaths.languageSet, `batch-${index}-failed.txt`),
-              parseFailedText
+              parseFailedText,
             );
           }
           return { status: "failed", index, error: e };
         }
-      })
+      }),
     );
 
     return results;
@@ -173,7 +173,7 @@ export default async () => {
 
     const batchText = fs.readFileSync(
       path.join(filePaths.baseSets, `batch-${i + 1}.txt`),
-      "utf-8"
+      "utf-8",
     );
 
     if (
@@ -189,9 +189,9 @@ export default async () => {
         `Found ${
           needsProcessing.length
         } baseSet that need to be processed: \n${JSON.stringify(
-          needsProcessing.map((item) => item.index)
-        )}`
-      )
+          needsProcessing.map((item) => item.index),
+        )}`,
+      ),
     );
 
   if (needsProcessing.length > 0) {
@@ -206,8 +206,8 @@ export default async () => {
   } else {
     console.log(
       chalk.yellow(
-        `No need to generate set for ${language}. Already whole set exists.`
-      )
+        `No need to generate set for ${language}. Already whole set exists.`,
+      ),
     );
   }
 
@@ -216,8 +216,8 @@ export default async () => {
     const batch = needsProcessing.slice(i, i + batchSize);
     console.log(
       chalk.green(
-        `\nProcessing batch: ${JSON.stringify(batch.map((item) => item.index))}`
-      )
+        `\nProcessing batch: ${JSON.stringify(batch.map((item) => item.index))}`,
+      ),
     );
     await processBatch(batch);
   }

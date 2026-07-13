@@ -6,7 +6,13 @@ import { getCoordinates, getNFromCoordinates } from "../src/spiral.js";
 
 const COUNT = 10_000;
 const scriptDir = dirname(fileURLToPath(import.meta.url));
-const fixturePath = join(scriptDir, "..", "test", "fixtures", "spiral-10000.json");
+const fixturePath = join(
+  scriptDir,
+  "..",
+  "test",
+  "fixtures",
+  "spiral-10000.json",
+);
 
 const coordinatesByN = Array.from({ length: COUNT }, (_, index) => {
   const n = index + 1;
@@ -31,8 +37,8 @@ writeFileSync(
       nByCoordinate,
     },
     null,
-    2
-  )}\n`
+    2,
+  )}\n`,
 );
 
 console.log(`Wrote ${COUNT} baseline spiral cases to ${fixturePath}`);

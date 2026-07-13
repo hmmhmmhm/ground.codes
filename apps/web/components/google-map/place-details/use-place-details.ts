@@ -9,7 +9,7 @@ export const usePlaceDetails = (
   map: google.maps.Map | null,
   placeId: string | null,
   visible: boolean,
-  onResetPhotoState: () => void
+  onResetPhotoState: () => void,
 ) => {
   const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
@@ -58,13 +58,16 @@ export const usePlaceDetails = (
             ],
           },
           (result, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK && result) {
+            if (
+              status === google.maps.places.PlacesServiceStatus.OK &&
+              result
+            ) {
               setPlaceDetails(result);
             } else {
               setError(t("common.error.placeDetails"));
             }
             setIsLoading(false);
-          }
+          },
         );
       } catch (err) {
         console.error("Error fetching place details:", err);

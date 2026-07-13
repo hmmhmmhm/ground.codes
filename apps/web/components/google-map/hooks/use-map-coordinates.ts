@@ -11,7 +11,7 @@ interface Coordinates {
 
 export const useMapCoordinates = (
   selectedArea: Coordinates | null,
-  body: CelestialBody = "earth"
+  body: CelestialBody = "earth",
 ) => {
   const { locale } = useI18n();
   const [encodedCoordinates, setEncodedCoordinates] = useState<string>("");

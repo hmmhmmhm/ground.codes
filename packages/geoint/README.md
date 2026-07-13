@@ -346,23 +346,19 @@ pnpm run dataset-build
 ### 📋 Available Scripts
 
 1. **🏳️ Region 1 Build**
-
    - Builds a dataset with regions having 4 or fewer digits
    - Updates region-dist file with current airport codes (ICAO and IATA)
 
 2. **🏙️ Region 2 Build**
-
    - Processes the cities500.txt file from GeoNames
    - Filters cities with populations of 500 or more
    - Creates a standardized JSON output with city information
 
 3. **📝 Region 2 Create Pre-Translation**
-
    - Prepares files for translation of region names
    - Creates batch files in the pre-translation folder
 
 4. **🌐 Region 2 Create Translation**
-
    - Uses generative AI (OpenAI) to translate region names from English to target languages
    - Requires an OpenAI API key (set in environment variables)
 

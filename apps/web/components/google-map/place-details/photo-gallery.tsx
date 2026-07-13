@@ -29,7 +29,9 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
         <div className="mr-3 mt-1 text-pink-400">
           <FaImages size={18} />
         </div>
-        <h3 className="text-sm font-medium text-gray-300">{t("common.photos")}</h3>
+        <h3 className="text-sm font-medium text-gray-300">
+          {t("common.photos")}
+        </h3>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mt-3">
@@ -37,7 +39,10 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({
           if (photoErrors[index]) return null;
 
           const photoUrl = photo.getUrl({ maxWidth: 300, maxHeight: 300 });
-          const fullPhotoUrl = photo.getUrl({ maxWidth: 1200, maxHeight: 1200 });
+          const fullPhotoUrl = photo.getUrl({
+            maxWidth: 1200,
+            maxHeight: 1200,
+          });
 
           return (
             <div

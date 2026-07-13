@@ -20,12 +20,12 @@ export default async () => {
       process.cwd(),
       "codebook-dataset",
       language,
-      prefix
+      prefix,
     ),
     codebookStaged: path.join(
       "codebook-dataset",
       language,
-      `collected-${prefix}.json`
+      `collected-${prefix}.json`,
     ),
     codebook: path.join(process.cwd(), "codebook-dist", `${language}.json`),
   };
@@ -39,7 +39,7 @@ export default async () => {
   const emptyArrayIndices: number[] = [];
 
   const files = glob.sync(
-    path.join(filePaths.codebookDataset, `${prefix}-*.json`)
+    path.join(filePaths.codebookDataset, `${prefix}-*.json`),
   );
 
   console.log(`Found ${files.length} files for ${language}`);
@@ -89,7 +89,7 @@ export default async () => {
 
   if (emptyArrayIndices.length > 0) {
     console.log(
-      `\nEmpty arrays found at indices: ${emptyArrayIndices.join(", ")}`
+      `\nEmpty arrays found at indices: ${emptyArrayIndices.join(", ")}`,
     );
     console.log(`Total empty arrays: ${emptyArrayIndices.length}`);
   }
@@ -97,8 +97,8 @@ export default async () => {
   console.log(
     `Total words (including duplicates): ${Object.values(wordCount).reduce(
       (a, b) => a + b,
-      0
-    )}`
+      0,
+    )}`,
   );
 
   console.log(`Duplicate words: ${duplicateWords.size}`);
@@ -150,7 +150,7 @@ export default async () => {
       console.log(
         `Filtered out ${
           uniqueWords.length - englishWords.length
-        } non-English words.`
+        } non-English words.`,
       );
       uniqueWords.length = 0;
       uniqueWords.push(...englishWords);
@@ -161,7 +161,7 @@ export default async () => {
       console.log(
         `Filtered out ${
           uniqueWords.length - shortWords.length
-        } words shorter than 3 characters.`
+        } words shorter than 3 characters.`,
       );
       uniqueWords.length = 0;
       uniqueWords.push(...shortWords);
@@ -173,7 +173,7 @@ export default async () => {
       console.log(
         `Filtered out ${
           uniqueWords.length - longWords.length
-        } words longer than 9 characters.`
+        } words longer than 9 characters.`,
       );
       uniqueWords.length = 0;
       uniqueWords.push(...longWords);
@@ -186,7 +186,7 @@ export default async () => {
       console.log(
         `Filtered out ${
           uniqueWords.length - koreanWords.length
-        } non-Korean words.`
+        } non-Korean words.`,
       );
       uniqueWords.length = 0;
       uniqueWords.push(...koreanWords);
@@ -198,7 +198,7 @@ export default async () => {
       console.log(
         `Filtered out ${
           uniqueWords.length - fiveLetterWords.length
-        } words with length other than 5.`
+        } words with length other than 5.`,
       );
       uniqueWords.length = 0;
       uniqueWords.push(...fiveLetterWords);
@@ -218,7 +218,7 @@ export default async () => {
     await fs.writeFile(
       outputPath,
       JSON.stringify(uniqueWords, null, 2),
-      "utf-8"
+      "utf-8",
     );
     console.log(chalk.green(`Successfully saved codebook at ${outputPath}`));
   }

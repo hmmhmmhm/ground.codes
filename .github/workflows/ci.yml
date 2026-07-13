@@ -33,6 +33,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Check maintained source size
+        run: pnpm code:size-check
+
       - name: Check API runtime pins
         run: pnpm runtime:check-pins
 
@@ -44,6 +50,9 @@ jobs:
 
       - name: Report URL label data
         run: pnpm data:report-labels
+
+      - name: Lint
+        run: pnpm lint
 
       - name: Type check
         run: pnpm check-types
@@ -59,6 +68,9 @@ jobs:
 
       - name: Test web client
         run: pnpm --filter web test
+
+      - name: Build
+        run: pnpm build
 
       - name: Install Playwright browser
         run: pnpm --filter web exec playwright install --with-deps chromium

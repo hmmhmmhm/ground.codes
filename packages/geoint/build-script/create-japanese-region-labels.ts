@@ -318,7 +318,7 @@ const localizeName = (name: string) => {
 
   const normalized = normalizeAscii(name);
   const trailingNumber = normalized.match(/^(.*)\s+(\d+)$/);
-  const base = trailingNumber ? trailingNumber[1] ?? normalized : normalized;
+  const base = trailingNumber ? (trailingNumber[1] ?? normalized) : normalized;
   const suffix = trailingNumber ? ` ${trailingNumber[2]}` : "";
   const phrase = phraseMap.get(base.toLowerCase());
   if (phrase) return `${phrase}${suffix}`;
@@ -336,7 +336,10 @@ const localizeName = (name: string) => {
   return `${tokens
     .map(transliterateToken)
     .join(" ")
-    .replace(/\s+(海|湾|湖|川|島|諸島|岬|山|山地|丘|丘陵|谷|砂漠|区域|クレーター|大洋|沼|峡谷|平原|高原|大陸|地域|溝|尾根|崖|連鎖クレーター|火口|台地)$/u, "$1")}${suffix}`;
+    .replace(
+      /\s+(海|湾|湖|川|島|諸島|岬|山|山地|丘|丘陵|谷|砂漠|区域|クレーター|大洋|沼|峡谷|平原|高原|大陸|地域|溝|尾根|崖|連鎖クレーター|火口|台地)$/u,
+      "$1",
+    )}${suffix}`;
 };
 
 const dedupeNames = (rows: RegionRow[]) => {

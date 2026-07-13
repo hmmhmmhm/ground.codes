@@ -11,7 +11,7 @@ export default async () => {
       "region-dataset",
       "region-level-2",
       "pre-translation",
-      "baseset"
+      "baseset",
     ),
   };
   const region2 = JSON.parse(fs.readFileSync(filePaths.region2, "utf8")) as {
@@ -23,21 +23,21 @@ export default async () => {
 
   console.log(
     chalk.green(
-      `Collected region2 count: ${chalk.bold(chalk.underline(region2.length))}`
-    )
+      `Collected region2 count: ${chalk.bold(chalk.underline(region2.length))}`,
+    ),
   );
 
   fs.mkdirSync(filePaths.region2PreTranslationFoler, { recursive: true });
 
   console.log(
     chalk.green(
-      "Splitting regions into batches of 100 and saving as JSON files..."
-    )
+      "Splitting regions into batches of 100 and saving as JSON files...",
+    ),
   );
 
   // Format each region as "Label (Lat, Long)\n"
   const formattedRegions = region2.map(
-    (city) => `${city.name} (${city.lat}, ${city.long})`
+    (city) => `${city.name} (${city.lat}, ${city.long})`,
   );
 
   // Split into batches of 100
@@ -59,22 +59,22 @@ export default async () => {
       batches.forEach((batch, index) => {
         const batchFilePath = path.join(
           filePaths.region2PreTranslationFoler,
-          `batch-${index + 1}.txt`
+          `batch-${index + 1}.txt`,
         );
         fs.writeFileSync(batchFilePath, batch.join("\n"));
         setTitle(
           `Saved batch ${index + 1} with ${Math.ceil(
-            region2.length / batchSize
-          )} regions`
+            region2.length / batchSize,
+          )} regions`,
         );
       });
-    }
+    },
   );
   processTask.clear();
 
   console.log(
     chalk.green(
-      `Total batches created: ${chalk.bold(chalk.underline(batches.length))}`
-    )
+      `Total batches created: ${chalk.bold(chalk.underline(batches.length))}`,
+    ),
   );
 };

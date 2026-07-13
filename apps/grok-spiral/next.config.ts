@@ -11,6 +11,14 @@ const nextConfig: NextConfig = {
   },
   // Ensure trailing slashes for Cloudflare Pages compatibility
   trailingSlash: true,
+  webpack(config) {
+    config.resolve.extensionAlias = {
+      ".js": [".ts", ".tsx", ".js"],
+      ".mjs": [".mts", ".mjs"],
+      ".cjs": [".cts", ".cjs"],
+    };
+    return config;
+  },
 };
 
 if (process.env.NODE_ENV === "development") {

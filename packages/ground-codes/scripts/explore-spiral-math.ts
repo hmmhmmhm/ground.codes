@@ -218,7 +218,7 @@ function compareOutputs(candidate: Candidate) {
     const actual = candidate.getCoordinates(n);
     if (expected.x !== actual.x || expected.y !== actual.y) {
       throw new Error(
-        `${candidate.name} n->xy mismatch at i=${i}, n=${n}: expected ${expected.x},${expected.y}, actual ${actual.x},${actual.y}`
+        `${candidate.name} n->xy mismatch at i=${i}, n=${n}: expected ${expected.x},${expected.y}, actual ${actual.x},${actual.y}`,
       );
     }
 
@@ -226,7 +226,7 @@ function compareOutputs(candidate: Candidate) {
     const actualN = candidate.getNFromCoordinates(expected.x, expected.y);
     if (expectedN !== actualN) {
       throw new Error(
-        `${candidate.name} xy->n mismatch at i=${i}, xy=${expected.x},${expected.y}: expected ${expectedN}, actual ${actualN}`
+        `${candidate.name} xy->n mismatch at i=${i}, xy=${expected.x},${expected.y}: expected ${expectedN}, actual ${actualN}`,
       );
     }
   }
@@ -253,6 +253,7 @@ for (const candidate of benchmarkCandidates) {
     for (const n of randomNs) candidate.getCoordinates(n);
   });
   measure(`${candidate.name} xy->n`, () => {
-    for (const { x, y } of coordinateInputs) candidate.getNFromCoordinates(x, y);
+    for (const { x, y } of coordinateInputs)
+      candidate.getNFromCoordinates(x, y);
   });
 }

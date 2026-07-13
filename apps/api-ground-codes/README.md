@@ -14,7 +14,7 @@ API Ground.codes is a RESTful API service built with Elysia.js and Bun that prov
 - 🔄 **Encode Coordinates**: Convert latitude and longitude to memorable ground codes
 - 🔍 **Decode Ground Codes**: Convert ground codes back to geographic coordinates
 - 🌎 **Region Information**: Get information about specific regions
-- 🌐 **Multilingual Support**: Support for multiple languages (English, Korean, Chinese, Japanese, Spanish, French, German, Portuguese, Indonesian, Thai)
+- 🌐 **Multilingual Support**: 180 automated-stable codebook, UI, and Earth/Moon/Mars region-label sets; native-speaker review remains ongoing maintenance
 - 🌕 **Planetary Bodies**: Encode Earth, Moon, and Mars coordinates with body-specific labels
 - 🎯 **Customizable Precision**: Adjust the precision of encoded locations
 - 📝 **Swagger Documentation**: Interactive API documentation
@@ -180,6 +180,12 @@ web app, and API route metrics. It records per-check response times for `/readyz
 writes the timing table to the GitHub run summary. Add a `MOSHI_WEBHOOK_TOKEN`
 repository secret to send a webhook alert when the smoke workflow fails.
 
+`GET /metrics` exposes Worker-isolate metrics. The counters describe the
+Cloudflare Worker isolate that handled the metrics request and are not a
+globally aggregated request history. Production smoke validates the endpoint's
+schema and numeric invariants without assuming earlier requests reached the same
+isolate.
+
 ## 🔌 API Endpoints
 
 ### 🧩 Core Endpoints
@@ -315,7 +321,7 @@ Response:
 The API supports various configuration options:
 
 - 🏙️ **Region Level**: Choose between city names (level 2) or airport codes (level 1)
-- 🌐 **Language**: Select from supported languages (English, Korean, Chinese, Japanese, Spanish, French, German, Portuguese, Indonesian, Thai)
+- 🌐 **Language**: Select from 180 automated-stable language sets
 - 📏 **Precision**: Adjust the precision of encoded locations in meters
 - 🪐 **Body**: Select `earth`, `moon`, or `mars` for coordinate conversion and labels
 - 🔐 **CORS**: Set `CORS_ALLOWED_ORIGINS` as a comma-separated production allowlist

@@ -29,12 +29,12 @@ export default function GridCanvas({
 
   // 그리드 범위가 커질수록 각 셀의 크기를 줄임 (정수값 보장)
   const gridSize = Math.floor(
-    Math.max(30, Math.floor(baseGridSize * (7 / gridRange)))
+    Math.max(30, Math.floor(baseGridSize * (7 / gridRange))),
   );
 
   // 캔버스 크기를 그리드 범위에 맞게 조절 (정수값 보장)
   const canvasSize = Math.floor(
-    Math.max(baseCanvasSize, (gridRange * 2 + 1) * gridSize + padding * 2)
+    Math.max(baseCanvasSize, (gridRange * 2 + 1) * gridSize + padding * 2),
   );
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -44,7 +44,7 @@ export default function GridCanvas({
     fromX: number,
     fromY: number,
     toX: number,
-    toY: number
+    toY: number,
   ) => {
     const headLength = 10;
     const angle = Math.atan2(toY - fromY, toX - fromX);
@@ -62,12 +62,12 @@ export default function GridCanvas({
     ctx.moveTo(toX, toY);
     ctx.lineTo(
       toX - headLength * Math.cos(angle - Math.PI / 6),
-      toY - headLength * Math.sin(angle - Math.PI / 6)
+      toY - headLength * Math.sin(angle - Math.PI / 6),
     );
     ctx.moveTo(toX, toY);
     ctx.lineTo(
       toX - headLength * Math.cos(angle + Math.PI / 6),
-      toY - headLength * Math.sin(angle + Math.PI / 6)
+      toY - headLength * Math.sin(angle + Math.PI / 6),
     );
     ctx.stroke();
   };
@@ -75,7 +75,7 @@ export default function GridCanvas({
   const drawStartPoint = (
     ctx: CanvasRenderingContext2D,
     x: number,
-    y: number
+    y: number,
   ) => {
     ctx.beginPath();
     ctx.arc(x, y, 5, 0, Math.PI * 2);
@@ -153,7 +153,7 @@ export default function GridCanvas({
       x: number,
       y: number,
       text: string,
-      isXAxis: boolean
+      isXAxis: boolean,
     ) => {
       if (isXAxis) {
         const xPos = Math.floor(centerX + x * gridSize);
@@ -174,10 +174,10 @@ export default function GridCanvas({
 
     // 하이라이트된 좌표 Set 생성 (빠른 검색을 위해)
     const highlightedXSet = new Set(
-      highlightCoordinates?.map((h) => h.coord.x) || []
+      highlightCoordinates?.map((h) => h.coord.x) || [],
     );
     const highlightedYSet = new Set(
-      highlightCoordinates?.map((h) => h.coord.y) || []
+      highlightCoordinates?.map((h) => h.coord.y) || [],
     );
 
     // X축 일반 좌표

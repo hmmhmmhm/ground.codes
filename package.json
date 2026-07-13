@@ -6,6 +6,8 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
+    "code:size-check": "node scripts/check-code-size.mjs",
     "check-types": "turbo run check-types",
     "production:smoke": "node scripts/production-smoke.mjs",
     "data:audit-labels": "pnpm --filter ground-codes test:data-audit && node --test scripts/region-label-quality.test.mjs",

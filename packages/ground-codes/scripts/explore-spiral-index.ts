@@ -98,7 +98,7 @@ function getCoordinatesFromIndex(index: SpiralIndex, n: number): Point {
 function getNFromCoordinatesFromIndex(
   index: SpiralIndex,
   x: number,
-  y: number
+  y: number,
 ): number {
   const m = x * x + y * y;
   const shellIndex = binarySearchExact(index.shellMs, m);
@@ -201,7 +201,7 @@ function addSymmetricPoints(points: [number, number][], x: number, y: number) {
       [y, x],
       [y, -x],
       [-y, x],
-      [-y, -x]
+      [-y, -x],
     );
   }
 }
@@ -212,7 +212,7 @@ function angleHalf([, y]: [number, number]): 0 | 1 {
 
 function compareByAngleDescending(
   a: [number, number],
-  b: [number, number]
+  b: [number, number],
 ): number {
   const halfA = angleHalf(a);
   const halfB = angleHalf(b);
@@ -237,7 +237,7 @@ function assertSame(index: SpiralIndex) {
     const actual = getCoordinatesFromIndex(index, n);
     if (expected.x !== actual.x || expected.y !== actual.y) {
       throw new Error(
-        `n->xy mismatch n=${n}: expected ${expected.x},${expected.y}, actual ${actual.x},${actual.y}`
+        `n->xy mismatch n=${n}: expected ${expected.x},${expected.y}, actual ${actual.x},${actual.y}`,
       );
     }
 
@@ -245,7 +245,7 @@ function assertSame(index: SpiralIndex) {
     const actualN = getNFromCoordinatesFromIndex(index, expected.x, expected.y);
     if (expectedN !== actualN) {
       throw new Error(
-        `xy->n mismatch xy=${expected.x},${expected.y}: expected ${expectedN}, actual ${actualN}`
+        `xy->n mismatch xy=${expected.x},${expected.y}: expected ${expectedN}, actual ${actualN}`,
       );
     }
   }
@@ -258,14 +258,16 @@ function benchmark(label: string, callback: () => void) {
 }
 
 console.log(
-  `seed=${SEED} maxN=${MAX_N} cases=${CASES} includeShellCache=${INCLUDE_SHELL_CACHE}`
+  `seed=${SEED} maxN=${MAX_N} cases=${CASES} includeShellCache=${INCLUDE_SHELL_CACHE}`,
 );
 
-const index = measure("build representable-shell index", () => buildIndex(MAX_N));
+const index = measure("build representable-shell index", () =>
+  buildIndex(MAX_N),
+);
 const byteEstimate =
   index.shellMs.byteLength + index.cumulativeCounts.byteLength;
 console.log(
-  `maxM=${index.maxM} shells=${index.shellMs.length} typedArrayBytes=${byteEstimate} shellCacheSize=${index.shells.size}`
+  `maxM=${index.maxM} shells=${index.shellMs.length} typedArrayBytes=${byteEstimate} shellCacheSize=${index.shells.size}`,
 );
 
 measure("compatibility", () => assertSame(index));

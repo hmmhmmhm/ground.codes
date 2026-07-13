@@ -6,10 +6,12 @@ export const getAllowedOriginsFromEnv = () =>
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-export const createCorsEndpoint = (allowedOrigins = getAllowedOriginsFromEnv()) =>
+export const createCorsEndpoint = (
+  allowedOrigins = getAllowedOriginsFromEnv(),
+) =>
   new Elysia()
     .onAfterHandle(({ request, set }) => {
-    // * Only process CORS requests
+      // * Only process CORS requests
       if (request.method !== "OPTIONS") return;
 
       const allowHeader = set.headers["Access-Control-Allow-Headers"];

@@ -32,16 +32,16 @@ And Ground Codes is a **multi-planetary addressing system** 🪐 that provides a
 - 🧠 **Simple and Memorable**: Just three words to identify any location precisely
 - 🌎 **Global Coverage**: Works anywhere in the world with a unique address
 - 🔓 **Open Source**: MIT licensed and fully transparent implementation
-- 🌐 **Multilingual Support**: Currently available in English, Korean, Chinese, Japanese, Spanish, French, German, Portuguese, Indonesian, Thai, and Vietnamese, with plans to expand to 60 languages
+- 🌐 **Multilingual Support**: 180 language sets include codebooks, localized UI copy, and Earth, Moon, and Mars region labels. All 180 pass the automated structural, regression, and minimum-score gates; native-speaker review remains ongoing maintenance.
 - 🎯 **Variable Precision**: Offers three levels of precision (3m, 30cm, and 3cm) to suit different use cases
 
 ## 📊 Comparison with Similar Services
 
-| Service                 | Format                  | License               | Precision                                   | Global Usage                                                                        | Multilingual Support                                                                                   |
-| ----------------------- | ----------------------- | --------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 🌍 **Ground Codes**     | Yongsan-Happiness-Smile | ✅ MIT License (Free) | 1. 3 meters (standard)<br>2. 30cm<br>3. 3cm | ✅ Yes                                                                              | 🌐 English, Korean, Chinese, Japanese, Spanish, French, German, Portuguese, Indonesian, Thai, Vietnamese (expanding to 60 languages) |
-| 🔍 **Google Plus Code** | HX2F+J8                 | ⚠️ No License (Free)  | 3.5 meters                                  | ⚠️ Limited (requires 4 additional characters for global use, e.g., **8Q94HX2F+J8**) | 🇬🇧 English only                                                                                        |
-| 🔤 **What 3 Words**     | ///teacher.awaken.days  | 💰 Proprietary (Paid) | 3 meters                                    | ✅ Yes                                                                              | 🌐 60 languages                                                                                        |
+| Service                 | Format                  | License               | Precision                                   | Global Usage                                                                        | Multilingual Support                                                   |
+| ----------------------- | ----------------------- | --------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 🌍 **Ground Codes**     | Yongsan-Happiness-Smile | ✅ MIT License (Free) | 1. 3 meters (standard)<br>2. 30cm<br>3. 3cm | ✅ Yes                                                                              | 🌐 180 automated-stable language sets; native-speaker review continues |
+| 🔍 **Google Plus Code** | HX2F+J8                 | ⚠️ No License (Free)  | 3.5 meters                                  | ⚠️ Limited (requires 4 additional characters for global use, e.g., **8Q94HX2F+J8**) | 🇬🇧 English only                                                        |
+| 🔤 **What 3 Words**     | ///teacher.awaken.days  | 💰 Proprietary (Paid) | 3 meters                                    | ✅ Yes                                                                              | 🌐 60 languages                                                        |
 
 ## 💪 Advantages Over Existing Services
 
@@ -78,7 +78,7 @@ API usage is limited to 600 requests per minute per IP. For higher volume needs,
 - 🇰🇷 Korean word set: 5,630 words (AI-generated dataset)
 - 🇨🇳 Chinese word set: 5,140 words (AI-generated dataset)
 - 🇯🇵 Japanese word set: 5,000 words (frequency-guided hiragana dataset)
-- 🌐 Region labels: English, Korean, Chinese, Japanese, Spanish, French, German, Portuguese, Indonesian, Thai, and Vietnamese labels are available for Earth, Moon, and Mars datasets
+- 🌐 Language coverage: 180 codebooks and localized UI/region-label sets are available for Earth, Moon, and Mars datasets
 - 🌎 Region names: 210,000 unique global locations with populations of 500+ (GeoNames data, commercially usable)
 - 🔐 Special solutions:
   - **Region 1**: ✈️ Optimized for airports/logistics with country codes and airport codes (e.g., NYC-491AD, SSN-TA14C)

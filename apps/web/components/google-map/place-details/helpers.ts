@@ -9,12 +9,38 @@ export const getCurrentDayIndex = (): number => new Date().getDay();
  * Google Places API (e.g. "Monday: 9:00 AM – 5:00 PM", "월요일: …").
  * Returns -1 when the day cannot be determined.
  */
-export const getDayIndexFromString = (dayString: string | undefined): number => {
+export const getDayIndexFromString = (
+  dayString: string | undefined,
+): number => {
   if (!dayString) return -1;
 
-  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const koDays = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-  const cnDays = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const koDays = [
+    "일요일",
+    "월요일",
+    "화요일",
+    "수요일",
+    "목요일",
+    "금요일",
+    "토요일",
+  ];
+  const cnDays = [
+    "星期日",
+    "星期一",
+    "星期二",
+    "星期三",
+    "星期四",
+    "星期五",
+    "星期六",
+  ];
 
   for (let i = 0; i < days.length; i++) {
     if (dayString.startsWith(days[i]!)) return i;
@@ -34,7 +60,7 @@ export const getDayIndexFromString = (dayString: string | undefined): number => 
  * Works with both `periods` and `weekday_text` data from the Places API.
  */
 export const isOpenNow = (
-  placeDetails: google.maps.places.PlaceResult | null
+  placeDetails: google.maps.places.PlaceResult | null,
 ): boolean => {
   try {
     if (placeDetails?.opening_hours?.periods) {
@@ -53,7 +79,7 @@ export const isOpenNow = (
       }
 
       const todayPeriods = placeDetails.opening_hours.periods.filter(
-        (period) => period.open && period.open.day === day
+        (period) => period.open && period.open.day === day,
       );
 
       for (const period of todayPeriods) {
@@ -114,17 +140,37 @@ export const isOpenNow = (
           let closeHour24: number, closeMinute: string | undefined;
 
           if (pattern.source.includes("AM|PM")) {
-            const [, openHour, _openMinute, openAmPm, closeHour, _closeMinute, closeAmPm] = match;
+            const [
+              ,
+              openHour,
+              _openMinute,
+              openAmPm,
+              closeHour,
+              _closeMinute,
+              closeAmPm,
+            ] = match;
             openHour24 = parseInt(openHour!);
-            if (openAmPm!.toUpperCase() === "PM" && openHour24 < 12) openHour24 += 12;
-            if (openAmPm!.toUpperCase() === "AM" && openHour24 === 12) openHour24 = 0;
+            if (openAmPm!.toUpperCase() === "PM" && openHour24 < 12)
+              openHour24 += 12;
+            if (openAmPm!.toUpperCase() === "AM" && openHour24 === 12)
+              openHour24 = 0;
             closeHour24 = parseInt(closeHour!);
-            if (closeAmPm!.toUpperCase() === "PM" && closeHour24 < 12) closeHour24 += 12;
-            if (closeAmPm!.toUpperCase() === "AM" && closeHour24 === 12) closeHour24 = 0;
+            if (closeAmPm!.toUpperCase() === "PM" && closeHour24 < 12)
+              closeHour24 += 12;
+            if (closeAmPm!.toUpperCase() === "AM" && closeHour24 === 12)
+              closeHour24 = 0;
             openMinute = _openMinute;
             closeMinute = _closeMinute;
           } else if (pattern.source.includes("오전|오후")) {
-            const [, openAmPm, openHour, _openMinute, closeAmPm, closeHour, _closeMinute] = match;
+            const [
+              ,
+              openAmPm,
+              openHour,
+              _openMinute,
+              closeAmPm,
+              closeHour,
+              _closeMinute,
+            ] = match;
             openHour24 = parseInt(openHour!);
             if (openAmPm === "오후" && openHour24 < 12) openHour24 += 12;
             if (openAmPm === "오전" && openHour24 === 12) openHour24 = 0;
@@ -142,8 +188,10 @@ export const isOpenNow = (
           }
 
           const currentTime = currentHour * 60 + currentMinute;
-          const openTime = openHour24 * 60 + (openMinute ? parseInt(openMinute) : 0);
-          const closeTime = closeHour24 * 60 + (closeMinute ? parseInt(closeMinute) : 0);
+          const openTime =
+            openHour24 * 60 + (openMinute ? parseInt(openMinute) : 0);
+          const closeTime =
+            closeHour24 * 60 + (closeMinute ? parseInt(closeMinute) : 0);
 
           if (openTime < closeTime) {
             if (currentTime >= openTime && currentTime < closeTime) return true;
@@ -164,7 +212,10 @@ export const isOpenNow = (
 };
 
 /** Returns the translated display name for a Google Places type key. */
-export const getPlaceTypeName = (type: string | undefined, locale: Locale): string => {
+export const getPlaceTypeName = (
+  type: string | undefined,
+  locale: Locale,
+): string => {
   if (!type) return "";
   const translatedType = (placeTypes[locale] as PlaceTypesRecord)[type];
   return translatedType || type.replace(/_/g, " ");
