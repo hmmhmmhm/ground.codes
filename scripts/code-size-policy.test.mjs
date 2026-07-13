@@ -80,6 +80,7 @@ describe("code size policy", () => {
       "packages/ground-codes/src/region-languages.ts",
       "packages/ground-codes/src/region-store.ts",
       "packages/ground-codes/src/region-types.ts",
+      "packages/ground-codes/src/spiral.ts",
     ];
 
     assert.deepEqual(
