@@ -116,3 +116,17 @@ The configuration commands have not been applied to the external repository in
 this task. The applied ruleset ID, verification timestamp, API evidence, and
 required-secret presence will be recorded only after the dedicated external
 governance step succeeds.
+
+## CI Security Gate
+
+The stable `verify` job installs the frozen lockfile and then immediately runs
+`pnpm security:audit`. A high or critical production advisory therefore stops
+CI before formatting, builds, browser installation, or deployment-relevant
+tests consume additional runner time.
+
+The same job runs `pnpm runtime:check-pins` and `pnpm scripts:test` before the
+build. The script test glob includes the production-audit policy and runner,
+the API runtime-pin contract, the GitHub governance contract, and the workflow
+supply-chain contract. This keeps the dependency, action-pin, and repository
+governance policies under the single required `verify` status that will be
+activated during the external repository configuration step.

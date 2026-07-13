@@ -248,6 +248,56 @@ describe("GitHub automation supply-chain policy", () => {
   });
 });
 
+describe("CI security gate order", () => {
+  test("runs audit and governance checks before expensive verification", () => {
+    const ciWorkflow = readText("../.github/workflows/ci.yml");
+    const verifyJob = indentedYamlBlock(ciWorkflow, "verify");
+    const rootScripts = readJson("../package.json").scripts;
+
+    assert.equal(rootScripts["scripts:test"], "node --test scripts/*.test.mjs");
+    for (const testPath of [
+      "./api-runtime-pins.test.mjs",
+      "./check-production-audit.test.mjs",
+      "./github-governance.test.mjs",
+      "./production-audit-policy.test.mjs",
+      "./qa-workflows.test.mjs",
+    ]) {
+      assert.ok(
+        existsSync(new URL(testPath, import.meta.url)),
+        `${testPath} must remain covered by pnpm scripts:test`,
+      );
+    }
+
+    assert.match(
+      verifyJob,
+      /- name: Install dependencies\n\s+run: pnpm install --frozen-lockfile\n\n\s+- name: Audit production dependencies\n\s+run: pnpm security:audit/,
+    );
+
+    const orderedCommands = [
+      "pnpm install --frozen-lockfile",
+      "pnpm security:audit",
+      "pnpm runtime:check-pins",
+      "pnpm scripts:test",
+      "pnpm build",
+      "pnpm --filter web exec playwright install --with-deps chromium",
+      "pnpm --filter web test:e2e:smoke",
+    ];
+    const indexes = orderedCommands.map((command) =>
+      verifyJob.indexOf(command),
+    );
+
+    indexes.forEach((index, position) => {
+      assert.notEqual(index, -1, `${orderedCommands[position]} is required`);
+      if (position > 0) {
+        assert.ok(
+          indexes[position - 1] < index,
+          `${orderedCommands[position - 1]} must run before ${orderedCommands[position]}`,
+        );
+      }
+    });
+  });
+});
+
 describe("production smoke workflow triggers", () => {
   test("runs after web deployment and writes a step summary", () => {
     const smokeWorkflow = readText("../.github/workflows/production-smoke.yml");
