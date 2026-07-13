@@ -9,6 +9,19 @@ import {
 } from "./production-smoke-helpers.mjs";
 import { runOperationsSmokeChecks } from "./production-smoke-operations.mjs";
 
+const nowMs = Date.parse("2026-07-13T00:00:10.000Z");
+const runtimeCommit = "0123456789abcdef0123456789abcdef01234567";
+
+const createValidMetricsSnapshot = (overrides = {}) => ({
+  service: "api-ground-codes",
+  scope: "worker-isolate",
+  startedAt: "2026-07-13T00:00:00.000Z",
+  uptimeSeconds: 10,
+  runtimeCommit,
+  requests: { total: 0, avgMs: 0, byPath: {}, routes: {} },
+  ...overrides,
+});
+
 describe("production smoke monitoring helpers", () => {
   test("records pass/fail status and elapsed time for each check", async () => {
     const recorder = createSmokeRecorder({ logger: {} });
@@ -30,26 +43,132 @@ describe("production smoke monitoring helpers", () => {
     assert.ok(recorder.results.every((result) => result.durationMs >= 0));
   });
 
-  test("accepts an empty Worker-isolate metrics snapshot", () => {
+  test("accepts valid runtime metadata with empty route maps", () => {
     assert.deepEqual(
-      validateMetricsSnapshot({
-        service: "api-ground-codes",
-        scope: "worker-isolate",
-        uptimeSeconds: 0,
-        requests: { total: 0, avgMs: 0, byPath: {}, routes: {} },
-      }),
+      validateMetricsSnapshot(createValidMetricsSnapshot(), { nowMs }),
       [],
     );
   });
 
+  test("rejects missing and incorrect service names", () => {
+    for (const service of [undefined, "ground-codes-api"]) {
+      assert.deepEqual(
+        validateMetricsSnapshot(createValidMetricsSnapshot({ service }), {
+          nowMs,
+        }),
+        ['service must be "api-ground-codes"'],
+      );
+    }
+  });
+
+  test("rejects an invalid startedAt timestamp", () => {
+    assert.deepEqual(
+      validateMetricsSnapshot(
+        createValidMetricsSnapshot({ startedAt: "not-an-iso-timestamp" }),
+        { nowMs },
+      ),
+      ["startedAt must be a valid ISO-8601 timestamp"],
+    );
+  });
+
+  test("rejects a startedAt timestamp before 2020", () => {
+    const pre2020StartedAt = Date.parse("2019-12-31T23:59:59.000Z");
+    assert.deepEqual(
+      validateMetricsSnapshot(
+        createValidMetricsSnapshot({
+          startedAt: new Date(pre2020StartedAt).toISOString(),
+          uptimeSeconds: (nowMs - pre2020StartedAt) / 1000,
+        }),
+        { nowMs },
+      ),
+      ["startedAt must be on or after 2020-01-01T00:00:00.000Z"],
+    );
+  });
+
+  test("rejects a startedAt timestamp more than three seconds ahead", () => {
+    assert.deepEqual(
+      validateMetricsSnapshot(
+        createValidMetricsSnapshot({
+          startedAt: new Date(nowMs + 3_001).toISOString(),
+          uptimeSeconds: 0,
+        }),
+        { nowMs },
+      ),
+      ["startedAt must not be more than 3 seconds in the future"],
+    );
+  });
+
+  test("keeps the future bound fixed when uptime tolerance is wider", () => {
+    assert.deepEqual(
+      validateMetricsSnapshot(
+        createValidMetricsSnapshot({
+          startedAt: new Date(nowMs + 3_001).toISOString(),
+          uptimeSeconds: 0,
+        }),
+        { nowMs, uptimeToleranceSeconds: 10 },
+      ),
+      ["startedAt must not be more than 3 seconds in the future"],
+    );
+  });
+
+  test("rejects uptime inconsistent with startedAt", () => {
+    assert.deepEqual(
+      validateMetricsSnapshot(
+        createValidMetricsSnapshot({ uptimeSeconds: 2 }),
+        { nowMs },
+      ),
+      [
+        "uptimeSeconds must be within 3 seconds of elapsed time since startedAt",
+      ],
+    );
+  });
+
+  test("rejects missing and malformed runtime commits", () => {
+    for (const invalidCommit of [
+      undefined,
+      "0123456789abcdef0123456789abcdef0123456",
+      "0123456789ABCDEF0123456789ABCDEF01234567",
+    ]) {
+      assert.deepEqual(
+        validateMetricsSnapshot(
+          createValidMetricsSnapshot({ runtimeCommit: invalidCommit }),
+          { nowMs },
+        ),
+        [
+          "runtimeCommit must be a 40-character lowercase hexadecimal commit SHA",
+        ],
+      );
+    }
+  });
+
+  for (const [description, invalidCommit] of [
+    ["an array", [runtimeCommit]],
+    ["a coercible object", { toString: () => runtimeCommit }],
+    ["a number", 42],
+  ]) {
+    test(`rejects runtimeCommit supplied as ${description}`, () => {
+      assert.deepEqual(
+        validateMetricsSnapshot(
+          createValidMetricsSnapshot({ runtimeCommit: invalidCommit }),
+          { nowMs },
+        ),
+        [
+          "runtimeCommit must be a 40-character lowercase hexadecimal commit SHA",
+        ],
+      );
+    });
+  }
+
   test("reports invalid metrics snapshot fields", () => {
     assert.deepEqual(
-      validateMetricsSnapshot({
-        service: "api-ground-codes",
-        scope: "global",
-        uptimeSeconds: -1,
-        requests: { total: -1, avgMs: "fast", byPath: [], routes: null },
-      }),
+      validateMetricsSnapshot(
+        createValidMetricsSnapshot({
+          scope: "global",
+          uptimeSeconds: -1,
+          requests: { total: -1, avgMs: "fast", byPath: [], routes: null },
+        }),
+        { nowMs },
+      ),
       [
         'scope must be "worker-isolate"',
         "uptimeSeconds must be a non-negative number",
@@ -63,28 +182,34 @@ describe("production smoke monitoring helpers", () => {
 
   test("reports invalid nested metrics snapshot fields", () => {
     assert.deepEqual(
-      validateMetricsSnapshot({
-        scope: "worker-isolate",
-        uptimeSeconds: 1,
-        requests: {
-          total: 2,
-          avgMs: 1,
-          byPath: { "/readyz": -1, "/v1/search": "two" },
-          routes: {
-            "GET /readyz": {
-              count: -1,
-              avgMs: "fast",
-              minMs: 0,
-              maxMs: Number.POSITIVE_INFINITY,
-              byStatus: { 200: -1 },
+      validateMetricsSnapshot(
+        createValidMetricsSnapshot({
+          requests: {
+            total: 2,
+            avgMs: 1,
+            byPath: {
+              "/negative": -1,
+              "/nan": Number.NaN,
+              "/infinite": Number.POSITIVE_INFINITY,
             },
-            "POST /v1/search": null,
+            routes: {
+              "GET /readyz": {
+                count: -1,
+                avgMs: Number.NaN,
+                minMs: 0,
+                maxMs: Number.POSITIVE_INFINITY,
+                byStatus: { 200: Number.NEGATIVE_INFINITY },
+              },
+              "POST /v1/search": null,
+            },
           },
-        },
-      }),
+        }),
+        { nowMs },
+      ),
       [
-        'requests.byPath["/readyz"] must be a non-negative number',
-        'requests.byPath["/v1/search"] must be a non-negative number',
+        'requests.byPath["/negative"] must be a non-negative number',
+        'requests.byPath["/nan"] must be a non-negative number',
+        'requests.byPath["/infinite"] must be a non-negative number',
         'requests.routes["GET /readyz"].count must be a non-negative number',
         'requests.routes["GET /readyz"].avgMs must be a non-negative number',
         'requests.routes["GET /readyz"].maxMs must be a non-negative number',
@@ -124,12 +249,7 @@ describe("production smoke monitoring helpers", () => {
       fetchWithRetry: fetchWithRetryStub,
       fetchText: async (url) => {
         if (url.endsWith("/metrics")) {
-          return JSON.stringify({
-            service: "api-ground-codes",
-            scope: "worker-isolate",
-            uptimeSeconds: 0,
-            requests: { total: 0, avgMs: 0, byPath: {}, routes: {} },
-          });
+          return JSON.stringify(createValidMetricsSnapshot());
         }
         if (url.endsWith("/robots.txt")) return "Sitemap: /sitemap.xml";
         return "<loc>https://ground.codes</loc>";
@@ -151,7 +271,8 @@ describe("production smoke monitoring helpers", () => {
       }),
       apiBaseUrl: "https://api.example.test",
       webBaseUrl: "https://ground.codes",
-      validateMetricsSnapshot,
+      validateMetricsSnapshot: (metrics) =>
+        validateMetricsSnapshot(metrics, { nowMs }),
     });
 
     assert.deepEqual(recorder.failures, []);

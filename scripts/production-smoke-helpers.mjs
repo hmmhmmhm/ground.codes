@@ -56,6 +56,20 @@ const isRecord = (value) =>
 const isNonNegativeNumber = (value) =>
   typeof value === "number" && Number.isFinite(value) && value >= 0;
 
+const minimumStartedAtMs = Date.parse("2020-01-01T00:00:00.000Z");
+const maximumFutureOffsetMs = 3_000;
+
+const parseIsoTimestamp = (value) => {
+  if (typeof value !== "string") return undefined;
+
+  const timestampMs = Date.parse(value);
+  if (!Number.isFinite(timestampMs)) return undefined;
+
+  return new Date(timestampMs).toISOString() === value
+    ? timestampMs
+    : undefined;
+};
+
 const validateCounterRecord = (value, path, errors) => {
   for (const [key, count] of Object.entries(value)) {
     if (!isNonNegativeNumber(count)) {
@@ -88,14 +102,49 @@ const validateRouteMetrics = (routes, errors) => {
   }
 };
 
-export const validateMetricsSnapshot = (metrics) => {
+export const validateMetricsSnapshot = (
+  metrics,
+  { nowMs = Date.now(), uptimeToleranceSeconds = 3 } = {},
+) => {
   const errors = [];
 
+  if (metrics?.service !== "api-ground-codes") {
+    errors.push('service must be "api-ground-codes"');
+  }
   if (metrics?.scope !== "worker-isolate") {
     errors.push('scope must be "worker-isolate"');
   }
+
+  const startedAtMs = parseIsoTimestamp(metrics?.startedAt);
+  const maximumStartedAtMs = nowMs + maximumFutureOffsetMs;
+  if (startedAtMs === undefined) {
+    errors.push("startedAt must be a valid ISO-8601 timestamp");
+  } else if (startedAtMs < minimumStartedAtMs) {
+    errors.push("startedAt must be on or after 2020-01-01T00:00:00.000Z");
+  } else if (startedAtMs > maximumStartedAtMs) {
+    errors.push("startedAt must not be more than 3 seconds in the future");
+  }
+
   if (!isNonNegativeNumber(metrics?.uptimeSeconds)) {
     errors.push("uptimeSeconds must be a non-negative number");
+  } else if (
+    startedAtMs !== undefined &&
+    startedAtMs >= minimumStartedAtMs &&
+    startedAtMs <= maximumStartedAtMs &&
+    Math.abs((nowMs - startedAtMs) / 1000 - metrics.uptimeSeconds) >
+      uptimeToleranceSeconds
+  ) {
+    errors.push(
+      `uptimeSeconds must be within ${uptimeToleranceSeconds} seconds of elapsed time since startedAt`,
+    );
+  }
+  if (
+    typeof metrics?.runtimeCommit !== "string" ||
+    !/^[0-9a-f]{40}$/.test(metrics.runtimeCommit)
+  ) {
+    errors.push(
+      "runtimeCommit must be a 40-character lowercase hexadecimal commit SHA",
+    );
   }
   if (!isNonNegativeNumber(metrics?.requests?.total)) {
     errors.push("requests.total must be a non-negative number");
