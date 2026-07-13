@@ -75,6 +75,11 @@ describe("code size policy", () => {
       "packages/ground-codes/src/wordset-loader-primary.ts",
       "packages/ground-codes/src/wordset-loader-secondary.ts",
       "packages/ground-codes/src/region.ts",
+      "packages/ground-codes/src/region-dataset.ts",
+      "packages/ground-codes/src/region-geometry.ts",
+      "packages/ground-codes/src/region-languages.ts",
+      "packages/ground-codes/src/region-store.ts",
+      "packages/ground-codes/src/region-types.ts",
     ];
 
     assert.deepEqual(

@@ -41,7 +41,7 @@ const parseWordsetCounts = () => {
 };
 
 const parseEnglishRegionFallbackLanguages = () => {
-  const source = readText("packages/ground-codes/src/region.ts");
+  const source = readText("packages/ground-codes/src/region-languages.ts");
   const match = source.match(
     /englishRegionFallbackLanguages\s*=\s*new Set(?:<[^>]+>)?\(\[([\s\S]*?)\]\)/,
   );
