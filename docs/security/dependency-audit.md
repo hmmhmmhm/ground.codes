@@ -112,10 +112,37 @@ scanning and push protection are core controls: failure to enable or verify
 either one stops the command. The unit tests use an injected API client and do
 not make network calls.
 
-The configuration commands have not been applied to the external repository in
-this task. The applied ruleset ID, verification timestamp, API evidence, and
-required-secret presence will be recorded only after the dedicated external
-governance step succeeds.
+## Applied Repository Controls
+
+The controls were applied to `hmmhmmhm/ground.codes` and then re-read with the
+read-only verifier at `2026-07-14T00:27:21+09:00`.
+
+- Ruleset `main-protection` is active with ID `18880399`. It targets
+  `refs/heads/main`, requires the strict `verify` status, blocks deletion and
+  non-fast-forward updates, and permits bypass only for the repository
+  administrator role.
+- Draft PR [#68](https://github.com/hmmhmmhm/ground.codes/pull/68) exposed the
+  stable `verify` check before the ruleset was activated. The initial check
+  completed successfully in
+  [Actions run 29261831398](https://github.com/hmmhmmhm/ground.codes/actions/runs/29261831398/job/86856845479).
+- Automatic merged-branch deletion, Dependabot alerts, Dependabot security
+  updates, secret scanning, and push protection all verify as enabled.
+- Actions secret `MOSHI_WEBHOOK_TOKEN` is present; GitHub reports its update at
+  `2026-07-13T15:21:36Z`. Only the secret name and timestamp were read or
+  recorded, never its value.
+- `secret_scanning_non_provider_patterns` and
+  `secret_scanning_validity_checks` remain named `unsupported` warnings. GitHub
+  reports the fields for this user-owned public repository but leaves them
+  disabled because the features require an eligible organization plan with
+  Secret Protection. Their absence does not weaken the enabled core secret
+  scanning or push-protection controls.
+
+Read-only API evidence is available at:
+
+- `https://api.github.com/repos/hmmhmmhm/ground.codes/rulesets/18880399`
+- `https://api.github.com/repos/hmmhmmhm/ground.codes`
+- `https://api.github.com/repos/hmmhmmhm/ground.codes/vulnerability-alerts`
+- `https://api.github.com/repos/hmmhmmhm/ground.codes/automated-security-fixes`
 
 ## CI Security Gate
 
