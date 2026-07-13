@@ -85,3 +85,34 @@ remaining moderate is documented below; it is not a high/critical waiver.
 | `pnpm --filter web check-types`                                               | Passed with no TypeScript errors.                                                                                                                              |
 | `pnpm --filter web build`                                                     | Next.js production build completed successfully.                                                                                                               |
 | `pnpm --filter web test:e2e:smoke`                                            | 2 passed, 0 failed. The tracked `region-2.json` fixture was materialized only for the run and the original sparse-worktree exclusions were restored afterward. |
+
+## Reproducible GitHub Governance
+
+Repository governance is declared by `scripts/github-governance.mjs` and is
+available through two root commands:
+
+- `pnpm github:governance:apply` idempotently creates `main-protection` when it
+  is absent or updates the ruleset with the same ID when it already exists. It
+  also enables automatic merged-branch deletion, Dependabot security updates,
+  secret scanning, push protection, and optional secret-scanning features that
+  the public-repository API reports as supported.
+- `pnpm github:governance:verify` performs read-only checks for the active
+  `main` ruleset, strict required `verify` status, administrator-only bypass,
+  branch protections, and repository security settings.
+
+Both commands default to `hmmhmmhm/ground.codes`; an explicit target can be
+supplied as `--repository owner/name` when testing the script against another
+repository. Normal output contains only setting names, enabled/disabled state,
+the ruleset ID, and named optional-feature warnings. Subprocess diagnostics,
+credentials, and environment values are never printed.
+
+Unsupported `secret_scanning_non_provider_patterns` or
+`secret_scanning_validity_checks` fields are reported as named warnings. Secret
+scanning and push protection are core controls: failure to enable or verify
+either one stops the command. The unit tests use an injected API client and do
+not make network calls.
+
+The configuration commands have not been applied to the external repository in
+this task. The applied ruleset ID, verification timestamp, API evidence, and
+required-secret presence will be recorded only after the dedicated external
+governance step succeeds.

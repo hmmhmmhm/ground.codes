@@ -21,6 +21,8 @@
     "language:quality-score": "node scripts/language-quality-score-report.mjs",
     "language:audit": "node scripts/language-quality-status-report.mjs --assert-current && node scripts/language-quality-score-report.mjs --assert-min 80 && node scripts/language-expansion-target-report.mjs --assert-complete && node --test scripts/language-support-completeness.test.mjs && node --test scripts/codebook-policy-audit.test.mjs && node --test scripts/address-gap-codebook-quality.test.mjs && node --test scripts/region-label-quality.test.mjs && pnpm --filter web check-types",
     "language:localization-coverage": "node scripts/apply-localization-coverage-scaffold.mjs",
+    "github:governance:apply": "node scripts/configure-github-governance.mjs --apply",
+    "github:governance:verify": "node scripts/configure-github-governance.mjs --verify",
     "scripts:test": "node --test scripts/*.test.mjs",
     "prepare": "husky install"
   },
