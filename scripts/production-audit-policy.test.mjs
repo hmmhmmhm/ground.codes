@@ -67,25 +67,31 @@ const fixtures = [
 ];
 
 describe("production audit policy", () => {
-  test("locks audited Web runtime fixes, including high-severity transitives", () => {
+  test("locks audited Web runtime fixes, including high-severity and peer-compatible transitives", () => {
     const rootPackage = readJson("package.json");
     const webPackage = readJson("apps/web/package.json");
     const lockfile = readFileSync(
       new URL("pnpm-lock.yaml", repositoryRoot),
       "utf8",
     );
-    const expectedOverrides = {
+    const transitiveSecurityOverrides = {
       "dompurify@3.4.2": "3.4.12",
       "picomatch@2.3.1": "2.3.2",
       "postcss@8.4.31": "8.4.49",
       "postcss@8.5.3": "8.5.19",
       "protobufjs@8.2.0": "8.7.1",
     };
+    const expectedOverrides = {
+      "@swc/helpers@0.5.15": "0.5.17",
+      ...transitiveSecurityOverrides,
+    };
 
-    for (const vulnerableResolution of Object.keys(expectedOverrides)) {
-      const packageName = vulnerableResolution.slice(
+    for (const supersededResolution of Object.keys(
+      transitiveSecurityOverrides,
+    )) {
+      const packageName = supersededResolution.slice(
         0,
-        vulnerableResolution.lastIndexOf("@"),
+        supersededResolution.lastIndexOf("@"),
       );
 
       assert.equal(
@@ -94,20 +100,39 @@ describe("production audit policy", () => {
         `${packageName} must be covered as a transitive Web dependency`,
       );
       assert.equal(
-        lockfile.includes(`\n  ${vulnerableResolution}:\n`),
+        [
+          `\n  ${supersededResolution}:\n`,
+          `\n  '${supersededResolution}':\n`,
+          `\n  "${supersededResolution}":\n`,
+        ].some((lockKey) => lockfile.includes(lockKey)),
         false,
-        `${vulnerableResolution} must not remain in the production lock graph`,
+        `${supersededResolution} must not remain in the production lock graph`,
       );
     }
 
     assert.deepEqual(
       {
+        "@swc/helpers": webPackage.dependencies["@swc/helpers"],
         cesium: webPackage.dependencies.cesium,
         "next-intl": webPackage.dependencies["next-intl"],
       },
-      { cesium: "1.143.0", "next-intl": "4.13.2" },
+      {
+        "@swc/helpers": "0.5.17",
+        cesium: "1.143.0",
+        "next-intl": "4.13.2",
+      },
     );
     assert.deepEqual(rootPackage.pnpm?.overrides, expectedOverrides);
+    assert.equal(
+      lockfile.includes("next-intl@4.13.2(@swc/helpers@0.5.15)"),
+      false,
+      "next-intl must not propagate the incompatible helper peer context",
+    );
+    assert.equal(
+      lockfile.includes("@swc/core@1.15.43(@swc/helpers@0.5.17)"),
+      true,
+      "@swc/core must bind a helper version that satisfies its >=0.5.17 peer",
+    );
   });
 
   for (const fixture of fixtures) {

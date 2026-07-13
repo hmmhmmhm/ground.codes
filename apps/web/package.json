@@ -23,6 +23,7 @@
   "dependencies": {
     "@react-google-maps/api": "^2.20.8",
     "@repo/ui": "workspace:*",
+    "@swc/helpers": "0.5.17",
     "@types/google.maps": "^3.64.1",
     "cesium": "1.143.0",
     "next": "15.5.18",

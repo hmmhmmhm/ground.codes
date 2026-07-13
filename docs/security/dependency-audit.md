@@ -14,25 +14,28 @@ applicability analysis, mitigating control, and concrete follow-up issue.
 
 The Web runtime dependencies are pinned exactly:
 
-| Package     | Previous manifest range | Audited version |
-| ----------- | ----------------------- | --------------- |
-| `cesium`    | `^1.141.0`              | `1.143.0`       |
-| `next-intl` | `^4.0.2`                | `4.13.2`        |
+| Package        | Previous manifest range | Audited or peer-compatible version |
+| -------------- | ----------------------- | ---------------------------------- |
+| `@swc/helpers` | Transitive `0.5.15`     | `0.5.17`                           |
+| `cesium`       | `^1.141.0`              | `1.143.0`                          |
+| `next-intl`    | `^4.0.2`                | `4.13.2`                           |
 
-The root lock policy uses selector-scoped overrides so only the vulnerable
-transitive resolutions are replaced:
+The root lock policy uses selector-scoped overrides so only the vulnerable or
+peer-incompatible transitive resolutions are replaced:
 
-| Vulnerable resolution | Locked replacement | Rationale                                                                                              |
-| --------------------- | ------------------ | ------------------------------------------------------------------------------------------------------ |
-| `dompurify@3.4.2`     | `3.4.12`           | Replaces the vulnerable Cesium engine resolution without changing other DOMPurify lines.               |
-| `picomatch@2.3.1`     | `2.3.2`            | Replaces the vulnerable matcher resolution used below workspace UI tooling.                            |
-| `postcss@8.4.31`      | `8.4.49`           | Replaces the audited vulnerable Next.js PostCSS resolution while retaining Next.js 15.5 compatibility. |
-| `postcss@8.5.3`       | `8.5.19`           | Moves the Tailwind PostCSS resolution to an audited release.                                           |
-| `protobufjs@8.2.0`    | `8.7.1`            | Replaces the vulnerable Cesium engine/runtime serialization resolution.                                |
+| Superseded resolution | Locked replacement | Rationale                                                                                                                                                                                          |
+| --------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@swc/helpers@0.5.15` | `0.5.17`           | Aligns the `next-intl` SWC path with `@swc/core@1.15.43`, whose optional helper peer requires `>=0.5.17`.                                                                                          |
+| `dompurify@3.4.2`     | `3.4.12`           | Replaces the vulnerable Cesium engine resolution without changing other DOMPurify lines.                                                                                                           |
+| `picomatch@2.3.1`     | `2.3.2`            | Replaces the vulnerable matcher resolution used below workspace UI tooling.                                                                                                                        |
+| `postcss@8.4.31`      | `8.4.49`           | Replaces the audited vulnerable Next.js PostCSS resolution while retaining Next.js 15.5 compatibility.                                                                                             |
+| `postcss@8.5.3`       | `8.5.19`           | Moves the Tailwind PostCSS resolution to an audited release.                                                                                                                                       |
+| `protobufjs@8.2.0`    | `8.7.1`            | Cesium 1.143 already moves the active graph to `^8.6.5`, resolved as `8.7.1`; this selector remains a defense-in-depth lock against reintroducing the vulnerable `8.2.0` resolution through drift. |
 
 `pnpm-lock.yaml` records the exact direct versions and override results. The
 production-audit policy contract also verifies that none of the five vulnerable
-transitive resolution keys can return to the lock graph.
+transitive resolution keys can return and that the `next-intl` SWC path binds a
+peer-compatible helper version.
 
 ## Audit Result
 
@@ -75,7 +78,7 @@ remaining moderate is documented below; it is not a high/critical waiver.
 | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `node --test scripts/production-audit-policy.test.mjs` before package changes | RED as intended: rejected transitive `dompurify@3.4.2`; 8 other tests passed.                                                                                  |
 | `pnpm --filter web add --save-exact next-intl@4.13.2 cesium@1.143.0`          | Completed; the manifest and lockfile record exact `4.13.2` and `1.143.0`.                                                                                      |
-| `pnpm install --frozen-lockfile`                                              | Passed: lockfile up to date and resolution skipped.                                                                                                            |
+| `pnpm install --offline --frozen-lockfile --strict-peer-dependencies`         | Passed: lockfile up to date, offline packages reused, and no peer warnings.                                                                                    |
 | `node --test scripts/production-audit-policy.test.mjs` after package changes  | GREEN: 9 passed, 0 failed.                                                                                                                                     |
 | `pnpm security:audit`                                                         | Passed policy: `critical=0 high=0 moderate=1 low=0`; advisory package `postcss`.                                                                               |
 | `pnpm --filter web test`                                                      | 63 passed, 0 failed.                                                                                                                                           |
