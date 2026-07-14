@@ -61,6 +61,29 @@ const indentedYamlBlock = (source, key) => {
   return lines.slice(start, end).join("\n").trimEnd();
 };
 
+const workflowStep = (source, name) => {
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const lines = source.replace(/\r\n?/g, "\n").split("\n");
+  const start = lines.findIndex((line) =>
+    new RegExp(`^\\s*- name: ${escapedName}\\s*$`).test(line),
+  );
+
+  assert.notEqual(start, -1, `${name} step is required`);
+
+  const indent = lines[start].match(/^ */)[0].length;
+  let end = start + 1;
+  while (end < lines.length) {
+    const line = lines[end];
+    if (line.trim() !== "" && /^\s*- name:/.test(line)) {
+      const lineIndent = line.match(/^ */)[0].length;
+      if (lineIndent === indent) break;
+    }
+    end += 1;
+  }
+
+  return lines.slice(start, end).join("\n").trimEnd();
+};
+
 const expectedDependabotGroups = new Map([
   [
     "runtime-security",
@@ -330,6 +353,40 @@ describe("production smoke workflow triggers", () => {
     );
     assert.match(smokeScript, /GITHUB_STEP_SUMMARY/);
     assert.match(smokeScript, /GROUND_CODES_SMOKE_FORCE_FAILURE/);
+  });
+
+  test("preserves the smoke outcome across independent notifications", () => {
+    const smokeWorkflow = readText("../.github/workflows/production-smoke.yml");
+    const smokeStep = workflowStep(smokeWorkflow, "Run production smoke");
+    const moshiStep = workflowStep(smokeWorkflow, "Notify smoke failure");
+    const issueStep = workflowStep(smokeWorkflow, "Open smoke failure issue");
+    const finalStep = workflowStep(smokeWorkflow, "Fail failed smoke run");
+
+    assert.match(smokeStep, /^\s+id: smoke\s*$/m);
+    assert.match(smokeStep, /^\s+continue-on-error: true\s*$/m);
+
+    assert.match(moshiStep, /steps\.smoke\.outcome == 'failure'/);
+    assert.match(moshiStep, /^\s+id: moshi\s*$/m);
+    assert.match(moshiStep, /^\s+continue-on-error: true\s*$/m);
+    assert.match(moshiStep, /node scripts\/production-smoke-notify\.mjs/);
+
+    assert.match(issueStep, /steps\.smoke\.outcome == 'failure'/);
+    assert.match(issueStep, /env\.MOSHI_WEBHOOK_TOKEN == ''/);
+    assert.match(issueStep, /steps\.moshi\.outcome == 'failure'/);
+    assert.match(issueStep, /\|\|/);
+    assert.match(issueStep, /^\s+continue-on-error: true\s*$/m);
+
+    assert.match(finalStep, /always\(\)/);
+    assert.match(finalStep, /steps\.smoke\.outcome == 'failure'/);
+    assert.match(finalStep, /^\s+run: exit 1\s*$/m);
+
+    const orderedSteps = [smokeStep, moshiStep, issueStep, finalStep].map(
+      (step) => smokeWorkflow.indexOf(step),
+    );
+    orderedSteps.forEach((index, position) => {
+      assert.notEqual(index, -1);
+      if (position > 0) assert.ok(orderedSteps[position - 1] < index);
+    });
   });
 });
 
