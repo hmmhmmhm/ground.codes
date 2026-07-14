@@ -170,8 +170,9 @@ queries, GitHub issues, screenshots, step summaries, or webhook messages.
      -f force_failure=false
    ```
 
-4. For a Web or Grok Spiral incident, record the selected Pages deployment ID
-   and commit. Wrangler 4.110.0 can list Pages deployments but does not expose a
+4. For a Web or Grok Spiral incident, record the selected
+   Pages deployment ID and commit. Wrangler 4.110.0 can list Pages deployments
+   but does not expose a
    Pages rollback subcommand, so use the authenticated
    [Pages rollback API][pages-rollback-api]. Set `PAGES_PROJECT` to
    `ground-codes` for Web or
@@ -194,10 +195,10 @@ queries, GitHub issues, screenshots, step summaries, or webhook messages.
    ```
 
    Verify that deployment ID is active in Pages history. For Web, fetch a fresh
-   `https://ground.codes/` response and run a full production smoke. For Grok
-   Spiral, fetch `https://grok-spiral.ground.codes/` and use its separate Pages
-   history. `/metrics.runtimeCommit` identifies only the API Worker and is not
-   evidence of either active Pages deployment.
+   Web response from `https://ground.codes/` and run a full production smoke.
+   For Grok Spiral, fetch `https://grok-spiral.ground.codes/` and use its
+   separate Pages history. `/metrics.runtimeCommit` identifies only the API
+   Worker and is not evidence of either active Pages deployment.
 
 5. If the platform rollback cannot be used, revert the bad change on `main`
    with a normal reviewed commit and let the relevant deployment workflow
