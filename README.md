@@ -88,6 +88,11 @@ API usage is limited to 600 requests per minute per IP. For higher volume needs,
 
 Ground Codes uses a custom GIS algorithm called "Grok Spiral" 🌀 that determines coordinates by moving in a clockwise spiral from a central point. This implementation leverages the "Gauss Circle Problem" formula to achieve O(sqrt N) efficiency in coordinate generation. The spiral pattern maintains a circular shape regardless of distance from the center point, resulting in excellent coordinate indexing efficiency.
 
+## 🛟 Operations
+
+- [Production service objectives](./docs/operations/service-objectives.md)
+- [Production incident runbook](./docs/operations/incident-runbook.md)
+
 ## 📄 License
 
 MIT License

@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
 import { createApp } from "./app.js";
 
 const silentMetrics = { writeLog: () => undefined };
@@ -24,6 +25,25 @@ const get = (path: string) =>
   app.handle(new Request(`http://localhost${path}`));
 
 describe("Ground Codes API contract", () => {
+  test("documents measurable production service objectives", () => {
+    const serviceObjectives = readFileSync(
+      new URL(
+        "../../../docs/operations/service-objectives.md",
+        import.meta.url,
+      ),
+      "utf8",
+    );
+
+    expect(serviceObjectives).toContain("99.9% monthly readiness availability");
+    expect(serviceObjectives).toContain("99.9% monthly Web-root availability");
+    expect(serviceObjectives).toContain(
+      "Representative encode and search requests complete in under 2 seconds",
+    );
+    expect(serviceObjectives).toContain(
+      "A full post-deploy production smoke must pass before an incident is closed",
+    );
+  });
+
   test("serves a readiness endpoint for deployment checks", async () => {
     const response = await get("/readyz");
 
