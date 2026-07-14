@@ -1,21 +1,25 @@
 import { randomUUID } from "node:crypto";
-import { dirname, join, basename } from "node:path";
+import { basename, dirname } from "node:path";
 
 import {
   ensureAnchoredChild,
   ensureAnchoredDirectory,
+  listPrivateAnchoredChildren,
   optionalAnchoredChild,
-  promoteAnchoredChild,
   removeOwnedAnchoredChild,
   writeAnchoredFile,
 } from "./generate-release-anchored.mjs";
 import { collectReleaseObjectMetadata } from "./generate-release-artifacts.mjs";
+import {
+  acquireGenerationLease,
+  releaseGenerationLease,
+} from "./generate-release-lease.mjs";
 import { prepareReleasePaths } from "./generate-release-paths.mjs";
 import {
   verifyObjectTree,
-  verifyReleaseTree,
   writePrivateObjects,
 } from "./generate-release-tree.mjs";
+import { activateReleaseTransaction } from "./generate-release-transaction.mjs";
 import {
   canonicalJson,
   createManifest,
@@ -32,60 +36,88 @@ const pointerBytesFor = (manifest, manifestSha256) =>
     }),
   );
 
-const writePointer = async (pointerPath, bytes) => {
-  const parent = await ensureAnchoredDirectory(
-    dirname(pointerPath),
-    "release pointer parent",
-  );
-  await writeAnchoredFile(parent, basename(pointerPath), bytes, false);
+const cleanupPrivateOrphans = async (releases) => {
+  const { directories } = await listPrivateAnchoredChildren(releases);
+  for (const directory of directories) {
+    await removeOwnedAnchoredChild(releases, directory.name, {
+      ...directory.identity,
+      path: `${releases.path}/${directory.name}`,
+    });
+  }
 };
 
-const verifyReleaseTwice = async ({
-  release,
-  manifestBytes,
-  metadata,
-  between,
-  context,
-}) => {
-  await verifyReleaseTree({ root: release, manifestBytes, metadata });
-  await between?.(context);
-  await verifyReleaseTree({ root: release, manifestBytes, metadata });
+const activationHook = (hooks) => {
+  const callbacks = [
+    hooks.afterPrivateReleaseVerification,
+    hooks.afterReleaseVerification,
+    hooks.beforeActivation,
+  ].filter((callback) => typeof callback === "function");
+  if (callbacks.length === 0) return undefined;
+  return async (context) => {
+    for (const callback of callbacks) await callback(context);
+  };
 };
 
-const existingReleaseResult = async ({
-  release,
+const emitDurabilityEvents = async (hooks, events) => {
+  for (const event of events) await hooks.onDurabilityEvent?.(event);
+};
+
+const resultFor = ({ manifest, manifestSha256, metadata, createdObjects }) => ({
+  version: manifest.version,
+  manifestSha256,
+  entryCount: manifest.entries.length,
+  objectCount: Object.keys(metadata).length,
+  createdObjects,
+});
+
+const activateExistingRelease = async ({
+  existing,
+  releases,
+  pointerParent,
+  pointerPath,
+  pointerBytes,
   manifest,
   manifestBytes,
   manifestSha256,
   metadata,
-  pointerPath,
   hooks,
 }) => {
-  await verifyReleaseTwice({
-    release,
+  const transaction = await activateReleaseTransaction({
+    releases,
+    mode: "existing",
+    version: manifest.version,
+    releaseIdentity: existing,
     manifestBytes,
     metadata,
-    between: hooks.afterReleaseVerification,
-    context: { releaseDirectory: release.path, manifest },
+    pointerParent,
+    pointerName: basename(pointerPath),
+    pointerBytes,
+    failDurabilityPhase: hooks.failDurabilityPhase,
+    beforeActivation: activationHook(hooks),
   });
-  await writePointer(pointerPath, pointerBytesFor(manifest, manifestSha256));
-  return {
-    version: manifest.version,
+  await emitDurabilityEvents(hooks, transaction.durabilityEvents);
+  await hooks.onPerformance?.({
+    mode: "existing",
+    gzipSourcePasses: 2,
+    compressedObjectReadPasses: transaction.compressedObjectReadPasses,
+  });
+  return resultFor({
+    manifest,
     manifestSha256,
-    entryCount: manifest.entries.length,
-    objectCount: Object.keys(metadata).length,
+    metadata,
     createdObjects: 0,
-  };
+  });
 };
 
 const buildNewRelease = async ({
   sourceRoot,
   releases,
+  pointerParent,
   pointerPath,
+  pointerBytes,
   manifest,
   manifestBytes,
   manifestSha256,
-  metadata,
   hooks,
 }) => {
   const privateName = `.private-${randomUUID()}`;
@@ -96,6 +128,7 @@ const buildNewRelease = async ({
     { exclusive: true, mode: 0o700 },
   );
   let privateOwned = true;
+  let primaryError;
   try {
     const objects = await ensureAnchoredChild(
       privateRelease,
@@ -103,81 +136,108 @@ const buildNewRelease = async ({
       "private object directory",
       { exclusive: true, mode: 0o700 },
     );
-    await writePrivateObjects({
+    const writer = await writePrivateObjects({
       root: objects,
       sourceRoot,
       manifest,
-      metadata,
+      failDurabilityPhase: hooks.failDurabilityPhase,
     });
-    await verifyObjectTree({ root: objects, metadata });
-    await hooks.afterObjectTreeReady?.({
-      objectDirectory: objects.path,
-      manifest,
-    });
-    await verifyObjectTree({ root: objects, metadata });
-    await writeAnchoredFile(
+    const events = [...writer.durabilityEvents];
+    let objectReadPasses = 0;
+    objectReadPasses += (
+      await verifyObjectTree({ root: objects, metadata: writer.metadata })
+    ).compressedObjectReadPasses;
+    if (typeof hooks.afterObjectTreeReady === "function") {
+      await hooks.afterObjectTreeReady({
+        objectDirectory: objects.path,
+        manifest,
+      });
+      objectReadPasses += (
+        await verifyObjectTree({ root: objects, metadata: writer.metadata })
+      ).compressedObjectReadPasses;
+    }
+    const manifestWrite = await writeAnchoredFile(
       privateRelease,
       "manifest.json",
       manifestBytes,
-      true,
+      {
+        immutable: true,
+        writtenEvent: "manifest-written",
+        directoryFsyncPhase: "private-release-directory-fsync",
+        failDurabilityPhase: hooks.failDurabilityPhase,
+      },
     );
-    await verifyReleaseTwice({
-      release: privateRelease,
-      manifestBytes,
-      metadata,
-      between: hooks.afterPrivateReleaseVerification,
-      context: { releaseDirectory: privateRelease.path, manifest },
-    });
-    await promoteAnchoredChild(
-      releases,
-      privateName,
-      manifest.version,
-      privateRelease,
-    );
-    privateOwned = false;
-    const promoted = {
-      ...privateRelease,
-      path: join(releases.path, manifest.version),
-    };
-    await verifyReleaseTwice({
-      release: promoted,
-      manifestBytes,
-      metadata,
-      between: hooks.afterReleaseVerification,
-      context: { releaseDirectory: promoted.path, manifest },
-    });
-    await writePointer(pointerPath, pointerBytesFor(manifest, manifestSha256));
-    return {
-      version: manifest.version,
-      manifestSha256,
-      entryCount: manifest.entries.length,
-      objectCount: Object.keys(metadata).length,
-      createdObjects: Object.keys(metadata).length,
-    };
-  } catch (error) {
-    if (privateOwned) {
-      await removeOwnedAnchoredChild(
+    events.push(...manifestWrite.durabilityEvents);
+    let transaction;
+    try {
+      transaction = await activateReleaseTransaction({
         releases,
+        mode: "new",
         privateName,
-        privateRelease,
-      ).catch(() => {});
+        version: manifest.version,
+        releaseIdentity: privateRelease,
+        manifestBytes,
+        metadata: writer.metadata,
+        pointerParent,
+        pointerName: basename(pointerPath),
+        pointerBytes,
+        failDurabilityPhase: hooks.failDurabilityPhase,
+        beforeActivation: activationHook(hooks),
+      });
+      privateOwned = false;
+    } catch (error) {
+      if (error.promoted) privateOwned = false;
+      throw error;
     }
-    throw error;
+    events.push(...transaction.durabilityEvents);
+    await emitDurabilityEvents(hooks, events);
+    await hooks.onPerformance?.({
+      mode: "new",
+      gzipSourcePasses: 1 + writer.gzipSourcePasses,
+      compressedObjectReadPasses:
+        objectReadPasses + transaction.compressedObjectReadPasses,
+    });
+    return resultFor({
+      manifest,
+      manifestSha256,
+      metadata: writer.metadata,
+      createdObjects: writer.objectCount,
+    });
+  } catch (error) {
+    primaryError = error;
   }
+  if (privateOwned) {
+    try {
+      await removeOwnedAnchoredChild(releases, privateName, privateRelease);
+    } catch (cleanupError) {
+      throw new AggregateError(
+        [primaryError, cleanupError],
+        "release generation and owned private cleanup both failed",
+      );
+    }
+  }
+  throw primaryError;
 };
 
-export const generateReleaseInternal = async (options, hooks = {}) => {
-  const { sourceRoot, stagingRoot, pointerPath } =
-    await prepareReleasePaths(options);
-  const manifest = validateManifest(await createManifest({ sourceRoot }));
-  const manifestBytes = Buffer.from(canonicalJson(manifest));
-  const manifestSha256 = sha256Hex(manifestBytes);
-  const metadata = await collectReleaseObjectMetadata({ sourceRoot, manifest });
-  const staging = await ensureAnchoredDirectory(stagingRoot, "staging root");
+const generateUnderLease = async ({ paths, staging, hooks }) => {
+  await hooks.afterLeaseAcquired?.({
+    pid: hooks.leasePid ?? process.pid,
+  });
   const releases = await ensureAnchoredChild(
     staging,
     "releases",
     "releases directory",
+  );
+  await cleanupPrivateOrphans(releases);
+  const manifest = validateManifest(
+    await createManifest({ sourceRoot: paths.sourceRoot }),
+  );
+  const manifestBytes = Buffer.from(canonicalJson(manifest));
+  const manifestSha256 = sha256Hex(manifestBytes);
+  const pointerBytes = pointerBytesFor(manifest, manifestSha256);
+  const pointerParent = await ensureAnchoredDirectory(
+    dirname(paths.pointerPath),
+    "release pointer parent",
   );
   const existing = await optionalAnchoredChild(
     releases,
@@ -185,24 +245,67 @@ export const generateReleaseInternal = async (options, hooks = {}) => {
     "immutable release",
   );
   if (existing) {
-    return existingReleaseResult({
-      release: existing,
+    const metadata = await collectReleaseObjectMetadata({
+      sourceRoot: paths.sourceRoot,
+      manifest,
+    });
+    return activateExistingRelease({
+      existing,
+      releases,
+      pointerParent,
+      pointerPath: paths.pointerPath,
+      pointerBytes,
       manifest,
       manifestBytes,
       manifestSha256,
       metadata,
-      pointerPath,
       hooks,
     });
   }
   return buildNewRelease({
-    sourceRoot,
+    sourceRoot: paths.sourceRoot,
     releases,
-    pointerPath,
+    pointerParent,
+    pointerPath: paths.pointerPath,
+    pointerBytes,
     manifest,
     manifestBytes,
     manifestSha256,
-    metadata,
     hooks,
   });
+};
+
+export const generateReleaseInternal = async (options, hooks = {}) => {
+  const paths = await prepareReleasePaths(options);
+  const staging = await ensureAnchoredDirectory(
+    paths.stagingRoot,
+    "staging root",
+  );
+  const lease = await acquireGenerationLease(staging, {
+    pid: hooks.leasePid ?? process.pid,
+  });
+  let result;
+  let primaryError;
+  try {
+    result = await generateUnderLease({ paths, staging, hooks });
+  } catch (error) {
+    primaryError = error;
+  }
+  try {
+    await hooks.beforeLeaseRelease?.({
+      leasePath: `${staging.path}/.generate-lease`,
+      owner: lease.owner,
+    });
+    await releaseGenerationLease(staging, lease);
+  } catch (cleanupError) {
+    if (primaryError) {
+      throw new AggregateError(
+        [primaryError, cleanupError],
+        "release generation and lease cleanup both failed",
+      );
+    }
+    throw cleanupError;
+  }
+  if (primaryError) throw primaryError;
+  return result;
 };

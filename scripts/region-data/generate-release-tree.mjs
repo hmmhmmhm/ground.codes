@@ -41,11 +41,16 @@ const runTreeWorker = ({ root, operation, input }) =>
     );
   });
 
-export const writePrivateObjects = ({ root, sourceRoot, manifest, metadata }) =>
+export const writePrivateObjects = ({
+  root,
+  sourceRoot,
+  manifest,
+  failDurabilityPhase,
+}) =>
   runTreeWorker({
     root,
     operation: "write-objects",
-    input: { sourceRoot, manifest, metadata },
+    input: { sourceRoot, manifest, failDurabilityPhase },
   });
 
 export const verifyObjectTree = ({ root, metadata }) =>

@@ -122,7 +122,12 @@ export const optionalAnchoredChild = async (parent, name, label) => {
     : { path: join(parent.path, name), ...result.identity, label };
 };
 
-export const writeAnchoredFile = (parent, name, bytes, immutable) =>
+export const writeAnchoredFile = (
+  parent,
+  name,
+  bytes,
+  { immutable, writtenEvent, directoryFsyncPhase, failDurabilityPhase },
+) =>
   runAnchoredMutation({
     cwd: parent.path,
     expectedIdentity: parent,
@@ -131,6 +136,9 @@ export const writeAnchoredFile = (parent, name, bytes, immutable) =>
       name,
       bytes: Buffer.from(bytes).toString("base64"),
       immutable,
+      writtenEvent,
+      directoryFsyncPhase,
+      failDurabilityPhase,
     },
   });
 
@@ -155,4 +163,11 @@ export const removeOwnedAnchoredChild = (parent, name, identity) =>
       name,
       identity: { dev: identity.dev, ino: identity.ino },
     },
+  });
+
+export const listPrivateAnchoredChildren = (parent) =>
+  runAnchoredMutation({
+    cwd: parent.path,
+    expectedIdentity: parent,
+    operation: { type: "list-private-directories" },
   });

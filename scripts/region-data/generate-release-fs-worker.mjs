@@ -6,11 +6,14 @@ import {
   lstatSync,
   mkdirSync,
   openSync,
+  readdirSync,
   readFileSync,
   renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
+
+import { fsyncDirectory } from "./generate-release-durability.mjs";
 
 const readInput = async () => {
   const chunks = [];
@@ -90,12 +93,14 @@ const readRegular = (name, label) => {
   }
 };
 
-const writeAnchoredFile = ({ name, bytes, immutable }) => {
+const writeAnchoredFile = (operation) => {
+  const { name, bytes, immutable } = operation;
   const label = immutable ? "immutable artifact" : "release pointer";
   const destination = validateName(name, label);
   const contents = Buffer.from(bytes, "base64");
   const existing = readRegular(destination, label);
-  if (existing?.equals(contents)) return { created: false };
+  if (existing?.equals(contents))
+    return { created: false, durabilityEvents: [] };
   if (immutable && existing) {
     throw new TypeError(`${label} is conflicting`);
   }
@@ -114,7 +119,12 @@ const writeAnchoredFile = ({ name, bytes, immutable }) => {
       fsyncSync(descriptor);
       closeSync(descriptor);
       descriptor = undefined;
-      return { created: true };
+      const events = [operation.writtenEvent ?? "immutable-file-written"];
+      fsyncDirectory(".", operation.directoryFsyncPhase, {
+        failPhase: operation.failDurabilityPhase,
+        events,
+      });
+      return { created: true, durabilityEvents: events };
     } catch (error) {
       try {
         if (descriptor !== undefined) closeSync(descriptor);
@@ -123,7 +133,7 @@ const writeAnchoredFile = ({ name, bytes, immutable }) => {
       const raced = readRegular(destination, label);
       if (!raced?.equals(contents))
         throw new TypeError(`${label} is conflicting`);
-      return { created: false };
+      return { created: false, durabilityEvents: [] };
     }
   }
   const temporary = validateName(`.write-${randomUUID()}`, "temporary file");
@@ -140,7 +150,12 @@ const writeAnchoredFile = ({ name, bytes, immutable }) => {
     readRegular(destination, label);
     renameSync(temporary, destination);
     owned = false;
-    return { created: true };
+    const events = [operation.writtenEvent ?? "pointer-renamed"];
+    fsyncDirectory(".", operation.directoryFsyncPhase, {
+      failPhase: operation.failDurabilityPhase,
+      events,
+    });
+    return { created: true, durabilityEvents: events };
   } finally {
     try {
       closeSync(descriptor);
@@ -200,6 +215,18 @@ const mutate = (operation) => {
       if (missing(error)) return { missing: true };
       throw error;
     }
+  }
+  if (operation.type === "list-private-directories") {
+    const privatePattern =
+      /^\.private-[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
+    const directories = [];
+    for (const entry of readdirSync(".", { withFileTypes: true })) {
+      if (!privatePattern.test(entry.name) || !entry.isDirectory()) continue;
+      const stats = lstatSync(entry.name, { bigint: true });
+      if (stats.isSymbolicLink() || !stats.isDirectory()) continue;
+      directories.push({ name: entry.name, identity: identity(stats) });
+    }
+    return { directories };
   }
   throw new TypeError("unsupported anchored mutation");
 };
