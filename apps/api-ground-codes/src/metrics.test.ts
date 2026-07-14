@@ -100,6 +100,15 @@ describe("request completion logs", () => {
 
       expect(response.status).toBe(200);
       expect(records.map(({ route }) => route)).toEqual(["/healthz"]);
+
+      app.compile();
+      const recompiledResponse = await fetch(new URL("/readyz", serverUrl));
+
+      expect(recompiledResponse.status).toBe(200);
+      expect(records.map(({ route }) => route)).toEqual([
+        "/healthz",
+        "/readyz",
+      ]);
     } finally {
       await app.stop();
     }

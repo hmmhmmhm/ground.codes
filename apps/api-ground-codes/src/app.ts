@@ -68,6 +68,7 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
       writable: true,
     });
     app.handle = handle;
+    app.server?.reload({ fetch: handle });
   };
 
   const compile = app.compile.bind(app);
