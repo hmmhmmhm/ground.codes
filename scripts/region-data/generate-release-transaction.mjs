@@ -22,6 +22,7 @@ export const activateReleaseTransaction = ({
   new Promise((resolve, reject) => {
     const child = fork(WORKER, [], {
       cwd: releases.path,
+      execArgv: [],
       stdio: ["ignore", "ignore", "pipe", "ipc"],
     });
     const stderr = [];

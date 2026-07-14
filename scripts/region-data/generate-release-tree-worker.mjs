@@ -13,7 +13,6 @@ import {
   identity,
   inspectDirectory,
   verifyObjectDirectory,
-  verifyReleaseDirectory,
 } from "./generate-release-integrity.mjs";
 import { validateManifest } from "./manifest.mjs";
 
@@ -84,12 +83,6 @@ try {
     result = await writeObjects(input, cwdIdentity);
   } else if (input.operation === "verify-objects") {
     result = verifyObjectDirectory(input.metadata, cwdIdentity);
-  } else if (input.operation === "verify-release") {
-    result = verifyReleaseDirectory({
-      releaseIdentity: cwdIdentity,
-      manifestBytes: Buffer.from(input.manifestBytes, "base64"),
-      metadata: input.metadata,
-    });
   } else {
     throw new TypeError("unsupported release tree operation");
   }

@@ -59,13 +59,3 @@ export const verifyObjectTree = ({ root, metadata }) =>
     operation: "verify-objects",
     input: { metadata },
   });
-
-export const verifyReleaseTree = ({ root, manifestBytes, metadata }) =>
-  runTreeWorker({
-    root,
-    operation: "verify-release",
-    input: {
-      manifestBytes: Buffer.from(manifestBytes).toString("base64"),
-      metadata,
-    },
-  });

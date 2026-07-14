@@ -155,12 +155,15 @@ describe("code size policy", () => {
       "scripts/region-data/generate-release-lease-worker.mjs",
       "scripts/region-data/generate-release-lease.test.mjs",
       "scripts/region-data/generate-release-paths.mjs",
+      "scripts/region-data/generate-release-pointer-worker.mjs",
+      "scripts/region-data/generate-release-seal.mjs",
       "scripts/region-data/generate-release-transaction.mjs",
       "scripts/region-data/generate-release-transaction-worker.mjs",
       "scripts/region-data/generate-release-transaction.test.mjs",
       "scripts/region-data/generate-release-tree.mjs",
       "scripts/region-data/generate-release-tree-worker.mjs",
       "scripts/generate-region-data-release.mjs",
+      "scripts/region-data/test-cleanup.mjs",
     ];
 
     assert.deepEqual(

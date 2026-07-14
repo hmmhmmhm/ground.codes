@@ -1,5 +1,12 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  chmod,
+  mkdir,
+  mkdtemp,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterEach, describe, test } from "node:test";
@@ -7,13 +14,14 @@ import { afterEach, describe, test } from "node:test";
 import { generateRelease } from "./generate-release.mjs";
 import { generateReleaseInternal } from "./generate-release-internal.mjs";
 import { createManifest } from "./manifest.mjs";
+import { removeWritableTree } from "./test-cleanup.mjs";
 
 const temporaryDirectories = [];
 afterEach(async () => {
   await Promise.all(
     temporaryDirectories
       .splice(0)
-      .map((directory) => rm(directory, { force: true, recursive: true })),
+      .map((directory) => removeWritableTree(directory)),
   );
 });
 
@@ -119,7 +127,7 @@ describe("adversarial immutable release generation", () => {
           );
         },
       }),
-      /object.*integrity|conflicting/i,
+      /EACCES|EPERM|permission denied|read-only/i,
     );
     await assert.rejects(readFile(fixture.pointerPath), /ENOENT/);
   });
@@ -132,7 +140,10 @@ describe("adversarial immutable release generation", () => {
       "objects",
       "extra.json.gz",
     );
+    await chmod(dirname(extra), 0o700);
     await writeFile(extra, "extra");
+    await chmod(extra, 0o444);
+    await chmod(dirname(extra), 0o555);
     await rm(fixture.pointerPath);
 
     await assert.rejects(

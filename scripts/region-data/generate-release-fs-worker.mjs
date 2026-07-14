@@ -10,10 +10,12 @@ import {
   readFileSync,
   renameSync,
   rmSync,
+  chmodSync,
   writeFileSync,
 } from "node:fs";
 
 import { fsyncDirectory } from "./generate-release-durability.mjs";
+import { setOwnedDirectoryMode } from "./generate-release-seal.mjs";
 
 const readInput = async () => {
   const chunks = [];
@@ -56,16 +58,6 @@ const validateName = (name, label) => {
   return name;
 };
 const missing = (error) => error?.code === "ENOENT";
-const absent = (path) => {
-  try {
-    lstatSync(path);
-    return false;
-  } catch (error) {
-    if (missing(error)) return true;
-    throw error;
-  }
-};
-
 const readRegular = (name, label) => {
   let inspected;
   try {
@@ -91,6 +83,23 @@ const readRegular = (name, label) => {
   } finally {
     closeSync(descriptor);
   }
+};
+
+const makeTreeRemovable = (path) => {
+  const stats = lstatSync(path, { bigint: true });
+  if (stats.isSymbolicLink()) return;
+  if (stats.isDirectory()) {
+    chmodSync(path, 0o700);
+    for (const entry of readdirSync(path)) {
+      makeTreeRemovable(`${path}/${entry}`);
+    }
+    return;
+  }
+  if (stats.isFile()) {
+    chmodSync(path, 0o600);
+    return;
+  }
+  throw new TypeError("owned cleanup tree contains an unsupported entry");
 };
 
 const writeAnchoredFile = (operation) => {
@@ -181,29 +190,20 @@ const mutate = (operation) => {
       };
     }
   }
-  if (operation.type === "rename") {
-    const source = validateName(operation.source, "rename source");
-    const destination = validateName(
-      operation.destination,
-      "rename destination",
-    );
-    inspectOwned(source, operation.sourceIdentity, "rename source");
-    if (!absent(destination))
-      throw new TypeError("rename destination already exists");
-    renameSync(source, destination);
-    inspectOwned(destination, operation.sourceIdentity, "renamed release");
-    return { identity: operation.sourceIdentity };
-  }
   if (operation.type === "remove-owned") {
     const name = validateName(operation.name, "cleanup source");
     inspectOwned(name, operation.identity, "cleanup source");
+    setOwnedDirectoryMode(name, operation.identity, 0o700, "cleanup source");
     const quarantine = validateName(
       `.cleanup-${randomUUID()}`,
       "cleanup target",
     );
     renameSync(name, quarantine);
     inspectOwned(quarantine, operation.identity, "cleanup target");
+    makeTreeRemovable(quarantine);
+    inspectOwned(quarantine, operation.identity, "cleanup target");
     rmSync(quarantine, { recursive: true });
+    fsyncDirectory(".", "owned-cleanup-parent-directory-fsync");
     return { removed: true };
   }
   if (operation.type === "write-file") return writeAnchoredFile(operation);

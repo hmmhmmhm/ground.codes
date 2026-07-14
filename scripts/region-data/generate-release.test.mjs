@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import {
+  chmod,
   lstat,
   mkdir,
   mkdtemp,
@@ -22,6 +23,7 @@ import {
   sha256Hex,
 } from "./manifest.mjs";
 import * as releaseGenerator from "./generate-release.mjs";
+import { removeWritableTree } from "./test-cleanup.mjs";
 
 const { generateRelease } = releaseGenerator;
 
@@ -30,7 +32,7 @@ afterEach(async () => {
   await Promise.all(
     temporaryDirectories
       .splice(0)
-      .map((directory) => rm(directory, { force: true, recursive: true })),
+      .map((directory) => removeWritableTree(directory)),
   );
 });
 
@@ -246,7 +248,7 @@ describe("deterministic region-data release generation", () => {
 
     await assert.rejects(
       generate(root, sourceRoot),
-      /immutable release has an extra, missing, or invalid entry/i,
+      /sealed|immutable release has an extra, missing, or invalid entry/i,
     );
     await assert.rejects(readFile(paths.manifest), /ENOENT/);
     await assert.rejects(readFile(paths.pointer), /ENOENT/);
@@ -286,7 +288,9 @@ describe("deterministic region-data release generation", () => {
     const paths = releasePaths(root, result.version);
     const manifest = JSON.parse(await readFile(paths.manifest, "utf8"));
     const missingObject = join(root, "staging", manifest.entries[0].objectKey);
+    await chmod(dirname(missingObject), 0o700);
     await Promise.all([rm(missingObject), rm(paths.pointer)]);
+    await chmod(dirname(missingObject), 0o555);
 
     await assert.rejects(
       generate(root, sourceRoot),
@@ -313,7 +317,7 @@ describe("deterministic region-data release generation", () => {
     await mkdir(objectPath, { recursive: true });
     await assert.rejects(
       generate(root, sourceRoot),
-      /immutable release has an extra, missing, or invalid entry/i,
+      /sealed|immutable release has an extra, missing, or invalid entry/i,
     );
     assert.equal((await lstat(objectPath)).isDirectory(), true);
     const paths = releasePaths(root, manifest.version);

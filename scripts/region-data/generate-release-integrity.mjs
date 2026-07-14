@@ -41,12 +41,26 @@ const fileIdentity = (stats) => ({
   size: String(stats.size),
   ctimeNs: String(stats.ctimeNs),
   mtimeNs: String(stats.mtimeNs),
+  mode: String(stats.mode & 0o777n),
 });
 const sameFileIdentity = (stats, expected) =>
   sameIdentity(stats, expected) &&
   String(stats.size) === expected.size &&
   String(stats.ctimeNs) === expected.ctimeNs &&
-  String(stats.mtimeNs) === expected.mtimeNs;
+  String(stats.mtimeNs) === expected.mtimeNs &&
+  String(stats.mode & 0o777n) === expected.mode;
+
+const assertSealedMode = (statsOrIdentity, expected, label) => {
+  const actual =
+    typeof statsOrIdentity.mode === "bigint"
+      ? String(statsOrIdentity.mode & 0o777n)
+      : statsOrIdentity.mode;
+  if (actual !== String(expected)) {
+    throw new TypeError(
+      `${label} is not sealed to mode 0${expected.toString(8)}`,
+    );
+  }
+};
 
 export const readRegular = (name, label) => {
   const before = lstatSync(name, { bigint: true });
@@ -87,14 +101,24 @@ const assertObjectEntries = (records) => {
   }
 };
 
-export const verifyObjectDirectory = (metadata, expectedDirectory) => {
+export const verifyObjectDirectory = (
+  metadata,
+  expectedDirectory,
+  { sealed = false } = {},
+) => {
   const records = Object.values(metadata).sort((left, right) =>
     left.name.localeCompare(right.name),
   );
   inspectDirectory(".", expectedDirectory, "object directory");
   assertObjectEntries(records);
   for (const record of records) {
-    const { bytes } = readRegular(record.name, `object ${record.name}`);
+    const { bytes, identity: objectIdentity } = readRegular(
+      record.name,
+      `object ${record.name}`,
+    );
+    if (sealed) {
+      assertSealedMode(objectIdentity, 0o444, `object ${record.name}`);
+    }
     if (bytes.length !== record.size || sha256Hex(bytes) !== record.sha256) {
       throw new TypeError(
         `object ${record.name} failed integrity verification`,
@@ -126,26 +150,44 @@ export const verifyReleaseDirectory = ({
   manifestBytes,
   metadata,
 }) => {
-  inspectDirectory(".", releaseIdentity, "release directory");
+  assertSealedMode(
+    inspectDirectory(".", releaseIdentity, "release directory"),
+    0o555,
+    "release directory",
+  );
   assertReleaseEntries();
   const firstManifest = readRegular("manifest.json", "release manifest");
+  assertSealedMode(firstManifest.identity, 0o444, "release manifest");
   if (!firstManifest.bytes.equals(manifestBytes)) {
     throw new TypeError("release manifest is conflicting");
   }
-  const objectIdentity = identity(
-    inspectDirectory("objects", undefined, "object directory"),
+  const objectStats = inspectDirectory(
+    "objects",
+    undefined,
+    "object directory",
   );
+  assertSealedMode(objectStats, 0o555, "object directory");
+  const objectIdentity = identity(objectStats);
   let result;
   process.chdir("objects");
   try {
-    result = verifyObjectDirectory(metadata, objectIdentity);
+    result = verifyObjectDirectory(metadata, objectIdentity, { sealed: true });
   } finally {
     process.chdir("..");
   }
-  inspectDirectory(".", releaseIdentity, "release directory");
-  inspectDirectory("objects", objectIdentity, "object directory");
+  assertSealedMode(
+    inspectDirectory(".", releaseIdentity, "release directory"),
+    0o555,
+    "release directory",
+  );
+  assertSealedMode(
+    inspectDirectory("objects", objectIdentity, "object directory"),
+    0o555,
+    "object directory",
+  );
   assertReleaseEntries();
   const secondManifest = readRegular("manifest.json", "release manifest");
+  assertSealedMode(secondManifest.identity, 0o444, "release manifest");
   if (
     !secondManifest.bytes.equals(manifestBytes) ||
     secondManifest.identity.dev !== firstManifest.identity.dev ||

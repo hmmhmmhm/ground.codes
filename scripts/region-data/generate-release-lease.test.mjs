@@ -14,13 +14,14 @@ import { join } from "node:path";
 import { afterEach, describe, test } from "node:test";
 
 import { generateReleaseInternal } from "./generate-release-internal.mjs";
+import { removeWritableTree } from "./test-cleanup.mjs";
 
 const temporaryDirectories = [];
 afterEach(async () => {
   await Promise.all(
     temporaryDirectories
       .splice(0)
-      .map((directory) => rm(directory, { force: true, recursive: true })),
+      .map((directory) => removeWritableTree(directory)),
   );
 });
 

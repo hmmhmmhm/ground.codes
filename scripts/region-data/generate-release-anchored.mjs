@@ -142,18 +142,6 @@ export const writeAnchoredFile = (
     },
   });
 
-export const promoteAnchoredChild = (parent, source, destination, identity) =>
-  runAnchoredMutation({
-    cwd: parent.path,
-    expectedIdentity: parent,
-    operation: {
-      type: "rename",
-      source,
-      destination,
-      sourceIdentity: { dev: identity.dev, ino: identity.ino },
-    },
-  });
-
 export const removeOwnedAnchoredChild = (parent, name, identity) =>
   runAnchoredMutation({
     cwd: parent.path,
