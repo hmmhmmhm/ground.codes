@@ -1,5 +1,42 @@
 import { runRegisteredSmokeChecks } from "./production-smoke-helpers.mjs";
 
+const sleep = (delayMs) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, delayMs);
+  });
+
+const waitForMetricsSnapshot = async ({
+  assert,
+  fetchText,
+  apiBaseUrl,
+  expectedRuntimeCommit,
+  validateMetricsSnapshot,
+  metricsRetryOptions = {},
+}) => {
+  const {
+    maxAttempts = 12,
+    retryDelayMs = 2_000,
+    maximumRetryDelayMs = 15_000,
+    sleep: sleepImpl = sleep,
+  } = metricsRetryOptions;
+  const attempts = expectedRuntimeCommit === undefined ? 1 : maxAttempts;
+  let errors = [];
+
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const metrics = JSON.parse(await fetchText(`${apiBaseUrl}/metrics`));
+    errors = validateMetricsSnapshot(metrics, { expectedRuntimeCommit });
+    if (errors.length === 0) return;
+
+    if (attempt + 1 < attempts) {
+      await sleepImpl(
+        Math.min(retryDelayMs * 2 ** attempt, maximumRetryDelayMs),
+      );
+    }
+  }
+
+  assert(false, `invalid metrics snapshot: ${errors.join("; ")}`);
+};
+
 const createSeoulLanguageCheck = ({
   id,
   label,
@@ -97,13 +134,8 @@ export const quickSmokeChecks = [
   {
     id: "api.metrics",
     label: "API metrics snapshot",
-    async run({ assert, fetchText, apiBaseUrl, validateMetricsSnapshot }) {
-      const metrics = JSON.parse(await fetchText(`${apiBaseUrl}/metrics`));
-      const errors = validateMetricsSnapshot(metrics);
-      assert(
-        errors.length === 0,
-        `invalid metrics snapshot: ${errors.join("; ")}`,
-      );
+    async run(context) {
+      await waitForMetricsSnapshot(context);
     },
   },
   englishEncodeCheck,

@@ -254,7 +254,12 @@ describe("API deployment workflow", () => {
       deployApiWorkflow,
       /--var GIT_COMMIT_SHA:\$\{\{ github\.sha \}\}/,
     );
-    assert.match(deployApiWorkflow, /pnpm production:smoke/);
+    const smokeStep = workflowStep(deployApiWorkflow, "Run production smoke");
+    assert.match(
+      smokeStep,
+      /GROUND_CODES_EXPECTED_RUNTIME_COMMIT: \$\{\{ github\.sha \}\}/,
+    );
+    assert.match(smokeStep, /pnpm production:smoke/);
   });
 });
 

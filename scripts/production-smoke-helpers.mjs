@@ -173,7 +173,11 @@ const validateRouteMetrics = (routes, errors) => {
 
 export const validateMetricsSnapshot = (
   metrics,
-  { nowMs = Date.now(), uptimeToleranceSeconds = 3 } = {},
+  {
+    nowMs = Date.now(),
+    uptimeToleranceSeconds = 3,
+    expectedRuntimeCommit,
+  } = {},
 ) => {
   const errors = [];
 
@@ -213,6 +217,13 @@ export const validateMetricsSnapshot = (
   ) {
     errors.push(
       "runtimeCommit must be a 40-character lowercase hexadecimal commit SHA",
+    );
+  } else if (
+    expectedRuntimeCommit !== undefined &&
+    metrics.runtimeCommit !== expectedRuntimeCommit
+  ) {
+    errors.push(
+      `runtimeCommit must match expected deployment commit ${expectedRuntimeCommit}`,
     );
   }
   if (!isNonNegativeNumber(metrics?.requests?.total)) {

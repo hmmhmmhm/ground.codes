@@ -62,6 +62,7 @@ const smokeContext = {
   postJsonBody,
   apiBaseUrl,
   webBaseUrl,
+  expectedRuntimeCommit: process.env.GROUND_CODES_EXPECTED_RUNTIME_COMMIT,
   validateMetricsSnapshot,
 };
 

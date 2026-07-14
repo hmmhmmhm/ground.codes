@@ -111,4 +111,6 @@ jobs:
             --message "Deploy API Worker from ${GITHUB_SHA}"
 
       - name: Run production smoke
+        env:
+          GROUND_CODES_EXPECTED_RUNTIME_COMMIT: ${{ github.sha }}
         run: pnpm production:smoke
