@@ -9,6 +9,25 @@ import {
   workflowStep,
 } from "./workflow-test-helpers.mjs";
 
+const deploymentJob = (workflow) => {
+  const jobs = indentedYamlBlock(workflow, "jobs");
+  assert.match(
+    jobs,
+    /^  deploy:\s*$/m,
+    "deploy must be a direct child of jobs",
+  );
+  return indentedYamlBlock(jobs, "deploy");
+};
+
+const workflowConcurrency = (workflow) => {
+  assert.match(
+    workflow,
+    /^concurrency:\s*$/m,
+    "concurrency must be configured at workflow level",
+  );
+  return indentedYamlBlock(workflow, "concurrency");
+};
+
 describe("QA workflow split", () => {
   test("enforces format lint and build gates in CI", () => {
     const ciWorkflow = readText("../.github/workflows/ci.yml");
@@ -237,4 +256,31 @@ describe("API deployment workflow", () => {
     );
     assert.match(deployApiWorkflow, /pnpm production:smoke/);
   });
+});
+
+describe("production deployment serialization", () => {
+  for (const [path, group, cancelInProgress] of [
+    ["../.github/workflows/deploy-web.yml", "deploy-web-production", true],
+    [
+      "../.github/workflows/deploy-grok-spiral.yml",
+      "deploy-grok-spiral-production",
+      true,
+    ],
+    ["../.github/workflows/deploy-api.yml", "deploy-api-production", false],
+  ]) {
+    test(`${path} binds production concurrency to its deploy job`, () => {
+      const workflow = readText(path);
+      const environmentValues = [
+        ...deploymentJob(workflow).matchAll(
+          /^    environment:\s*([^\s#]+)\s*$/gm,
+        ),
+      ].map((match) => match[1]);
+
+      assert.equal(
+        workflowConcurrency(workflow),
+        `concurrency:\n  group: ${group}\n  cancel-in-progress: ${cancelInProgress}`,
+      );
+      assert.deepEqual(environmentValues, ["production"]);
+    });
+  }
 });
