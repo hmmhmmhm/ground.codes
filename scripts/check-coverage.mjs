@@ -1,6 +1,12 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { resolve } from "node:path";
+import {
+  existsSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  statSync,
+} from "node:fs";
+import { isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { evaluateCoveragePolicy } from "./coverage-policy.mjs";
@@ -84,12 +90,37 @@ export const runCoverageCheck = ({
     return 1;
   }
 
+  try {
+    evaluateCoveragePolicy(policy);
+  } catch (error) {
+    write(`coverage FAIL invalid policy: ${error.message}`);
+    return 1;
+  }
+
   const reports = {};
+  const reportErrors = {};
+  const realRepositoryRoot = realpathSync(repositoryRoot);
   for (const target of Object.values(policy.targets ?? {})) {
     if (typeof target?.lcov !== "string") continue;
     const reportFile = resolve(repositoryRoot, target.lcov);
-    if (existsSync(reportFile))
-      reports[target.lcov] = readFileSync(reportFile, "utf8");
+    if (!existsSync(reportFile)) continue;
+    try {
+      const realReport = realpathSync(reportFile);
+      const relativeReport = relative(realRepositoryRoot, realReport);
+      if (
+        relativeReport === ".." ||
+        relativeReport.startsWith(`..${sep}`) ||
+        isAbsolute(relativeReport)
+      ) {
+        reportErrors[target.lcov] = `unsafe LCOV report ${target.lcov}`;
+      } else if (!statSync(realReport).isFile()) {
+        reportErrors[target.lcov] = `unreadable LCOV report ${target.lcov}`;
+      } else {
+        reports[target.lcov] = readFileSync(realReport, "utf8");
+      }
+    } catch {
+      reportErrors[target.lcov] = `unreadable LCOV report ${target.lcov}`;
+    }
   }
 
   let result;
@@ -97,6 +128,7 @@ export const runCoverageCheck = ({
     result = evaluateCoveragePolicy(policy, {
       repositoryRoot,
       reports,
+      reportErrors,
       sourceFiles: listSourceFiles(repositoryRoot),
     });
   } catch (error) {

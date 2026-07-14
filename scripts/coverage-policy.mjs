@@ -1,12 +1,27 @@
-import { isAbsolute, relative } from "node:path";
+import { isAbsolute, posix, relative } from "node:path";
 
 const METRICS = ["line", "function", "branch"];
-const GLOB_CHARACTERS = /[*?[]/;
+const GLOB_CHARACTERS = /[*?]/;
 
-const normalizePath = (path) => path.replaceAll("\\", "/").replace(/^\.\//, "");
+const normalizePath = (path) =>
+  posix.normalize(path.replaceAll("\\", "/")).replace(/^\.\//, "");
 
 const normalizeSource = (source, repositoryRoot) =>
   normalizePath(isAbsolute(source) ? relative(repositoryRoot, source) : source);
+
+const isContainedSource = (source) =>
+  source !== "." &&
+  !isAbsolute(source) &&
+  !/^[A-Za-z]:\//.test(source) &&
+  source !== ".." &&
+  !source.startsWith("../");
+
+const isSafeRelativePath = (path) =>
+  typeof path === "string" &&
+  path.length > 0 &&
+  !isAbsolute(path) &&
+  !/^[A-Za-z]:[\\/]/.test(path) &&
+  isContainedSource(normalizePath(path));
 
 const globToRegExp = (pattern) => {
   const normalized = normalizePath(pattern);
@@ -44,58 +59,126 @@ const mergeHits = (metrics, key, hits) => {
 const createRecord = () => ({
   lines: new Map(),
   functions: new Map(),
-  functionKeys: new Map(),
   branches: new Map(),
 });
 
-const parseHits = (rawHits) => {
-  if (rawHits === "-") return 0;
-  const hits = Number(rawHits);
-  if (!Number.isFinite(hits) || hits < 0) {
-    throw new Error(`invalid LCOV hit count ${rawHits}`);
-  }
-  return hits;
+const parseInteger = (value, { positive = false } = {}) => {
+  const pattern = positive ? /^[1-9]\d*$/ : /^\d+$/;
+  if (!pattern.test(value)) return null;
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) ? parsed : null;
+};
+
+const parseFields = (value, count, type) => {
+  const fields = value.split(",");
+  if (fields.length !== count) throw new Error(`invalid ${type} record`);
+  return fields;
+};
+
+const requireActiveRecord = (active, type) => {
+  if (!active) throw new Error(`${type} record before SF`);
 };
 
 export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
   if (typeof lcov !== "string") throw new TypeError("LCOV input must be text");
 
   const records = new Map();
-  let record;
+  let active;
 
   for (const rawLine of lcov.split(/\r?\n/)) {
-    if (rawLine.startsWith("SF:")) {
-      const source = normalizeSource(rawLine.slice(3), repositoryRoot);
-      record = records.get(source) ?? createRecord();
-      records.set(source, record);
+    if (rawLine === "") continue;
+    if (rawLine === "end_of_record") {
+      if (!active) throw new Error("end_of_record without SF");
+      active = undefined;
       continue;
     }
-    if (!record || rawLine === "end_of_record") {
-      if (rawLine === "end_of_record") record = undefined;
+    if (rawLine.startsWith("TN:")) {
+      if (active) throw new Error("TN record before end_of_record");
+      continue;
+    }
+    if (rawLine.startsWith("SF:")) {
+      if (active) throw new Error("SF record before end_of_record");
+      const rawSource = rawLine.slice(3);
+      if (rawSource.trim().length === 0) throw new Error("invalid SF source");
+      const source = normalizeSource(rawSource, repositoryRoot);
+      if (!isContainedSource(source)) {
+        throw new Error(`SF source is outside repository: ${rawSource}`);
+      }
+      const record = records.get(source) ?? createRecord();
+      records.set(source, record);
+      active = {
+        record,
+        functionKeys: new Map(),
+        functionOccurrences: new Map(),
+      };
       continue;
     }
 
     if (rawLine.startsWith("DA:")) {
-      const [line, hits] = rawLine.slice(3).split(",");
-      mergeHits(record.lines, line, parseHits(hits));
+      requireActiveRecord(active, "DA");
+      const [line, hits] = parseFields(rawLine.slice(3), 2, "DA");
+      const parsedLine = parseInteger(line, { positive: true });
+      const parsedHits = parseInteger(hits);
+      if (parsedLine === null || parsedHits === null) {
+        throw new Error("invalid DA record");
+      }
+      mergeHits(active.record.lines, line, parsedHits);
     } else if (rawLine.startsWith("FN:")) {
-      const separator = rawLine.indexOf(",", 3);
-      const line = rawLine.slice(3, separator);
-      const name = rawLine.slice(separator + 1);
+      requireActiveRecord(active, "FN");
+      const [line, name] = parseFields(rawLine.slice(3), 2, "FN");
+      if (parseInteger(line, { positive: true }) === null || !name.trim()) {
+        throw new Error("invalid FN record");
+      }
       const key = `${line},${name}`;
-      record.functionKeys.set(name, key);
-      if (!record.functions.has(key)) record.functions.set(key, 0);
+      const keys = active.functionKeys.get(name) ?? [];
+      keys.push(key);
+      active.functionKeys.set(name, keys);
+      if (!active.record.functions.has(key))
+        active.record.functions.set(key, 0);
     } else if (rawLine.startsWith("FNDA:")) {
-      const separator = rawLine.indexOf(",", 5);
-      const hits = rawLine.slice(5, separator);
-      const name = rawLine.slice(separator + 1);
-      const key = record.functionKeys.get(name) ?? `?,${name}`;
-      mergeHits(record.functions, key, parseHits(hits));
+      requireActiveRecord(active, "FNDA");
+      const [hits, name] = parseFields(rawLine.slice(5), 2, "FNDA");
+      const parsedHits = parseInteger(hits);
+      const occurrence = active.functionOccurrences.get(name) ?? 0;
+      const key = active.functionKeys.get(name)?.[occurrence];
+      if (parsedHits === null || !name.trim() || !key) {
+        throw new Error("FNDA has no matching FN occurrence");
+      }
+      active.functionOccurrences.set(name, occurrence + 1);
+      mergeHits(active.record.functions, key, parsedHits);
     } else if (rawLine.startsWith("BRDA:")) {
-      const [line, block, branch, hits] = rawLine.slice(5).split(",");
-      mergeHits(record.branches, `${line},${block},${branch}`, parseHits(hits));
+      requireActiveRecord(active, "BRDA");
+      const [line, block, branch, hits] = parseFields(
+        rawLine.slice(5),
+        4,
+        "BRDA",
+      );
+      const parsedHits = hits === "-" ? 0 : parseInteger(hits);
+      if (
+        parseInteger(line, { positive: true }) === null ||
+        parseInteger(block) === null ||
+        parseInteger(branch) === null ||
+        parsedHits === null
+      ) {
+        throw new Error("invalid BRDA record");
+      }
+      mergeHits(
+        active.record.branches,
+        `${line},${block},${branch}`,
+        parsedHits,
+      );
+    } else if (/^(?:FNF|FNH|LF|LH|BRF|BRH):/.test(rawLine)) {
+      const [type, value, ...rest] = rawLine.split(":");
+      requireActiveRecord(active, type);
+      if (rest.length > 0 || parseInteger(value) === null) {
+        throw new Error(`invalid ${type} record`);
+      }
+    } else {
+      throw new Error(`unknown LCOV record: ${rawLine}`);
     }
   }
+
+  if (active) throw new Error("LCOV record missing end_of_record");
 
   return records;
 };
@@ -125,11 +208,25 @@ const validateTarget = (name, target) => {
   if (typeof target.lcov !== "string" || target.lcov.length === 0) {
     throw new Error(`${name} target must declare an LCOV report`);
   }
+  if (!isSafeRelativePath(target.lcov)) {
+    throw new Error(`${name} target has an unsafe LCOV report path`);
+  }
   if (!Array.isArray(target.include) || target.include.length === 0) {
     throw new Error(`${name} target must include source paths`);
   }
   if (!Array.isArray(target.exclude ?? [])) {
     throw new Error(`${name} target exclusions must be an array`);
+  }
+  const patterns = [...target.include, ...(target.exclude ?? [])];
+  if (
+    patterns.some(
+      (pattern) => typeof pattern !== "string" || pattern.length === 0,
+    )
+  ) {
+    throw new Error(`${name} target has an invalid source pattern`);
+  }
+  if (patterns.some((pattern) => /[\[\]]/.test(pattern))) {
+    throw new Error(`${name} target has an unsupported bracket glob pattern`);
   }
   for (const metric of METRICS) {
     const minimum = target.minimum?.[metric];
@@ -150,7 +247,9 @@ export const collectTargetCoverage = ({
   const exclusions = target.exclude ?? [];
   const inventory = [
     ...new Set(
-      sourceFiles.map((source) => normalizeSource(source, repositoryRoot)),
+      sourceFiles
+        .map((source) => normalizeSource(source, repositoryRoot))
+        .filter(isContainedSource),
     ),
   ].sort();
   const files = new Set();
@@ -206,17 +305,22 @@ export const collectTargetCoverage = ({
   };
 };
 
-const missingReportResult = (name, target) => ({
+const reportFailureResult = (name, error) => ({
   name,
   ok: false,
   files: [],
   metrics: null,
-  errors: [`missing LCOV report ${target.lcov}`],
+  errors: [error],
 });
 
 export const evaluateCoveragePolicy = (
   policy,
-  { repositoryRoot = process.cwd(), reports = {}, sourceFiles = [] } = {},
+  {
+    repositoryRoot = process.cwd(),
+    reports = {},
+    reportErrors = {},
+    sourceFiles = [],
+  } = {},
 ) => {
   if (policy?.schemaVersion !== 1) {
     throw new Error("coverage policy schemaVersion must be 1");
@@ -231,8 +335,11 @@ export const evaluateCoveragePolicy = (
 
   const targets = Object.entries(policy.targets).map(([name, target]) => {
     validateTarget(name, target);
+    if (Object.hasOwn(reportErrors, target.lcov)) {
+      return reportFailureResult(name, reportErrors[target.lcov]);
+    }
     if (!Object.hasOwn(reports, target.lcov)) {
-      return missingReportResult(name, target);
+      return reportFailureResult(name, `missing LCOV report ${target.lcov}`);
     }
 
     try {

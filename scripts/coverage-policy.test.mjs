@@ -67,7 +67,7 @@ describe("LCOV policy", () => {
 
     const result = collectTargetCoverage({
       name: "example",
-      target: target(),
+      target: target({ include: ["**/*.ts"] }),
       records: parsed,
       sourceFiles: [
         join(repositoryRoot, "src", "one.ts"),
