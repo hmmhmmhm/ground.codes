@@ -12,6 +12,7 @@ version manager, then fail closed if the release toolchain does not match those
 pins:
 
 ```sh
+set -eu
 test "$(tr -d '\n' < .nvmrc)" = "22"
 test "$(node -p 'process.versions.node.split(".")[0]')" = "22"
 test "$(pnpm --version)" = "9.0.0"
@@ -27,6 +28,7 @@ nothing. This detects any manifest or lockfile mutation while proving the
 second install is reproducible:
 
 ```sh
+set -eu
 git status --porcelain -- package.json pnpm-lock.yaml pnpm-workspace.yaml \
   ':(glob)**/package.json'
 pnpm install --frozen-lockfile
@@ -40,21 +42,29 @@ must report `Vercel CLI 47.0.4` and `Completed pnpm exec vercel build`. Do not
 substitute a global tool or use `npx`, `pnpm dlx`, or an unpinned `latest` tool:
 
 ```sh
+set -eu
 pnpm --filter web pages:build
 pnpm --filter grok-spiral pages:build
 pnpm --filter api-ground-codes build
-rm -rf -- /tmp/ground-codes-worker-dry-run
-pnpm exec wrangler deploy \
+WORKER_DRY_RUN_DIR="$(mktemp -d)"
+trap 'rm -rf -- "$WORKER_DRY_RUN_DIR"' EXIT
+unset CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID
+pnpm exec wrangler deploy --dry-run \
   --config apps/api-ground-codes/wrangler.toml \
-  --dry-run \
-  --outdir /tmp/ground-codes-worker-dry-run
-rm -rf -- /tmp/ground-codes-worker-dry-run
+  --outdir "$WORKER_DRY_RUN_DIR"
+rm -rf -- "$WORKER_DRY_RUN_DIR"
+trap - EXIT
 ```
+
+The Worker dry-run is local and must not receive Cloudflare credentials. Its
+temporary output directory is unique to the command and is removed on both
+success and failure.
 
 For an additional lockfile proof, repeat the Pages builds with package fetching
 disabled. Both commands must succeed from the frozen install:
 
 ```sh
+set -eu
 rm -rf -- apps/web/.next apps/web/.vercel/output
 npm_config_offline=true pnpm --offline --filter web pages:build
 rm -rf -- apps/web/.next apps/web/.vercel/output
@@ -130,17 +140,19 @@ queries, GitHub issues, screenshots, step summaries, or webhook messages.
    object formats. If compatibility cannot be demonstrated, use a forward fix
    or documented data recovery instead of rolling back code alone.
 3. For an API incident, find the Worker version tagged with the last known-good
-   SHA, then run the repository-local [Wrangler rollback][worker-rollback]. The
-   rollback command changes production immediately, so only the incident owner
-   should run it after completing the compatibility check above:
+   SHA, then run the repository-local [Wrangler rollback][worker-rollback]. Use
+   the Cloudflare Workers Deployments view to select it; do not export or attach
+   the full deployment object to the incident. Record only the version ID,
+   tag/SHA, and deployment status. The rollback command changes production
+   immediately, so only the incident owner should run it after completing the
+   compatibility check above:
 
    ```sh
+   set -eu
+   set +x
    : "${CLOUDFLARE_API_TOKEN:?set a scoped token from the secret store}"
-   KNOWN_GOOD_SHA="replace-with-the-40-character-sha"
-   WORKER_VERSION_ID="replace-with-the-known-good-version-id"
-   pnpm exec wrangler deployments list \
-     --config apps/api-ground-codes/wrangler.toml \
-     --json
+   : "${KNOWN_GOOD_SHA:?set the verified 40-character SHA}"
+   : "${WORKER_VERSION_ID:?set the verified known-good version ID}"
    pnpm exec wrangler rollback "$WORKER_VERSION_ID" \
      --config apps/api-ground-codes/wrangler.toml \
      --message "Incident rollback to $KNOWN_GOOD_SHA"
@@ -150,6 +162,7 @@ queries, GitHub issues, screenshots, step summaries, or webhook messages.
    then run the manual full [Production Smoke workflow][smoke]:
 
    ```sh
+   set -eu
    curl --fail --silent --show-error https://api.ground.codes/readyz
    curl --fail --silent --show-error https://api.ground.codes/metrics
    gh workflow run production-smoke.yml --ref main \
@@ -163,18 +176,19 @@ queries, GitHub issues, screenshots, step summaries, or webhook messages.
    [Pages rollback API][pages-rollback-api]. Set `PAGES_PROJECT` to
    `ground-codes` for Web or
    `grok-spiral` for Grok Spiral. Only a successful production deployment is a
-   valid target:
+   valid target. Use the Cloudflare Pages Deployments view to find it; do not
+   export or attach the full deployment object to the incident. Record only the
+   deployment ID, status, and commit:
 
    ```sh
+   set -eu
+   set +x
    : "${CLOUDFLARE_ACCOUNT_ID:?set the Cloudflare account ID}"
    : "${CLOUDFLARE_API_TOKEN:?set a Pages Write token from the secret store}"
-   PAGES_PROJECT="ground-codes"
-   PAGES_DEPLOYMENT_ID="replace-with-the-known-good-deployment-id"
-   pnpm exec wrangler pages deployment list \
-     --project-name "$PAGES_PROJECT" \
-     --environment production \
-     --json
-   curl --fail-with-body --request POST \
+   : "${PAGES_PROJECT:?set ground-codes or grok-spiral}"
+   : "${PAGES_DEPLOYMENT_ID:?set the verified known-good deployment ID}"
+   curl --silent --show-error --fail-with-body --output /dev/null \
+     --request POST \
      "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${PAGES_PROJECT}/deployments/${PAGES_DEPLOYMENT_ID}/rollback" \
      --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
    ```
