@@ -251,6 +251,13 @@ export const createManifest = async ({ sourceRoot }) => {
     throw new TypeError("sourceRoot must be a path string or file URL");
   }
   const root = sourcePath(sourceRoot);
+  const rootStats = await lstat(root);
+  if (rootStats.isSymbolicLink()) {
+    throw new TypeError("sourceRoot must not be a symlink");
+  }
+  if (!rootStats.isDirectory()) {
+    throw new TypeError("sourceRoot must be a directory");
+  }
   const entries = (
     await Promise.all(GROUPS.map((group) => enumerateGroup({ root, group })))
   )

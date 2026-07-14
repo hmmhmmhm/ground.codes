@@ -246,6 +246,66 @@ describe("immutable region-data manifest", () => {
     assert.throws(() => validateManifest(invalid), /duplicate/i);
   });
 
+  test("rejects a symlink or non-directory sourceRoot before enumeration", async () => {
+    const targetRoot = await makeTree({
+      "region-db/sample.index": Buffer.from("index"),
+      "region-dist/sample.json": Buffer.from("json"),
+    });
+    const linkContainer = await mkdtemp(
+      join(tmpdir(), "region-manifest-link-"),
+    );
+    temporaryDirectories.push(linkContainer);
+    const linkedRoot = join(linkContainer, "geoint");
+    await symlink(targetRoot, linkedRoot, "dir");
+
+    await assert.rejects(
+      createManifest({ sourceRoot: linkedRoot }),
+      /sourceRoot.*symlink/i,
+    );
+
+    const fileContainer = await mkdtemp(
+      join(tmpdir(), "region-manifest-file-"),
+    );
+    temporaryDirectories.push(fileContainer);
+    const fileRoot = join(fileContainer, "geoint");
+    await writeFile(fileRoot, "not a directory");
+
+    await assert.rejects(
+      createManifest({ sourceRoot: fileRoot }),
+      /sourceRoot.*directory/i,
+    );
+  });
+
+  test("rejects managed-root and nested-directory symlinks", async () => {
+    const groupLinkRoot = await makeTree({
+      "region-db/sample.index": Buffer.from("index"),
+    });
+    await rm(join(groupLinkRoot, "region-dist"), { recursive: true });
+    await symlink(
+      join(groupLinkRoot, "region-db"),
+      join(groupLinkRoot, "region-dist"),
+      "dir",
+    );
+    await assert.rejects(
+      createManifest({ sourceRoot: groupLinkRoot }),
+      /region-dist.*directory|symlink/i,
+    );
+
+    const nestedLinkRoot = await makeTree({
+      "region-db/sample.index": Buffer.from("index"),
+      "region-dist/sample.json": Buffer.from("json"),
+    });
+    await symlink(
+      join(nestedLinkRoot, "region-db"),
+      join(nestedLinkRoot, "region-dist/nested"),
+      "dir",
+    );
+    await assert.rejects(
+      createManifest({ sourceRoot: nestedLinkRoot }),
+      /nested.*symlink/i,
+    );
+  });
+
   test("rejects symlinks and non-regular filesystem entries", async () => {
     const symlinkRoot = await makeTree({
       "region-db/sample.index": Buffer.from("index"),
