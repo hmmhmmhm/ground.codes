@@ -85,6 +85,26 @@ describe("request completion logs", () => {
     expect(records.map(({ route }) => route)).toEqual(["/healthz", "/readyz"]);
   });
 
+  test("preserves completion records through the real Bun listener", async () => {
+    const records: RequestCompletionLog[] = [];
+    const app = createApp({
+      port: 0,
+      rateLimit: null,
+      metrics: { writeLog: (record) => records.push(record) },
+    });
+
+    try {
+      const serverUrl = app.server?.url;
+      expect(serverUrl).toBeDefined();
+      const response = await fetch(new URL("/healthz", serverUrl));
+
+      expect(response.status).toBe(200);
+      expect(records.map(({ route }) => route)).toEqual(["/healthz"]);
+    } finally {
+      await app.stop();
+    }
+  });
+
   test("writes the structured record before the Worker response resolves", async () => {
     const originalConsoleLog = console.log;
     const consoleCalls: unknown[][] = [];

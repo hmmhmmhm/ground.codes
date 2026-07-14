@@ -55,18 +55,28 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
     .use(legacyEndpoints)
     .use(codeEndpoint);
 
-  const fetch = app.fetch;
-  const handle = async (request: Request) => {
-    const response = await fetch(request);
-    metricsEndpoint.completeResponse(request, response);
-    return response;
+  const installCompletionBoundary = () => {
+    const fetch = app.fetch;
+    const handle = async (request: Request) => {
+      const response = await fetch(request);
+      metricsEndpoint.completeResponse(request, response);
+      return response;
+    };
+    Object.defineProperty(app, "fetch", {
+      value: handle,
+      configurable: true,
+      writable: true,
+    });
+    app.handle = handle;
   };
-  Object.defineProperty(app, "fetch", {
-    value: handle,
-    configurable: true,
-    writable: true,
-  });
-  app.handle = handle;
+
+  const compile = app.compile.bind(app);
+  app.compile = () => {
+    compile();
+    installCompletionBoundary();
+    return app;
+  };
+  installCompletionBoundary();
 
   return options.port === undefined ? app : app.listen(options.port);
 };
