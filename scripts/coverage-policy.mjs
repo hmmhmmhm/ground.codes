@@ -144,10 +144,15 @@ export const collectTargetCoverage = ({
   target,
   records,
   sourceFiles,
+  repositoryRoot = process.cwd(),
 }) => {
   validateTarget(name, target);
   const exclusions = target.exclude ?? [];
-  const inventory = [...new Set(sourceFiles.map(normalizePath))].sort();
+  const inventory = [
+    ...new Set(
+      sourceFiles.map((source) => normalizeSource(source, repositoryRoot)),
+    ),
+  ].sort();
   const files = new Set();
   const errors = [];
   const isExcluded = (path) =>
@@ -216,8 +221,12 @@ export const evaluateCoveragePolicy = (
   if (policy?.schemaVersion !== 1) {
     throw new Error("coverage policy schemaVersion must be 1");
   }
-  if (!policy.targets || typeof policy.targets !== "object") {
-    throw new Error("coverage policy must declare targets");
+  if (
+    !policy.targets ||
+    Object.getPrototypeOf(policy.targets) !== Object.prototype ||
+    Object.keys(policy.targets).length === 0
+  ) {
+    throw new Error("coverage policy targets must be a non-empty plain object");
   }
 
   const targets = Object.entries(policy.targets).map(([name, target]) => {
@@ -232,6 +241,7 @@ export const evaluateCoveragePolicy = (
         target,
         records: parseLcov(reports[target.lcov], { repositoryRoot }),
         sourceFiles,
+        repositoryRoot,
       });
     } catch (error) {
       return {

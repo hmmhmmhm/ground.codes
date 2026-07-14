@@ -69,7 +69,12 @@ describe("LCOV policy", () => {
       name: "example",
       target: target(),
       records: parsed,
-      sourceFiles: ["src/one.ts", "src/two.ts"],
+      sourceFiles: [
+        join(repositoryRoot, "src", "one.ts"),
+        join(repositoryRoot, "src", "two.ts"),
+        join(repositoryRoot, "..", "outside", "src", "outside.ts"),
+      ],
+      repositoryRoot,
     });
 
     assert.deepEqual(result.metrics, {
@@ -80,7 +85,6 @@ describe("LCOV policy", () => {
     assert.deepEqual(result.files, ["src/one.ts", "src/two.ts"]);
     assert.equal(result.ok, true);
   });
-
   test("deduplicates repeated source and metric records", () => {
     const block = lcovRecord({
       source: "src/repeated.ts",
@@ -111,7 +115,6 @@ describe("LCOV policy", () => {
       branch: { covered: 1, total: 1, ratio: 1 },
     });
   });
-
   test("reports every included maintained source missing from LCOV", () => {
     const result = collectTargetCoverage({
       name: "example",
@@ -125,7 +128,6 @@ describe("LCOV policy", () => {
     assert.equal(result.ok, false);
     assert.deepEqual(result.errors, ["missing LCOV source src/missing.ts"]);
   });
-
   test("excludes generated sources without hiding ordinary maintained sources", () => {
     const result = collectTargetCoverage({
       name: "example",
@@ -144,7 +146,6 @@ describe("LCOV policy", () => {
     assert.deepEqual(result.files, ["src/maintained.ts", "src/runtime.ts"]);
     assert.deepEqual(result.errors, ["missing LCOV source src/maintained.ts"]);
   });
-
   test("fails when an included glob matches no repository source", () => {
     const result = collectTargetCoverage({
       name: "example",
@@ -161,7 +162,6 @@ describe("LCOV policy", () => {
       "branch metric has no records",
     ]);
   });
-
   test("accepts metrics exactly at the declared thresholds including fixture branch 0.731", () => {
     const branches = Array.from({ length: 1_000 }, (_, index) => [
       1,
@@ -206,7 +206,6 @@ describe("LCOV policy", () => {
       { line: 0.8, function: 0.8, branch: 0.731 },
     );
   });
-
   test("reports each metric below its target threshold", () => {
     const result = collectTargetCoverage({
       name: "example",
@@ -239,7 +238,6 @@ describe("LCOV policy", () => {
       "branch 0.500000 is below 1.000000",
     ]);
   });
-
   test("evaluates four targets independently instead of averaging the repository", () => {
     const targets = Object.fromEntries(
       ["ground-codes", "api", "web", "operations"].map((name) => [
@@ -318,6 +316,15 @@ describe("LCOV policy", () => {
     assert.deepEqual(result.targets[1].errors, [
       "missing LCOV report coverage/web/lcov.info",
     ]);
+  });
+
+  test("rejects empty and non-object target collections", () => {
+    for (const targets of [{}, []]) {
+      assert.throws(
+        () => evaluateCoveragePolicy({ schemaVersion: 1, targets }),
+        /coverage policy targets must be a non-empty plain object/,
+      );
+    }
   });
 });
 
@@ -416,5 +423,26 @@ describe("coverage checker CLI", () => {
       "coverage FAIL missing policy scripts/coverage-policy.json\n",
     );
     assert.equal(execution.stderr, "");
+  });
+
+  test("fails clearly when the policy has no target definitions", () => {
+    for (const targets of [{}, []]) {
+      const root = mkdtempSync(join(tmpdir(), "coverage-policy-empty-"));
+      mkdirSync(join(root, "scripts"));
+      writeFileSync(
+        join(root, "scripts", "coverage-policy.json"),
+        JSON.stringify({ schemaVersion: 1, targets }),
+      );
+      const execution = spawnSync(process.execPath, [cliPath], {
+        cwd: root,
+        encoding: "utf8",
+      });
+      assert.equal(execution.status, 1);
+      assert.equal(
+        execution.stdout,
+        "coverage FAIL invalid policy: coverage policy targets must be a non-empty plain object\n",
+      );
+      assert.equal(execution.stderr, "");
+    }
   });
 });
