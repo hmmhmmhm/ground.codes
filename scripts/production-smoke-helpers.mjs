@@ -125,6 +125,9 @@ const isRecord = (value) =>
 const isNonNegativeNumber = (value) =>
   typeof value === "number" && Number.isFinite(value) && value >= 0;
 
+export const isValidRuntimeCommit = (value) =>
+  typeof value === "string" && /^[0-9a-f]{40}$/.test(value);
+
 const minimumStartedAtMs = Date.parse("2020-01-01T00:00:00.000Z");
 const maximumFutureOffsetMs = 3_000;
 
@@ -180,6 +183,15 @@ export const validateMetricsSnapshot = (
   } = {},
 ) => {
   const errors = [];
+  const expectedRuntimeCommitIsValid =
+    expectedRuntimeCommit === undefined ||
+    isValidRuntimeCommit(expectedRuntimeCommit);
+
+  if (!expectedRuntimeCommitIsValid) {
+    errors.push(
+      "expectedRuntimeCommit must be a 40-character lowercase hexadecimal commit SHA",
+    );
+  }
 
   if (metrics?.service !== "api-ground-codes") {
     errors.push('service must be "api-ground-codes"');
@@ -211,14 +223,12 @@ export const validateMetricsSnapshot = (
       `uptimeSeconds must be within ${uptimeToleranceSeconds} seconds of elapsed time since startedAt`,
     );
   }
-  if (
-    typeof metrics?.runtimeCommit !== "string" ||
-    !/^[0-9a-f]{40}$/.test(metrics.runtimeCommit)
-  ) {
+  if (!isValidRuntimeCommit(metrics?.runtimeCommit)) {
     errors.push(
       "runtimeCommit must be a 40-character lowercase hexadecimal commit SHA",
     );
   } else if (
+    expectedRuntimeCommitIsValid &&
     expectedRuntimeCommit !== undefined &&
     metrics.runtimeCommit !== expectedRuntimeCommit
   ) {

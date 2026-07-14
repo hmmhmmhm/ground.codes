@@ -36,6 +36,117 @@ describe("post-deploy metrics propagation", () => {
     );
   });
 
+  test("rejects a malformed expected commit before making a request", async () => {
+    const unsafeExpectedCommit = "not-a-sha?request_secret=private";
+    let fetchCalls = 0;
+    let sleeps = 0;
+
+    assert.deepEqual(
+      validateMetricsSnapshot(createValidMetricsSnapshot(), {
+        nowMs,
+        expectedRuntimeCommit: unsafeExpectedCommit,
+      }),
+      [
+        "expectedRuntimeCommit must be a 40-character lowercase hexadecimal commit SHA",
+      ],
+    );
+
+    await assert.rejects(
+      metricsCheck.run({
+        assert: assertSmoke,
+        fetchText: async () => {
+          fetchCalls += 1;
+          return JSON.stringify(createValidMetricsSnapshot());
+        },
+        apiBaseUrl: "https://api.example.test",
+        expectedRuntimeCommit: unsafeExpectedCommit,
+        metricsRetryOptions: {
+          maxAttempts: 3,
+          retryDelayMs: 1,
+          sleep: async () => {
+            sleeps += 1;
+          },
+        },
+        validateMetricsSnapshot: validateAtTestTime,
+      }),
+      (error) => {
+        assert.match(error.message, /expectedRuntimeCommit must be/);
+        assert.doesNotMatch(error.message, /request_secret|private/);
+        return true;
+      },
+    );
+
+    assert.equal(fetchCalls, 0);
+    assert.equal(sleeps, 0);
+  });
+
+  for (const [failureName, firstResponse] of [
+    ["network exhaustion", new TypeError("fetch failed")],
+    [
+      "HTTP failure",
+      new Error("https://api.example.test/metrics returned 503: private body"),
+    ],
+    ["malformed JSON", "{not-json"],
+  ]) {
+    test(`retries ${failureName} until valid metrics arrive`, async () => {
+      let attempts = 0;
+      const delays = [];
+
+      await metricsCheck.run({
+        assert: assertSmoke,
+        fetchText: async () => {
+          attempts += 1;
+          if (attempts === 1) {
+            if (firstResponse instanceof Error) throw firstResponse;
+            return firstResponse;
+          }
+          return JSON.stringify(
+            createValidMetricsSnapshot({
+              runtimeCommit: expectedRuntimeCommit,
+            }),
+          );
+        },
+        apiBaseUrl: "https://api.example.test",
+        expectedRuntimeCommit,
+        metricsRetryOptions: {
+          maxAttempts: 2,
+          retryDelayMs: 7,
+          sleep: async (delayMs) => delays.push(delayMs),
+        },
+        validateMetricsSnapshot: validateAtTestTime,
+      });
+
+      assert.equal(attempts, 2);
+      assert.deepEqual(delays, [7]);
+    });
+  }
+
+  test("does not expose response details after transient retries are exhausted", async () => {
+    const responseSecret = "private-response-body";
+
+    await assert.rejects(
+      metricsCheck.run({
+        assert: assertSmoke,
+        fetchText: async () => {
+          throw new Error(`metrics returned 503: ${responseSecret}`);
+        },
+        apiBaseUrl: "https://api.example.test",
+        expectedRuntimeCommit,
+        metricsRetryOptions: {
+          maxAttempts: 2,
+          retryDelayMs: 1,
+          sleep: async () => {},
+        },
+        validateMetricsSnapshot: validateAtTestTime,
+      }),
+      (error) => {
+        assert.match(error.message, /metrics endpoint request failed/);
+        assert.doesNotMatch(error.message, new RegExp(responseSecret));
+        return true;
+      },
+    );
+  });
+
   test("retries stale and invalid snapshots until the deployed commit is active", async () => {
     const snapshots = [
       createValidMetricsSnapshot(),

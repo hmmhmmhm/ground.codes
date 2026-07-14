@@ -1,4 +1,7 @@
-import { runRegisteredSmokeChecks } from "./production-smoke-helpers.mjs";
+import {
+  isValidRuntimeCommit,
+  runRegisteredSmokeChecks,
+} from "./production-smoke-helpers.mjs";
 
 const sleep = (delayMs) =>
   new Promise((resolve) => {
@@ -19,13 +22,30 @@ const waitForMetricsSnapshot = async ({
     maximumRetryDelayMs = 15_000,
     sleep: sleepImpl = sleep,
   } = metricsRetryOptions;
+  if (expectedRuntimeCommit !== undefined) {
+    assert(
+      isValidRuntimeCommit(expectedRuntimeCommit),
+      "expectedRuntimeCommit must be a 40-character lowercase hexadecimal commit SHA",
+    );
+  }
+
   const attempts = expectedRuntimeCommit === undefined ? 1 : maxAttempts;
-  let errors = [];
+  let failureMessage = "metrics snapshot validation failed";
 
   for (let attempt = 0; attempt < attempts; attempt += 1) {
-    const metrics = JSON.parse(await fetchText(`${apiBaseUrl}/metrics`));
-    errors = validateMetricsSnapshot(metrics, { expectedRuntimeCommit });
-    if (errors.length === 0) return;
+    try {
+      const metrics = JSON.parse(await fetchText(`${apiBaseUrl}/metrics`));
+      const errors = validateMetricsSnapshot(metrics, {
+        expectedRuntimeCommit,
+      });
+      if (errors.length === 0) return;
+      failureMessage = `invalid metrics snapshot: ${errors.join("; ")}`;
+    } catch (error) {
+      failureMessage =
+        error instanceof SyntaxError
+          ? "metrics endpoint returned malformed JSON"
+          : "metrics endpoint request failed";
+    }
 
     if (attempt + 1 < attempts) {
       await sleepImpl(
@@ -34,7 +54,8 @@ const waitForMetricsSnapshot = async ({
     }
   }
 
-  assert(false, `invalid metrics snapshot: ${errors.join("; ")}`);
+  const attemptSuffix = attempts > 1 ? ` after ${attempts} attempts` : "";
+  assert(false, `${failureMessage}${attemptSuffix}`);
 };
 
 const createSeoulLanguageCheck = ({
