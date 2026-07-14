@@ -142,6 +142,15 @@ describe("code size policy", () => {
       "scripts/region-data/manifest-filesystem.test.mjs",
       "scripts/region-data/generate-release.mjs",
       "scripts/region-data/generate-release.test.mjs",
+      "scripts/region-data/generate-release-adversarial.test.mjs",
+      "scripts/region-data/generate-release-anchored.mjs",
+      "scripts/region-data/generate-release-anchored.test.mjs",
+      "scripts/region-data/generate-release-artifacts.mjs",
+      "scripts/region-data/generate-release-fs-worker.mjs",
+      "scripts/region-data/generate-release-internal.mjs",
+      "scripts/region-data/generate-release-paths.mjs",
+      "scripts/region-data/generate-release-tree.mjs",
+      "scripts/region-data/generate-release-tree-worker.mjs",
       "scripts/generate-region-data-release.mjs",
     ];
 

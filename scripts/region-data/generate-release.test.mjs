@@ -244,9 +244,56 @@ describe("deterministic region-data release generation", () => {
     await mkdir(dirname(firstObject), { recursive: true });
     await writeFile(firstObject, "conflict");
 
-    await assert.rejects(generate(root, sourceRoot), /conflicting.*artifact/i);
+    await assert.rejects(
+      generate(root, sourceRoot),
+      /immutable release has an extra, missing, or invalid entry/i,
+    );
     await assert.rejects(readFile(paths.manifest), /ENOENT/);
     await assert.rejects(readFile(paths.pointer), /ENOENT/);
+  });
+
+  test("rejects a pointer overlapping the release manifest before any write", async () => {
+    const root = await temporaryDirectory();
+    const sourceRoot = await makeSource(root, {
+      "region-db/a.index": Buffer.from("db"),
+      "region-dist/a.json": Buffer.from("dist"),
+    });
+    const stagingRoot = join(root, "staging");
+    const manifest = await createManifest({ sourceRoot });
+    const manifestPointerPath = join(
+      stagingRoot,
+      "releases",
+      manifest.version,
+      "manifest.json",
+    );
+
+    for (const pointerPath of [stagingRoot, manifestPointerPath]) {
+      await assert.rejects(
+        generateRelease({ sourceRoot, stagingRoot, pointerPath }),
+        /release pointer must not overlap the staging root or a release artifact/i,
+      );
+      await assert.rejects(lstat(stagingRoot), /ENOENT/);
+    }
+  });
+
+  test("treats an existing partial release as immutable instead of repairing it", async () => {
+    const root = await temporaryDirectory();
+    const sourceRoot = await makeSource(root, {
+      "region-db/a.index": Buffer.from("db"),
+      "region-dist/a.json": Buffer.from("dist"),
+    });
+    const result = await generate(root, sourceRoot);
+    const paths = releasePaths(root, result.version);
+    const manifest = JSON.parse(await readFile(paths.manifest, "utf8"));
+    const missingObject = join(root, "staging", manifest.entries[0].objectKey);
+    await Promise.all([rm(missingObject), rm(paths.pointer)]);
+
+    await assert.rejects(
+      generate(root, sourceRoot),
+      /object set has an extra, missing, or non-regular entry/i,
+    );
+    await assert.rejects(lstat(missingObject), /ENOENT/);
+    await assert.rejects(lstat(paths.pointer), /ENOENT/);
   });
 
   test("rejects symlink staging roots and non-regular immutable artifacts", async () => {
@@ -264,8 +311,14 @@ describe("deterministic region-data release generation", () => {
     const manifest = await createManifest({ sourceRoot });
     const objectPath = join(root, "staging", manifest.entries[0].objectKey);
     await mkdir(objectPath, { recursive: true });
-    await assert.rejects(generate(root, sourceRoot), /regular file/i);
+    await assert.rejects(
+      generate(root, sourceRoot),
+      /immutable release has an extra, missing, or invalid entry/i,
+    );
     assert.equal((await lstat(objectPath)).isDirectory(), true);
+    const paths = releasePaths(root, manifest.version);
+    await assert.rejects(readFile(paths.manifest), /ENOENT/);
+    await assert.rejects(readFile(paths.pointer), /ENOENT/);
   });
 
   test("does not follow a nested staging symlink outside the staging root", async () => {
@@ -279,7 +332,10 @@ describe("deterministic region-data release generation", () => {
     await Promise.all([mkdir(stagingRoot), mkdir(outside)]);
     await symlink(outside, join(stagingRoot, "releases"));
 
-    await assert.rejects(generate(root, sourceRoot), /releases.*symlink/i);
+    await assert.rejects(
+      generate(root, sourceRoot),
+      /releases is not a verified directory/i,
+    );
     assert.deepEqual(await readdir(outside), []);
   });
 
