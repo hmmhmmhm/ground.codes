@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
+import { locales } from "@/i18n";
 import { getGroundCodeLanguage } from "./ground-code-language";
 
 describe("ground code language mapping", () => {
@@ -109,5 +110,18 @@ describe("ground code language mapping", () => {
     expect(getGroundCodeLanguage("yo")).toBe("yoruba");
     expect(getGroundCodeLanguage("fa")).toBe("persian");
     expect(getGroundCodeLanguage("yue")).toBe("cantonese");
+  });
+
+  test("resolves every supported UI locale without falling through", () => {
+    for (const locale of locales) {
+      const language = getGroundCodeLanguage(locale);
+      expect(language).toBeString();
+      expect(language.length).toBeGreaterThan(0);
+      if (locale === "en") {
+        expect(language).toBe("english");
+      } else {
+        expect(language).not.toBe("english");
+      }
+    }
   });
 });
