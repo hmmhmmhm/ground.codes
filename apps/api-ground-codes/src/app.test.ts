@@ -49,6 +49,7 @@ describe("Ground Codes API contract", () => {
       /logs must never include coordinates, search strings, ground codes, IP\s+addresses, headers, or credentials/i,
       /Pages deployment ID and commit[\s\S]*Web response[\s\S]*full production smoke/i,
       /Worker rollback does\s+not roll back PostGIS, R2, or other external state[\s\S]*older\s+code is compatible with the current schema and data[\s\S]*forward fix\s+or documented data recovery/i,
+      /startsWith\(status, "5"\)[\s\S]*startsWith\(status, "4"\)[\s\S]*startsWith\(status, "3"\)[\s\S]*startsWith\(status, "2"\)[\s\S]*status = "5xx"[^.]*invalid/i,
     ].forEach((pattern) => expect(operationsDocuments).toMatch(pattern));
   });
 

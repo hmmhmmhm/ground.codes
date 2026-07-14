@@ -30,8 +30,14 @@ filter controls if its query view does not accept the displayed syntax.
 
 Narrow or group the result without inspecting request content:
 
-- **Status family:** filter `status` by `5xx`, then `4xx`, `3xx`, and `2xx`
-  families (the field is a status-code string). Compare counts and rates.
+- **Status family:** `status` is an exact three-digit string. Run one of these
+  executable prefix expressions, then compare counts and rates:
+  - `startsWith(status, "5")`
+  - `startsWith(status, "4")`
+  - `startsWith(status, "3")`
+  - `startsWith(status, "2")`
+  - `status = "5xx"` is invalid because no completion log has the literal
+    status value `5xx`.
 - **Route duration:** filter or group by the route template, for example
   `route = "/v1/encode"` or `route = "/v1/search"`, and sort `durationMs`
   descending. Use `durationMs >= 2000` to inspect objective misses.
