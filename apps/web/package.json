@@ -17,7 +17,7 @@
     "test:e2e:full": "playwright test",
     "test:e2e:prod": "playwright test --config=playwright.production.config.ts",
     "qa:visual": "playwright test e2e/visual-qa.spec.ts --config=playwright.production.config.ts",
-    "pages:build": "npx @cloudflare/next-on-pages && node scripts/patch-pages-routes.mjs",
+    "pages:build": "pnpm exec next-on-pages && node scripts/patch-pages-routes.mjs",
     "preview": "pnpm run pages:build && pnpm exec wrangler pages dev",
     "deploy": "pnpm run pages:build && pnpm exec wrangler pages deploy"
   },
@@ -46,6 +46,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.18",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vercel": "47.0.4"
   }
 }
