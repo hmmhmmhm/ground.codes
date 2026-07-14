@@ -11,20 +11,6 @@ export interface Env {
   CORS_ORIGINS?: string;
 }
 
-const app = createApp();
-let installedConnectionString: string | null = null;
-
-const installRegionStoreFromEnv = (env: Env) => {
-  const connectionString =
-    env.HYPERDRIVE?.connectionString ?? env.SUPABASE_DB_URL;
-  if (!connectionString || connectionString === installedConnectionString) {
-    return;
-  }
-
-  installPostgisRegionStore(connectionString);
-  installedConnectionString = connectionString;
-};
-
 const installRuntimeMetadataFromEnv = (env: Env) => {
   if (env.API_RUNTIME_TAG) {
     process.env.API_RUNTIME_TAG = env.API_RUNTIME_TAG;
@@ -34,10 +20,39 @@ const installRuntimeMetadataFromEnv = (env: Env) => {
   }
 };
 
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    installRuntimeMetadataFromEnv(env);
-    installRegionStoreFromEnv(env);
-    return await app.handle(request);
-  },
+interface WorkerApplication {
+  handle(request: Request): Response | Promise<Response>;
+}
+
+interface WorkerDependencies {
+  createApplication?: () => WorkerApplication;
+  installRegionStore?: (connectionString: string) => void;
+  installRuntimeMetadata?: (env: Env) => void;
+}
+
+export const createWorker = ({
+  createApplication = createApp,
+  installRegionStore = installPostgisRegionStore,
+  installRuntimeMetadata = installRuntimeMetadataFromEnv,
+}: WorkerDependencies = {}) => {
+  let app: WorkerApplication | undefined;
+  let installedConnectionString: string | null = null;
+
+  return {
+    async fetch(request: Request, env: Env): Promise<Response> {
+      installRuntimeMetadata(env);
+
+      const connectionString =
+        env.HYPERDRIVE?.connectionString ?? env.SUPABASE_DB_URL;
+      if (connectionString && connectionString !== installedConnectionString) {
+        installRegionStore(connectionString);
+        installedConnectionString = connectionString;
+      }
+
+      app ??= createApplication();
+      return await app.handle(request);
+    },
+  };
 };
+
+export default createWorker();

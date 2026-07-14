@@ -46,36 +46,37 @@ const scalarReferenceConfig = {
   favicon: "/favicon.ico",
 };
 
-export const swaggerEndpoint = swagger({
-  path: "/openapi-json",
-  exclude: publicDocPathsToHide,
-  scalarConfig: scalarReferenceConfig,
-  documentation: {
-    info: {
-      title: "Ground Codes API Documentation",
-      description:
-        'Production API documentation for Ground Codes. Use the versioned `/v1/*` endpoints for new integrations. Quick start: POST `/v1/encode` with `{ "lat": 37.566, "lng": 126.978, "language": "english", "regionLevel": 2 }`, then POST `/v1/search` with the returned code or share it as `https://ground.codes/{encoded-code}`. Earth share URLs are code-only; Moon and Mars use `/moon/{encoded-code}` and `/mars/{encoded-code}`.',
-      version: "1.0.0",
+export const createSwaggerEndpoint = () =>
+  swagger({
+    path: "/openapi-json",
+    exclude: publicDocPathsToHide,
+    scalarConfig: scalarReferenceConfig,
+    documentation: {
+      info: {
+        title: "Ground Codes API Documentation",
+        description:
+          'Production API documentation for Ground Codes. Use the versioned `/v1/*` endpoints for new integrations. Quick start: POST `/v1/encode` with `{ "lat": 37.566, "lng": 126.978, "language": "english", "regionLevel": 2 }`, then POST `/v1/search` with the returned code or share it as `https://ground.codes/{encoded-code}`. Earth share URLs are code-only; Moon and Mars use `/moon/{encoded-code}` and `/mars/{encoded-code}`.',
+        version: "1.0.0",
+      },
+      tags: [
+        {
+          name: "Code",
+          description: "Encode & Decode endpoint",
+        },
+        {
+          name: "Health",
+          description: "Endpoint to check the health of the server.",
+        },
+      ],
+      // 서버 설정 추가
+      servers: [
+        {
+          url: "/",
+          description: "Current server",
+        },
+      ],
     },
-    tags: [
-      {
-        name: "Code",
-        description: "Encode & Decode endpoint",
-      },
-      {
-        name: "Health",
-        description: "Endpoint to check the health of the server.",
-      },
-    ],
-    // 서버 설정 추가
-    servers: [
-      {
-        url: "/",
-        description: "Current server",
-      },
-    ],
-  },
-});
+  });
 
 const openApiReferenceHtml = `<!doctype html>
 <html>
