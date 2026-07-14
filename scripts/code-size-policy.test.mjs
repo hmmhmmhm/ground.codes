@@ -162,7 +162,13 @@ describe("code size policy", () => {
       "scripts/region-data/generate-release-transaction.test.mjs",
       "scripts/region-data/generate-release-tree.mjs",
       "scripts/region-data/generate-release-tree-worker.mjs",
+      "scripts/region-data/sync-http.mjs",
+      "scripts/region-data/sync-filesystem.mjs",
+      "scripts/region-data/sync.mjs",
+      "scripts/region-data/sync-security.test.mjs",
+      "scripts/region-data/sync.test.mjs",
       "scripts/generate-region-data-release.mjs",
+      "scripts/sync-region-data.mjs",
       "scripts/region-data/test-cleanup.mjs",
     ];
 
