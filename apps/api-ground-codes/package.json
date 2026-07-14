@@ -11,7 +11,7 @@
     "data:apply-postgis-schema": "node scripts/apply-postgis-schema.mjs",
     "data:import-postgis": "node scripts/import-postgis-regions.mjs",
     "test": "bun test src/*.test.ts",
-    "test:coverage": "cd ../.. && bun test --coverage --coverage-reporter=lcov --coverage-reporter=text --coverage-dir=coverage/api apps/api-ground-codes/src/*.test.ts && pnpm exec c8 --all --exclude-after-remap --include 'apps/api-ground-codes/src/**/*.ts' --exclude 'apps/api-ground-codes/src/**/*.test.ts' --exclude 'apps/api-ground-codes/src/**/*.d.ts' --exclude '**/<define:import.meta>' --reporter=lcov --reporter=text --reports-dir coverage/api-branches packages/ground-codes/node_modules/.bin/tsx --test scripts/coverage-branch-probes/api.test.ts && node scripts/merge-branch-coverage.mjs api"
+    "test:coverage": "cd ../.. && bun test --coverage --coverage-reporter=lcov --coverage-reporter=text --coverage-dir=coverage/api apps/api-ground-codes/src/*.test.ts && pnpm exec c8 --all --exclude-after-remap --include 'apps/api-ground-codes/src/**/*.ts' --exclude 'apps/api-ground-codes/src/**/*.test.ts' --exclude 'apps/api-ground-codes/src/**/*.d.ts' --exclude '**/<define:import.meta>' --reporter=lcov --reporter=text --reports-dir coverage/api-branches pnpm --filter ground-codes exec tsx --test ../../scripts/coverage-branch-probes/api.test.ts && node scripts/merge-branch-coverage.mjs api"
   },
   "dependencies": {
     "@elysiajs/cors": "1.4.2",

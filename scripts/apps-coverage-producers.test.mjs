@@ -22,7 +22,7 @@ test("API and Web coverage producers augment Bun LCOV with c8 branches", () => {
     [
       "cd ../..",
       "bun test --coverage --coverage-reporter=lcov --coverage-reporter=text --coverage-dir=coverage/api apps/api-ground-codes/src/*.test.ts",
-      "pnpm exec c8 --all --exclude-after-remap --include 'apps/api-ground-codes/src/**/*.ts' --exclude 'apps/api-ground-codes/src/**/*.test.ts' --exclude 'apps/api-ground-codes/src/**/*.d.ts' --exclude '**/<define:import.meta>' --reporter=lcov --reporter=text --reports-dir coverage/api-branches packages/ground-codes/node_modules/.bin/tsx --test scripts/coverage-branch-probes/api.test.ts",
+      "pnpm exec c8 --all --exclude-after-remap --include 'apps/api-ground-codes/src/**/*.ts' --exclude 'apps/api-ground-codes/src/**/*.test.ts' --exclude 'apps/api-ground-codes/src/**/*.d.ts' --exclude '**/<define:import.meta>' --reporter=lcov --reporter=text --reports-dir coverage/api-branches pnpm --filter ground-codes exec tsx --test ../../scripts/coverage-branch-probes/api.test.ts",
       "node scripts/merge-branch-coverage.mjs api",
     ].join(" && "),
   );
@@ -31,7 +31,7 @@ test("API and Web coverage producers augment Bun LCOV with c8 branches", () => {
     [
       "cd ../..",
       "bun test --coverage --coverage-reporter=lcov --coverage-reporter=text --coverage-dir=coverage/web ./apps/web/lib ./apps/web/app ./apps/web/components ./apps/web/hooks",
-      "pnpm exec c8 --all --exclude-after-remap --include apps/web/lib/code/ground-codes.ts --include apps/web/lib/code/share-url.ts --include apps/web/lib/i18n/ground-code-language.ts --include apps/web/lib/map/celestial-bodies.ts --include apps/web/lib/map/google-maps-availability.ts --include apps/web/hooks/use-disable-zoom.ts --exclude '**/<define:import.meta>' --reporter=lcov --reporter=text --reports-dir coverage/web-branches packages/ground-codes/node_modules/.bin/tsx --test scripts/coverage-branch-probes/web.test.ts",
+      "pnpm exec c8 --all --exclude-after-remap --include apps/web/lib/code/ground-codes.ts --include apps/web/lib/code/share-url.ts --include apps/web/lib/i18n/ground-code-language.ts --include apps/web/lib/map/celestial-bodies.ts --include apps/web/lib/map/google-maps-availability.ts --include apps/web/hooks/use-disable-zoom.ts --exclude '**/<define:import.meta>' --reporter=lcov --reporter=text --reports-dir coverage/web-branches pnpm --filter ground-codes exec tsx --test ../../scripts/coverage-branch-probes/web.test.ts",
       "node scripts/merge-branch-coverage.mjs web",
     ].join(" && "),
   );

@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { describe, test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import {
   COVERAGE_BRANCH_TARGETS,
@@ -21,9 +23,27 @@ const branchBlock = (source, hits = [1, 0]) =>
     `BRH:${hits.filter(Boolean).length}`,
   ]);
 
+const repositoryRoot = fileURLToPath(new URL("..", import.meta.url));
+
 describe("branch coverage merger", () => {
   test("defines every maintained API source and the exact Web target", () => {
-    assert.equal(COVERAGE_BRANCH_TARGETS.api.sources.length, 22);
+    const maintainedApiSources = execFileSync(
+      "git",
+      [
+        "ls-files",
+        "apps/api-ground-codes/src/**/*.ts",
+        "apps/api-ground-codes/src/*.ts",
+      ],
+      { cwd: repositoryRoot, encoding: "utf8" },
+    )
+      .split(/\r?\n/)
+      .filter(
+        (source) =>
+          source && !source.endsWith(".test.ts") && !source.endsWith(".d.ts"),
+      )
+      .sort();
+    assert.deepEqual(COVERAGE_BRANCH_TARGETS.api.sources, maintainedApiSources);
+    assert.equal(maintainedApiSources.length, 22);
     assert.deepEqual(COVERAGE_BRANCH_TARGETS.web.sources, [
       "apps/web/lib/code/ground-codes.ts",
       "apps/web/lib/code/share-url.ts",

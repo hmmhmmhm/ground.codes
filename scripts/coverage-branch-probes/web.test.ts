@@ -28,11 +28,20 @@ import {
 
 const originalFetch = globalThis.fetch;
 const originalWarn = console.warn;
+const originalGoogleDescriptor = Object.getOwnPropertyDescriptor(
+  globalThis,
+  "google",
+);
 
 afterEach(() => {
   globalThis.fetch = originalFetch;
   console.warn = originalWarn;
   delete process.env.NEXT_PUBLIC_GROUND_CODES_API_URL;
+  if (originalGoogleDescriptor) {
+    Object.defineProperty(globalThis, "google", originalGoogleDescriptor);
+  } else {
+    Reflect.deleteProperty(globalThis, "google");
+  }
 });
 
 test("Web Ground Codes client covers success, fallback, search, and API errors", async () => {
@@ -115,17 +124,21 @@ test("planetary helpers select layers, views, and construct map types", () => {
       this.options = options;
     }
   }
-  globalThis.google = {
-    maps: {
-      ImageMapType,
-      Size: class Size {
-        constructor(
-          public width: number,
-          public height: number,
-        ) {}
+  Object.defineProperty(globalThis, "google", {
+    configurable: true,
+    writable: true,
+    value: {
+      maps: {
+        ImageMapType,
+        Size: class Size {
+          constructor(
+            public width: number,
+            public height: number,
+          ) {}
+        },
       },
     },
-  } as typeof google;
+  });
   const mapType = createPlanetaryMapType("moon", "LOLA_bw");
   assert.ok(mapType);
   assert.equal(canConstructGoogleMapsClass(ImageMapType), true);
