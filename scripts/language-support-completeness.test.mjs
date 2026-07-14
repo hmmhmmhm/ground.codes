@@ -22,6 +22,10 @@ import {
   slug,
   title,
 } from "./language-support-completeness-helpers.mjs";
+import {
+  smokeLanguageCoverage,
+  smokeProfileCheckMetadata,
+} from "./production-smoke-profiles.mjs";
 
 describe("language support completeness", () => {
   const languages = parseSupportedLanguages();
@@ -136,25 +140,28 @@ describe("language support completeness", () => {
     }
   });
 
-  test("covers every API language in production smoke", () => {
-    const smokeSource = [
-      "scripts/production-smoke-core.mjs",
-      "scripts/production-smoke-expanded.mjs",
-      "scripts/production-smoke-additional.mjs",
-      "scripts/production-smoke-additional-latin.mjs",
-      "scripts/production-smoke-operations.mjs",
-    ]
-      .map(readText)
-      .join("\n");
-    const smokeLanguages = new Set(
-      [...smokeSource.matchAll(/language:\s*"([^"]+)"/g)].map(
-        (item) => item[1],
-      ),
+  test("covers every API language exactly once in the full smoke profile", () => {
+    const executedCoverage = smokeProfileCheckMetadata.full.flatMap((check) =>
+      check.coverageLanguage ? [check.coverageLanguage] : [],
     );
 
+    assert.equal(languages.length, 180);
+    assert.deepEqual(smokeLanguageCoverage.full, executedCoverage);
+    assert.equal(smokeLanguageCoverage.full.length, languages.length);
+    assert.equal(
+      new Set(smokeLanguageCoverage.full).size,
+      smokeLanguageCoverage.full.length,
+    );
     assert.deepEqual(
-      languages.filter((language) => !smokeLanguages.has(language)),
-      [],
+      [...smokeLanguageCoverage.full].sort(),
+      [...languages].sort(),
+    );
+  });
+
+  test("keeps quick language coverage representative and non-Latin", () => {
+    assert.deepEqual(smokeLanguageCoverage.quick, ["english", "korean"]);
+    assert.ok(
+      smokeLanguageCoverage.quick.some((language) => language === "korean"),
     );
   });
 

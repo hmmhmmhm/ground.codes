@@ -5,9 +5,21 @@ import {
   createSmokeRecorder,
   fetchWithRetry,
   formatGitHubStepSummary,
+  runRegisteredSmokeChecks,
   validateMetricsSnapshot,
 } from "./production-smoke-helpers.mjs";
-import { runOperationsSmokeChecks } from "./production-smoke-operations.mjs";
+import { runAdditionalLatinSmokeChecks } from "./production-smoke-additional-latin.mjs";
+import { runAdditionalSmokeChecks } from "./production-smoke-additional.mjs";
+import { runCoreLanguageSmokeChecks } from "./production-smoke-core.mjs";
+import { runExpandedSmokeChecks } from "./production-smoke-expanded.mjs";
+import { runFullOperationsSmokeChecks } from "./production-smoke-operations.mjs";
+import {
+  resolveSmokeProfile,
+  runSmokeProfile,
+  smokeProfileCheckMetadata,
+  smokeProfiles,
+} from "./production-smoke-profiles.mjs";
+import { runQuickSmokeChecks } from "./production-smoke-quick.mjs";
 
 const nowMs = Date.parse("2026-07-13T00:00:10.000Z");
 const runtimeCommit = "0123456789abcdef0123456789abcdef01234567";
@@ -23,14 +35,58 @@ const createValidMetricsSnapshot = (overrides = {}) => ({
 });
 
 describe("production smoke monitoring helpers", () => {
+  test("resolves the default and explicit smoke profiles", () => {
+    assert.equal(resolveSmokeProfile(), "full");
+    assert.equal(resolveSmokeProfile("quick"), "quick");
+    assert.equal(resolveSmokeProfile("full"), "full");
+    assert.throws(
+      () => resolveSmokeProfile("weekly"),
+      /Unknown production smoke profile: weekly/,
+    );
+  });
+
+  test("selects the exact runner sequence for each smoke profile", () => {
+    assert.deepEqual(smokeProfiles.quick, [runQuickSmokeChecks]);
+    assert.deepEqual(smokeProfiles.full, [
+      runQuickSmokeChecks,
+      runCoreLanguageSmokeChecks,
+      runExpandedSmokeChecks,
+      runAdditionalSmokeChecks,
+      runAdditionalLatinSmokeChecks,
+      runFullOperationsSmokeChecks,
+    ]);
+  });
+
+  test("keeps stable machine check IDs unique and separate from labels", () => {
+    const fullChecks = smokeProfileCheckMetadata.full;
+    const fullIds = fullChecks.map(({ id }) => id);
+    const quickIds = smokeProfileCheckMetadata.quick.map(({ id }) => id);
+
+    assert.equal(new Set(fullIds).size, fullIds.length);
+    assert.ok(fullIds.every((id) => /^[a-z0-9]+(?:[.-][a-z0-9]+)*$/.test(id)));
+    assert.ok(fullChecks.every(({ id, label }) => id !== label));
+    assert.deepEqual(fullIds.slice(0, quickIds.length), quickIds);
+    assert.deepEqual(quickIds, [
+      "api.readiness",
+      "web.root",
+      "web.robots",
+      "web.sitemap",
+      "api.metrics",
+      "earth.english.encode",
+      "earth.english.search",
+      "earth.english.decode",
+      "earth.korean.encode",
+      "moon.english.encode",
+      "mars.english.encode",
+    ]);
+  });
+
   test("records pass/fail status and elapsed time for each check", async () => {
     const recorder = createSmokeRecorder({ logger: {} });
-
     await recorder.check("fast check", async () => {});
     await recorder.check("failing check", async () => {
       throw new Error("network unavailable");
     });
-
     assert.equal(recorder.failures.length, 1);
     assert.match(recorder.failures[0], /^failing check: network unavailable/);
     assert.deepEqual(
@@ -41,6 +97,34 @@ describe("production smoke monitoring helpers", () => {
       ],
     );
     assert.ok(recorder.results.every((result) => result.durationMs >= 0));
+  });
+
+  test("keeps reordered check IDs, labels, and behavior semantically bound", async () => {
+    const recorder = createSmokeRecorder({ logger: {} });
+    const executed = [];
+    const checks = ["b", "a"].map((key) => ({
+      id: `check.${key}`,
+      label: `Check ${key.toUpperCase()}`,
+      run: async () => executed.push(key),
+    }));
+
+    await runRegisteredSmokeChecks({ smoke: recorder }, checks);
+
+    assert.deepEqual(executed, ["b", "a"]);
+    assert.deepEqual(
+      recorder.results.map(({ id, name }) => ({ id, name })),
+      checks.map(({ id, label: name }) => ({ id, name })),
+    );
+    await assert.rejects(
+      runRegisteredSmokeChecks({ smoke: recorder }, [checks[0], checks[0]]),
+      /Duplicate smoke check ID/,
+    );
+    await assert.rejects(
+      runRegisteredSmokeChecks({ smoke: recorder }, [
+        { id: "missing.run", label: "Missing" },
+      ]),
+      /must define an id, label, and run/,
+    );
   });
 
   test("accepts valid runtime metadata with empty route maps", () => {
@@ -219,7 +303,7 @@ describe("production smoke monitoring helpers", () => {
     );
   });
 
-  test("runs the split operations smoke checks with injected HTTP helpers", async () => {
+  test("runs the full-only operations checks with registered machine IDs", async () => {
     const recorder = createSmokeRecorder({ logger: {} });
     const requestedUrls = [];
     const assertSmoke = (condition, message) => {
@@ -243,16 +327,13 @@ describe("production smoke monitoring helpers", () => {
       });
     };
 
-    await runOperationsSmokeChecks({
+    await runFullOperationsSmokeChecks({
       smoke: recorder,
       assert: assertSmoke,
       fetchWithRetry: fetchWithRetryStub,
       fetchText: async (url) => {
-        if (url.endsWith("/metrics")) {
-          return JSON.stringify(createValidMetricsSnapshot());
-        }
-        if (url.endsWith("/robots.txt")) return "Sitemap: /sitemap.xml";
-        return "<loc>https://ground.codes</loc>";
+        assert.equal(url, "https://api.example.test/");
+        return "Ground Codes API /v1/encode";
       },
       postJson: async (_path, body) => {
         if (body.body === "moon") return "Mare Tranquillitatis-Alder";
@@ -276,11 +357,67 @@ describe("production smoke monitoring helpers", () => {
     });
 
     assert.deepEqual(recorder.failures, []);
+    assert.deepEqual(
+      recorder.results.map(({ id }) => id),
+      smokeProfileCheckMetadata.full.slice(-6).map(({ id }) => id),
+    );
     assert.deepEqual(requestedUrls, [
       "https://api.example.test/v1/decode",
       "https://api.example.test/v1/region/info",
       "https://api.example.test/v1/encode",
     ]);
+  });
+
+  test("executes every full-profile registry entry exactly once", async () => {
+    const recorder = createSmokeRecorder({ logger: {} });
+    const runtime = {
+      smoke: recorder,
+      assert: () => {},
+      fetchWithRetry: async () =>
+        new Response(JSON.stringify({ error: { code: "NOT_FOUND" } }), {
+          status: 404,
+        }),
+      fetchText: async (url) => {
+        if (url.endsWith("/readyz")) {
+          return JSON.stringify({
+            status: "ready",
+            service: "api-ground-codes",
+            runtimeTag: "workspace",
+            runtimeCommit,
+          });
+        }
+        if (url.endsWith("/metrics")) {
+          return JSON.stringify(createValidMetricsSnapshot());
+        }
+        return "Ground Codes API /v1/encode Sitemap: <loc>https://ground.codes</loc>";
+      },
+      postJson: async (_path, body) => {
+        if (body.language === "korean") return "서울-code";
+        if (body.body === "moon") return "Mare Tranquillitatis-code";
+        if (body.body === "mars") return "Olympus Mons-code";
+        if (body.lat === -82) return "Mollereisstrom-Alder";
+        return "Seoul-code";
+      },
+      postJsonBody: async () => ({
+        lat: 37.566,
+        lng: 126.978,
+        results: [{ label: "West Springfield" }],
+      }),
+      apiBaseUrl: "https://api.example.test",
+      webBaseUrl: "https://ground.codes",
+      validateMetricsSnapshot: () => [],
+    };
+
+    await runSmokeProfile("full", runtime);
+
+    assert.deepEqual(recorder.failures, []);
+    assert.deepEqual(
+      recorder.results.map(({ id, name }) => ({ id, name })),
+      smokeProfileCheckMetadata.full.map(({ id, label: name }) => ({
+        id,
+        name,
+      })),
+    );
   });
 
   test("retries transient fetch failures before returning a response", async () => {

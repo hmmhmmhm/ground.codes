@@ -5,25 +5,94 @@ export const createSmokeRecorder = ({ logger = console } = {}) => {
   return {
     failures,
     results,
-    async check(name, run) {
+    async check(definition, run) {
+      const id = typeof definition === "string" ? undefined : definition.id;
+      const name =
+        typeof definition === "string" ? definition : definition.label;
       const startedAt = performance.now();
       try {
         await run();
         const durationMs =
           Math.round((performance.now() - startedAt) * 100) / 100;
-        results.push({ name, ok: true, durationMs });
+        results.push({ id, name, ok: true, durationMs });
         logger.log?.(`ok ${name} ${durationMs}ms`);
       } catch (error) {
         const durationMs =
           Math.round((performance.now() - startedAt) * 100) / 100;
         const message = error instanceof Error ? error.message : String(error);
         failures.push(`${name}: ${message}`);
-        results.push({ name, ok: false, durationMs });
+        results.push({ id, name, ok: false, durationMs });
         logger.error?.(`not ok ${name} ${durationMs}ms`);
         logger.error?.(error);
       }
     },
   };
+};
+
+export const assertSmokeCheckDefinitions = (definitions) => {
+  const ids = new Set();
+  const coverageLanguages = new Set();
+
+  for (const definition of definitions) {
+    if (
+      typeof definition.id !== "string" ||
+      typeof definition.label !== "string" ||
+      typeof definition.run !== "function"
+    ) {
+      throw new Error("Every smoke check must define an id, label, and run");
+    }
+    if (ids.has(definition.id)) {
+      throw new Error(`Duplicate smoke check ID: ${definition.id}`);
+    }
+    ids.add(definition.id);
+
+    if (definition.coverageLanguage) {
+      if (coverageLanguages.has(definition.coverageLanguage)) {
+        throw new Error(
+          `Duplicate smoke coverage language: ${definition.coverageLanguage}`,
+        );
+      }
+      coverageLanguages.add(definition.coverageLanguage);
+    }
+  }
+};
+
+export const runRegisteredSmokeChecks = async (context, definitions) => {
+  assertSmokeCheckDefinitions(definitions);
+  const state = {};
+  for (const definition of definitions) {
+    await context.smoke.check(definition, () => definition.run(context, state));
+  }
+};
+
+export const createLanguageSmokeCheck = ({
+  language,
+  label,
+  lat,
+  lng,
+  prefix,
+}) => {
+  const definition = {
+    id: `earth.${language.replaceAll("_", "-")}.encode`,
+    label,
+    coverageLanguage: language,
+  };
+
+  definition.run = async ({ assert, postJson }) => {
+    const code = await postJson("/v1/encode", {
+      lat,
+      lng,
+      language: definition.coverageLanguage,
+      regionLevel: 2,
+      body: "earth",
+    });
+    assert(
+      code.startsWith(`${prefix}-`),
+      `expected ${definition.label} code, got ${code}`,
+    );
+  };
+
+  return definition;
 };
 
 const sleep = (delayMs) =>

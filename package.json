@@ -12,6 +12,8 @@
     "security:audit:raw": "pnpm audit --prod --audit-level high",
     "check-types": "turbo run check-types",
     "production:smoke": "node scripts/production-smoke.mjs",
+    "production:smoke:quick": "GROUND_CODES_SMOKE_PROFILE=quick node scripts/production-smoke.mjs",
+    "production:smoke:full": "GROUND_CODES_SMOKE_PROFILE=full node scripts/production-smoke.mjs",
     "data:audit-labels": "pnpm --filter ground-codes test:data-audit && node --test scripts/region-label-quality.test.mjs",
     "data:report-labels": "node scripts/url-label-report.mjs",
     "runtime:check-pins": "node scripts/check-api-runtime-pins.mjs",

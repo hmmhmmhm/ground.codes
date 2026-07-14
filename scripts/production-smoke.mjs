@@ -7,11 +7,14 @@ import {
   formatSmokeSummary,
   validateMetricsSnapshot,
 } from "./production-smoke-helpers.mjs";
-import { runAdditionalLatinSmokeChecks } from "./production-smoke-additional-latin.mjs";
-import { runAdditionalSmokeChecks } from "./production-smoke-additional.mjs";
-import { runCoreSmokeChecks } from "./production-smoke-core.mjs";
-import { runExpandedSmokeChecks } from "./production-smoke-expanded.mjs";
-import { runOperationsSmokeChecks } from "./production-smoke-operations.mjs";
+import {
+  resolveSmokeProfile,
+  runSmokeProfile,
+} from "./production-smoke-profiles.mjs";
+
+const smokeProfile = resolveSmokeProfile(
+  process.env.GROUND_CODES_SMOKE_PROFILE,
+);
 
 const apiBaseUrl = (
   process.env.GROUND_CODES_API_URL ?? "https://api.ground.codes"
@@ -62,16 +65,16 @@ const smokeContext = {
   validateMetricsSnapshot,
 };
 
-await runCoreSmokeChecks(smokeContext);
-await runExpandedSmokeChecks(smokeContext);
-await runAdditionalSmokeChecks(smokeContext);
-await runAdditionalLatinSmokeChecks(smokeContext);
-await runOperationsSmokeChecks(smokeContext);
+console.log(`Production smoke profile: ${smokeProfile}`);
+await runSmokeProfile(smokeProfile, smokeContext);
 
 if (process.env.GROUND_CODES_SMOKE_FORCE_FAILURE === "true") {
-  await smoke.check("Forced notification test", async () => {
-    throw new Error("Forced failure requested by workflow_dispatch input");
-  });
+  await smoke.check(
+    { id: "smoke.forced-failure", label: "Forced notification test" },
+    async () => {
+      throw new Error("Forced failure requested by workflow_dispatch input");
+    },
+  );
 }
 
 console.log("Production smoke timings:");
@@ -80,7 +83,11 @@ console.log(formatSmokeSummary(smoke.results));
 if (process.env.GITHUB_STEP_SUMMARY) {
   appendFileSync(
     process.env.GITHUB_STEP_SUMMARY,
-    formatGitHubStepSummary(smoke.results),
+    [
+      `Profile: **${smokeProfile}**`,
+      "",
+      formatGitHubStepSummary(smoke.results),
+    ].join("\n"),
   );
 }
 
