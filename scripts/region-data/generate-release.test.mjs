@@ -166,9 +166,12 @@ describe("deterministic region-data release generation", () => {
 
   test("changes only the edited content hash while release-prefixed keys follow the new version", async () => {
     const root = await temporaryDirectory();
+    const originalBytes = Buffer.from("before");
+    const changedBytes = Buffer.from(originalBytes);
+    changedBytes[2] ^= 0x01;
     const sourceRoot = await makeSource(root, {
       "region-db/a.index": Buffer.from("stable-db"),
-      "region-dist/a.json": Buffer.from("before"),
+      "region-dist/a.json": originalBytes,
     });
 
     const beforeResult = await generate(root, sourceRoot);
@@ -176,7 +179,17 @@ describe("deterministic region-data release generation", () => {
       root,
       version: beforeResult.version,
     });
-    await writeFile(join(sourceRoot, "region-dist", "a.json"), "after");
+    const byteDifferenceCount = Array.from(
+      { length: Math.max(originalBytes.length, changedBytes.length) },
+      (_, index) => originalBytes[index] !== changedBytes[index],
+    ).filter(Boolean).length;
+    assert.equal(
+      byteDifferenceCount,
+      1,
+      "the fixture changes exactly one byte",
+    );
+    assert.equal(changedBytes.length, originalBytes.length);
+    await writeFile(join(sourceRoot, "region-dist", "a.json"), changedBytes);
     const afterResult = await generate(root, sourceRoot);
     const after = await collectRelease({ root, version: afterResult.version });
 
