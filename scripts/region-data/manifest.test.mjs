@@ -22,7 +22,6 @@ import {
   sha256Hex,
   validateManifest,
 } from "./manifest.mjs";
-
 const temporaryDirectories = [];
 afterEach(async () => {
   await Promise.all(
@@ -31,7 +30,6 @@ afterEach(async () => {
       .map((directory) => rm(directory, { force: true, recursive: true })),
   );
 });
-
 const makeTemporaryDirectory = async (prefix = "region-manifest-") => {
   const directory = await mkdtemp(join(tmpdir(), prefix));
   temporaryDirectories.push(directory);
@@ -201,11 +199,9 @@ describe("immutable region-data manifest", () => {
   );
 
   test(
-    "rejects the observed Node 25 and zlib 1.2 compressor runtime",
+    "rejects compressor use on every non-Node 22 runtime",
     { skip: process.versions.node.split(".")[0] === "22" },
     () => {
-      assert.equal(process.versions.node, "25.9.0");
-      assert.equal(process.versions.zlib, "1.2.12");
       assert.throws(
         () => deterministicGzip(Buffer.from("unsupported runtime")),
         /requires Node 22/i,
@@ -314,29 +310,33 @@ describe("immutable region-data manifest", () => {
   });
 
   test("rejects sourceRoot replacement after directory enumeration", async () => {
-    const root = await makeTree({
-      "region-db/sample.index": Buffer.from("inside-index"),
-      "region-dist/sample.json": Buffer.from("inside-json"),
-    });
-    const replacementRoot = await makeTree({
-      "region-db/sample.index": Buffer.from("outside-index"),
-      "region-dist/sample.json": Buffer.from("outside-json"),
-    });
+    const root = await makeBasicTree();
+    const replacementRoot = await makeBasicTree();
+    const linkContainer = await makeTemporaryDirectory("region-root-swap-");
+    const prebuiltLink = join(linkContainer, "replacement");
+    await symlink(replacementRoot, prebuiltLink, "dir");
     const preservedRoot = `${root}-preserved`;
     temporaryDirectories.push(preservedRoot);
+    let removal;
     await assert.rejects(
       createManifest(
         { sourceRoot: root },
         {
-          beforeFileOpen: async ({ logicalPath }) => {
-            if (logicalPath !== "packages/geoint/region-dist/sample.json")
-              return;
-            await rename(root, preservedRoot);
-            await symlink(replacementRoot, root, "dir");
+          beforeFileOpen: async () => {
+            removal ??= rename(root, preservedRoot);
+            await removal;
+            await rename(prebuiltLink, root);
           },
         },
       ),
-      /changed|containment|sourceRoot|symlink/i,
+      (error) => {
+        assert.equal(error.constructor, TypeError);
+        assert.equal(
+          error.message,
+          "sourceRoot changed during manifest generation",
+        );
+        return true;
+      },
     );
   });
 

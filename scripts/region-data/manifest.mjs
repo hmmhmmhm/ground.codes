@@ -83,7 +83,6 @@ const normalizedGzip = (bytes) => {
   compressed[9] = 255;
   return compressed;
 };
-
 const COMPRESSOR_GOLDEN_SHA256 =
   "941a4bc214aa7c64e7774aef050f4e4fc0ed5a45220ebbcccf54a4b00d5314ee";
 const COMPRESSOR_INPUT_SHA256 =
@@ -122,12 +121,10 @@ const verifyCompressor = () => {
   }
   compressorVerified = true;
 };
-
 export const deterministicGzip = (bytes) => {
   verifyCompressor();
   return normalizedGzip(bytes);
 };
-
 const entryMetadata = ({ path, group, size, compressedSize, sha256 }) => ({
   path,
   group,
@@ -257,13 +254,14 @@ const sourcePath = (sourceRoot) =>
 const sameIdentity = (left, right) =>
   left.dev === right.dev && left.ino === right.ino;
 
-const checkedRealpath = async (path, label) => {
-  try {
-    return await realpath(path);
-  } catch {
+const checkedLstat = (path, label) =>
+  lstat(path, { bigint: true }).catch(() => {
+    throw new TypeError(`${label} changed during manifest generation`);
+  });
+const checkedRealpath = (path, label) =>
+  realpath(path).catch(() => {
     throw new TypeError(`${label} changed before canonical validation`);
-  }
-};
+  });
 const assertContained = (canonicalRoot, canonicalPath, label) => {
   const pathFromRoot = relative(canonicalRoot, canonicalPath);
   if (
@@ -277,7 +275,7 @@ const assertContained = (canonicalRoot, canonicalPath, label) => {
 
 const assertDirectoryGuards = async (guards) => {
   for (const guard of guards) {
-    const current = await lstat(guard.path, { bigint: true });
+    const current = await checkedLstat(guard.path, guard.label);
     if (
       current.isSymbolicLink() ||
       !current.isDirectory() ||
@@ -312,7 +310,7 @@ const readManagedFile = async ({
       throw new TypeError(`${logicalPath} is not the inspected regular file`);
     }
     const contents = await handle.readFile();
-    const currentStats = await lstat(absolutePath, { bigint: true });
+    const currentStats = await checkedLstat(absolutePath, logicalPath);
     if (
       currentStats.isSymbolicLink() ||
       !currentStats.isFile() ||
@@ -343,7 +341,10 @@ const enumerateGroup = async ({
     canonicalGroupRoot,
   ) => {
     const directoryPath = join(root, group, ...relativeDirectory);
-    const directoryStats = await lstat(directoryPath, { bigint: true });
+    const directoryStats = await checkedLstat(
+      directoryPath,
+      `${group} directory`,
+    );
     if (directoryStats.isSymbolicLink() || !directoryStats.isDirectory()) {
       throw new TypeError(
         `${group}/${relativeDirectory.join("/")} must be a directory`,
@@ -370,7 +371,7 @@ const enumerateGroup = async ({
       const relativeParts = [...relativeDirectory, child.name];
       const logicalPath = `${LOGICAL_ROOT}/${group}/${relativeParts.join("/")}`;
       const absolutePath = join(root, group, ...relativeParts);
-      const stats = await lstat(absolutePath, { bigint: true });
+      const stats = await checkedLstat(absolutePath, logicalPath);
       if (stats.isSymbolicLink()) {
         throw new TypeError(`${logicalPath} is a symlink, not a regular file`);
       }
@@ -411,7 +412,7 @@ export const createManifest = async (
     throw new TypeError("sourceRoot must be a path string or file URL");
   }
   const root = sourcePath(sourceRoot);
-  const rootStats = await lstat(root, { bigint: true });
+  const rootStats = await checkedLstat(root, "sourceRoot");
   if (rootStats.isSymbolicLink()) {
     throw new TypeError("sourceRoot must not be a symlink");
   }
@@ -421,21 +422,19 @@ export const createManifest = async (
   const canonicalRoot = await checkedRealpath(root, "sourceRoot");
   const rootGuard = { path: root, stats: rootStats, label: "sourceRoot" };
   await assertDirectoryGuards([rootGuard]);
-  const entries = (
-    await Promise.all(
-      GROUPS.map((group) =>
-        enumerateGroup({
-          root,
-          group,
-          rootGuard,
-          canonicalRoot,
-          beforeFileOpen,
-        }),
-      ),
-    )
-  )
-    .flat()
-    .sort((left, right) => compareText(left.path, right.path));
+  const entries = [];
+  for (const group of GROUPS) {
+    entries.push(
+      ...(await enumerateGroup({
+        root,
+        group,
+        rootGuard,
+        canonicalRoot,
+        beforeFileOpen,
+      })),
+    );
+  }
+  entries.sort((left, right) => compareText(left.path, right.path));
   const version = deriveVersion(entries);
   const manifest = {
     schemaVersion: SCHEMA_VERSION,
