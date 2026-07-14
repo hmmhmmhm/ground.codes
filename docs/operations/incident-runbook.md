@@ -48,7 +48,6 @@ pnpm --filter grok-spiral pages:build
 pnpm --filter api-ground-codes build
 WORKER_DRY_RUN_DIR="$(mktemp -d)"
 trap 'rm -rf -- "$WORKER_DRY_RUN_DIR"' EXIT
-unset CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID
 pnpm exec wrangler deploy --dry-run \
   --config apps/api-ground-codes/wrangler.toml \
   --outdir "$WORKER_DRY_RUN_DIR"
@@ -56,9 +55,10 @@ rm -rf -- "$WORKER_DRY_RUN_DIR"
 trap - EXIT
 ```
 
-The Worker dry-run is local and must not receive Cloudflare credentials. Its
-temporary output directory is unique to the command and is removed on both
-success and failure.
+The Worker dry-run is local and does not require Cloudflare credentials. The
+`--dry-run` flag on the first physical command line is the publication safety
+boundary even when Wrangler authentication is configured. Its temporary output
+directory is unique to the command and is removed on both success and failure.
 
 For an additional lockfile proof, repeat the Pages builds with package fetching
 disabled. Both commands must succeed from the frozen install:
