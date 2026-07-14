@@ -47,13 +47,10 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build Next.js app
         run: pnpm --filter web build
-
-      - name: Install Wrangler
-        run: pnpm install -g wrangler
 
       - name: Deploy to Cloudflare Pages
         env:
@@ -67,6 +64,4 @@ jobs:
           NEXT_PUBLIC_CESIUM_MARS_ASSET_ID: ${{ secrets.NEXT_PUBLIC_CESIUM_MARS_ASSET_ID }}
           GOOGLE_MAPS_NODEJS_API_KEY: ${{ secrets.GOOGLE_MAPS_NODEJS_API_KEY }}
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
-        run: |
-          cd apps/web
-          pnpm run pages:build && wrangler pages deploy
+        run: pnpm --filter web deploy

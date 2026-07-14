@@ -10,8 +10,8 @@
     "lint": "eslint app lib next.config.ts --max-warnings 0",
     "check-types": "tsc --noEmit",
     "pages:build": "npx @cloudflare/next-on-pages",
-    "preview": "pnpm run pages:build && wrangler pages dev",
-    "deploy": "pnpm run pages:build && wrangler pages deploy"
+    "preview": "pnpm run pages:build && pnpm exec wrangler pages dev",
+    "deploy": "pnpm run pages:build && pnpm exec wrangler pages deploy"
   },
   "dependencies": {
     "@repo/ui": "workspace:*",

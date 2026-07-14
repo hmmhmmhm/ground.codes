@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { describe, test } from "node:test";
-
 const readText = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 const readJson = (path) => JSON.parse(readText(path));
 const workflowDirectory = new URL("../.github/workflows/", import.meta.url);
@@ -22,7 +21,6 @@ const approvedActionPins = new Map([
 
 const externalActionPattern =
   /^uses:\s+([^@\s#]+)@([0-9a-f]{40})\s+#\s+(v[^\s#]+)\s*$/i;
-
 const dependabotSection = (source, ecosystem) => {
   const sections = [
     ...source.matchAll(
@@ -30,9 +28,7 @@ const dependabotSection = (source, ecosystem) => {
     ),
   ];
   const sectionIndex = sections.findIndex((match) => match[1] === ecosystem);
-
   assert.notEqual(sectionIndex, -1, `${ecosystem} update entry is required`);
-
   const start = sections[sectionIndex].index;
   const end = sections[sectionIndex + 1]?.index ?? source.length;
   return source.slice(start, end);
@@ -46,18 +42,14 @@ const indentedYamlBlock = (source, key) => {
     const match = headerPattern.exec(line);
     return match ? [{ index, indent: match[1].length }] : [];
   });
-
   assert.equal(headers.length, 1, `${key} must appear exactly once`);
-
   const [{ index: start, indent }] = headers;
   let end = start + 1;
-
   while (end < lines.length) {
     const line = lines[end];
     if (line.trim() !== "" && line.match(/^ */)[0].length <= indent) break;
     end += 1;
   }
-
   return lines.slice(start, end).join("\n").trimEnd();
 };
 
@@ -67,9 +59,7 @@ const workflowStep = (source, name) => {
   const start = lines.findIndex((line) =>
     new RegExp(`^\\s*- name: ${escapedName}\\s*$`).test(line),
   );
-
   assert.notEqual(start, -1, `${name} step is required`);
-
   const indent = lines[start].match(/^ */)[0].length;
   let end = start + 1;
   while (end < lines.length) {
@@ -80,47 +70,20 @@ const workflowStep = (source, name) => {
     }
     end += 1;
   }
-
   return lines.slice(start, end).join("\n").trimEnd();
 };
 
-const expectedDependabotGroups = new Map([
-  [
-    "runtime-security",
-    [
-      "      runtime-security:",
-      "        patterns:",
-      '          - "*"',
-      '        dependency-type: "production"',
-      "        update-types:",
-      '          - "minor"',
-      '          - "patch"',
-    ].join("\n"),
-  ],
-  [
-    "development-tooling",
-    [
-      "      development-tooling:",
-      "        patterns:",
-      '          - "*"',
-      '        dependency-type: "development"',
-      "        update-types:",
-      '          - "minor"',
-      '          - "patch"',
-    ].join("\n"),
-  ],
-  [
-    "github-actions",
-    ["      github-actions:", "        patterns:", '          - "*"'].join(
-      "\n",
-    ),
-  ],
-]);
+const expectedDependencyGroup = (name, type) => `      ${name}:
+        patterns:
+          - "*"
+        dependency-type: "${type}"
+        update-types:
+          - "minor"
+          - "patch"`;
 
 describe("QA workflow split", () => {
   test("enforces format lint and build gates in CI", () => {
     const ciWorkflow = readText("../.github/workflows/ci.yml");
-
     for (const command of [
       "pnpm format:check",
       "pnpm code:size-check",
@@ -225,6 +188,37 @@ describe("GitHub automation supply-chain policy", () => {
     }
   });
 
+  test("uses frozen installs and rejects global package installs", () => {
+    for (const workflowUrl of workflowUrls) {
+      const workflow = readFileSync(workflowUrl, "utf8");
+      const installs = [
+        ...workflow.matchAll(/^\s*run:\s*(pnpm install[^\n]*)$/gm),
+      ].map((match) => match[1]);
+      installs.forEach((install) =>
+        assert.equal(install, "pnpm install --frozen-lockfile"),
+      );
+      assert.doesNotMatch(workflow, /pnpm install -g/);
+    }
+  });
+
+  test("uses exact local deployment tool dependencies and commands", () => {
+    const rootDevDependencies = readJson("../package.json").devDependencies;
+    const webScripts = readJson("../apps/web/package.json").scripts;
+    const grokScripts = readJson("../apps/grok-spiral/package.json").scripts;
+    const apiWorkflow = readText("../.github/workflows/deploy-api.yml");
+    const webWorkflow = readText("../.github/workflows/deploy-web.yml");
+    const grokWorkflow = readText(
+      "../.github/workflows/deploy-grok-spiral.yml",
+    );
+    assert.equal(rootDevDependencies.wrangler, "4.110.0");
+    assert.equal(rootDevDependencies.c8, "11.0.0");
+    assert.match(webScripts.deploy, /pnpm exec wrangler pages deploy/);
+    assert.match(grokScripts.deploy, /pnpm exec wrangler pages deploy/);
+    assert.match(apiWorkflow, /pnpm exec wrangler deploy/);
+    assert.match(webWorkflow, /pnpm --filter web deploy/);
+    assert.match(grokWorkflow, /pnpm --filter grok-spiral deploy/);
+  });
+
   test("rejects Dependabot groups nested under a sibling policy key", () => {
     const source = [
       "groups:",
@@ -272,15 +266,15 @@ describe("GitHub automation supply-chain policy", () => {
 
     assert.equal(
       indentedYamlBlock(npmGroups, "runtime-security"),
-      expectedDependabotGroups.get("runtime-security"),
+      expectedDependencyGroup("runtime-security", "production"),
     );
     assert.equal(
       indentedYamlBlock(npmGroups, "development-tooling"),
-      expectedDependabotGroups.get("development-tooling"),
+      expectedDependencyGroup("development-tooling", "development"),
     );
     assert.equal(
       indentedYamlBlock(actionGroups, "github-actions"),
-      expectedDependabotGroups.get("github-actions"),
+      '      github-actions:\n        patterns:\n          - "*"',
     );
   });
 });

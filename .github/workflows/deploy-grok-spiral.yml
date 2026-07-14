@@ -47,18 +47,13 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build Next.js app
         run: pnpm --filter grok-spiral build
-
-      - name: Install Wrangler
-        run: pnpm install -g wrangler
 
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          cd apps/grok-spiral
-          pnpm run pages:build && wrangler pages deploy
+        run: pnpm --filter grok-spiral deploy

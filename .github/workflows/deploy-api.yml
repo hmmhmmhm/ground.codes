@@ -63,9 +63,6 @@ jobs:
       - name: Build ground-codes package
         run: pnpm --filter ground-codes build
 
-      - name: Install Wrangler
-        run: pnpm install -g wrangler
-
       - name: Apply PostGIS schema
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
@@ -104,7 +101,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          wrangler deploy \
+          pnpm exec wrangler deploy \
             --config apps/api-ground-codes/wrangler.toml \
             --keep-vars \
             --var API_RUNTIME_TAG:workspace \
