@@ -134,6 +134,8 @@ describe("code size policy", () => {
       "scripts/generate-planetary-landmark-labels.mjs",
       "scripts/apply-language-expansion-batch.mjs",
       "scripts/generate-address-gap-language-support.mjs",
+      "scripts/region-data/manifest.mjs",
+      "scripts/region-data/manifest.test.mjs",
     ];
 
     assert.deepEqual(

@@ -100,7 +100,10 @@ describe("CI security gate order", () => {
     const verifyJob = indentedYamlBlock(ciWorkflow, "verify");
     const rootScripts = readJson("../package.json").scripts;
 
-    assert.equal(rootScripts["scripts:test"], "node --test scripts/*.test.mjs");
+    assert.equal(
+      rootScripts["scripts:test"],
+      "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs",
+    );
     for (const testPath of [
       "./api-runtime-pins.test.mjs",
       "./check-production-audit.test.mjs",

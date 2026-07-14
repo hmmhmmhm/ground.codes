@@ -31,7 +31,7 @@
     "language:localization-coverage": "node scripts/apply-localization-coverage-scaffold.mjs",
     "github:governance:apply": "node scripts/configure-github-governance.mjs --apply",
     "github:governance:verify": "node scripts/configure-github-governance.mjs --verify",
-    "scripts:test": "node --test scripts/*.test.mjs",
+    "scripts:test": "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs",
     "prepare": "husky install"
   },
   "lint-staged": {
