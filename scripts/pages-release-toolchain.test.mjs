@@ -17,6 +17,31 @@ const apps = [
   { name: "grok-spiral", expectedBuild: "pnpm exec next-on-pages" },
 ];
 
+const assertVercelLockGraph = (lockfile, appName) => {
+  const importer = indentedYamlBlock(lockfile, `apps/${appName}`);
+  const devDependencies = indentedYamlBlock(importer, "devDependencies");
+  const lockedVercel = indentedYamlBlock(devDependencies, "vercel");
+  const specifier = /^\s+specifier:\s+(\S+)\s*$/m.exec(lockedVercel)?.[1];
+  const version = /^\s+version:\s+(\S+)\s*$/m.exec(lockedVercel)?.[1];
+
+  assert.equal(specifier, "47.0.4");
+  assert.equal(version?.split("(", 1)[0], "47.0.4");
+
+  const packages = indentedYamlBlock(lockfile, "packages");
+  const packageEntry = indentedYamlBlock(packages, "vercel@47.0.4");
+  assert.match(
+    packageEntry,
+    /^\s+resolution: \{integrity: sha512-[A-Za-z0-9+/]{86}==\}\s*$/m,
+  );
+
+  const snapshots = indentedYamlBlock(lockfile, "snapshots");
+  indentedYamlBlock(snapshots, `vercel@${version}`);
+  return version;
+};
+
+const withoutYamlBlock = (source, key) =>
+  source.replace(indentedYamlBlock(source, key), "");
+
 describe("Pages release toolchain", () => {
   test("keeps the local Node version aligned with CI Node 22", () => {
     assert.equal(readText("../.nvmrc"), "22\n");
@@ -52,15 +77,22 @@ describe("Pages release toolchain", () => {
     const lockfile = readText("../pnpm-lock.yaml");
 
     for (const { name } of apps) {
-      const importer = indentedYamlBlock(lockfile, `apps/${name}`);
-      const devDependencies = indentedYamlBlock(importer, "devDependencies");
-
-      const lockedVercel = indentedYamlBlock(devDependencies, "vercel");
-      const specifier = /^\s+specifier:\s+(\S+)\s*$/m.exec(lockedVercel)?.[1];
-      const version = /^\s+version:\s+(\S+)\s*$/m.exec(lockedVercel)?.[1];
-
-      assert.equal(specifier, "47.0.4");
-      assert.equal(version?.split("(", 1)[0], "47.0.4");
+      assertVercelLockGraph(lockfile, name);
     }
+  });
+
+  test("rejects a missing Vercel package graph entry", () => {
+    const lockfile = readText("../pnpm-lock.yaml");
+    const mutatedLockfile = withoutYamlBlock(lockfile, "vercel@47.0.4");
+
+    assert.throws(() => assertVercelLockGraph(mutatedLockfile, "web"));
+  });
+
+  test("rejects a missing Vercel snapshot graph entry", () => {
+    const lockfile = readText("../pnpm-lock.yaml");
+    const fullVersion = assertVercelLockGraph(lockfile, "web");
+    const mutatedLockfile = withoutYamlBlock(lockfile, `vercel@${fullVersion}`);
+
+    assert.throws(() => assertVercelLockGraph(mutatedLockfile, "web"));
   });
 });
