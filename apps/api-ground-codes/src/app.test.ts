@@ -24,24 +24,32 @@ const postJson = (path: string, body: unknown) =>
 const get = (path: string) =>
   app.handle(new Request(`http://localhost${path}`));
 
+const readRepositoryDocument = (path: string) =>
+  readFileSync(new URL(`../../../${path}`, import.meta.url), "utf8");
+
 describe("Ground Codes API contract", () => {
   test("documents measurable production service objectives", () => {
-    const serviceObjectives = readFileSync(
-      new URL(
-        "../../../docs/operations/service-objectives.md",
-        import.meta.url,
-      ),
-      "utf8",
-    );
+    const operationsDocuments = [
+      readRepositoryDocument("docs/operations/service-objectives.md"),
+      readRepositoryDocument("docs/operations/incident-runbook.md"),
+    ].join("\n");
 
-    expect(serviceObjectives).toContain("99.9% monthly readiness availability");
-    expect(serviceObjectives).toContain("99.9% monthly Web-root availability");
-    expect(serviceObjectives).toContain(
-      "Representative encode and search requests complete in under 2 seconds",
-    );
-    expect(serviceObjectives).toContain(
-      "A full post-deploy production smoke must pass before an incident is closed",
-    );
+    [
+      /99\.9% monthly readiness availability[\s\S]*99\.9% monthly Web-root availability/i,
+      /UTC calendar month/i,
+      /00 and 30 minutes of every UTC hour/i,
+      /`api\.readiness`[\s\S]*`web\.root`[\s\S]*`earth\.english\.encode`[\s\S]*`earth\.english\.search`/,
+      /passed expected slots \/ all expected slots/i,
+      /1,440 expected\s+slots[\s\S]*at most 1 failed slot/i,
+      /missing, cancelled, not created, or non-passing/i,
+      /`durationMs` < 2,000 ms/i,
+      /missing, errored,\s+or slow check is a latency miss/i,
+      /full post-deploy production smoke.*before an incident is closed/i,
+      /console\.log\(record\)[\s\S]*application payload fields[\s\S]*Cloudflare platform metadata/i,
+      /logs must never include coordinates, search strings, ground codes, IP\s+addresses, headers, or credentials/i,
+      /Pages deployment ID and commit[\s\S]*Web response[\s\S]*full production smoke/i,
+      /Worker rollback does\s+not roll back PostGIS, R2, or other external state[\s\S]*older\s+code is compatible with the current schema and data[\s\S]*forward fix\s+or documented data recovery/i,
+    ].forEach((pattern) => expect(operationsDocuments).toMatch(pattern));
   });
 
   test("serves a readiness endpoint for deployment checks", async () => {

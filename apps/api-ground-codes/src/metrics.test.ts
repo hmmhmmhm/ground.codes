@@ -77,6 +77,39 @@ describe("operational metrics clock", () => {
 });
 
 describe("request completion logs", () => {
+  test("passes the structured record object to the production console writer", async () => {
+    const originalConsoleLog = console.log;
+    const consoleCalls: unknown[][] = [];
+    console.log = (...args: unknown[]) => {
+      consoleCalls.push(args);
+    };
+
+    try {
+      const app = createApp({ rateLimit: null });
+      const response = await app.handle(
+        new Request("http://localhost/healthz"),
+      );
+      await waitForAfterResponse();
+
+      expect(response.status).toBe(200);
+      expect(consoleCalls).toHaveLength(1);
+      expect(consoleCalls[0]).toEqual([
+        {
+          event: "api.request.completed",
+          service: "api-ground-codes",
+          route: "/healthz",
+          method: "GET",
+          status: "200",
+          durationMs: expect.any(Number),
+          runtimeCommit: expect.stringMatching(/^[0-9a-f]{40}$/),
+        },
+      ]);
+      expect(typeof consoleCalls[0][0]).toBe("object");
+    } finally {
+      console.log = originalConsoleLog;
+    }
+  });
+
   test("emits one privacy-safe record for each encode and search error", async () => {
     const encodedLogs: string[] = [];
     let monotonicMs = 10_000;

@@ -43,7 +43,7 @@ const systemClock: MetricsClock = {
 };
 
 const defaultWriteLog = (record: RequestCompletionLog) => {
-  console.log(JSON.stringify(record));
+  console.log(record);
 };
 
 const getStatusCode = (status: unknown): string => {

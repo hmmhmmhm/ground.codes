@@ -6,32 +6,52 @@ targets.
 
 ## Objectives
 
-| Signal                     | Monthly objective                                                          | Measurement                                                                                                                                                                                                                              |
-| -------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| API readiness              | 99.9% monthly readiness availability                                       | Successful scheduled `GET https://api.ground.codes/readyz` production-smoke checks divided by all scheduled checks in the calendar month. A timeout, non-2xx response, invalid readiness body, or missed scheduled check is unavailable. |
-| Web root                   | 99.9% monthly Web-root availability                                        | Successful scheduled `GET https://ground.codes/` production-smoke checks divided by all scheduled checks in the calendar month. A timeout, non-2xx response, invalid page body, or missed scheduled check is unavailable.                |
-| Representative API latency | Representative encode and search requests complete in under 2 seconds      | The calendar-month p95 of each scheduled check's elapsed time in production-smoke summaries is below 2,000 ms. Track encode and search separately; treat a failed request as a latency-objective miss.                                   |
-| Incident recovery          | A full post-deploy production smoke must pass before an incident is closed | Link the passing full-profile run to the incident issue and confirm its deployed commit before closure.                                                                                                                                  |
+| Signal                | Monthly objective                                                          | Check ID               |
+| --------------------- | -------------------------------------------------------------------------- | ---------------------- |
+| API readiness         | 99.9% monthly readiness availability                                       | `api.readiness`        |
+| Web root              | 99.9% monthly Web-root availability                                        | `web.root`             |
+| Representative encode | Every expected request passes in under 2 seconds                           | `earth.english.encode` |
+| Representative search | Every expected request passes in under 2 seconds                           | `earth.english.search` |
+| Incident recovery     | A full post-deploy production smoke must pass before an incident is closed | Full profile           |
 
-The availability error budget is `calendar-month minutes × 0.001` for each
-availability objective. A 30-day month therefore permits 43 minutes 12 seconds
-of unavailability for readiness and, independently, for the Web root. Do not
-discard failed or missed checks because of deploys, retries, or provider
-incidents; annotate them so the cause remains visible.
+## Reproducible monthly measurement
+
+Evaluate one UTC calendar month at a time. Expected slots are the 30-minute
+cron invocations at 00 and 30 minutes of every UTC hour; manual, daily-full,
+and post-deploy runs are supplemental evidence and are not added to the monthly
+denominator. A missing, cancelled, not created, or non-passing scheduled slot
+is a failed slot for every required check it did not pass.
+
+For each availability check ID, calculate monthly availability as:
+
+```text
+passed expected slots / all expected slots × 100
+```
+
+The failed-slot error budget is
+`floor(all expected slots × (1 - 0.999))`. A 30-day month has 1,440 expected
+slots, so at most 1 failed slot still meets 99.9%. This synthetic calculation
+does not claim that a failed slot represents 30 minutes of actual downtime.
+
+Calculate latency compliance separately for `earth.english.encode` and
+`earth.english.search`. An expected slot complies only when the exact check ID
+passes and its recorded `durationMs` < 2,000 ms. Monthly latency compliance is
+`passing-and-fast expected slots / all expected slots`; every missing, errored,
+or slow check is a latency miss. Do not assign a numeric duration to a check
+that did not complete.
 
 ## Evaluation and escalation
 
 Use the [Production Smoke workflow][smoke] as the synthetic source of record.
-The 30-minute quick profile measures the two availability signals and
-representative request latency continuously. The daily and post-deploy full
-profiles provide broader regression evidence. Preserve the workflow timing
-summary with the monthly calculation.
+Preserve the expected-slot list, matched workflow run, exact check ID, outcome,
+and elapsed time with the monthly calculation. The daily and post-deploy full
+profiles provide broader regression evidence.
 
 Open an incident immediately when readiness or the Web root fails, when a
 post-deploy full smoke fails, or when the remaining monthly error budget is
-exhausted. Investigate two consecutive latency samples at or above 2 seconds;
-open an incident if the latency objective is breached or user impact is
-visible. Follow the [incident runbook](./incident-runbook.md) for triage,
-rollback, evidence capture, and closure.
+exhausted. Record every latency miss; open an incident after two consecutive
+latency misses or immediately when user impact is visible. Follow the
+[incident runbook](./incident-runbook.md) for triage, rollback, evidence
+capture, and closure.
 
 [smoke]: https://github.com/hmmhmmhm/ground.codes/actions/workflows/production-smoke.yml
