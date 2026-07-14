@@ -43,7 +43,7 @@ describe("LCOV parser hardening", () => {
         `FNDA:${firstHits},sameName`,
         `FNDA:${secondHits},sameName`,
         "FNF:2",
-        "FNH:2",
+        `FNH:${Number(firstHits > 0) + Number(secondHits > 0)}`,
         "DA:1,1",
         "LF:1",
         "LH:1",
@@ -67,6 +67,75 @@ describe("LCOV parser hardening", () => {
       ratio: 1,
     });
     assert.equal(result.ok, true);
+  });
+
+  test("rejects summary totals and hit counts that disagree with block details", () => {
+    const details = [
+      "SF:src/runtime.ts",
+      "FN:1,run",
+      "FNDA:1,run",
+      "DA:1,1",
+      "BRDA:1,0,0,1",
+    ];
+    for (const [type, value, companion] of [
+      ["FNF", 2, "FNH:1"],
+      ["FNH", 0, "FNF:1"],
+      ["LF", 2, "LH:1"],
+      ["LH", 0, "LF:1"],
+      ["BRF", 2, "BRH:1"],
+      ["BRH", 0, "BRF:1"],
+    ]) {
+      assert.throws(
+        () =>
+          parseLcov(
+            [...details, `${type}:${value}`, companion, "end_of_record"].join(
+              "\n",
+            ),
+            { repositoryRoot },
+          ),
+        new RegExp(`${type} summary does not match detailed records`),
+        type,
+      );
+    }
+  });
+
+  test("allows omitted summaries but rejects partial and duplicate summary sets", () => {
+    assert.doesNotThrow(() => parseLcov(completeLcov(), { repositoryRoot }));
+    for (const [total, hit] of [
+      ["FNF", "FNH"],
+      ["LF", "LH"],
+      ["BRF", "BRH"],
+    ]) {
+      for (const provided of [total, hit]) {
+        assert.throws(
+          () =>
+            parseLcov(
+              [
+                completeLcov().replace("end_of_record", ""),
+                `${provided}:1`,
+                "end_of_record",
+              ].join("\n"),
+              { repositoryRoot },
+            ),
+          new RegExp(`incomplete ${total}/${hit} summary pair`),
+        );
+      }
+    }
+    assert.throws(
+      () =>
+        parseLcov(
+          [
+            "SF:src/runtime.ts",
+            "FN:1,run",
+            "FNDA:1,run",
+            "FNF:1",
+            "FNF:1",
+            "end_of_record",
+          ].join("\n"),
+          { repositoryRoot },
+        ),
+      /duplicate FNF summary/,
+    );
   });
 
   test("rejects malformed, out-of-order, and truncated LCOV records", () => {

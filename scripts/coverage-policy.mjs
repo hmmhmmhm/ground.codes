@@ -79,6 +79,44 @@ const requireActiveRecord = (active, type) => {
   if (!active) throw new Error(`${type} record before SF`);
 };
 
+const SUMMARY_DETAILS = {
+  FNF: ["functions", false],
+  FNH: ["functions", true],
+  LF: ["lines", false],
+  LH: ["lines", true],
+  BRF: ["branches", false],
+  BRH: ["branches", true],
+};
+
+const commitBlock = (active) => {
+  for (const [total, hit] of [
+    ["FNF", "FNH"],
+    ["LF", "LH"],
+    ["BRF", "BRH"],
+  ]) {
+    if (active.summaries.has(total) !== active.summaries.has(hit)) {
+      throw new Error(`incomplete ${total}/${hit} summary pair`);
+    }
+  }
+
+  for (const [type, declared] of active.summaries) {
+    const [metric, coveredOnly] = SUMMARY_DETAILS[type];
+    const details = active.details[metric];
+    const expected = coveredOnly
+      ? [...details.values()].filter((hits) => hits > 0).length
+      : details.size;
+    if (declared !== expected) {
+      throw new Error(`${type} summary does not match detailed records`);
+    }
+  }
+
+  for (const metric of ["lines", "functions", "branches"]) {
+    for (const [key, hits] of active.details[metric]) {
+      mergeHits(active.record[metric], key, hits);
+    }
+  }
+};
+
 export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
   if (typeof lcov !== "string") throw new TypeError("LCOV input must be text");
 
@@ -89,6 +127,7 @@ export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
     if (rawLine === "") continue;
     if (rawLine === "end_of_record") {
       if (!active) throw new Error("end_of_record without SF");
+      commitBlock(active);
       active = undefined;
       continue;
     }
@@ -108,8 +147,10 @@ export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
       records.set(source, record);
       active = {
         record,
+        details: createRecord(),
         functionKeys: new Map(),
         functionOccurrences: new Map(),
+        summaries: new Map(),
       };
       continue;
     }
@@ -122,7 +163,7 @@ export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
       if (parsedLine === null || parsedHits === null) {
         throw new Error("invalid DA record");
       }
-      mergeHits(active.record.lines, line, parsedHits);
+      mergeHits(active.details.lines, line, parsedHits);
     } else if (rawLine.startsWith("FN:")) {
       requireActiveRecord(active, "FN");
       const [line, name] = parseFields(rawLine.slice(3), 2, "FN");
@@ -133,8 +174,8 @@ export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
       const keys = active.functionKeys.get(name) ?? [];
       keys.push(key);
       active.functionKeys.set(name, keys);
-      if (!active.record.functions.has(key))
-        active.record.functions.set(key, 0);
+      if (!active.details.functions.has(key))
+        active.details.functions.set(key, 0);
     } else if (rawLine.startsWith("FNDA:")) {
       requireActiveRecord(active, "FNDA");
       const [hits, name] = parseFields(rawLine.slice(5), 2, "FNDA");
@@ -145,7 +186,7 @@ export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
         throw new Error("FNDA has no matching FN occurrence");
       }
       active.functionOccurrences.set(name, occurrence + 1);
-      mergeHits(active.record.functions, key, parsedHits);
+      mergeHits(active.details.functions, key, parsedHits);
     } else if (rawLine.startsWith("BRDA:")) {
       requireActiveRecord(active, "BRDA");
       const [line, block, branch, hits] = parseFields(
@@ -163,7 +204,7 @@ export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
         throw new Error("invalid BRDA record");
       }
       mergeHits(
-        active.record.branches,
+        active.details.branches,
         `${line},${block},${branch}`,
         parsedHits,
       );
@@ -173,6 +214,10 @@ export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
       if (rest.length > 0 || parseInteger(value) === null) {
         throw new Error(`invalid ${type} record`);
       }
+      if (active.summaries.has(type)) {
+        throw new Error(`duplicate ${type} summary`);
+      }
+      active.summaries.set(type, Number(value));
     } else {
       throw new Error(`unknown LCOV record: ${rawLine}`);
     }
