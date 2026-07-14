@@ -136,6 +136,8 @@ describe("code size policy", () => {
       "scripts/generate-address-gap-language-support.mjs",
       "scripts/region-data/manifest.mjs",
       "scripts/region-data/manifest.test.mjs",
+      "scripts/region-data/manifest-compressor.mjs",
+      "scripts/region-data/manifest-compressor.test.mjs",
       "scripts/region-data/manifest-filesystem.mjs",
       "scripts/region-data/manifest-filesystem.test.mjs",
     ];

@@ -12,7 +12,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, test } from "node:test";
 
-import { createManifest } from "./manifest.mjs";
+import { enumerateManagedFiles } from "./manifest-filesystem.mjs";
 
 const temporaryDirectories = [];
 afterEach(async () => {
@@ -49,6 +49,16 @@ const makeBasicTree = () =>
     "region-dist/sample.json": Buffer.from("json"),
   });
 
+const enumerate = async (root, hooks = {}) => {
+  const files = [];
+  await enumerateManagedFiles({
+    root,
+    ...hooks,
+    onFile: (file) => files.push(file),
+  });
+  return files;
+};
+
 describe("manifest filesystem boundaries", () => {
   test("rejects a regular file replaced by an external symlink after lstat", async () => {
     const root = await makeTree({
@@ -63,17 +73,13 @@ describe("manifest filesystem boundaries", () => {
     const victim = join(root, "region-dist/sample.json");
 
     await assert.rejects(
-      createManifest(
-        { sourceRoot: root },
-        {
-          beforeFileOpen: async ({ logicalPath }) => {
-            if (logicalPath !== "packages/geoint/region-dist/sample.json")
-              return;
-            await rm(victim);
-            await symlink(outsideFile, victim);
-          },
+      enumerate(root, {
+        beforeFileOpen: async ({ logicalPath }) => {
+          if (logicalPath !== "packages/geoint/region-dist/sample.json") return;
+          await rm(victim);
+          await symlink(outsideFile, victim);
         },
-      ),
+      }),
       /changed|containment|regular file|symlink/i,
     );
   });
@@ -89,16 +95,13 @@ describe("manifest filesystem boundaries", () => {
     let removal;
 
     await assert.rejects(
-      createManifest(
-        { sourceRoot: root },
-        {
-          beforeFileOpen: async () => {
-            removal ??= rename(root, preservedRoot);
-            await removal;
-            await rename(prebuiltLink, root);
-          },
+      enumerate(root, {
+        beforeFileOpen: async () => {
+          removal ??= rename(root, preservedRoot);
+          await removal;
+          await rename(prebuiltLink, root);
         },
-      ),
+      }),
       (error) => {
         assert.equal(error.constructor, TypeError);
         assert.equal(
@@ -120,17 +123,13 @@ describe("manifest filesystem boundaries", () => {
     const preservedGroup = join(root, "preserved-region-dist");
 
     await assert.rejects(
-      createManifest(
-        { sourceRoot: root },
-        {
-          beforeDirectoryRead: async ({ group, relativeDirectory }) => {
-            if (group !== "region-dist" || relativeDirectory.length !== 0)
-              return;
-            await rename(groupPath, preservedGroup);
-            await rename(prebuiltLink, groupPath);
-          },
+      enumerate(root, {
+        beforeDirectoryRead: async ({ group, relativeDirectory }) => {
+          if (group !== "region-dist" || relativeDirectory.length !== 0) return;
+          await rename(groupPath, preservedGroup);
+          await rename(prebuiltLink, groupPath);
         },
-      ),
+      }),
       /region-dist directory.*changed/i,
     );
   });
@@ -140,16 +139,12 @@ describe("manifest filesystem boundaries", () => {
     const lateFile = join(root, "region-dist/late.json");
 
     await assert.rejects(
-      createManifest(
-        { sourceRoot: root },
-        {
-          beforeFileOpen: async ({ logicalPath }) => {
-            if (logicalPath !== "packages/geoint/region-dist/sample.json")
-              return;
-            await writeFile(lateFile, "late");
-          },
+      enumerate(root, {
+        beforeFileOpen: async ({ logicalPath }) => {
+          if (logicalPath !== "packages/geoint/region-dist/sample.json") return;
+          await writeFile(lateFile, "late");
         },
-      ),
+      }),
       /region-dist directory.*changed/i,
     );
   });
@@ -159,18 +154,12 @@ describe("manifest filesystem boundaries", () => {
     const linkContainer = await makeTemporaryDirectory("region-manifest-link-");
     const linkedRoot = join(linkContainer, "geoint");
     await symlink(targetRoot, linkedRoot, "dir");
-    await assert.rejects(
-      createManifest({ sourceRoot: linkedRoot }),
-      /sourceRoot.*symlink/i,
-    );
+    await assert.rejects(enumerate(linkedRoot), /sourceRoot.*symlink/i);
 
     const fileContainer = await makeTemporaryDirectory("region-manifest-file-");
     const fileRoot = join(fileContainer, "geoint");
     await writeFile(fileRoot, "not a directory");
-    await assert.rejects(
-      createManifest({ sourceRoot: fileRoot }),
-      /sourceRoot.*directory/i,
-    );
+    await assert.rejects(enumerate(fileRoot), /sourceRoot.*directory/i);
   });
 
   test("rejects managed-root and nested-directory symlinks", async () => {
@@ -184,7 +173,7 @@ describe("manifest filesystem boundaries", () => {
       "dir",
     );
     await assert.rejects(
-      createManifest({ sourceRoot: groupLinkRoot }),
+      enumerate(groupLinkRoot),
       /region-dist.*directory|symlink/i,
     );
 
@@ -194,10 +183,7 @@ describe("manifest filesystem boundaries", () => {
       join(nestedLinkRoot, "region-dist/nested"),
       "dir",
     );
-    await assert.rejects(
-      createManifest({ sourceRoot: nestedLinkRoot }),
-      /nested.*symlink/i,
-    );
+    await assert.rejects(enumerate(nestedLinkRoot), /nested.*symlink/i);
   });
 
   test("rejects symlinks and non-regular filesystem entries", async () => {
@@ -206,10 +192,7 @@ describe("manifest filesystem boundaries", () => {
       join(symlinkRoot, "region-db/sample.index"),
       join(symlinkRoot, "region-dist/link.json"),
     );
-    await assert.rejects(
-      createManifest({ sourceRoot: symlinkRoot }),
-      /regular file|symlink/i,
-    );
+    await assert.rejects(enumerate(symlinkRoot), /regular file|symlink/i);
 
     const socketRoot = await makeBasicTree();
     const socketPath = join(socketRoot, "region-db/service.sock");
@@ -219,10 +202,7 @@ describe("manifest filesystem boundaries", () => {
       server.listen(socketPath, resolve);
     });
     try {
-      await assert.rejects(
-        createManifest({ sourceRoot: socketRoot }),
-        /regular file|socket/i,
-      );
+      await assert.rejects(enumerate(socketRoot), /regular file|socket/i);
     } finally {
       await new Promise((resolve, reject) =>
         server.close((error) => (error ? reject(error) : resolve())),

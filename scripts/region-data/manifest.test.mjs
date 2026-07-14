@@ -91,6 +91,36 @@ const compressorVector = () => {
 };
 
 describe("immutable region-data manifest", () => {
+  test("exports exactly the approved five-function public contract", () => {
+    assert.deepEqual(Object.keys(manifestContract).sort(), [
+      "canonicalJson",
+      "createManifest",
+      "deterministicGzip",
+      "sha256Hex",
+      "validateManifest",
+    ]);
+  });
+
+  test("does not inspect an unsupported second createManifest argument", async () => {
+    assert.equal(createManifest.length, 1);
+    const root = await makeBasicTree();
+    const unsupportedSecondArgument = new Proxy(
+      {},
+      {
+        get: () => {
+          throw new Error("public createManifest inspected a second argument");
+        },
+      },
+    );
+
+    const manifest = await createManifest(
+      { sourceRoot: root },
+      unsupportedSecondArgument,
+    );
+
+    assert.equal(manifest.entries.length, 2);
+  });
+
   test("enumerates stable logical paths with binary-safe metadata and groups", async () => {
     const binary = Buffer.from([0, 255, 13, 10, 128, 65]);
     const shared = Buffer.from("shared\n");
@@ -196,18 +226,6 @@ describe("immutable region-data manifest", () => {
       );
     },
   );
-
-  test("executes the unsupported runtime-major branch in Node 22 CI", () => {
-    assert.doesNotThrow(() =>
-      manifestContract.assertSupportedNodeMajor("22.23.1"),
-    );
-    for (const version of ["21.7.3", "24.18.0", "25.9.0"]) {
-      assert.throws(
-        () => manifestContract.assertSupportedNodeMajor(version),
-        /requires Node 22/i,
-      );
-    }
-  });
 
   test("serializes canonical JSON recursively without whitespace", () => {
     assert.equal(
