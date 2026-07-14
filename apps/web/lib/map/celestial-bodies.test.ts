@@ -153,6 +153,24 @@ describe("celestial body map configuration", () => {
   });
 
   test("creates wrapped and clamped WMS map tiles", () => {
+    const originalGoogleDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      "google",
+    );
+    const existingGoogle = { sentinel: "existing-google" };
+    Object.defineProperty(globalThis, "google", {
+      configurable: true,
+      enumerable: false,
+      value: existingGoogle,
+      writable: false,
+    });
+    const existingGoogleDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      "google",
+    );
+    if (!existingGoogleDescriptor) {
+      throw new Error("expected seeded Google descriptor");
+    }
     class Size {
       constructor(
         readonly width: number,
@@ -162,36 +180,50 @@ describe("celestial body map configuration", () => {
     class ImageMapType {
       constructor(readonly options: google.maps.ImageMapTypeOptions) {}
     }
-    Object.defineProperty(globalThis, "google", {
-      configurable: true,
-      value: { maps: { ImageMapType, Size } },
-    });
 
     try {
-      const mapType = createPlanetaryMapType("mars", "THEMIS") as unknown as {
-        options: google.maps.ImageMapTypeOptions;
-      };
-      const tileUrl = mapType.options.getTileUrl?.({ x: -1, y: 99 }, 2);
-
-      expect(mapType.options.name).toBe("THEMIS IR Day");
-      expect(mapType.options.tileSize).toMatchObject({
-        width: 256,
-        height: 256,
+      Object.defineProperty(globalThis, "google", {
+        configurable: true,
+        value: { maps: { ImageMapType, Size } },
       });
-      expect(tileUrl).toContain("LAYERS=THEMIS");
-      expect(tileUrl).toContain("REQUEST=GetMap");
-      const bounds = new URL(tileUrl ?? "").searchParams
-        .get("BBOX")
-        ?.split(",")
-        .map(Number);
-      expect(bounds).toEqual([
-        90,
-        expect.closeTo(-85.05112878),
-        180,
-        expect.closeTo(-66.51326044),
-      ]);
+
+      try {
+        const mapType = createPlanetaryMapType("mars", "THEMIS") as unknown as {
+          options: google.maps.ImageMapTypeOptions;
+        };
+        const tileUrl = mapType.options.getTileUrl?.({ x: -1, y: 99 }, 2);
+
+        expect(mapType.options.name).toBe("THEMIS IR Day");
+        expect(mapType.options.tileSize).toMatchObject({
+          width: 256,
+          height: 256,
+        });
+        expect(tileUrl).toContain("LAYERS=THEMIS");
+        expect(tileUrl).toContain("REQUEST=GetMap");
+        const bounds = new URL(tileUrl ?? "").searchParams
+          .get("BBOX")
+          ?.split(",")
+          .map(Number);
+        expect(bounds).toEqual([
+          90,
+          expect.closeTo(-85.05112878),
+          180,
+          expect.closeTo(-66.51326044),
+        ]);
+      } finally {
+        Object.defineProperty(globalThis, "google", existingGoogleDescriptor);
+      }
+
+      expect(Object.getOwnPropertyDescriptor(globalThis, "google")).toEqual(
+        existingGoogleDescriptor,
+      );
+      expect(globalThis.google).toBe(existingGoogle);
     } finally {
-      Reflect.deleteProperty(globalThis, "google");
+      if (originalGoogleDescriptor) {
+        Object.defineProperty(globalThis, "google", originalGoogleDescriptor);
+      } else {
+        Reflect.deleteProperty(globalThis, "google");
+      }
     }
   });
 });

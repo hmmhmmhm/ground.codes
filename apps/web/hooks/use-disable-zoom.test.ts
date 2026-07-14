@@ -1,14 +1,46 @@
 import { describe, expect, mock, test } from "bun:test";
+import {
+  installBrowserZoomPrevention,
+  shouldPreventBrowserZoom,
+} from "./use-disable-zoom";
 
-let runEffect: (() => void | (() => void)) | undefined;
-mock.module("react", () => ({
-  useEffect: (effect: () => void | (() => void)) => {
-    runEffect = effect;
-  },
-}));
+type ListenerRegistration = {
+  type: string;
+  listener: EventListener;
+  options?: boolean | AddEventListenerOptions | EventListenerOptions;
+};
 
-const { shouldPreventBrowserZoom, useDisableZoom } =
-  await import("./use-disable-zoom");
+const createEventTarget = () => {
+  const active = new Map<string, Set<EventListener>>();
+  const added: ListenerRegistration[] = [];
+  const removed: ListenerRegistration[] = [];
+
+  return {
+    added,
+    removed,
+    addEventListener(
+      type: string,
+      listener: EventListener,
+      options?: boolean | AddEventListenerOptions,
+    ) {
+      added.push({ type, listener, options });
+      const listeners = active.get(type) ?? new Set<EventListener>();
+      listeners.add(listener);
+      active.set(type, listeners);
+    },
+    removeEventListener(
+      type: string,
+      listener: EventListener,
+      options?: boolean | EventListenerOptions,
+    ) {
+      removed.push({ type, listener, options });
+      active.get(type)?.delete(listener);
+    },
+    dispatch(type: string, event: Event) {
+      active.get(type)?.forEach((listener) => listener(event));
+    },
+  };
+};
 
 describe("browser zoom prevention", () => {
   test("prevents modified wheel zoom gestures", () => {
@@ -28,67 +60,59 @@ describe("browser zoom prevention", () => {
   });
 
   test("registers zoom blockers and removes every listener on cleanup", () => {
-    const windowListeners = new Map<string, EventListener>();
-    const documentListeners = new Map<string, EventListener>();
-    const removedWindowListeners: string[] = [];
-    const removedDocumentListeners: string[] = [];
-    const eventTarget = (
-      listeners: Map<string, EventListener>,
-      removed: string[],
-    ) => ({
-      addEventListener: (type: string, listener: EventListener) =>
-        listeners.set(type, listener),
-      removeEventListener: (type: string) => removed.push(type),
-    });
-    Object.defineProperty(globalThis, "window", {
-      configurable: true,
-      value: eventTarget(windowListeners, removedWindowListeners),
-    });
-    Object.defineProperty(globalThis, "document", {
-      configurable: true,
-      value: eventTarget(documentListeners, removedDocumentListeners),
-    });
+    const windowTarget = createEventTarget();
+    const documentTarget = createEventTarget();
+    const cleanup = installBrowserZoomPrevention(windowTarget, documentTarget);
 
-    try {
-      useDisableZoom();
-      expect(runEffect).toBeFunction();
-      const cleanup = runEffect?.();
-      expect(windowListeners.keys().toArray()).toEqual(["wheel", "keydown"]);
-      expect(documentListeners.keys().toArray()).toEqual([
-        "touchmove",
-        "gesturestart",
-        "gesturechange",
-        "gestureend",
-      ]);
+    expect(
+      windowTarget.added.map(({ type, options }) => ({ type, options })),
+    ).toEqual([
+      { type: "wheel", options: { passive: false } },
+      { type: "keydown", options: undefined },
+    ]);
+    expect(
+      documentTarget.added.map(({ type, options }) => ({ type, options })),
+    ).toEqual([
+      { type: "touchmove", options: { passive: false } },
+      { type: "gesturestart", options: { passive: false } },
+      { type: "gesturechange", options: { passive: false } },
+      { type: "gestureend", options: { passive: false } },
+    ]);
 
-      for (const [type, listener] of [
-        ["wheel", windowListeners.get("wheel")],
-        ["keydown", windowListeners.get("keydown")],
-        ["touchmove", documentListeners.get("touchmove")],
-        ["gesturestart", documentListeners.get("gesturestart")],
-      ] as const) {
-        const event = {
-          ctrlKey: type === "wheel" || type === "keydown",
-          key: type === "keydown" ? "+" : undefined,
-          touches: type === "touchmove" ? { length: 2 } : undefined,
-          preventDefault: mock(),
-        };
-        listener?.(event as unknown as Event);
-        expect(event.preventDefault).toHaveBeenCalled();
-      }
+    const dispatchCases = [
+      [windowTarget, "wheel", { ctrlKey: true }],
+      [windowTarget, "keydown", { ctrlKey: true, key: "+" }],
+      [documentTarget, "touchmove", { touches: { length: 2 } }],
+      [documentTarget, "gesturestart", {}],
+    ] as const;
+    for (const [target, type, properties] of dispatchCases) {
+      const event = { ...properties, preventDefault: mock() };
+      target.dispatch(type, event as unknown as Event);
+      expect(event.preventDefault).toHaveBeenCalledTimes(1);
+    }
 
-      expect(cleanup).toBeFunction();
-      cleanup?.();
-      expect(removedWindowListeners).toEqual(["wheel", "keydown"]);
-      expect(removedDocumentListeners).toEqual([
-        "touchmove",
-        "gesturestart",
-        "gesturechange",
-        "gestureend",
-      ]);
-    } finally {
-      Reflect.deleteProperty(globalThis, "window");
-      Reflect.deleteProperty(globalThis, "document");
+    cleanup();
+    expect(windowTarget.removed).toHaveLength(2);
+    expect(documentTarget.removed).toHaveLength(4);
+    for (const [added, removed] of [
+      ...windowTarget.added.map(
+        (added, index) => [added, windowTarget.removed[index]] as const,
+      ),
+      ...documentTarget.added.map(
+        (added, index) => [added, documentTarget.removed[index]] as const,
+      ),
+    ]) {
+      expect(removed).toMatchObject({
+        type: added.type,
+        options: undefined,
+      });
+      expect(removed?.listener).toBe(added.listener);
+    }
+
+    for (const [target, type, properties] of dispatchCases) {
+      const event = { ...properties, preventDefault: mock() };
+      target.dispatch(type, event as unknown as Event);
+      expect(event.preventDefault).not.toHaveBeenCalled();
     }
   });
 });

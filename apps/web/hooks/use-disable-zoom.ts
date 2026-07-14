@@ -14,54 +14,72 @@ export function shouldPreventBrowserZoom(event: BrowserZoomEventLike) {
 }
 
 /**
+ * Install browser zoom prevention and return a complete listener cleanup.
+ */
+export function installBrowserZoomPrevention(
+  windowTarget: Pick<
+    Window,
+    "addEventListener" | "removeEventListener"
+  > = window,
+  documentTarget: Pick<
+    Document,
+    "addEventListener" | "removeEventListener"
+  > = document,
+) {
+  const handleWheel = (e: WheelEvent) => {
+    if (shouldPreventBrowserZoom(e)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (shouldPreventBrowserZoom(e)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleGesture = (e: Event) => {
+    e.preventDefault();
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (
+      (e.ctrlKey || e.metaKey) &&
+      (e.key === "+" || e.key === "-" || e.key === "=")
+    ) {
+      e.preventDefault();
+    }
+  };
+
+  windowTarget.addEventListener("wheel", handleWheel, { passive: false });
+  windowTarget.addEventListener("keydown", handleKeyDown);
+  documentTarget.addEventListener("touchmove", handleTouchMove, {
+    passive: false,
+  });
+  documentTarget.addEventListener("gesturestart", handleGesture, {
+    passive: false,
+  });
+  documentTarget.addEventListener("gesturechange", handleGesture, {
+    passive: false,
+  });
+  documentTarget.addEventListener("gestureend", handleGesture, {
+    passive: false,
+  });
+
+  return () => {
+    windowTarget.removeEventListener("wheel", handleWheel);
+    windowTarget.removeEventListener("keydown", handleKeyDown);
+    documentTarget.removeEventListener("touchmove", handleTouchMove);
+    documentTarget.removeEventListener("gesturestart", handleGesture);
+    documentTarget.removeEventListener("gesturechange", handleGesture);
+    documentTarget.removeEventListener("gestureend", handleGesture);
+  };
+}
+
+/**
  * A hook that prevents browser zoom functionality by intercepting
  * wheel events with Ctrl/Meta key and keyboard shortcuts (Ctrl/Meta + +/-)
  */
 export function useDisableZoom() {
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      if (shouldPreventBrowserZoom(e)) {
-        e.preventDefault();
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (shouldPreventBrowserZoom(e)) {
-        e.preventDefault();
-      }
-    };
-
-    const handleGesture = (e: Event) => {
-      e.preventDefault();
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (
-        (e.ctrlKey || e.metaKey) &&
-        (e.key === "+" || e.key === "-" || e.key === "=")
-      ) {
-        e.preventDefault();
-      }
-    };
-
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("touchmove", handleTouchMove, { passive: false });
-    document.addEventListener("gesturestart", handleGesture, {
-      passive: false,
-    });
-    document.addEventListener("gesturechange", handleGesture, {
-      passive: false,
-    });
-    document.addEventListener("gestureend", handleGesture, { passive: false });
-
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("gesturestart", handleGesture);
-      document.removeEventListener("gesturechange", handleGesture);
-      document.removeEventListener("gestureend", handleGesture);
-    };
-  }, []);
+  useEffect(() => installBrowserZoomPrevention(), []);
 }
