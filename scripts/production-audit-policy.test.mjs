@@ -170,6 +170,18 @@ describe("production audit policy", () => {
     });
   });
 
+  test("parses braces and escaped quotes inside the final audit document", () => {
+    const raw = JSON.stringify({
+      note: 'diagnostic with a quote " and balanced-looking braces } {',
+      ...auditDocument({ critical: 0, high: 0, moderate: 0, low: 0 }),
+    });
+
+    assert.deepEqual(evaluateProductionAudit(raw), {
+      ok: true,
+      counts: { critical: 0, high: 0, moderate: 0, low: 0 },
+    });
+  });
+
   for (const fixture of [
     {
       name: "rejects an unreadable audit result",
