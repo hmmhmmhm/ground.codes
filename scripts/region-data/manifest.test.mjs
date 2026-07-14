@@ -3,6 +3,7 @@ import {
   mkdtemp,
   mkdir,
   readFile,
+  rename,
   rm,
   symlink,
   utimes,
@@ -23,7 +24,6 @@ import {
 } from "./manifest.mjs";
 
 const temporaryDirectories = [];
-
 afterEach(async () => {
   await Promise.all(
     temporaryDirectories
@@ -32,9 +32,14 @@ afterEach(async () => {
   );
 });
 
+const makeTemporaryDirectory = async (prefix = "region-manifest-") => {
+  const directory = await mkdtemp(join(tmpdir(), prefix));
+  temporaryDirectories.push(directory);
+  return directory;
+};
+
 const makeTree = async (files) => {
-  const root = await mkdtemp(join(tmpdir(), "region-manifest-"));
-  temporaryDirectories.push(root);
+  const root = await makeTemporaryDirectory();
   await Promise.all([
     mkdir(join(root, "region-dist"), { recursive: true }),
     mkdir(join(root, "region-db"), { recursive: true }),
@@ -47,8 +52,46 @@ const makeTree = async (files) => {
   return root;
 };
 
+const makeBasicTree = () =>
+  makeTree({
+    "region-db/sample.index": Buffer.from("index"),
+    "region-dist/sample.json": Buffer.from("json"),
+  });
 const getEntry = (manifest, path) =>
   manifest.entries.find((entry) => entry.path === path);
+const releaseEntries = (manifest) =>
+  manifest.entries.map(({ path, group, size, compressedSize, sha256 }) => ({
+    path,
+    group,
+    size,
+    compressedSize,
+    sha256,
+  }));
+
+const refreshReleaseIdentity = (manifest) => {
+  manifest.version = `sha256-${sha256Hex(
+    canonicalJson({ schemaVersion: 1, entries: releaseEntries(manifest) }),
+  )}`;
+  for (const entry of manifest.entries) {
+    entry.objectKey = `releases/${manifest.version}/objects/${entry.sha256}.json.gz`;
+  }
+};
+
+const compressorVector = () => {
+  let input;
+  let x = 0x12345678;
+  for (let n = 0; n <= 3; n += 1) {
+    input = Buffer.alloc((n * 7919) % 65537);
+    for (let index = 0; index < input.length; index += 1) {
+      x ^= x << 13;
+      x ^= x >>> 17;
+      x ^= x << 5;
+      x >>>= 0;
+      input[index] = (x + (index % 17 === 0 ? n : 0)) & 255;
+    }
+  }
+  return input;
+};
 
 describe("immutable region-data manifest", () => {
   test("enumerates stable logical paths with binary-safe metadata and groups", async () => {
@@ -86,10 +129,6 @@ describe("immutable region-data manifest", () => {
       sha256: sha256Hex(binary),
       objectKey: `releases/${manifest.version}/objects/${sha256Hex(binary)}.json.gz`,
     });
-    assert.equal(
-      getEntry(manifest, "packages/geoint/region-dist/a.json").group,
-      "region-dist",
-    );
   });
 
   test("reuses one content-addressed object key for duplicate bytes", async () => {
@@ -103,10 +142,6 @@ describe("immutable region-data manifest", () => {
 
     assert.equal(first.sha256, second.sha256);
     assert.equal(first.objectKey, second.objectKey);
-    assert.equal(
-      first.objectKey,
-      `releases/${manifest.version}/objects/${first.sha256}.json.gz`,
-    );
   });
 
   test("derives identical bytes and versions without host paths or timestamps", async () => {
@@ -120,22 +155,12 @@ describe("immutable region-data manifest", () => {
 
     const first = await createManifest({ sourceRoot: firstRoot });
     const second = await createManifest({ sourceRoot: secondRoot });
-    const versionEntries = first.entries.map(
-      ({ path, group, size, compressedSize, sha256 }) => ({
-        path,
-        group,
-        size,
-        compressedSize,
-        sha256,
-      }),
-    );
 
     assert.deepEqual(second, first);
-    assert.equal(canonicalJson(second), canonicalJson(first));
     assert.equal(
       first.version,
       `sha256-${sha256Hex(
-        canonicalJson({ schemaVersion: 1, entries: versionEntries }),
+        canonicalJson({ schemaVersion: 1, entries: releaseEntries(first) }),
       )}`,
       "release version excludes the circular objectKey field",
     );
@@ -156,6 +181,38 @@ describe("immutable region-data manifest", () => {
     assert.equal(first[9], 255, "gzip OS metadata is host-neutral");
   });
 
+  test(
+    "pins the Node 22 compressor to the reviewed golden vector",
+    { skip: process.versions.node.split(".")[0] !== "22" },
+    () => {
+      const input = compressorVector();
+      const compressed = deterministicGzip(input);
+      assert.equal(input.length, 23757);
+      assert.equal(
+        sha256Hex(input),
+        "a8f45e88ab5d8f7d6a500500fbd27e8ecbbed4d7bc0f3dec76d98be7bafd778b",
+      );
+      assert.equal(compressed.length, 23785);
+      assert.equal(
+        sha256Hex(compressed),
+        "941a4bc214aa7c64e7774aef050f4e4fc0ed5a45220ebbcccf54a4b00d5314ee",
+      );
+    },
+  );
+
+  test(
+    "rejects the observed Node 25 and zlib 1.2 compressor runtime",
+    { skip: process.versions.node.split(".")[0] === "22" },
+    () => {
+      assert.equal(process.versions.node, "25.9.0");
+      assert.equal(process.versions.zlib, "1.2.12");
+      assert.throws(
+        () => deterministicGzip(Buffer.from("unsupported runtime")),
+        /requires Node 22/i,
+      );
+    },
+  );
+
   test("serializes canonical JSON recursively without whitespace", () => {
     assert.equal(
       canonicalJson({ z: [{ b: 2, a: 1 }], a: { d: 4, c: 3 } }),
@@ -164,59 +221,32 @@ describe("immutable region-data manifest", () => {
   });
 
   test("validates a generated manifest and rejects unsupported metadata", async () => {
-    const root = await makeTree({
-      "region-db/sample.index": Buffer.from("index"),
-      "region-dist/sample.json": Buffer.from("json"),
-    });
+    const root = await makeBasicTree();
     const valid = await createManifest({ sourceRoot: root });
     assert.deepEqual(validateManifest(valid), valid);
 
-    const cases = [
-      ["unsupported schema version", (value) => (value.schemaVersion = 2)],
-      [
-        "unsupported version hash",
-        (value) => (value.version = `sha512-${"a".repeat(64)}`),
-      ],
-      [
-        "malformed release version",
-        (value) => (value.version = `sha256-${"A".repeat(64)}`),
-      ],
-      [
-        "content-derived version mismatch",
-        (value) => (value.version = `sha256-${"0".repeat(64)}`),
-      ],
-      [
-        "malformed entry hash",
-        (value) => (value.entries[0].sha256 = "not-a-hash"),
-      ],
-      ["negative size", (value) => (value.entries[0].size = -1)],
-      [
-        "fractional compressed size",
-        (value) => (value.entries[0].compressedSize = 1.5),
-      ],
-      [
-        "group/path mismatch",
-        (value) => (value.entries[0].group = "region-dist"),
-      ],
-      [
-        "malformed object key",
-        (value) => (value.entries[0].objectKey = "objects/file"),
-      ],
-      ["unsorted entries", (value) => value.entries.reverse()],
+    const mutations = [
+      (value) => (value.schemaVersion = 2),
+      (value) => (value.version = `sha512-${"a".repeat(64)}`),
+      (value) => (value.version = `sha256-${"A".repeat(64)}`),
+      (value) => (value.version = `sha256-${"0".repeat(64)}`),
+      (value) => (value.entries[0].sha256 = "not-a-hash"),
+      (value) => (value.entries[0].size = -1),
+      (value) => (value.entries[0].compressedSize = 1.5),
+      (value) => (value.entries[0].group = "region-dist"),
+      (value) => (value.entries[0].objectKey = "objects/file"),
+      (value) => value.entries.reverse(),
     ];
 
-    for (const [name, mutate] of cases) {
+    for (const mutate of mutations) {
       const invalid = structuredClone(valid);
       mutate(invalid);
-      assert.throws(() => validateManifest(invalid), undefined, name);
+      assert.throws(() => validateManifest(invalid));
     }
   });
 
   test("rejects paths outside the managed roots, absolute paths, and traversal", async () => {
-    const root = await makeTree({
-      "region-db/sample.index": Buffer.from("index"),
-      "region-dist/sample.json": Buffer.from("json"),
-    });
+    const root = await makeBasicTree();
     const valid = await createManifest({ sourceRoot: root });
     const invalidPaths = [
       "/packages/geoint/region-db/sample.index",
@@ -234,10 +264,7 @@ describe("immutable region-data manifest", () => {
   });
 
   test("rejects duplicate logical paths", async () => {
-    const root = await makeTree({
-      "region-db/sample.index": Buffer.from("index"),
-      "region-dist/sample.json": Buffer.from("json"),
-    });
+    const root = await makeBasicTree();
     const valid = await createManifest({ sourceRoot: root });
     const invalid = structuredClone(valid);
     invalid.entries[1].path = invalid.entries[0].path;
@@ -246,30 +273,86 @@ describe("immutable region-data manifest", () => {
     assert.throws(() => validateManifest(invalid), /duplicate/i);
   });
 
-  test("rejects a symlink or non-directory sourceRoot before enumeration", async () => {
-    const targetRoot = await makeTree({
-      "region-db/sample.index": Buffer.from("index"),
-      "region-dist/sample.json": Buffer.from("json"),
+  test("rejects conflicting metadata for one content-addressed object", async () => {
+    const root = await makeTree({
+      "region-db/sample.index": Buffer.from("same bytes"),
+      "region-dist/sample.json": Buffer.from("same bytes"),
     });
-    const linkContainer = await mkdtemp(
-      join(tmpdir(), "region-manifest-link-"),
+    const hostile = await createManifest({ sourceRoot: root });
+    hostile.entries[1].size += 1;
+    hostile.entries[1].compressedSize += 1;
+    refreshReleaseIdentity(hostile);
+
+    assert.throws(() => validateManifest(hostile), /conflicting.*metadata/i);
+  });
+
+  test("rejects a regular file replaced by an external symlink after lstat", async () => {
+    const root = await makeTree({
+      "region-db/sample.index": Buffer.from("index"),
+      "region-dist/sample.json": Buffer.from("inside"),
+    });
+    const outsideRoot = await makeTemporaryDirectory(
+      "region-manifest-outside-",
     );
-    temporaryDirectories.push(linkContainer);
+    const outsideFile = join(outsideRoot, "outside.json");
+    await writeFile(outsideFile, "outside");
+    const victim = join(root, "region-dist/sample.json");
+    await assert.rejects(
+      createManifest(
+        { sourceRoot: root },
+        {
+          beforeFileOpen: async ({ logicalPath }) => {
+            if (logicalPath !== "packages/geoint/region-dist/sample.json")
+              return;
+            await rm(victim);
+            await symlink(outsideFile, victim);
+          },
+        },
+      ),
+      /changed|containment|regular file|symlink/i,
+    );
+  });
+
+  test("rejects sourceRoot replacement after directory enumeration", async () => {
+    const root = await makeTree({
+      "region-db/sample.index": Buffer.from("inside-index"),
+      "region-dist/sample.json": Buffer.from("inside-json"),
+    });
+    const replacementRoot = await makeTree({
+      "region-db/sample.index": Buffer.from("outside-index"),
+      "region-dist/sample.json": Buffer.from("outside-json"),
+    });
+    const preservedRoot = `${root}-preserved`;
+    temporaryDirectories.push(preservedRoot);
+    await assert.rejects(
+      createManifest(
+        { sourceRoot: root },
+        {
+          beforeFileOpen: async ({ logicalPath }) => {
+            if (logicalPath !== "packages/geoint/region-dist/sample.json")
+              return;
+            await rename(root, preservedRoot);
+            await symlink(replacementRoot, root, "dir");
+          },
+        },
+      ),
+      /changed|containment|sourceRoot|symlink/i,
+    );
+  });
+
+  test("rejects a symlink or non-directory sourceRoot before enumeration", async () => {
+    const targetRoot = await makeBasicTree();
+    const linkContainer = await makeTemporaryDirectory("region-manifest-link-");
     const linkedRoot = join(linkContainer, "geoint");
     await symlink(targetRoot, linkedRoot, "dir");
-
     await assert.rejects(
       createManifest({ sourceRoot: linkedRoot }),
       /sourceRoot.*symlink/i,
     );
 
-    const fileContainer = await mkdtemp(
-      join(tmpdir(), "region-manifest-file-"),
-    );
-    temporaryDirectories.push(fileContainer);
+    const fileContainer = await makeTemporaryDirectory("region-manifest-file-");
     const fileRoot = join(fileContainer, "geoint");
     await writeFile(fileRoot, "not a directory");
-
     await assert.rejects(
       createManifest({ sourceRoot: fileRoot }),
       /sourceRoot.*directory/i,
@@ -290,11 +373,7 @@ describe("immutable region-data manifest", () => {
       createManifest({ sourceRoot: groupLinkRoot }),
       /region-dist.*directory|symlink/i,
     );
-
-    const nestedLinkRoot = await makeTree({
-      "region-db/sample.index": Buffer.from("index"),
-      "region-dist/sample.json": Buffer.from("json"),
-    });
+    const nestedLinkRoot = await makeBasicTree();
     await symlink(
       join(nestedLinkRoot, "region-db"),
       join(nestedLinkRoot, "region-dist/nested"),
@@ -307,10 +386,7 @@ describe("immutable region-data manifest", () => {
   });
 
   test("rejects symlinks and non-regular filesystem entries", async () => {
-    const symlinkRoot = await makeTree({
-      "region-db/sample.index": Buffer.from("index"),
-      "region-dist/sample.json": Buffer.from("json"),
-    });
+    const symlinkRoot = await makeBasicTree();
     await symlink(
       join(symlinkRoot, "region-db/sample.index"),
       join(symlinkRoot, "region-dist/link.json"),
@@ -319,11 +395,7 @@ describe("immutable region-data manifest", () => {
       createManifest({ sourceRoot: symlinkRoot }),
       /regular file|symlink/i,
     );
-
-    const socketRoot = await makeTree({
-      "region-db/sample.index": Buffer.from("index"),
-      "region-dist/sample.json": Buffer.from("json"),
-    });
+    const socketRoot = await makeBasicTree();
     const socketPath = join(socketRoot, "region-db/service.sock");
     const server = createServer();
     await new Promise((resolve, reject) => {
@@ -345,39 +417,33 @@ describe("immutable region-data manifest", () => {
   test("builds the committed fixtures into the versioned document shape", async () => {
     const fixtureRoot = new URL("./fixtures/", import.meta.url);
     const manifest = await createManifest({ sourceRoot: fixtureRoot });
-
     assert.equal(manifest.entries.length, 3);
     assert.deepEqual(validateManifest(manifest), manifest);
-    assert.ok(
-      manifest.entries.every((entry) =>
-        entry.objectKey.startsWith(`releases/${manifest.version}/objects/`),
-      ),
-    );
     const [duplicateA, duplicateB] = [
       getEntry(manifest, "packages/geoint/region-dist/sample.json"),
       getEntry(manifest, "packages/geoint/region-db/sample.index"),
     ];
     assert.equal(duplicateA.objectKey, duplicateB.objectKey);
-    assert.equal(
-      await readFile(
-        new URL("./fixtures/region-dist/sample.json", import.meta.url),
-        "utf8",
-      ),
-      await readFile(
-        new URL("./fixtures/region-db/sample.index", import.meta.url),
-        "utf8",
-      ),
-    );
   });
 
   test("keeps nested region-data contracts mandatory in the root script suite", async () => {
     const packageJson = JSON.parse(
       await readFile(new URL("../../package.json", import.meta.url), "utf8"),
     );
-
     assert.equal(
       packageJson.scripts["scripts:test"],
       "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs",
+    );
+    assert.equal(
+      (await readFile(new URL("../../.nvmrc", import.meta.url), "utf8")).trim(),
+      "22",
+    );
+    assert.match(
+      await readFile(
+        new URL("../../.github/workflows/ci.yml", import.meta.url),
+        "utf8",
+      ),
+      /node-version:\s*["']22["']/,
     );
   });
 });

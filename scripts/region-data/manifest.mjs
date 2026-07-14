@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
-import { lstat, readFile, readdir } from "node:fs/promises";
+import { constants } from "node:fs";
+import { lstat, open, readdir, realpath } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { isAbsolute, join, posix, resolve } from "node:path";
+import { isAbsolute, join, posix, relative, resolve, sep } from "node:path";
 import { gzipSync } from "node:zlib";
 
 const SCHEMA_VERSION = 1;
@@ -9,7 +10,9 @@ const LOGICAL_ROOT = "packages/geoint";
 const GROUPS = ["region-dist", "region-db"];
 const SHA256_PATTERN = /^[a-f0-9]{64}$/;
 const VERSION_PATTERN = /^sha256-[a-f0-9]{64}$/;
-
+const FILE_OPEN_FLAGS =
+  constants.O_RDONLY |
+  (Number.isInteger(constants.O_NOFOLLOW) ? constants.O_NOFOLLOW : 0);
 const compareText = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
 
 const assertPlainObject = (value, label) => {
@@ -71,15 +74,58 @@ const canonicalize = (value, ancestors) => {
 
 export const canonicalJson = (value) =>
   JSON.stringify(canonicalize(value, new Set()));
-
 export const sha256Hex = (bytes) =>
   createHash("sha256").update(bytes).digest("hex");
 
-export const deterministicGzip = (bytes) => {
+const normalizedGzip = (bytes) => {
   const compressed = gzipSync(bytes, { level: 9, mtime: 0 });
   compressed.writeUInt32LE(0, 4);
   compressed[9] = 255;
   return compressed;
+};
+
+const COMPRESSOR_GOLDEN_SHA256 =
+  "941a4bc214aa7c64e7774aef050f4e4fc0ed5a45220ebbcccf54a4b00d5314ee";
+const COMPRESSOR_INPUT_SHA256 =
+  "a8f45e88ab5d8f7d6a500500fbd27e8ecbbed4d7bc0f3dec76d98be7bafd778b";
+let compressorVerified = false;
+const createCompressorVector = () => {
+  let input;
+  let x = 0x12345678;
+  for (let n = 0; n <= 3; n += 1) {
+    input = Buffer.alloc((n * 7919) % 65537);
+    for (let index = 0; index < input.length; index += 1) {
+      x ^= x << 13;
+      x ^= x >>> 17;
+      x ^= x << 5;
+      x >>>= 0;
+      input[index] = (x + (index % 17 === 0 ? n : 0)) & 255;
+    }
+  }
+  return input;
+};
+
+const verifyCompressor = () => {
+  if (compressorVerified) return;
+  if (process.versions.node.split(".")[0] !== "22") {
+    throw new TypeError("deterministic compression requires Node 22");
+  }
+  const vector = createCompressorVector();
+  const compressed = normalizedGzip(vector);
+  if (
+    vector.length !== 23757 ||
+    sha256Hex(vector) !== COMPRESSOR_INPUT_SHA256 ||
+    compressed.length !== 23785 ||
+    sha256Hex(compressed) !== COMPRESSOR_GOLDEN_SHA256
+  ) {
+    throw new TypeError("Node 22 gzip compressor failed its golden self-check");
+  }
+  compressorVerified = true;
+};
+
+export const deterministicGzip = (bytes) => {
+  verifyCompressor();
+  return normalizedGzip(bytes);
 };
 
 const entryMetadata = ({ path, group, size, compressedSize, sha256 }) => ({
@@ -168,11 +214,11 @@ export const validateManifest = (manifest) => {
     throw new TypeError("manifest entries must be an array");
   }
 
-  const paths = new Set();
+  const objectMetadata = new Map();
   let previousPath;
   for (const [index, entry] of manifest.entries.entries()) {
     validateEntry(entry, index);
-    if (paths.has(entry.path))
+    if (previousPath === entry.path)
       throw new TypeError("duplicate manifest logical path");
     if (
       previousPath !== undefined &&
@@ -182,8 +228,13 @@ export const validateManifest = (manifest) => {
         "manifest entries must use stable logical-path ordering",
       );
     }
-    paths.add(entry.path);
     previousPath = entry.path;
+    const metadata = `${entry.size}:${entry.compressedSize}`;
+    const previousMetadata = objectMetadata.get(entry.sha256);
+    if (previousMetadata && previousMetadata !== metadata) {
+      throw new TypeError("content object has conflicting size metadata");
+    }
+    objectMetadata.set(entry.sha256, metadata);
   }
 
   const expectedVersion = deriveVersion(manifest.entries);
@@ -203,35 +254,141 @@ export const validateManifest = (manifest) => {
 
 const sourcePath = (sourceRoot) =>
   resolve(sourceRoot instanceof URL ? fileURLToPath(sourceRoot) : sourceRoot);
+const sameIdentity = (left, right) =>
+  left.dev === right.dev && left.ino === right.ino;
 
-const enumerateGroup = async ({ root, group }) => {
+const checkedRealpath = async (path, label) => {
+  try {
+    return await realpath(path);
+  } catch {
+    throw new TypeError(`${label} changed before canonical validation`);
+  }
+};
+const assertContained = (canonicalRoot, canonicalPath, label) => {
+  const pathFromRoot = relative(canonicalRoot, canonicalPath);
+  if (
+    pathFromRoot === ".." ||
+    pathFromRoot.startsWith(`..${sep}`) ||
+    isAbsolute(pathFromRoot)
+  ) {
+    throw new TypeError(`${label} violates canonical managed-root containment`);
+  }
+};
+
+const assertDirectoryGuards = async (guards) => {
+  for (const guard of guards) {
+    const current = await lstat(guard.path, { bigint: true });
+    if (
+      current.isSymbolicLink() ||
+      !current.isDirectory() ||
+      !sameIdentity(current, guard.stats)
+    ) {
+      throw new TypeError(`${guard.label} changed during manifest generation`);
+    }
+  }
+};
+
+const readManagedFile = async ({
+  absolutePath,
+  logicalPath,
+  expectedStats,
+  canonicalManagedRoot,
+  directoryGuards,
+  beforeFileOpen,
+}) => {
+  await beforeFileOpen?.({ absolutePath, logicalPath });
+  await assertDirectoryGuards(directoryGuards);
+  const canonicalBeforeOpen = await checkedRealpath(absolutePath, logicalPath);
+  assertContained(canonicalManagedRoot, canonicalBeforeOpen, logicalPath);
+  let handle;
+  try {
+    try {
+      handle = await open(absolutePath, FILE_OPEN_FLAGS);
+    } catch {
+      throw new TypeError(`${logicalPath} changed before secure open`);
+    }
+    const openedStats = await handle.stat({ bigint: true });
+    if (!openedStats.isFile() || !sameIdentity(openedStats, expectedStats)) {
+      throw new TypeError(`${logicalPath} is not the inspected regular file`);
+    }
+    const contents = await handle.readFile();
+    const currentStats = await lstat(absolutePath, { bigint: true });
+    if (
+      currentStats.isSymbolicLink() ||
+      !currentStats.isFile() ||
+      !sameIdentity(currentStats, openedStats)
+    ) {
+      throw new TypeError(`${logicalPath} changed after secure open`);
+    }
+    const canonicalAfterRead = await checkedRealpath(absolutePath, logicalPath);
+    assertContained(canonicalManagedRoot, canonicalAfterRead, logicalPath);
+    await assertDirectoryGuards(directoryGuards);
+    return contents;
+  } finally {
+    await handle?.close();
+  }
+};
+
+const enumerateGroup = async ({
+  root,
+  group,
+  rootGuard,
+  canonicalRoot,
+  beforeFileOpen,
+}) => {
   const entries = [];
-  const visit = async (relativeDirectory) => {
+  const visit = async (
+    relativeDirectory,
+    ancestorGuards,
+    canonicalGroupRoot,
+  ) => {
     const directoryPath = join(root, group, ...relativeDirectory);
-    const directoryStats = await lstat(directoryPath);
+    const directoryStats = await lstat(directoryPath, { bigint: true });
     if (directoryStats.isSymbolicLink() || !directoryStats.isDirectory()) {
       throw new TypeError(
         `${group}/${relativeDirectory.join("/")} must be a directory`,
       );
     }
+    const canonicalDirectory = await checkedRealpath(
+      directoryPath,
+      `${group} directory`,
+    );
+    assertContained(canonicalRoot, canonicalDirectory, `${group} directory`);
+    const managedRoot = canonicalGroupRoot ?? canonicalDirectory;
+    assertContained(managedRoot, canonicalDirectory, `${group} directory`);
+    const directoryGuards = [
+      ...ancestorGuards,
+      {
+        path: directoryPath,
+        stats: directoryStats,
+        label: `${group} directory`,
+      },
+    ];
     const children = await readdir(directoryPath, { withFileTypes: true });
     children.sort((left, right) => compareText(left.name, right.name));
     for (const child of children) {
       const relativeParts = [...relativeDirectory, child.name];
       const logicalPath = `${LOGICAL_ROOT}/${group}/${relativeParts.join("/")}`;
       const absolutePath = join(root, group, ...relativeParts);
-      const stats = await lstat(absolutePath);
+      const stats = await lstat(absolutePath, { bigint: true });
       if (stats.isSymbolicLink()) {
         throw new TypeError(`${logicalPath} is a symlink, not a regular file`);
       }
       if (stats.isDirectory()) {
-        await visit(relativeParts);
+        await visit(relativeParts, directoryGuards, managedRoot);
         continue;
       }
       if (!stats.isFile()) {
         throw new TypeError(`${logicalPath} is not a regular file`);
       }
-      const contents = await readFile(absolutePath);
+      const contents = await readManagedFile({
+        absolutePath,
+        logicalPath,
+        expectedStats: stats,
+        canonicalManagedRoot: managedRoot,
+        directoryGuards,
+        beforeFileOpen,
+      });
       const compressed = deterministicGzip(contents);
       entries.push({
         path: logicalPath,
@@ -242,24 +399,40 @@ const enumerateGroup = async ({ root, group }) => {
       });
     }
   };
-  await visit([]);
+  await visit([], [rootGuard]);
   return entries;
 };
 
-export const createManifest = async ({ sourceRoot }) => {
+export const createManifest = async (
+  { sourceRoot },
+  { beforeFileOpen } = {},
+) => {
   if (typeof sourceRoot !== "string" && !(sourceRoot instanceof URL)) {
     throw new TypeError("sourceRoot must be a path string or file URL");
   }
   const root = sourcePath(sourceRoot);
-  const rootStats = await lstat(root);
+  const rootStats = await lstat(root, { bigint: true });
   if (rootStats.isSymbolicLink()) {
     throw new TypeError("sourceRoot must not be a symlink");
   }
   if (!rootStats.isDirectory()) {
     throw new TypeError("sourceRoot must be a directory");
   }
+  const canonicalRoot = await checkedRealpath(root, "sourceRoot");
+  const rootGuard = { path: root, stats: rootStats, label: "sourceRoot" };
+  await assertDirectoryGuards([rootGuard]);
   const entries = (
-    await Promise.all(GROUPS.map((group) => enumerateGroup({ root, group })))
+    await Promise.all(
+      GROUPS.map((group) =>
+        enumerateGroup({
+          root,
+          group,
+          rootGuard,
+          canonicalRoot,
+          beforeFileOpen,
+        }),
+      ),
+    )
   )
     .flat()
     .sort((left, right) => compareText(left.path, right.path));
