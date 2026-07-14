@@ -3,6 +3,14 @@ name: Production Smoke
 on:
   workflow_dispatch:
     inputs:
+      profile:
+        description: "Smoke profile to run"
+        required: true
+        type: choice
+        options:
+          - full
+          - quick
+        default: full
       force_failure:
         description: "Force a smoke failure to test failure notifications"
         required: false
@@ -10,6 +18,7 @@ on:
         default: false
   schedule:
     - cron: "*/30 * * * *"
+    - cron: "17 3 * * *"
   workflow_run:
     workflows:
       - Deploy Web to Cloudflare Pages
@@ -20,6 +29,13 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: >-
+    ${{ github.event_name == 'schedule'
+      && 'production-smoke-scheduled'
+      || format('production-smoke-{0}-{1}', github.event_name, github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'schedule' }}
+
 jobs:
   smoke:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
@@ -27,10 +43,18 @@ jobs:
     env:
       MOSHI_WEBHOOK_TOKEN: ${{ secrets.MOSHI_WEBHOOK_TOKEN }}
       GROUND_CODES_SMOKE_FORCE_FAILURE: ${{ github.event.inputs.force_failure || 'false' }}
+      GROUND_CODES_SMOKE_PROFILE: >-
+        ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.profile
+          || github.event_name == 'schedule' && github.event.schedule == '*/30 * * * *' && 'quick'
+          || 'full' }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: scripts/production-smoke*.mjs
 
       - name: Setup Node.js
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
@@ -47,6 +71,7 @@ jobs:
         id: moshi
         if: steps.smoke.outcome == 'failure' && env.MOSHI_WEBHOOK_TOKEN != ''
         continue-on-error: true
+        timeout-minutes: 1
         run: node scripts/production-smoke-notify.mjs
 
       - name: Open smoke failure issue

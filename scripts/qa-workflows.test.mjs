@@ -336,8 +336,41 @@ describe("CI security gate order", () => {
 });
 
 describe("production smoke workflow triggers", () => {
+  const smokeWorkflow = readText("../.github/workflows/production-smoke.yml");
+  test("configures scheduled profiles and lean checkout", () => {
+    const schedule = indentedYamlBlock(smokeWorkflow, "schedule");
+    const profileInput = indentedYamlBlock(smokeWorkflow, "profile");
+    const checkoutStep = workflowStep(smokeWorkflow, "Checkout repository");
+    const smokeJob = indentedYamlBlock(smokeWorkflow, "smoke");
+    const concurrency = indentedYamlBlock(smokeWorkflow, "concurrency");
+    const profileOptions = [
+      ...profileInput.matchAll(/^\s+- ([^\s]+)\s*$/gm),
+    ].map((match) => match[1]);
+    const cronEntries = [
+      ...schedule.matchAll(/^\s+- cron: ["']([^"']+)["']\s*$/gm),
+    ].map((match) => match[1]);
+
+    assert.deepEqual(cronEntries, ["*/30 * * * *", "17 3 * * *"]);
+    assert.deepEqual(profileOptions, ["full", "quick"]);
+    assert.match(profileInput, /type: choice[\s\S]*default: full/);
+    for (const checkoutSetting of [
+      "fetch-depth: 1",
+      "sparse-checkout-cone-mode: false",
+      "sparse-checkout: scripts/production-smoke*.mjs",
+    ]) {
+      assert.ok(checkoutStep.includes(checkoutSetting));
+    }
+    assert.match(
+      smokeJob,
+      /GROUND_CODES_SMOKE_PROFILE:[\s\S]*github\.event_name == 'workflow_dispatch' && github\.event\.inputs\.profile[\s\S]*github\.event_name == 'schedule' && github\.event\.schedule == '\*\/30 \* \* \* \*' && 'quick'[\s\S]*\|\| 'full'/,
+    );
+    assert.match(
+      concurrency,
+      /github\.event_name == 'schedule'[\s\S]*production-smoke-scheduled[\s\S]*format\('production-smoke-\{0\}-\{1\}', github\.event_name, github\.run_id\)[\s\S]*cancel-in-progress: \$\{\{ github\.event_name == 'schedule' \}\}/,
+    );
+  });
+
   test("runs after web deployment and writes a step summary", () => {
-    const smokeWorkflow = readText("../.github/workflows/production-smoke.yml");
     const smokeScript = readText("./production-smoke.mjs");
 
     assert.match(smokeWorkflow, /workflow_run:/);
@@ -356,7 +389,6 @@ describe("production smoke workflow triggers", () => {
   });
 
   test("preserves the smoke outcome across independent notifications", () => {
-    const smokeWorkflow = readText("../.github/workflows/production-smoke.yml");
     const smokeStep = workflowStep(smokeWorkflow, "Run production smoke");
     const moshiStep = workflowStep(smokeWorkflow, "Notify smoke failure");
     const issueStep = workflowStep(smokeWorkflow, "Open smoke failure issue");
@@ -368,6 +400,7 @@ describe("production smoke workflow triggers", () => {
     assert.match(moshiStep, /steps\.smoke\.outcome == 'failure'/);
     assert.match(moshiStep, /^\s+id: moshi\s*$/m);
     assert.match(moshiStep, /^\s+continue-on-error: true\s*$/m);
+    assert.match(moshiStep, /^\s+timeout-minutes: 1\s*$/m);
     assert.match(moshiStep, /node scripts\/production-smoke-notify\.mjs/);
 
     assert.match(issueStep, /steps\.smoke\.outcome == 'failure'/);
