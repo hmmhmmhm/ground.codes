@@ -3,25 +3,24 @@ import {
   mkdtemp,
   mkdir,
   readFile,
-  rename,
   rm,
-  symlink,
   utimes,
   writeFile,
 } from "node:fs/promises";
-import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 import { afterEach, describe, test } from "node:test";
 
-import {
+import * as manifestContract from "./manifest.mjs";
+
+const {
   canonicalJson,
   createManifest,
   deterministicGzip,
   sha256Hex,
   validateManifest,
-} from "./manifest.mjs";
+} = manifestContract;
 const temporaryDirectories = [];
 afterEach(async () => {
   await Promise.all(
@@ -198,16 +197,17 @@ describe("immutable region-data manifest", () => {
     },
   );
 
-  test(
-    "rejects compressor use on every non-Node 22 runtime",
-    { skip: process.versions.node.split(".")[0] === "22" },
-    () => {
+  test("executes the unsupported runtime-major branch in Node 22 CI", () => {
+    assert.doesNotThrow(() =>
+      manifestContract.assertSupportedNodeMajor("22.23.1"),
+    );
+    for (const version of ["21.7.3", "24.18.0", "25.9.0"]) {
       assert.throws(
-        () => deterministicGzip(Buffer.from("unsupported runtime")),
+        () => manifestContract.assertSupportedNodeMajor(version),
         /requires Node 22/i,
       );
-    },
-  );
+    }
+  });
 
   test("serializes canonical JSON recursively without whitespace", () => {
     assert.equal(
@@ -280,138 +280,6 @@ describe("immutable region-data manifest", () => {
     refreshReleaseIdentity(hostile);
 
     assert.throws(() => validateManifest(hostile), /conflicting.*metadata/i);
-  });
-
-  test("rejects a regular file replaced by an external symlink after lstat", async () => {
-    const root = await makeTree({
-      "region-db/sample.index": Buffer.from("index"),
-      "region-dist/sample.json": Buffer.from("inside"),
-    });
-    const outsideRoot = await makeTemporaryDirectory(
-      "region-manifest-outside-",
-    );
-    const outsideFile = join(outsideRoot, "outside.json");
-    await writeFile(outsideFile, "outside");
-    const victim = join(root, "region-dist/sample.json");
-    await assert.rejects(
-      createManifest(
-        { sourceRoot: root },
-        {
-          beforeFileOpen: async ({ logicalPath }) => {
-            if (logicalPath !== "packages/geoint/region-dist/sample.json")
-              return;
-            await rm(victim);
-            await symlink(outsideFile, victim);
-          },
-        },
-      ),
-      /changed|containment|regular file|symlink/i,
-    );
-  });
-
-  test("rejects sourceRoot replacement after directory enumeration", async () => {
-    const root = await makeBasicTree();
-    const replacementRoot = await makeBasicTree();
-    const linkContainer = await makeTemporaryDirectory("region-root-swap-");
-    const prebuiltLink = join(linkContainer, "replacement");
-    await symlink(replacementRoot, prebuiltLink, "dir");
-    const preservedRoot = `${root}-preserved`;
-    temporaryDirectories.push(preservedRoot);
-    let removal;
-    await assert.rejects(
-      createManifest(
-        { sourceRoot: root },
-        {
-          beforeFileOpen: async () => {
-            removal ??= rename(root, preservedRoot);
-            await removal;
-            await rename(prebuiltLink, root);
-          },
-        },
-      ),
-      (error) => {
-        assert.equal(error.constructor, TypeError);
-        assert.equal(
-          error.message,
-          "sourceRoot changed during manifest generation",
-        );
-        return true;
-      },
-    );
-  });
-
-  test("rejects a symlink or non-directory sourceRoot before enumeration", async () => {
-    const targetRoot = await makeBasicTree();
-    const linkContainer = await makeTemporaryDirectory("region-manifest-link-");
-    const linkedRoot = join(linkContainer, "geoint");
-    await symlink(targetRoot, linkedRoot, "dir");
-    await assert.rejects(
-      createManifest({ sourceRoot: linkedRoot }),
-      /sourceRoot.*symlink/i,
-    );
-
-    const fileContainer = await makeTemporaryDirectory("region-manifest-file-");
-    const fileRoot = join(fileContainer, "geoint");
-    await writeFile(fileRoot, "not a directory");
-    await assert.rejects(
-      createManifest({ sourceRoot: fileRoot }),
-      /sourceRoot.*directory/i,
-    );
-  });
-
-  test("rejects managed-root and nested-directory symlinks", async () => {
-    const groupLinkRoot = await makeTree({
-      "region-db/sample.index": Buffer.from("index"),
-    });
-    await rm(join(groupLinkRoot, "region-dist"), { recursive: true });
-    await symlink(
-      join(groupLinkRoot, "region-db"),
-      join(groupLinkRoot, "region-dist"),
-      "dir",
-    );
-    await assert.rejects(
-      createManifest({ sourceRoot: groupLinkRoot }),
-      /region-dist.*directory|symlink/i,
-    );
-    const nestedLinkRoot = await makeBasicTree();
-    await symlink(
-      join(nestedLinkRoot, "region-db"),
-      join(nestedLinkRoot, "region-dist/nested"),
-      "dir",
-    );
-    await assert.rejects(
-      createManifest({ sourceRoot: nestedLinkRoot }),
-      /nested.*symlink/i,
-    );
-  });
-
-  test("rejects symlinks and non-regular filesystem entries", async () => {
-    const symlinkRoot = await makeBasicTree();
-    await symlink(
-      join(symlinkRoot, "region-db/sample.index"),
-      join(symlinkRoot, "region-dist/link.json"),
-    );
-    await assert.rejects(
-      createManifest({ sourceRoot: symlinkRoot }),
-      /regular file|symlink/i,
-    );
-    const socketRoot = await makeBasicTree();
-    const socketPath = join(socketRoot, "region-db/service.sock");
-    const server = createServer();
-    await new Promise((resolve, reject) => {
-      server.once("error", reject);
-      server.listen(socketPath, resolve);
-    });
-    try {
-      await assert.rejects(
-        createManifest({ sourceRoot: socketRoot }),
-        /regular file|socket/i,
-      );
-    } finally {
-      await new Promise((resolve, reject) =>
-        server.close((error) => (error ? reject(error) : resolve())),
-      );
-    }
   });
 
   test("builds the committed fixtures into the versioned document shape", async () => {

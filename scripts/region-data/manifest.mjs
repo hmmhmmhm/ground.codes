@@ -1,18 +1,17 @@
 import { createHash } from "node:crypto";
-import { constants } from "node:fs";
-import { lstat, open, readdir, realpath } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
-import { isAbsolute, join, posix, relative, resolve, sep } from "node:path";
+import { isAbsolute, posix, resolve } from "node:path";
 import { gzipSync } from "node:zlib";
 
+import {
+  enumerateManagedFiles,
+  MANAGED_GROUPS,
+} from "./manifest-filesystem.mjs";
+
 const SCHEMA_VERSION = 1;
-const LOGICAL_ROOT = "packages/geoint";
-const GROUPS = ["region-dist", "region-db"];
+const GROUPS = MANAGED_GROUPS;
 const SHA256_PATTERN = /^[a-f0-9]{64}$/;
 const VERSION_PATTERN = /^sha256-[a-f0-9]{64}$/;
-const FILE_OPEN_FLAGS =
-  constants.O_RDONLY |
-  (Number.isInteger(constants.O_NOFOLLOW) ? constants.O_NOFOLLOW : 0);
 const compareText = (left, right) => (left < right ? -1 : left > right ? 1 : 0);
 
 const assertPlainObject = (value, label) => {
@@ -106,9 +105,7 @@ const createCompressorVector = () => {
 
 const verifyCompressor = () => {
   if (compressorVerified) return;
-  if (process.versions.node.split(".")[0] !== "22") {
-    throw new TypeError("deterministic compression requires Node 22");
-  }
+  assertSupportedNodeMajor(process.versions.node);
   const vector = createCompressorVector();
   const compressed = normalizedGzip(vector);
   if (
@@ -120,6 +117,11 @@ const verifyCompressor = () => {
     throw new TypeError("Node 22 gzip compressor failed its golden self-check");
   }
   compressorVerified = true;
+};
+export const assertSupportedNodeMajor = (version) => {
+  if (typeof version !== "string" || version.split(".")[0] !== "22") {
+    throw new TypeError("deterministic compression requires Node 22");
+  }
 };
 export const deterministicGzip = (bytes) => {
   verifyCompressor();
@@ -251,189 +253,30 @@ export const validateManifest = (manifest) => {
 
 const sourcePath = (sourceRoot) =>
   resolve(sourceRoot instanceof URL ? fileURLToPath(sourceRoot) : sourceRoot);
-const sameIdentity = (left, right) =>
-  left.dev === right.dev && left.ino === right.ino;
 
-const checkedLstat = (path, label) =>
-  lstat(path, { bigint: true }).catch(() => {
-    throw new TypeError(`${label} changed during manifest generation`);
-  });
-const checkedRealpath = (path, label) =>
-  realpath(path).catch(() => {
-    throw new TypeError(`${label} changed before canonical validation`);
-  });
-const assertContained = (canonicalRoot, canonicalPath, label) => {
-  const pathFromRoot = relative(canonicalRoot, canonicalPath);
-  if (
-    pathFromRoot === ".." ||
-    pathFromRoot.startsWith(`..${sep}`) ||
-    isAbsolute(pathFromRoot)
-  ) {
-    throw new TypeError(`${label} violates canonical managed-root containment`);
+export const createManifest = async (
+  { sourceRoot },
+  { beforeDirectoryRead, beforeFileOpen } = {},
+) => {
+  if (typeof sourceRoot !== "string" && !(sourceRoot instanceof URL)) {
+    throw new TypeError("sourceRoot must be a path string or file URL");
   }
-};
-
-const assertDirectoryGuards = async (guards) => {
-  for (const guard of guards) {
-    const current = await checkedLstat(guard.path, guard.label);
-    if (
-      current.isSymbolicLink() ||
-      !current.isDirectory() ||
-      !sameIdentity(current, guard.stats)
-    ) {
-      throw new TypeError(`${guard.label} changed during manifest generation`);
-    }
-  }
-};
-
-const readManagedFile = async ({
-  absolutePath,
-  logicalPath,
-  expectedStats,
-  canonicalManagedRoot,
-  directoryGuards,
-  beforeFileOpen,
-}) => {
-  await beforeFileOpen?.({ absolutePath, logicalPath });
-  await assertDirectoryGuards(directoryGuards);
-  const canonicalBeforeOpen = await checkedRealpath(absolutePath, logicalPath);
-  assertContained(canonicalManagedRoot, canonicalBeforeOpen, logicalPath);
-  let handle;
-  try {
-    try {
-      handle = await open(absolutePath, FILE_OPEN_FLAGS);
-    } catch {
-      throw new TypeError(`${logicalPath} changed before secure open`);
-    }
-    const openedStats = await handle.stat({ bigint: true });
-    if (!openedStats.isFile() || !sameIdentity(openedStats, expectedStats)) {
-      throw new TypeError(`${logicalPath} is not the inspected regular file`);
-    }
-    const contents = await handle.readFile();
-    const currentStats = await checkedLstat(absolutePath, logicalPath);
-    if (
-      currentStats.isSymbolicLink() ||
-      !currentStats.isFile() ||
-      !sameIdentity(currentStats, openedStats)
-    ) {
-      throw new TypeError(`${logicalPath} changed after secure open`);
-    }
-    const canonicalAfterRead = await checkedRealpath(absolutePath, logicalPath);
-    assertContained(canonicalManagedRoot, canonicalAfterRead, logicalPath);
-    await assertDirectoryGuards(directoryGuards);
-    return contents;
-  } finally {
-    await handle?.close();
-  }
-};
-
-const enumerateGroup = async ({
-  root,
-  group,
-  rootGuard,
-  canonicalRoot,
-  beforeFileOpen,
-}) => {
   const entries = [];
-  const visit = async (
-    relativeDirectory,
-    ancestorGuards,
-    canonicalGroupRoot,
-  ) => {
-    const directoryPath = join(root, group, ...relativeDirectory);
-    const directoryStats = await checkedLstat(
-      directoryPath,
-      `${group} directory`,
-    );
-    if (directoryStats.isSymbolicLink() || !directoryStats.isDirectory()) {
-      throw new TypeError(
-        `${group}/${relativeDirectory.join("/")} must be a directory`,
-      );
-    }
-    const canonicalDirectory = await checkedRealpath(
-      directoryPath,
-      `${group} directory`,
-    );
-    assertContained(canonicalRoot, canonicalDirectory, `${group} directory`);
-    const managedRoot = canonicalGroupRoot ?? canonicalDirectory;
-    assertContained(managedRoot, canonicalDirectory, `${group} directory`);
-    const directoryGuards = [
-      ...ancestorGuards,
-      {
-        path: directoryPath,
-        stats: directoryStats,
-        label: `${group} directory`,
-      },
-    ];
-    const children = await readdir(directoryPath, { withFileTypes: true });
-    children.sort((left, right) => compareText(left.name, right.name));
-    for (const child of children) {
-      const relativeParts = [...relativeDirectory, child.name];
-      const logicalPath = `${LOGICAL_ROOT}/${group}/${relativeParts.join("/")}`;
-      const absolutePath = join(root, group, ...relativeParts);
-      const stats = await checkedLstat(absolutePath, logicalPath);
-      if (stats.isSymbolicLink()) {
-        throw new TypeError(`${logicalPath} is a symlink, not a regular file`);
-      }
-      if (stats.isDirectory()) {
-        await visit(relativeParts, directoryGuards, managedRoot);
-        continue;
-      }
-      if (!stats.isFile()) {
-        throw new TypeError(`${logicalPath} is not a regular file`);
-      }
-      const contents = await readManagedFile({
-        absolutePath,
-        logicalPath,
-        expectedStats: stats,
-        canonicalManagedRoot: managedRoot,
-        directoryGuards,
-        beforeFileOpen,
-      });
+  await enumerateManagedFiles({
+    root: sourcePath(sourceRoot),
+    beforeDirectoryRead,
+    beforeFileOpen,
+    onFile: ({ path, group, contents }) => {
       const compressed = deterministicGzip(contents);
       entries.push({
-        path: logicalPath,
+        path,
         group,
         size: contents.length,
         compressedSize: compressed.length,
         sha256: sha256Hex(contents),
       });
-    }
-  };
-  await visit([], [rootGuard]);
-  return entries;
-};
-
-export const createManifest = async (
-  { sourceRoot },
-  { beforeFileOpen } = {},
-) => {
-  if (typeof sourceRoot !== "string" && !(sourceRoot instanceof URL)) {
-    throw new TypeError("sourceRoot must be a path string or file URL");
-  }
-  const root = sourcePath(sourceRoot);
-  const rootStats = await checkedLstat(root, "sourceRoot");
-  if (rootStats.isSymbolicLink()) {
-    throw new TypeError("sourceRoot must not be a symlink");
-  }
-  if (!rootStats.isDirectory()) {
-    throw new TypeError("sourceRoot must be a directory");
-  }
-  const canonicalRoot = await checkedRealpath(root, "sourceRoot");
-  const rootGuard = { path: root, stats: rootStats, label: "sourceRoot" };
-  await assertDirectoryGuards([rootGuard]);
-  const entries = [];
-  for (const group of GROUPS) {
-    entries.push(
-      ...(await enumerateGroup({
-        root,
-        group,
-        rootGuard,
-        canonicalRoot,
-        beforeFileOpen,
-      })),
-    );
-  }
+    },
+  });
   entries.sort((left, right) => compareText(left.path, right.path));
   const version = deriveVersion(entries);
   const manifest = {
