@@ -16,6 +16,7 @@ node_modules
 coverage
 apps/web/test-results/
 dogfood-output/
+.region-data-staging/
 
 # Turbo
 .turbo

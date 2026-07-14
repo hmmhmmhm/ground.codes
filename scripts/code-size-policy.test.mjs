@@ -140,6 +140,9 @@ describe("code size policy", () => {
       "scripts/region-data/manifest-compressor.test.mjs",
       "scripts/region-data/manifest-filesystem.mjs",
       "scripts/region-data/manifest-filesystem.test.mjs",
+      "scripts/region-data/generate-release.mjs",
+      "scripts/region-data/generate-release.test.mjs",
+      "scripts/generate-region-data-release.mjs",
     ];
 
     assert.deepEqual(
