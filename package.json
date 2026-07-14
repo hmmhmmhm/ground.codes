@@ -32,6 +32,7 @@
     "github:governance:apply": "node scripts/configure-github-governance.mjs --apply",
     "github:governance:verify": "node scripts/configure-github-governance.mjs --verify",
     "region-data:generate": "node scripts/generate-region-data-release.mjs --source packages/geoint --staging .region-data-staging --pointer-out packages/geoint/region-data-release.json",
+    "region-data:publish": "node scripts/publish-region-data.mjs --staging .region-data-staging --pointer packages/geoint/region-data-release.json",
     "region-data:sync": "node scripts/sync-region-data.mjs --groups region-dist,region-db",
     "region-data:sync:ci": "node scripts/sync-region-data.mjs --groups region-dist,region-db --prune",
     "scripts:test": "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs",
@@ -45,6 +46,7 @@
     ]
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "3.1085.0",
     "c8": "11.0.0",
     "husky": "9.1.7",
     "lint-staged": "15.5.0",
