@@ -51,6 +51,15 @@ describe("region dataset resolver", () => {
     assert.throws(
       () =>
         getRegionDatasetName({
+          body: "earth",
+          regionLevel: 4,
+          language: "english",
+        }),
+      /Invalid region level: 4/,
+    );
+    assert.throws(
+      () =>
+        getRegionDatasetName({
           body: "moon",
           regionLevel: 3,
           language: "english",
@@ -74,6 +83,15 @@ describe("region dataset resolver", () => {
           language: "not-supported" as never,
         }),
       /Invalid language: not-supported/,
+    );
+    assert.throws(
+      () =>
+        getRegionDatasetName({
+          body: "pluto" as never,
+          regionLevel: 2,
+          language: "english",
+        }),
+      /Invalid celestial body: pluto/,
     );
   });
 });

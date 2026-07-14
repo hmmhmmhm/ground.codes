@@ -8,6 +8,13 @@ import {
   findRegionByCodeOrName,
   findRegionsByQuery,
 } from "../src/index.js";
+import {
+  calculateDistance,
+  findClosestInRegions,
+  toRadians,
+  toRegionResult,
+} from "../src/region-geometry.js";
+import type { Region } from "../src/region-types.js";
 
 const assertClose = (actual: number, expected: number, tolerance: number) => {
   assert.ok(
@@ -17,6 +24,133 @@ const assertClose = (actual: number, expected: number, tolerance: number) => {
 };
 
 describe("region fallback", () => {
+  test("returns null when the supplied region collection is empty", () => {
+    assert.equal(
+      findClosestInRegions({ lat: 0, lng: 0 }, [], 2, "earth"),
+      null,
+    );
+  });
+
+  test("selects the closest region and exposes a public result", () => {
+    const regions: Region[] = [
+      {
+        name: "Near",
+        code: "NEAR",
+        lat: 0,
+        long: 1,
+        population: 5_000,
+        countryCode: "AA",
+      },
+      {
+        name: "Far",
+        code: "FAR",
+        lat: 20,
+        long: 20,
+        population: 10_000,
+        countryCode: "BB",
+      },
+    ];
+
+    const closest = findClosestInRegions(
+      { lat: 0, lng: 0 },
+      regions,
+      2,
+      "moon",
+    );
+
+    assert.ok(closest);
+    assert.equal(closest.name, "Near");
+    assert.equal(closest.body, "moon");
+    assert.equal(closest.regionLevel, 2);
+    assert.equal(closest.population, 5_000);
+    assert.equal(closest.countryCode, "AA");
+    assert.ok((closest.distanceKm ?? Infinity) > 0);
+    assert.deepEqual(toRegionResult(closest), {
+      name: "Near",
+      code: "NEAR",
+      lat: 0,
+      lng: 1,
+      body: "moon",
+      regionLevel: 2,
+      distanceKm: closest.distanceKm,
+      population: 5_000,
+    });
+  });
+
+  test("prefers a nearby prominent city over a closer satellite", () => {
+    const closest = findClosestInRegions(
+      { lat: 37.5, lng: 127 },
+      [
+        {
+          name: "Satellite",
+          code: "SAT",
+          lat: 37.5,
+          long: 127.01,
+          population: 200_000,
+          countryCode: "KR",
+        },
+        {
+          name: "Metropolis",
+          code: "MET",
+          lat: 37.5,
+          long: 127.013,
+          population: 5_000_000,
+          countryCode: "KR",
+        },
+        {
+          name: "Capital",
+          code: "CAP",
+          lat: 37.5,
+          long: 127.014,
+          population: 7_000_000,
+          countryCode: "KR",
+        },
+      ],
+      2,
+      "earth",
+    );
+
+    assert.equal(closest?.name, "Capital");
+  });
+
+  test("keeps the closest region when prominent-city rules do not apply", () => {
+    const closest = findClosestInRegions(
+      { lat: 0, lng: 0 },
+      [
+        {
+          name: "Closest",
+          code: "CLOSE",
+          lat: 0,
+          long: 0.01,
+          population: 900_000,
+          countryCode: "AA",
+        },
+        {
+          name: "Other country",
+          code: "OTHER",
+          lat: 0,
+          long: 0.011,
+          population: 9_000_000,
+          countryCode: "BB",
+        },
+      ],
+      2,
+      "earth",
+    );
+
+    assert.equal(closest?.name, "Closest");
+  });
+
+  test("computes great-circle distances with the selected body radius", () => {
+    assert.equal(toRadians(180), Math.PI);
+    assert.equal(calculateDistance(0, 0, 0, 0), 0);
+    assert.ok(calculateDistance(0, 0, 0, 1, "moon") > 0);
+    assert.ok(
+      calculateDistance(0, 0, 0, 1, "moon") <
+        calculateDistance(0, 0, 0, 1, "earth"),
+    );
+  });
+
   test("uses a region-3 ocean label when it is the nearest sparse fallback", async () => {
     const region = await findClosestRegion(
       { lat: -53, lng: -133 },
