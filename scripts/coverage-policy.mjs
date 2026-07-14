@@ -56,10 +56,17 @@ const mergeHits = (metrics, key, hits) => {
   metrics.set(key, Math.max(previous, hits));
 };
 
-const createRecord = () => ({
+const COVERAGE_FIELDS = ["lines", "functions", "branches"];
+
+const createMetrics = () => ({
   lines: new Map(),
   functions: new Map(),
   branches: new Map(),
+});
+
+const createRecord = () => ({
+  ...createMetrics(),
+  summaryOnly: { lines: null, functions: null, branches: null },
 });
 
 const parseInteger = (value, { positive = false } = {}) => {
@@ -79,38 +86,59 @@ const requireActiveRecord = (active, type) => {
   if (!active) throw new Error(`${type} record before SF`);
 };
 
-const SUMMARY_DETAILS = {
-  FNF: ["functions", false],
-  FNH: ["functions", true],
-  LF: ["lines", false],
-  LH: ["lines", true],
-  BRF: ["branches", false],
-  BRH: ["branches", true],
-};
+const SUMMARY_PAIRS = [
+  ["FNF", "FNH", "functions"],
+  ["LF", "LH", "lines"],
+  ["BRF", "BRH", "branches"],
+];
+
+const metricLabel = (metric) =>
+  metric === "branches" ? "branch" : metric.slice(0, -1);
+
+const unsafeSummaryMerge = (metric) =>
+  new Error(`cannot safely merge summary-only ${metricLabel(metric)} coverage`);
 
 const commitBlock = (active) => {
-  for (const [total, hit] of [
-    ["FNF", "FNH"],
-    ["LF", "LH"],
-    ["BRF", "BRH"],
-  ]) {
-    if (active.summaries.has(total) !== active.summaries.has(hit)) {
-      throw new Error(`incomplete ${total}/${hit} summary pair`);
+  for (const [totalType, hitType, metric] of SUMMARY_PAIRS) {
+    const hasTotal = active.summaries.has(totalType);
+    const hasHit = active.summaries.has(hitType);
+    if (hasTotal !== hasHit) {
+      throw new Error(`incomplete ${totalType}/${hitType} summary pair`);
     }
-  }
+    if (!hasTotal) continue;
 
-  for (const [type, declared] of active.summaries) {
-    const [metric, coveredOnly] = SUMMARY_DETAILS[type];
+    const total = active.summaries.get(totalType);
+    const covered = active.summaries.get(hitType);
+    if (covered > total)
+      throw new Error(`${hitType} summary hits exceed total`);
     const details = active.details[metric];
-    const expected = coveredOnly
-      ? [...details.values()].filter((hits) => hits > 0).length
-      : details.size;
-    if (declared !== expected) {
-      throw new Error(`${type} summary does not match detailed records`);
+    if (details.size > 0) {
+      const detailHits = [...details.values()].filter(
+        (hits) => hits > 0,
+      ).length;
+      if (total !== details.size) {
+        throw new Error(`${totalType} summary does not match detailed records`);
+      }
+      if (covered !== detailHits) {
+        throw new Error(`${hitType} summary does not match detailed records`);
+      }
+      if (active.record.summaryOnly[metric]) throw unsafeSummaryMerge(metric);
+    } else {
+      if (active.record[metric].size > 0) throw unsafeSummaryMerge(metric);
+      const previous = active.record.summaryOnly[metric];
+      if (previous && previous.total !== total)
+        throw unsafeSummaryMerge(metric);
+      active.record.summaryOnly[metric] = {
+        total,
+        covered: Math.max(previous?.covered ?? 0, covered),
+      };
     }
   }
 
-  for (const metric of ["lines", "functions", "branches"]) {
+  for (const metric of COVERAGE_FIELDS) {
+    if (active.details[metric].size > 0 && active.record.summaryOnly[metric]) {
+      throw unsafeSummaryMerge(metric);
+    }
     for (const [key, hits] of active.details[metric]) {
       mergeHits(active.record[metric], key, hits);
     }
@@ -147,7 +175,7 @@ export const parseLcov = (lcov, { repositoryRoot = process.cwd() } = {}) => {
       records.set(source, record);
       active = {
         record,
-        details: createRecord(),
+        details: createMetrics(),
         functionKeys: new Map(),
         functionOccurrences: new Map(),
         summaries: new Map(),
@@ -233,14 +261,12 @@ const metricSummary = (records, metric) => {
   let total = 0;
 
   for (const record of records) {
-    const entries =
-      metric === "line"
-        ? record.lines
-        : metric === "function"
-          ? record.functions
-          : record.branches;
+    const field = `${metric}${metric === "branch" ? "es" : "s"}`;
+    const entries = record[field];
     total += entries.size;
     covered += [...entries.values()].filter((hits) => hits > 0).length;
+    total += record.summaryOnly[field]?.total ?? 0;
+    covered += record.summaryOnly[field]?.covered ?? 0;
   }
 
   return { covered, total, ratio: total === 0 ? null : covered / total };
