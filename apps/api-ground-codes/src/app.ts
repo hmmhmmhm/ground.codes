@@ -38,10 +38,11 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
     typeof portOrOptions === "object" ? portOrOptions : { port: portOrOptions };
   const rateLimit =
     "rateLimit" in options ? options.rateLimit : getDefaultRateLimit();
+  const metricsEndpoint = createMetricsEndpoint(options.metrics);
 
   const app = new Elysia({ aot: false })
+    .use(metricsEndpoint)
     .onError(({ error, code, set }) => formatApiError(error, code, set))
-    .use(createMetricsEndpoint(options.metrics))
     .use(createCorsEndpoint(options.corsOrigins))
     .use(createRateLimitEndpoint(rateLimit))
     .use(swaggerRedirectEndpoint)
@@ -53,6 +54,19 @@ export const createApp = (portOrOptions?: string | number | AppOptions) => {
     .use(v1Endpoints)
     .use(legacyEndpoints)
     .use(codeEndpoint);
+
+  const fetch = app.fetch;
+  const handle = async (request: Request) => {
+    const response = await fetch(request);
+    metricsEndpoint.completeResponse(request, response);
+    return response;
+  };
+  Object.defineProperty(app, "fetch", {
+    value: handle,
+    configurable: true,
+    writable: true,
+  });
+  app.handle = handle;
 
   return options.port === undefined ? app : app.listen(options.port);
 };

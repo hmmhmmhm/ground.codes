@@ -55,9 +55,6 @@ const getStatusCode = (status: unknown): string => {
 const getRouteLabel = (request: Request, matchedRoute: string | undefined) =>
   matchedRoute || (request.method === "OPTIONS" ? "/*" : "<unmatched>");
 
-const getFinalStatus = (response: unknown, setStatus: unknown) =>
-  response instanceof Response ? response.status : setStatus;
-
 const recordRequest = (
   requestMetrics: RequestMetricsSnapshot,
   request: Request,
@@ -137,6 +134,7 @@ export const createMetricsEndpoint = (options: MetricsOptions = {}) => {
     routes: {},
   };
   const requestStartTimes = new WeakMap<Request, number>();
+  const requestRoutes = new WeakMap<Request, string | undefined>();
 
   const completeRequest = (
     request: Request,
@@ -147,6 +145,7 @@ export const createMetricsEndpoint = (options: MetricsOptions = {}) => {
     if (startedAt === undefined) return;
 
     requestStartTimes.delete(request);
+    requestRoutes.delete(request);
     recordRequest(
       requestMetrics,
       request,
@@ -157,13 +156,16 @@ export const createMetricsEndpoint = (options: MetricsOptions = {}) => {
     );
   };
 
-  return new Elysia()
+  const endpoint = new Elysia()
     .onRequest(({ request }) => {
       startedAtMs ??= clock.nowMs();
       requestStartTimes.set(request, clock.monotonicMs());
     })
-    .onAfterResponse({ as: "global" }, ({ request, response, route, set }) => {
-      completeRequest(request, route, getFinalStatus(response, set.status));
+    .onAfterHandle({ as: "global" }, ({ request, route }) => {
+      requestRoutes.set(request, route);
+    })
+    .onError({ as: "global" }, ({ request, route }) => {
+      requestRoutes.set(request, route);
     })
     .get("/metrics", ({ set }) => {
       set.headers["cache-control"] = "no-store";
@@ -194,4 +196,10 @@ export const createMetricsEndpoint = (options: MetricsOptions = {}) => {
         regionLoads: getRegionLoadMetrics(),
       };
     });
+
+  return Object.assign(endpoint, {
+    completeResponse(request: Request, response: Response) {
+      completeRequest(request, requestRoutes.get(request), response.status);
+    },
+  });
 };

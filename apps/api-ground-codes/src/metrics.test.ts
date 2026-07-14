@@ -2,9 +2,6 @@ import { describe, expect, test } from "bun:test";
 import { createApp } from "./app.js";
 import type { RequestCompletionLog } from "./endpoints/metrics.js";
 
-const waitForAfterResponse = () =>
-  new Promise<void>((resolve) => setImmediate(resolve));
-
 const assertFiniteNumbers = (value: unknown): void => {
   if (typeof value === "number") {
     expect(Number.isFinite(value)).toBe(true);
@@ -40,7 +37,6 @@ describe("operational metrics clock", () => {
     wallMs = firstRequestAtMs;
     monotonicMs = 1_000;
     await app.handle(new Request("http://localhost/healthz"));
-    await waitForAfterResponse();
 
     wallMs = firstRequestAtMs + 600;
     const firstResponse = await app.handle(
@@ -58,7 +54,6 @@ describe("operational metrics clock", () => {
     wallMs = firstRequestAtMs + 5_400;
     monotonicMs += 5_400;
     await app.handle(new Request("http://localhost/readyz"));
-    await waitForAfterResponse();
 
     const secondResponse = await app.handle(
       new Request("http://localhost/metrics"),
@@ -77,7 +72,20 @@ describe("operational metrics clock", () => {
 });
 
 describe("request completion logs", () => {
-  test("passes the structured record object to the production console writer", async () => {
+  test("completes requests through both server and Worker entrypoints", async () => {
+    const records: RequestCompletionLog[] = [];
+    const app = createApp({
+      rateLimit: null,
+      metrics: { writeLog: (record) => records.push(record) },
+    });
+
+    await app.fetch(new Request("http://localhost/healthz"));
+    await app.handle(new Request("http://localhost/readyz"));
+
+    expect(records.map(({ route }) => route)).toEqual(["/healthz", "/readyz"]);
+  });
+
+  test("writes the structured record before the Worker response resolves", async () => {
     const originalConsoleLog = console.log;
     const consoleCalls: unknown[][] = [];
     console.log = (...args: unknown[]) => {
@@ -89,7 +97,6 @@ describe("request completion logs", () => {
       const response = await app.handle(
         new Request("http://localhost/healthz"),
       );
-      await waitForAfterResponse();
 
       expect(response.status).toBe(200);
       expect(consoleCalls).toHaveLength(1);
@@ -166,8 +173,6 @@ describe("request completion logs", () => {
         }),
       }),
     );
-    await waitForAfterResponse();
-
     expect(encodeResponse.status).toBe(400);
     expect(searchResponse.status).toBe(400);
     expect(encodedLogs).toHaveLength(2);
@@ -232,8 +237,6 @@ describe("request completion logs", () => {
     const response = await app.handle(
       new Request(`http://localhost/${pathSentinel}`),
     );
-    await waitForAfterResponse();
-
     expect(encodedLogs).toHaveLength(1);
     expect(encodedLogs[0]).not.toContain(pathSentinel);
     expect(JSON.parse(encodedLogs[0])).toEqual({
@@ -266,8 +269,6 @@ describe("request completion logs", () => {
         },
       }),
     );
-    await waitForAfterResponse();
-
     expect(response.status).toBe(204);
     expect(response.headers.get("access-control-allow-origin")).toBe(
       "https://allowed.example",
@@ -303,8 +304,6 @@ describe("request completion logs", () => {
 
     const firstResponse = await app.handle(request());
     const limitedResponse = await app.handle(request());
-    await waitForAfterResponse();
-
     expect(firstResponse.status).toBe(200);
     expect(limitedResponse.status).toBe(429);
     expect(records).toHaveLength(2);
@@ -338,8 +337,6 @@ describe("request completion logs", () => {
     const response = await app.handle(
       new Request("http://localhost/openapi/json"),
     );
-    await waitForAfterResponse();
-
     expect(response.status).toBe(302);
     expect(records).toHaveLength(1);
     expect(records[0]).toMatchObject({
