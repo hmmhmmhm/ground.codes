@@ -72,8 +72,23 @@ const formatTarget = (target) => {
   ].join(" ");
 };
 
+const formatBaselineMetric = (metric) =>
+  `${metric.covered}/${metric.total}=${String(metric.ratio)}`;
+
+const formatBaselineTarget = (target) => {
+  if (!target.ok) return `${target.name} FAIL ${target.errors.join("; ")}`;
+  return [
+    target.name,
+    "baseline",
+    `line=${formatBaselineMetric(target.metrics.line)}`,
+    `function=${formatBaselineMetric(target.metrics.function)}`,
+    `branch=${formatBaselineMetric(target.metrics.branch)}`,
+  ].join(" ");
+};
+
 export const runCoverageCheck = ({
   repositoryRoot = process.cwd(),
+  reportBaseline = false,
   write = console.log,
 } = {}) => {
   const policyFile = resolve(repositoryRoot, POLICY_PATH);
@@ -125,7 +140,21 @@ export const runCoverageCheck = ({
 
   let result;
   try {
-    result = evaluateCoveragePolicy(policy, {
+    const evaluationPolicy = reportBaseline
+      ? {
+          ...policy,
+          targets: Object.fromEntries(
+            Object.entries(policy.targets).map(([name, target]) => [
+              name,
+              {
+                ...target,
+                minimum: { line: 0, function: 0, branch: 0 },
+              },
+            ]),
+          ),
+        }
+      : policy;
+    result = evaluateCoveragePolicy(evaluationPolicy, {
       repositoryRoot,
       reports,
       reportErrors,
@@ -136,7 +165,8 @@ export const runCoverageCheck = ({
     return 1;
   }
 
-  for (const target of result.targets) write(formatTarget(target));
+  const formatter = reportBaseline ? formatBaselineTarget : formatTarget;
+  for (const target of result.targets) write(formatter(target));
   return result.ok ? 0 : 1;
 };
 
@@ -144,4 +174,8 @@ const isDirectRun =
   process.argv[1] &&
   resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
-if (isDirectRun) process.exitCode = runCoverageCheck();
+if (isDirectRun) {
+  process.exitCode = runCoverageCheck({
+    reportBaseline: process.argv.includes("--report-baseline"),
+  });
+}
