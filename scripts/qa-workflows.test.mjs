@@ -145,6 +145,44 @@ describe("CI security gate order", () => {
   });
 });
 
+describe("CI coverage gate", () => {
+  test("runs the authoritative uncached coverage command after tests and before build", () => {
+    const ciWorkflow = readText("../.github/workflows/ci.yml");
+    const verifyJob = indentedYamlBlock(ciWorkflow, "verify");
+    const coverageStep = workflowStep(ciWorkflow, "Enforce coverage policy");
+    const rootPackage = readJson("../package.json");
+    const turbo = readJson("../turbo.json");
+
+    assert.equal(rootPackage.scripts.coverage, "node scripts/run-coverage.mjs");
+    assert.match(coverageStep, /^\s+run: pnpm coverage\s*$/m);
+    assert.doesNotMatch(rootPackage.scripts.coverage, /turbo/);
+    assert.ok(turbo.tasks.build.outputs.includes("!coverage/**"));
+    assert.match(readText("../.gitignore"), /^coverage\/?$/m);
+
+    const orderedCommands = [
+      "pnpm --filter ground-codes test",
+      "pnpm --filter ground-codes test:standalone",
+      "pnpm --filter api-ground-codes test",
+      "pnpm --filter web test",
+      "pnpm coverage",
+      "pnpm build",
+    ];
+    const indexes = orderedCommands.map((command) =>
+      verifyJob.indexOf(command),
+    );
+
+    indexes.forEach((index, position) => {
+      assert.notEqual(index, -1, `${orderedCommands[position]} is required`);
+      if (position > 0) {
+        assert.ok(
+          indexes[position - 1] < index,
+          `${orderedCommands[position - 1]} must run before ${orderedCommands[position]}`,
+        );
+      }
+    });
+  });
+});
+
 describe("production smoke workflow triggers", () => {
   const smokeWorkflow = readText("../.github/workflows/production-smoke.yml");
   test("configures scheduled profiles and lean checkout", () => {

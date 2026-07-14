@@ -72,6 +72,9 @@ jobs:
       - name: Test web client
         run: pnpm --filter web test
 
+      - name: Enforce coverage policy
+        run: pnpm coverage
+
       - name: Build
         run: pnpm build
 
