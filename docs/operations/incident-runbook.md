@@ -3,6 +3,69 @@
 Use this runbook for a production-smoke failure, SLO alert, elevated API error
 rate, or a bad Worker/Pages deployment.
 
+## 0. Reproduce release artifacts without publishing
+
+Production workflows and the root `.nvmrc` select Node.js 22. The remaining
+release tools are pnpm 9.0.0, Bun 1.3.1, next-on-pages 1.13.16, Vercel CLI
+47.0.4, and the repository-local Wrangler 4.110.0. Select Node.js 22 with your
+version manager, then fail closed if the release toolchain does not match those
+pins:
+
+```sh
+test "$(tr -d '\n' < .nvmrc)" = "22"
+test "$(node -p 'process.versions.node.split(".")[0]')" = "22"
+test "$(pnpm --version)" = "9.0.0"
+test "$(bun --version)" = "1.3.1"
+test "$(pnpm --filter web exec next-on-pages --version)" = "1.13.16"
+test "$(pnpm --filter web exec vercel --version)" = "47.0.4"
+test "$(pnpm --filter grok-spiral exec vercel --version)" = "47.0.4"
+test "$(pnpm exec wrangler --version)" = "4.110.0"
+```
+
+From a clean checkout, install twice and confirm both status commands print
+nothing. This detects any manifest or lockfile mutation while proving the
+second install is reproducible:
+
+```sh
+git status --porcelain -- package.json pnpm-lock.yaml pnpm-workspace.yaml \
+  ':(glob)**/package.json'
+pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile
+git status --porcelain -- package.json pnpm-lock.yaml pnpm-workspace.yaml \
+  ':(glob)**/package.json'
+```
+
+Build the same release targets with lockfile-resolved tools. The Pages commands
+must report `Vercel CLI 47.0.4` and `Completed pnpm exec vercel build`. Do not
+substitute a global tool or use `npx`, `pnpm dlx`, or an unpinned `latest` tool:
+
+```sh
+pnpm --filter web pages:build
+pnpm --filter grok-spiral pages:build
+pnpm --filter api-ground-codes build
+rm -rf -- /tmp/ground-codes-worker-dry-run
+pnpm exec wrangler deploy \
+  --config apps/api-ground-codes/wrangler.toml \
+  --dry-run \
+  --outdir /tmp/ground-codes-worker-dry-run
+rm -rf -- /tmp/ground-codes-worker-dry-run
+```
+
+For an additional lockfile proof, repeat the Pages builds with package fetching
+disabled. Both commands must succeed from the frozen install:
+
+```sh
+rm -rf -- apps/web/.next apps/web/.vercel/output
+npm_config_offline=true pnpm --offline --filter web pages:build
+rm -rf -- apps/web/.next apps/web/.vercel/output
+rm -rf -- apps/grok-spiral/.next apps/grok-spiral/.vercel/output
+npm_config_offline=true pnpm --offline --filter grok-spiral pages:build
+rm -rf -- apps/grok-spiral/.next apps/grok-spiral/.vercel/output
+```
+
+The `pnpm exec wrangler deploy` command must report `--dry-run: exiting now.`
+It bundles the Worker locally and does not publish a deployment.
+
 ## 1. Declare and contain
 
 1. Open an [incident issue][new-incident]. Record the UTC start time, incident
@@ -66,16 +129,62 @@ queries, GitHub issues, screenshots, step summaries, or webhook messages.
    code is compatible with the current schema and data, including current R2
    object formats. If compatibility cannot be demonstrated, use a forward fix
    or documented data recovery instead of rolling back code alone.
-3. For an API incident, select the Worker deployment tagged with the
-   last known-good SHA and use **Rollback**. Confirm `/readyz` and `/metrics`
-   report that API `runtimeCommit`, then run the manual full
-   [Production Smoke workflow][smoke].
-4. For a Web incident, record the selected Pages deployment ID and commit,
-   perform the Pages rollback, and verify that deployment is active in Pages
-   history. Fetch a fresh `https://ground.codes/` Web response and then run a
-   full production smoke. `/metrics.runtimeCommit` identifies only the API
-   Worker and is not evidence of the active Web deployment. The
-   [Grok Spiral Pages history][grok-history] is separate.
+3. For an API incident, find the Worker version tagged with the last known-good
+   SHA, then run the repository-local [Wrangler rollback][worker-rollback]. The
+   rollback command changes production immediately, so only the incident owner
+   should run it after completing the compatibility check above:
+
+   ```sh
+   : "${CLOUDFLARE_API_TOKEN:?set a scoped token from the secret store}"
+   KNOWN_GOOD_SHA="replace-with-the-40-character-sha"
+   WORKER_VERSION_ID="replace-with-the-known-good-version-id"
+   pnpm exec wrangler deployments list \
+     --config apps/api-ground-codes/wrangler.toml \
+     --json
+   pnpm exec wrangler rollback "$WORKER_VERSION_ID" \
+     --config apps/api-ground-codes/wrangler.toml \
+     --message "Incident rollback to $KNOWN_GOOD_SHA"
+   ```
+
+   Confirm `/readyz` and `/metrics` report the known-good API `runtimeCommit`,
+   then run the manual full [Production Smoke workflow][smoke]:
+
+   ```sh
+   curl --fail --silent --show-error https://api.ground.codes/readyz
+   curl --fail --silent --show-error https://api.ground.codes/metrics
+   gh workflow run production-smoke.yml --ref main \
+     -f profile=full \
+     -f force_failure=false
+   ```
+
+4. For a Web or Grok Spiral incident, record the selected Pages deployment ID
+   and commit. Wrangler 4.110.0 can list Pages deployments but does not expose a
+   Pages rollback subcommand, so use the authenticated
+   [Pages rollback API][pages-rollback-api]. Set `PAGES_PROJECT` to
+   `ground-codes` for Web or
+   `grok-spiral` for Grok Spiral. Only a successful production deployment is a
+   valid target:
+
+   ```sh
+   : "${CLOUDFLARE_ACCOUNT_ID:?set the Cloudflare account ID}"
+   : "${CLOUDFLARE_API_TOKEN:?set a Pages Write token from the secret store}"
+   PAGES_PROJECT="ground-codes"
+   PAGES_DEPLOYMENT_ID="replace-with-the-known-good-deployment-id"
+   pnpm exec wrangler pages deployment list \
+     --project-name "$PAGES_PROJECT" \
+     --environment production \
+     --json
+   curl --fail-with-body --request POST \
+     "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${PAGES_PROJECT}/deployments/${PAGES_DEPLOYMENT_ID}/rollback" \
+     --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
+   ```
+
+   Verify that deployment ID is active in Pages history. For Web, fetch a fresh
+   `https://ground.codes/` response and run a full production smoke. For Grok
+   Spiral, fetch `https://grok-spiral.ground.codes/` and use its separate Pages
+   history. `/metrics.runtimeCommit` identifies only the API Worker and is not
+   evidence of either active Pages deployment.
+
 5. If the platform rollback cannot be used, revert the bad change on `main`
    with a normal reviewed commit and let the relevant deployment workflow
    publish it. Never force-push or move `main` to the old SHA.
@@ -98,3 +207,5 @@ before closing.
 [web-history]: https://github.com/hmmhmmhm/ground.codes/actions/workflows/deploy-web.yml
 [grok-history]: https://github.com/hmmhmmhm/ground.codes/actions/workflows/deploy-grok-spiral.yml
 [metrics]: https://api.ground.codes/metrics
+[worker-rollback]: https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/
+[pages-rollback-api]: https://developers.cloudflare.com/api/resources/pages/subresources/projects/subresources/deployments/methods/rollback/
