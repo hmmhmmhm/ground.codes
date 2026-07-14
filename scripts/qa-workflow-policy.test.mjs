@@ -132,6 +132,38 @@ describe("workflow policy mutation resistance", () => {
     );
   });
 
+  test("rejects bun-version nested under env.with", () => {
+    const source = `jobs:
+  verify:
+    steps:
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0000000000000000000000000000000000000000
+        env:
+          with:
+            bun-version: "1.3.1"`;
+
+    assert.throws(
+      () => assertPinnedBunPolicy({ path: "ci.yml", source }),
+      /Setup Bun.*direct with.*bun-version/s,
+    );
+  });
+
+  test("rejects bun-version nested under with.cache", () => {
+    const source = `jobs:
+  verify:
+    steps:
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0000000000000000000000000000000000000000
+        with:
+          cache:
+            bun-version: "1.3.1"`;
+
+    assert.throws(
+      () => assertPinnedBunPolicy({ path: "ci.yml", source }),
+      /Setup Bun.*direct with.*bun-version/s,
+    );
+  });
+
   test("rejects removing installs from every required workflow", () => {
     const requiredWorkflows = workflowUrls.filter((workflowUrl) =>
       dependencyWorkflowNames.has(workflowUrl.pathname.split("/").at(-1)),

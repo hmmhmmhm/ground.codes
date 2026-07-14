@@ -29,6 +29,18 @@ const yamlScalarValues = (source, key) => {
   return [...source.matchAll(pattern)].map((match) => unquote(match[1]));
 };
 
+const directChildScalarValues = (source, key) => {
+  const lines = normalizedLines(source);
+  const childLines = lines.slice(1).filter((line) => line.trim() !== "");
+  const childIndent = Math.min(...childLines.map(indentation));
+  const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(`^ {${childIndent}}${escapedKey}:\\s*(.*?)\\s*$`);
+  return childLines.flatMap((line) => {
+    const match = pattern.exec(line);
+    return match ? [unquote(match[1])] : [];
+  });
+};
+
 export const indentedYamlBlock = (source, key) => {
   const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const headerPattern = new RegExp(`^( *)${escapedKey}:\\s*$`);
@@ -165,19 +177,19 @@ export const assertPinnedBunPolicy = ({ path, source }) => {
 
   for (const step of bunSteps) {
     const label = step.name ?? "setup-bun";
-    let withBlock;
+    const inputError =
+      `${path} ${label} step must configure direct with: ` +
+      'bun-version: "1.3.1"';
     try {
-      withBlock = indentedYamlBlock(step.block, "with");
+      const withBlock = indentedYamlBlock(step.block, "with");
+      const stepIndent = indentation(normalizedLines(step.block)[0]) + 2;
+      assert.equal(indentation(normalizedLines(withBlock)[0]), stepIndent);
+      assert.deepEqual(directChildScalarValues(withBlock, "bun-version"), [
+        "1.3.1",
+      ]);
     } catch {
-      throw new Error(
-        `${path} ${label} step must configure with: bun-version: "1.3.1"`,
-      );
+      throw new Error(inputError);
     }
-    assert.deepEqual(
-      yamlScalarValues(withBlock, "bun-version"),
-      ["1.3.1"],
-      `${path} ${label} step must pin its own bun-version to 1.3.1`,
-    );
   }
 
   assert.equal(
