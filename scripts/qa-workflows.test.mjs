@@ -1,85 +1,13 @@
 import assert from "node:assert/strict";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { describe, test } from "node:test";
-const readText = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
-const readJson = (path) => JSON.parse(readText(path));
-const workflowDirectory = new URL("../.github/workflows/", import.meta.url);
-const workflowUrls = readdirSync(workflowDirectory, { withFileTypes: true })
-  .filter((entry) => entry.isFile() && /\.ya?ml$/i.test(entry.name))
-  .map((entry) => new URL(entry.name, workflowDirectory))
-  .sort((left, right) => left.pathname.localeCompare(right.pathname));
 
-const approvedActionPins = new Map([
-  ["actions/checkout", "df4cb1c069e1874edd31b4311f1884172cec0e10 # v6"],
-  ["actions/setup-node", "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6"],
-  ["actions/cache", "caa296126883cff596d87d8935842f9db880ef25 # v5"],
-  ["actions/upload-artifact", "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7"],
-  ["actions/github-script", "ed597411d8f924073f98dfc5c65a23a2325f34cd # v8"],
-  ["pnpm/action-setup", "0ebf47130e4866e96fce0953f49152a61190b271 # v6"],
-  ["oven-sh/setup-bun", "0c5077e51419868618aeaa5fe8019c62421857d6 # v2"],
-]);
-
-const externalActionPattern =
-  /^uses:\s+([^@\s#]+)@([0-9a-f]{40})\s+#\s+(v[^\s#]+)\s*$/i;
-const dependabotSection = (source, ecosystem) => {
-  const sections = [
-    ...source.matchAll(
-      /^\s*-\s+package-ecosystem:\s*["']?([^"'\s]+)["']?\s*$/gm,
-    ),
-  ];
-  const sectionIndex = sections.findIndex((match) => match[1] === ecosystem);
-  assert.notEqual(sectionIndex, -1, `${ecosystem} update entry is required`);
-  const start = sections[sectionIndex].index;
-  const end = sections[sectionIndex + 1]?.index ?? source.length;
-  return source.slice(start, end);
-};
-
-const indentedYamlBlock = (source, key) => {
-  const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const headerPattern = new RegExp(`^( *)${escapedKey}:\\s*$`);
-  const lines = source.replace(/\r\n?/g, "\n").split("\n");
-  const headers = lines.flatMap((line, index) => {
-    const match = headerPattern.exec(line);
-    return match ? [{ index, indent: match[1].length }] : [];
-  });
-  assert.equal(headers.length, 1, `${key} must appear exactly once`);
-  const [{ index: start, indent }] = headers;
-  let end = start + 1;
-  while (end < lines.length) {
-    const line = lines[end];
-    if (line.trim() !== "" && line.match(/^ */)[0].length <= indent) break;
-    end += 1;
-  }
-  return lines.slice(start, end).join("\n").trimEnd();
-};
-
-const workflowStep = (source, name) => {
-  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const lines = source.replace(/\r\n?/g, "\n").split("\n");
-  const start = lines.findIndex((line) =>
-    new RegExp(`^\\s*- name: ${escapedName}\\s*$`).test(line),
-  );
-  assert.notEqual(start, -1, `${name} step is required`);
-  const indent = lines[start].match(/^ */)[0].length;
-  let end = start + 1;
-  while (end < lines.length) {
-    const line = lines[end];
-    if (line.trim() !== "" && /^\s*- name:/.test(line)) {
-      const lineIndent = line.match(/^ */)[0].length;
-      if (lineIndent === indent) break;
-    }
-    end += 1;
-  }
-  return lines.slice(start, end).join("\n").trimEnd();
-};
-
-const expectedDependencyGroup = (name, type) => `      ${name}:
-        patterns:
-          - "*"
-        dependency-type: "${type}"
-        update-types:
-          - "minor"
-          - "patch"`;
+import {
+  indentedYamlBlock,
+  readJson,
+  readText,
+  workflowStep,
+} from "./workflow-test-helpers.mjs";
 
 describe("QA workflow split", () => {
   test("enforces format lint and build gates in CI", () => {
@@ -147,138 +75,6 @@ describe("QA workflow split", () => {
   });
 });
 
-describe("GitHub automation supply-chain policy", () => {
-  test("pins every external action to an approved SHA with a release comment", () => {
-    for (const workflowUrl of workflowUrls) {
-      const usesLines = readFileSync(workflowUrl, "utf8")
-        .split("\n")
-        .map((line) => line.trim().replace(/^-\s+/, ""))
-        .filter((line) => line.startsWith("uses:"));
-
-      for (const line of usesLines) {
-        if (/^uses:\s+\.\//.test(line)) continue;
-
-        const match = externalActionPattern.exec(line);
-        assert.ok(
-          match,
-          `${workflowUrl.pathname} has an unpinned action: ${line}`,
-        );
-
-        const [, action, sha, release] = match;
-        assert.equal(
-          `${sha} # ${release}`,
-          approvedActionPins.get(action),
-          `${workflowUrl.pathname} has an unapproved pin for ${action}`,
-        );
-      }
-    }
-  });
-
-  test("pins every setup-bun toolchain input", () => {
-    for (const workflowUrl of workflowUrls) {
-      const workflow = readFileSync(workflowUrl, "utf8");
-      const setupCount = [...workflow.matchAll(/uses: oven-sh\/setup-bun@/g)]
-        .length;
-      const versionMatches = [
-        ...workflow.matchAll(/^\s*bun-version:\s*["']?([^"'\s]+)["']?\s*$/gm),
-      ];
-
-      assert.equal(versionMatches.length, setupCount);
-      versionMatches.forEach((match) => assert.equal(match[1], "1.3.1"));
-    }
-  });
-
-  test("uses frozen installs and rejects global package installs", () => {
-    for (const workflowUrl of workflowUrls) {
-      const workflow = readFileSync(workflowUrl, "utf8");
-      const installs = [
-        ...workflow.matchAll(/^\s*run:\s*(pnpm install[^\n]*)$/gm),
-      ].map((match) => match[1]);
-      installs.forEach((install) =>
-        assert.equal(install, "pnpm install --frozen-lockfile"),
-      );
-      assert.doesNotMatch(workflow, /pnpm install -g/);
-    }
-  });
-
-  test("uses exact local deployment tool dependencies and commands", () => {
-    const rootDevDependencies = readJson("../package.json").devDependencies;
-    const webScripts = readJson("../apps/web/package.json").scripts;
-    const grokScripts = readJson("../apps/grok-spiral/package.json").scripts;
-    const apiWorkflow = readText("../.github/workflows/deploy-api.yml");
-    const webWorkflow = readText("../.github/workflows/deploy-web.yml");
-    const grokWorkflow = readText(
-      "../.github/workflows/deploy-grok-spiral.yml",
-    );
-    assert.equal(rootDevDependencies.wrangler, "4.110.0");
-    assert.equal(rootDevDependencies.c8, "11.0.0");
-    assert.match(webScripts.deploy, /pnpm exec wrangler pages deploy/);
-    assert.match(grokScripts.deploy, /pnpm exec wrangler pages deploy/);
-    assert.match(apiWorkflow, /pnpm exec wrangler deploy/);
-    assert.match(webWorkflow, /pnpm --filter web deploy/);
-    assert.match(grokWorkflow, /pnpm --filter grok-spiral deploy/);
-  });
-
-  test("rejects Dependabot groups nested under a sibling policy key", () => {
-    const source = [
-      "groups:",
-      "  enabled:",
-      "    patterns:",
-      '      - "*"',
-      "disabled-groups:",
-      "  runtime-security:",
-      "    patterns:",
-      '      - "*"',
-      '    dependency-type: "production"',
-      "    update-types:",
-      '      - "minor"',
-      '      - "patch"',
-    ].join("\n");
-    const groups = indentedYamlBlock(source, "groups");
-
-    assert.throws(
-      () => indentedYamlBlock(groups, "runtime-security"),
-      /runtime-security must appear exactly once/,
-    );
-  });
-
-  test("configures grouped weekly Dependabot updates", () => {
-    const dependabotUrl = new URL("../.github/dependabot.yml", import.meta.url);
-
-    assert.ok(existsSync(dependabotUrl), ".github/dependabot.yml is required");
-
-    const dependabot = readFileSync(dependabotUrl, "utf8");
-    assert.match(dependabot, /^version:\s*2\s*$/m);
-
-    const npmUpdates = dependabotSection(dependabot, "npm");
-    const actionUpdates = dependabotSection(dependabot, "github-actions");
-
-    for (const section of [npmUpdates, actionUpdates]) {
-      assert.match(section, /^\s+directory:\s*["']\/["']\s*$/m);
-      assert.match(section, /^\s+interval:\s*["']?weekly["']?\s*$/m);
-      assert.match(section, /^\s+day:\s*["']?monday["']?\s*$/m);
-      assert.match(section, /^\s+timezone:\s*["']?Asia\/Seoul["']?\s*$/m);
-      assert.match(section, /^\s+open-pull-requests-limit:\s*10\s*$/m);
-    }
-
-    const npmGroups = indentedYamlBlock(npmUpdates, "groups");
-    const actionGroups = indentedYamlBlock(actionUpdates, "groups");
-
-    assert.equal(
-      indentedYamlBlock(npmGroups, "runtime-security"),
-      expectedDependencyGroup("runtime-security", "production"),
-    );
-    assert.equal(
-      indentedYamlBlock(npmGroups, "development-tooling"),
-      expectedDependencyGroup("development-tooling", "development"),
-    );
-    assert.equal(
-      indentedYamlBlock(actionGroups, "github-actions"),
-      '      github-actions:\n        patterns:\n          - "*"',
-    );
-  });
-});
-
 describe("CI security gate order", () => {
   test("runs audit and governance checks before expensive verification", () => {
     const ciWorkflow = readText("../.github/workflows/ci.yml");
@@ -291,6 +87,7 @@ describe("CI security gate order", () => {
       "./check-production-audit.test.mjs",
       "./github-governance.test.mjs",
       "./production-audit-policy.test.mjs",
+      "./qa-workflow-policy.test.mjs",
       "./qa-workflows.test.mjs",
     ]) {
       assert.ok(
