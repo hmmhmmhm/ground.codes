@@ -96,6 +96,66 @@ describe("branch coverage merger", () => {
     );
   });
 
+  test("rejects unknown inline and trailing LCOV content", () => {
+    for (const branchLcov of [
+      block("src/one.ts", [
+        "BRDA:1,0,0,1",
+        "BROKEN:not-lcov",
+        "BRF:1",
+        "BRH:1",
+      ]),
+      `${branchBlock("src/one.ts", [1])}\ntruncated-garbage`,
+    ]) {
+      assert.throws(
+        () =>
+          mergeBranchCoverage({
+            bunLcov: bunBlock("src/one.ts"),
+            branchLcov,
+            expectedSources: ["src/one.ts"],
+          }),
+        /branch LCOV is invalid/,
+      );
+    }
+  });
+
+  test("rejects known LCOV records outside their source block", () => {
+    for (const misplaced of ["TN:inside", "DA:1,1", "FNDA:1,run"]) {
+      const branchLcov = misplaced.startsWith("TN:")
+        ? block("src/one.ts", [misplaced, "BRDA:1,0,0,1", "BRF:1", "BRH:1"])
+        : `${misplaced}\n${branchBlock("src/one.ts", [1])}`;
+      assert.throws(
+        () =>
+          mergeBranchCoverage({
+            bunLcov: bunBlock("src/one.ts"),
+            branchLcov,
+            expectedSources: ["src/one.ts"],
+          }),
+        /branch LCOV is invalid/,
+        misplaced,
+      );
+    }
+  });
+
+  test("rejects malformed details and incomplete non-branch summaries", () => {
+    for (const invalid of ["DA:not-valid", "FNF:1", "FNDA:1,run"]) {
+      assert.throws(
+        () =>
+          mergeBranchCoverage({
+            bunLcov: bunBlock("src/one.ts"),
+            branchLcov: block("src/one.ts", [
+              invalid,
+              "BRDA:1,0,0,1",
+              "BRF:1",
+              "BRH:1",
+            ]),
+            expectedSources: ["src/one.ts"],
+          }),
+        /branch LCOV is invalid/,
+        invalid,
+      );
+    }
+  });
+
   test("replaces stale branch blocks when the merger is rerun", () => {
     const merged = mergeBranchCoverage({
       bunLcov: block("src/one.ts", [

@@ -69,19 +69,95 @@ const validateLcov = (label, lcov, repositoryRoot) => {
   }
 };
 
+const failBranchLcov = (message) => {
+  throw new Error(`branch LCOV is invalid: ${message}`);
+};
+
+const parseSummaryValue = (line, type) => {
+  const value = line.slice(type.length + 1);
+  if (!/^\d+$/.test(value)) failBranchLcov(`invalid ${type} record`);
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed)) {
+    failBranchLcov(`invalid ${type} record`);
+  }
+  return parsed;
+};
+
 const validateBranchLcov = (lcov, repositoryRoot) => {
   const projected = [];
+  let active = false;
+  let functionTotal;
+  let functionCovered;
+
+  const finishRecord = () => {
+    if ((functionTotal === undefined) !== (functionCovered === undefined)) {
+      failBranchLcov("incomplete FNF/FNH summary pair");
+    }
+    if (functionCovered > functionTotal) {
+      failBranchLcov("FNH summary hits exceed total");
+    }
+  };
+
   for (const line of lcov.split(/\r?\n/)) {
+    if (line === "") continue;
+    if (line === "end_of_record") {
+      if (!active) failBranchLcov("end_of_record without SF");
+      finishRecord();
+      projected.push(line);
+      active = false;
+      continue;
+    }
+    if (line.startsWith("TN:")) {
+      if (active) failBranchLcov("TN record before end_of_record");
+      projected.push(line);
+      continue;
+    }
+    if (line.startsWith("SF:")) {
+      if (active) failBranchLcov("SF record before end_of_record");
+      active = true;
+      functionTotal = undefined;
+      functionCovered = undefined;
+      projected.push(line);
+      continue;
+    }
+
+    const type = line.slice(0, line.indexOf(":"));
     if (
-      line.startsWith("SF:") ||
-      line.startsWith("BRDA:") ||
-      line.startsWith("BRF:") ||
-      line.startsWith("BRH:") ||
-      line === "end_of_record"
+      ![
+        "FN",
+        "FNDA",
+        "FNF",
+        "FNH",
+        "DA",
+        "LF",
+        "LH",
+        "BRDA",
+        "BRF",
+        "BRH",
+      ].includes(type)
     ) {
+      failBranchLcov(`unknown LCOV record: ${line}`);
+    }
+    if (!active) failBranchLcov(`${type} record before SF`);
+
+    if (type === "FNF" || type === "FNH") {
+      const value = parseSummaryValue(line, type);
+      if (type === "FNF") {
+        if (functionTotal !== undefined) {
+          failBranchLcov("duplicate FNF summary");
+        }
+        functionTotal = value;
+      } else {
+        if (functionCovered !== undefined) {
+          failBranchLcov("duplicate FNH summary");
+        }
+        functionCovered = value;
+      }
+    } else {
       projected.push(line);
     }
   }
+  if (active) failBranchLcov("LCOV record missing end_of_record");
   return validateLcov("branch", projected.join("\n"), repositoryRoot);
 };
 
