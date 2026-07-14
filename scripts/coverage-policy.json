@@ -11,7 +11,7 @@
       "lcov": "coverage/api/lcov.info",
       "include": ["apps/api-ground-codes/src/**/*.ts"],
       "exclude": ["**/*.test.ts", "**/*.d.ts"],
-      "minimum": { "line": 0.8, "function": 0.8, "branch": 0.726 }
+      "minimum": { "line": 0.8, "function": 0.8, "branch": 0.725 }
     },
     "web": {
       "lcov": "coverage/web/lcov.info",

@@ -7,6 +7,13 @@ const readJson = (relativePath) =>
     readFileSync(new URL(`../${relativePath}`, import.meta.url), "utf8"),
   );
 
+const authoritativeBranchBaselines = {
+  "ground-codes": { covered: 695, total: 998, minimum: 0.696 },
+  api: { covered: 256, total: 353, minimum: 0.725 },
+  web: { covered: 289, total: 485, minimum: 0.595 },
+  operations: { covered: 431, total: 494, minimum: 0.872 },
+};
+
 test("coverage policy locks measured non-zero branch floors", () => {
   const policy = readJson("scripts/coverage-policy.json");
   assert.equal(policy.schemaVersion, 1);
@@ -25,11 +32,17 @@ test("coverage policy locks measured non-zero branch floors", () => {
     ),
     {
       "ground-codes": { line: 0.8, function: 0.8, branch: 0.696 },
-      api: { line: 0.8, function: 0.8, branch: 0.726 },
+      api: { line: 0.8, function: 0.8, branch: 0.725 },
       web: { line: 0.8, function: 0.8, branch: 0.595 },
       operations: { line: 0.8, function: 0.8, branch: 0.872 },
     },
   );
+  for (const [name, baseline] of Object.entries(authoritativeBranchBaselines)) {
+    const ratio = baseline.covered / baseline.total;
+    assert.equal(policy.targets[name].minimum.branch, baseline.minimum);
+    assert.ok(baseline.minimum <= ratio);
+    assert.ok(ratio - baseline.minimum < 0.001);
+  }
   assert.deepEqual(policy.targets.web.include, [
     "apps/web/lib/code/ground-codes.ts",
     "apps/web/lib/code/share-url.ts",
@@ -56,14 +69,19 @@ test("coverage documentation records measurements, tools, boundaries, and ratche
 
   for (const expected of [
     "2026-07-14",
+    "GitHub Actions",
+    "Ubuntu",
+    "Node\\s+22",
     "Bun\\s+1.3.1",
     "c8 11.0.0",
+    "29303671837",
+    "pre-CI local baseline",
     "695/998",
-    "255/351",
+    "256/353",
     "289/485",
     "431/494",
     "0.696",
-    "0.726",
+    "0.725",
     "0.595",
     "0.872",
     "packages/ground-codes/src/**/*.ts",
