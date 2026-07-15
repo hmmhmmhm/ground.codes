@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
+  captureGitInfo: { commit: true, diff: false },
   testDir: "./e2e",
   timeout: 120_000,
   workers: 1,
