@@ -36,7 +36,7 @@
     "region-data:sync": "node scripts/sync-region-data.mjs --groups region-dist,region-db",
     "region-data:sync:ci": "node scripts/sync-region-data.mjs --groups region-dist,region-db --prune",
     "region-data:verify": "node scripts/verify-region-data.mjs",
-    "scripts:test": "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs",
+    "scripts:test": "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs apps/api-ground-codes/scripts/*.test.mjs",
     "prepare": "husky install"
   },
   "lint-staged": {

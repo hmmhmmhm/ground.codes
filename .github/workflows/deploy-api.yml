@@ -8,6 +8,7 @@ on:
       - "apps/api-ground-codes/**"
       - "packages/ground-codes/**"
       - "packages/geoint/region-dist/**"
+      - "packages/geoint/region-data-release.json"
       - "packages/codebook/codebook-dist/**"
       - ".github/workflows/deploy-api.yml"
       - "package.json"
@@ -55,6 +56,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Materialize verified region data
+        env:
+          REGION_DATA_BASE_URL: ${{ vars.REGION_DATA_BASE_URL }}
+        run: node scripts/sync-region-data.mjs --groups region-dist --prune
+
       - name: Type check API
         run: pnpm --filter api-ground-codes check-types
 
@@ -73,6 +79,8 @@ jobs:
 
       - name: Detect changed region datasets
         id: regions
+        env:
+          REGION_DATA_BASE_URL: ${{ vars.REGION_DATA_BASE_URL }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.import_all_regions }}" = "true" ]; then
             echo "datasets=__all_missing__" >> "$GITHUB_OUTPUT"

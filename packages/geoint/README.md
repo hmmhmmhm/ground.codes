@@ -212,6 +212,27 @@ This approach provides significant performance benefits:
 Localized Earth region language audits are recorded under
 `region-dataset/region-language-audit-2026-05-10.md`.
 
+## 📥 Region Data Materialization
+
+The active `region-dist` and `region-db` release is declared by
+`region-data-release.json` and published through the public read-only region
+data endpoint. From the repository root, install dependencies and materialize
+the verified release before tests, builds, or local application startup:
+
+```bash
+pnpm install --frozen-lockfile
+REGION_DATA_BASE_URL=https://region-data.ground.codes pnpm region-data:sync
+```
+
+The synchronizer leaves unrelated local files alone by default and replaces
+only missing or hash-mismatched release files. CI uses the explicit `--prune`
+mode to require an exact managed tree.
+
+Data generators and source transformations require an explicitly
+materialized working tree. They do not fetch region data automatically, so
+run the sync command first and confirm both managed directories are present
+before generating a new release.
+
 ## 🛠️ Usage
 
 ### 📥 Installation

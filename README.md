@@ -93,6 +93,26 @@ Ground Codes uses a custom GIS algorithm called "Grok Spiral" 🌀 that determin
 - [Production service objectives](./docs/operations/service-objectives.md)
 - [Production incident runbook](./docs/operations/incident-runbook.md)
 
+## 🧰 Local Development
+
+Region data is published as a verified immutable release. Materialize the
+active release explicitly before running tests or builds that consume
+`packages/geoint/region-dist` or `packages/geoint/region-db`:
+
+```bash
+git clone https://github.com/hmmhmmhm/ground.codes.git
+cd ground.codes
+pnpm install --frozen-lockfile
+REGION_DATA_BASE_URL=https://region-data.ground.codes pnpm region-data:sync
+pnpm scripts:test
+pnpm build
+```
+
+The synchronizer verifies the committed release pointer, manifest, size, and
+SHA-256 of every downloaded file. Dataset generators never download inputs
+implicitly; run them only in a working tree where both managed data groups
+have already been materialized explicitly.
+
 ## 📄 License
 
 MIT License

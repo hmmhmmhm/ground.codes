@@ -318,7 +318,7 @@ describe("immutable region-data manifest", () => {
     );
     assert.equal(
       packageJson.scripts["scripts:test"],
-      "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs",
+      "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs apps/api-ground-codes/scripts/*.test.mjs",
     );
     assert.equal(
       (await readFile(new URL("../../.nvmrc", import.meta.url), "utf8")).trim(),

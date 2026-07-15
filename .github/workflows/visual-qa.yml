@@ -30,6 +30,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Materialize verified region data
+        env:
+          REGION_DATA_BASE_URL: ${{ vars.REGION_DATA_BASE_URL }}
+        run: node scripts/sync-region-data.mjs --groups region-dist,region-db --prune
+
       - name: Install Playwright browser
         run: pnpm --filter web exec playwright install --with-deps chromium
 

@@ -102,7 +102,7 @@ describe("CI security gate order", () => {
 
     assert.equal(
       rootScripts["scripts:test"],
-      "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs",
+      "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs apps/api-ground-codes/scripts/*.test.mjs",
     );
     for (const testPath of [
       "./api-runtime-pins.test.mjs",
@@ -301,6 +301,98 @@ describe("API deployment workflow", () => {
       /GROUND_CODES_EXPECTED_RUNTIME_COMMIT: \$\{\{ github\.sha \}\}/,
     );
     assert.match(smokeStep, /pnpm production:smoke/);
+  });
+});
+
+describe("verified R2 region-data workflow materialization", () => {
+  const syncCommand = (groups) =>
+    `node scripts/sync-region-data.mjs --groups ${groups} --prune`;
+
+  const assertPublicSyncStep = (workflow, groups) => {
+    const syncStep = workflowStep(workflow, "Materialize verified region data");
+    assert.match(
+      syncStep,
+      /REGION_DATA_BASE_URL: \$\{\{ vars\.REGION_DATA_BASE_URL \}\}/,
+    );
+    assert.match(
+      syncStep,
+      new RegExp(`run: ${syncCommand(groups).replaceAll(".", "\\.")}`),
+    );
+    assert.doesNotMatch(
+      workflow,
+      /R2_REGION_DATA_(?:ACCESS_KEY_ID|SECRET_ACCESS_KEY)/,
+    );
+    return syncStep;
+  };
+
+  test("syncs both groups before every CI data consumer", () => {
+    const workflow = readText("../.github/workflows/ci.yml");
+    const syncStep = assertPublicSyncStep(workflow, "region-dist,region-db");
+    const syncIndex = workflow.indexOf(syncStep);
+    assert.match(
+      readJson("../package.json").scripts["scripts:test"],
+      /apps\/api-ground-codes\/scripts\/\*\.test\.mjs/,
+    );
+
+    for (const command of [
+      "pnpm scripts:test",
+      "pnpm data:audit-labels",
+      "pnpm data:report-labels",
+      "pnpm --filter ground-codes test",
+      "pnpm --filter api-ground-codes test",
+      "pnpm coverage",
+      "pnpm build",
+    ]) {
+      assert.ok(
+        syncIndex < workflow.indexOf(command),
+        `verified sync must run before ${command}`,
+      );
+    }
+  });
+
+  test("syncs both groups before visual QA browser work", () => {
+    const workflow = readText("../.github/workflows/visual-qa.yml");
+    const syncStep = assertPublicSyncStep(workflow, "region-dist,region-db");
+    const syncIndex = workflow.indexOf(syncStep);
+
+    for (const command of [
+      "pnpm --filter web test:e2e:layout",
+      "pnpm --filter web qa:visual",
+    ]) {
+      assert.ok(
+        syncIndex < workflow.indexOf(command),
+        `verified sync must run before ${command}`,
+      );
+    }
+  });
+
+  test("syncs region-dist before API verification, import detection, and build", () => {
+    const workflow = readText("../.github/workflows/deploy-api.yml");
+    const syncStep = assertPublicSyncStep(workflow, "region-dist");
+    const detectorStep = workflowStep(
+      workflow,
+      "Detect changed region datasets",
+    );
+    const syncIndex = workflow.indexOf(syncStep);
+
+    assert.match(workflow, /packages\/geoint\/region-data-release\.json/);
+    assert.match(
+      detectorStep,
+      /REGION_DATA_BASE_URL: \$\{\{ vars\.REGION_DATA_BASE_URL \}\}/,
+    );
+    assert.match(detectorStep, /datasets=__all_missing__/);
+    for (const marker of [
+      "pnpm --filter api-ground-codes test",
+      "pnpm --filter ground-codes build",
+      "data:apply-postgis-schema",
+      "list-changed-region-datasets.mjs",
+      "Import changed region datasets",
+    ]) {
+      assert.ok(
+        syncIndex < workflow.indexOf(marker),
+        `verified sync must run before ${marker}`,
+      );
+    }
   });
 });
 
