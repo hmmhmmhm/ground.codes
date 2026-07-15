@@ -364,8 +364,8 @@ describe("GitHub automation supply-chain policy", () => {
     assert.match(webScripts.deploy, /pnpm exec wrangler pages deploy/);
     assert.match(grokScripts.deploy, /pnpm exec wrangler pages deploy/);
     assert.match(apiWorkflow, /pnpm exec wrangler deploy/);
-    assert.match(webWorkflow, /pnpm --filter web deploy/);
-    assert.match(grokWorkflow, /pnpm --filter grok-spiral deploy/);
+    assert.match(webWorkflow, /pnpm --filter web run deploy/);
+    assert.match(grokWorkflow, /pnpm --filter grok-spiral run deploy/);
   });
 
   test("rejects Dependabot groups nested under a sibling policy key", () => {

@@ -69,4 +69,4 @@ jobs:
           NEXT_PUBLIC_CESIUM_MARS_ASSET_ID: ${{ secrets.NEXT_PUBLIC_CESIUM_MARS_ASSET_ID }}
           GOOGLE_MAPS_NODEJS_API_KEY: ${{ secrets.GOOGLE_MAPS_NODEJS_API_KEY }}
           OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
-        run: pnpm --filter web deploy
+        run: pnpm --filter web run deploy
