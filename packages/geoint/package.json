@@ -48,6 +48,6 @@
   "dependencies": {
     "geokdbush": "^2.1.0",
     "kdbush": "^4.1.0",
-    "level": "^9.0.0"
+    "level": "^10.0.0"
   }
 }
