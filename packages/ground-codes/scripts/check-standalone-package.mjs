@@ -79,7 +79,11 @@ try {
     path.join(consumerRoot, "package.json"),
     JSON.stringify({ type: "module", private: true }, null, 2),
   );
-  run("pnpm", ["add", tarballPath], consumerRoot);
+  run(
+    "pnpm",
+    ["add", "--allow-build=classic-level", tarballPath],
+    consumerRoot,
+  );
 
   run(
     "node",
