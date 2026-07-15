@@ -6,7 +6,7 @@ rate, or a bad Worker/Pages deployment.
 ## 0. Reproduce release artifacts without publishing
 
 Production workflows and the root `.nvmrc` select Node.js 22. The remaining
-release tools are pnpm 9.0.0, Bun 1.3.1, next-on-pages 1.13.16, Vercel CLI
+release tools are pnpm 11.4.0, Bun 1.3.1, next-on-pages 1.13.16, Vercel CLI
 47.0.4, and the repository-local Wrangler 4.110.0. Select Node.js 22 with your
 version manager, then fail closed if the release toolchain does not match those
 pins:
@@ -15,7 +15,7 @@ pins:
 set -eu
 test "$(tr -d '\n' < .nvmrc)" = "22"
 test "$(node -p 'process.versions.node.split(".")[0]')" = "22"
-test "$(pnpm --version)" = "9.0.0"
+test "$(pnpm --version)" = "11.4.0"
 test "$(bun --version)" = "1.3.1"
 test "$(pnpm --filter web exec next-on-pages --version)" = "1.13.16"
 test "$(pnpm --filter web exec vercel --version)" = "47.0.4"

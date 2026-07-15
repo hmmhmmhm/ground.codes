@@ -7,7 +7,7 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates curl git unzip \
   && rm -rf /var/lib/apt/lists/* \
   && corepack enable \
-  && corepack prepare pnpm@9.0.0 --activate \
+  && corepack prepare pnpm@11.4.0 --activate \
   && curl -fsSL https://bun.sh/install | bash -s -- bun-v1.3.14
 
 WORKDIR /repo

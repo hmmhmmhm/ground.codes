@@ -5,6 +5,7 @@ import { describe, test } from "node:test";
 import {
   assertFrozenInstallPolicy,
   assertPinnedBunPolicy,
+  assertPinnedPnpmPolicy,
   indentedYamlBlock,
   readJson,
   readText,
@@ -59,6 +60,7 @@ test("provides reusable workflow policy helpers", async () => {
   for (const name of [
     "assertFrozenInstallPolicy",
     "assertPinnedBunPolicy",
+    "assertPinnedPnpmPolicy",
     "indentedYamlBlock",
     "readJson",
     "readText",
@@ -164,6 +166,43 @@ describe("workflow policy mutation resistance", () => {
     );
   });
 
+  test("rejects a wrong or indirectly configured pnpm version", () => {
+    const wrongVersion = `jobs:
+  verify:
+    steps:
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0000000000000000000000000000000000000000
+        with:
+          version: 9.0.0`;
+    const nestedVersion = `jobs:
+  verify:
+    steps:
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0000000000000000000000000000000000000000
+        with:
+          configuration:
+            version: 11.4.0`;
+
+    assert.throws(
+      () =>
+        assertPinnedPnpmPolicy({
+          path: "ci.yml",
+          source: wrongVersion,
+          version: "11.4.0",
+        }),
+      /Setup pnpm.*direct with.*version: "11\.4\.0"/s,
+    );
+    assert.throws(
+      () =>
+        assertPinnedPnpmPolicy({
+          path: "ci.yml",
+          source: nestedVersion,
+          version: "11.4.0",
+        }),
+      /Setup pnpm.*direct with.*version: "11\.4\.0"/s,
+    );
+  });
+
   test("rejects removing installs from every required workflow", () => {
     const requiredWorkflows = workflowUrls.filter((workflowUrl) =>
       dependencyWorkflowNames.has(workflowUrl.pathname.split("/").at(-1)),
@@ -226,6 +265,77 @@ describe("GitHub automation supply-chain policy", () => {
         source: readText(workflowUrl),
       });
     }
+  });
+
+  test("couples each setup-pnpm step to the exact package manager version", () => {
+    const { packageManager } = readJson("../package.json");
+    assert.equal(packageManager, "pnpm@11.4.0");
+    const version = packageManager.slice("pnpm@".length);
+
+    for (const workflowUrl of workflowUrls) {
+      assertPinnedPnpmPolicy({
+        path: workflowUrl.pathname,
+        source: readText(workflowUrl),
+        version,
+      });
+    }
+  });
+
+  test("pins pnpm across package, container, and operator entry points", () => {
+    const rootPackage = readJson("../package.json");
+    assert.equal(rootPackage.pnpm, undefined);
+    assert.equal(
+      indentedYamlBlock(readText("../pnpm-workspace.yaml"), "overrides"),
+      `overrides:
+  "@swc/helpers@0.5.15": "0.5.17"
+  "dompurify@3.4.2": "3.4.12"
+  "picomatch@2.3.1": "2.3.2"
+  "postcss@8.4.31": "8.4.49"
+  "postcss@8.5.3": "8.5.19"
+  "protobufjs@8.2.0": "8.7.1"`,
+    );
+    const releaseAgeExclusions = indentedYamlBlock(
+      readText("../pnpm-workspace.yaml"),
+      "minimumReleaseAgeExclude",
+    )
+      .split("\n")
+      .slice(1)
+      .map((line) => /^\s+-\s+"([^"]+)"$/.exec(line)?.[1]);
+    assert.equal(releaseAgeExclusions.length, 21);
+    for (const selector of releaseAgeExclusions) {
+      assert.match(
+        selector,
+        /^@(aws-sdk|smithy)\/[a-z0-9-]+@\d+\.\d+\.\d+$/,
+        "minimumReleaseAge exclusions must select exact AWS dependency versions",
+      );
+    }
+    assert.equal(
+      indentedYamlBlock(readText("../pnpm-workspace.yaml"), "allowBuilds"),
+      `allowBuilds:
+  "@parcel/watcher@2.5.1": true
+  "@swc/core@1.15.43": true
+  "classic-level@2.0.0": true
+  "esbuild@0.14.47 || 0.15.18 || 0.25.12 || 0.27.7 || 0.28.0 || 0.28.1": true
+  "sharp@0.34.5": true
+  "workerd@1.20250718.0 || 1.20260708.1": true`,
+    );
+    assert.equal(
+      readJson("../apps/api-ground-codes/package.json").packageManager,
+      "pnpm@11.4.0",
+    );
+
+    for (const path of [
+      "../Dockerfile",
+      "../apps/api-ground-codes/Dockerfile",
+    ]) {
+      const source = readText(path);
+      assert.match(source, /corepack prepare pnpm@11\.4\.0 --activate/);
+      assert.doesNotMatch(source, /corepack prepare pnpm@(?!11\.4\.0\b)/);
+    }
+
+    const runbook = readText("../docs/operations/incident-runbook.md");
+    assert.match(runbook, /release tools are pnpm 11\.4\.0,/);
+    assert.match(runbook, /test "\$\(pnpm --version\)" = "11\.4\.0"/);
   });
 
   test("requires exact frozen install steps and rejects all other installs", () => {

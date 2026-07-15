@@ -198,3 +198,33 @@ export const assertPinnedBunPolicy = ({ path, source }) => {
     `${path} bun-version may only appear in setup-bun steps`,
   );
 };
+
+export const assertPinnedPnpmPolicy = ({ path, source, version }) => {
+  const steps = workflowSteps(source);
+  const pnpmSteps = steps.filter((step) =>
+    yamlScalarValues(step.block, "uses")[0]?.startsWith("pnpm/action-setup@"),
+  );
+
+  for (const step of pnpmSteps) {
+    const label = step.name ?? "pnpm/action-setup";
+    const inputError =
+      `${path} ${label} step must configure direct with: ` +
+      `version: "${version}"`;
+    try {
+      const withBlock = indentedYamlBlock(step.block, "with");
+      const stepIndent = indentation(normalizedLines(step.block)[0]) + 2;
+      assert.equal(indentation(normalizedLines(withBlock)[0]), stepIndent);
+      assert.deepEqual(directChildScalarValues(withBlock, "version"), [
+        version,
+      ]);
+    } catch {
+      throw new Error(inputError);
+    }
+  }
+
+  assert.equal(
+    yamlScalarValues(source, "version").length,
+    pnpmSteps.length,
+    `${path} version may only appear in pnpm/action-setup steps`,
+  );
+};

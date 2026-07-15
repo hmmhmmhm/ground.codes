@@ -1,3 +1,44 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+overrides:
+  "@swc/helpers@0.5.15": "0.5.17"
+  "dompurify@3.4.2": "3.4.12"
+  "picomatch@2.3.1": "2.3.2"
+  "postcss@8.4.31": "8.4.49"
+  "postcss@8.5.3": "8.5.19"
+  "protobufjs@8.2.0": "8.7.1"
+
+# These exact AWS SDK transitive versions entered the reviewed pnpm 9 lockfile
+# before pnpm 11's default 24-hour release-age verification was enabled.
+minimumReleaseAgeExclude:
+  - "@aws-sdk/checksums@3.1000.17"
+  - "@aws-sdk/core@3.975.2"
+  - "@aws-sdk/credential-provider-env@3.972.58"
+  - "@aws-sdk/credential-provider-http@3.972.60"
+  - "@aws-sdk/credential-provider-ini@3.973.2"
+  - "@aws-sdk/credential-provider-login@3.972.64"
+  - "@aws-sdk/credential-provider-node@3.972.68"
+  - "@aws-sdk/credential-provider-process@3.972.58"
+  - "@aws-sdk/credential-provider-sso@3.973.2"
+  - "@aws-sdk/credential-provider-web-identity@3.972.64"
+  - "@aws-sdk/middleware-sdk-s3@3.972.63"
+  - "@aws-sdk/nested-clients@3.997.32"
+  - "@aws-sdk/signature-v4-multi-region@3.996.40"
+  - "@aws-sdk/token-providers@3.1087.0"
+  - "@aws-sdk/types@3.974.1"
+  - "@aws-sdk/xml-builder@3.972.35"
+  - "@smithy/core@3.29.4"
+  - "@smithy/credential-provider-imds@4.4.9"
+  - "@smithy/fetch-http-handler@5.6.6"
+  - "@smithy/node-http-handler@4.9.6"
+  - "@smithy/signature-v4@5.6.5"
+
+allowBuilds:
+  "@parcel/watcher@2.5.1": true
+  "@swc/core@1.15.43": true
+  "classic-level@2.0.0": true
+  "esbuild@0.14.47 || 0.15.18 || 0.25.12 || 0.27.7 || 0.28.0 || 0.28.1": true
+  "sharp@0.34.5": true
+  "workerd@1.20250718.0 || 1.20260708.1": true

@@ -6,6 +6,7 @@ import {
   analyzeProductionAudit,
   evaluateProductionAudit,
 } from "./production-audit-policy.mjs";
+import { indentedYamlBlock } from "./workflow-test-helpers.mjs";
 
 const repositoryRoot = new URL("../", import.meta.url);
 
@@ -74,6 +75,10 @@ describe("production audit policy", () => {
       new URL("pnpm-lock.yaml", repositoryRoot),
       "utf8",
     );
+    const workspace = readFileSync(
+      new URL("pnpm-workspace.yaml", repositoryRoot),
+      "utf8",
+    );
     const transitiveSecurityOverrides = {
       "dompurify@3.4.2": "3.4.12",
       "picomatch@2.3.1": "2.3.2",
@@ -122,7 +127,18 @@ describe("production audit policy", () => {
         "next-intl": "4.13.2",
       },
     );
-    assert.deepEqual(rootPackage.pnpm?.overrides, expectedOverrides);
+    assert.equal(rootPackage.pnpm, undefined);
+    const configuredOverrides = Object.fromEntries(
+      indentedYamlBlock(workspace, "overrides")
+        .split("\n")
+        .slice(1)
+        .map((line) => {
+          const match = /^\s+"([^"]+)": "([^"]+)"$/.exec(line);
+          assert.ok(match, `invalid pnpm override entry: ${line}`);
+          return match.slice(1);
+        }),
+    );
+    assert.deepEqual(configuredOverrides, expectedOverrides);
     assert.equal(
       lockfile.includes("next-intl@4.13.2(@swc/helpers@0.5.15)"),
       false,
