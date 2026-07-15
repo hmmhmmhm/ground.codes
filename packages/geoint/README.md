@@ -224,6 +224,10 @@ pnpm install --frozen-lockfile
 REGION_DATA_BASE_URL=https://region-data.ground.codes pnpm region-data:sync
 ```
 
+Neither managed directory is shipped in the npm package or stored in the
+current Git tree. They are ignored materialization targets; the tracked
+release pointer and this setup documentation remain in the package.
+
 The synchronizer leaves unrelated local files alone by default and replaces
 only missing or hash-mismatched release files. CI uses the explicit `--prune`
 mode to require an exact managed tree.
@@ -265,6 +269,11 @@ const regionInfo = await info({
   name: "Seoul",
 });
 ```
+
+`load()` never downloads data. It reads the materialized package path by
+default, or an operator can supply `load(regions, { dataDir })` or set
+`GROUND_CODES_REGION_DB_DIR`. If the directory is absent, `load()` fails with
+the explicit repository sync command instead of silently using partial data.
 
 Planetary datasets can be loaded by name:
 

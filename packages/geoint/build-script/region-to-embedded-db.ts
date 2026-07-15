@@ -5,7 +5,10 @@ import { RegionData } from "./types";
 import KDBush from "kdbush";
 import { Level } from "level";
 
+import { assertMaterializedRegionData } from "../../../scripts/region-data/materialization.mjs";
+
 export default async () => {
+  assertMaterializedRegionData({ groups: ["region-dist"] });
   const filePaths = {
     regionDist: path.join(process.cwd(), "region-dist"),
     regionDb: path.join(process.cwd(), "region-db"),

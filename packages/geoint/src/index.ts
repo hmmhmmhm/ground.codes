@@ -2,6 +2,7 @@ import KDBush from "kdbush";
 import * as geokdbush from "geokdbush";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { Level } from "level";
 
 export interface RegionData {
@@ -20,8 +21,34 @@ export interface RegionData {
 export const regionIndexes: Record<string, any> = {};
 export const regionLevels: Record<string, any> = {};
 
-export const load = async (loadRegions: string[] = []) => {
-  const dbPath = new URL("../region-db", import.meta.url).pathname;
+export interface LoadOptions {
+  dataDir?: string;
+}
+
+const defaultDataDir = fileURLToPath(new URL("../region-db", import.meta.url));
+
+const resolveDataDir = (dataDir?: string) =>
+  path.resolve(
+    dataDir ?? process.env.GROUND_CODES_REGION_DB_DIR ?? defaultDataDir,
+  );
+
+const requireMaterializedData = (dataDir?: string) => {
+  const dbPath = resolveDataDir(dataDir);
+  try {
+    if (fs.statSync(dbPath).isDirectory()) return dbPath;
+  } catch {
+    // Replaced below with the operator-facing materialization instruction.
+  }
+  throw new Error(
+    `Region data is not materialized at ${dbPath}. Run \`REGION_DATA_BASE_URL=https://region-data.ground.codes pnpm region-data:sync\`, pass load(..., { dataDir }), or set GROUND_CODES_REGION_DB_DIR.`,
+  );
+};
+
+export const load = async (
+  loadRegions: string[] = [],
+  options: LoadOptions = {},
+) => {
+  const dbPath = requireMaterializedData(options.dataDir);
 
   const files = fs
     .readdirSync(dbPath)

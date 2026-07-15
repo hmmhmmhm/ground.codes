@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 import path from "node:path";
 
 import { buildThaiCodebook } from "./data/thai-codebook-builder.mjs";
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
 import {
   earthNameOverridesByCode,
   knownNameTranslations,
@@ -12,6 +13,7 @@ import {
   planetaryPhraseOverrides,
 } from "./data/thai-regions.mjs";
 
+assertMaterializedRegionData();
 const root = new URL("../", import.meta.url);
 const geointRequire = createRequire(
   new URL("../packages/geoint/", import.meta.url),

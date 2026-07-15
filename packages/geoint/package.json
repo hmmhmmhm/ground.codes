@@ -8,14 +8,15 @@
   "scripts": {
     "dev": "tsup --config tsup.config.ts --watch",
     "build": "tsup --config tsup.config.ts",
+    "test": "tsx --test test/*.test.ts",
     "dataset-build": "tsx ./build-script/select-script.ts",
     "publish-package": "turbo run build lint test && changeset version && changeset publish"
   },
   "files": [
-    "region-dist",
-    "region-db",
     "dist",
-    "src"
+    "src",
+    "README.md",
+    "region-data-release.json"
   ],
   "tasks": {
     "build": {

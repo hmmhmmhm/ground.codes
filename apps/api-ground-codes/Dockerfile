@@ -13,6 +13,7 @@ RUN apt-get update \
 WORKDIR /repo
 
 ARG RAILWAY_GIT_COMMIT_SHA
+ARG REGION_DATA_BASE_URL=https://region-data.ground.codes
 
 RUN git init \
   && git remote add origin https://github.com/hmmhmmhm/ground.codes.git \
@@ -28,6 +29,7 @@ RUN git init \
     packages/geoint \
     packages/ground-codes \
     packages/typescript-config \
+    scripts \
   && if [ -n "$RAILWAY_GIT_COMMIT_SHA" ]; then \
     git fetch --depth 1 origin "$RAILWAY_GIT_COMMIT_SHA"; \
   else \
@@ -37,6 +39,8 @@ RUN git init \
   && rm -rf .git
 
 RUN pnpm install --frozen-lockfile
+RUN REGION_DATA_BASE_URL="${REGION_DATA_BASE_URL}" \
+  node scripts/sync-region-data.mjs --groups region-dist,region-db --prune
 RUN pnpm --filter api-ground-codes build
 
 ENV NODE_ENV=production

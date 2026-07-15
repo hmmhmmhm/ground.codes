@@ -53,6 +53,9 @@ jobs:
       - name: Test operational scripts
         run: pnpm scripts:test
 
+      - name: Test geoint package
+        run: pnpm --filter @ground-codes/geoint test
+
       - name: Audit URL label data
         run: pnpm data:audit-labels
 

@@ -2,6 +2,8 @@ import fs from "fs";
 import path from "path";
 import chalk from "chalk";
 
+import { assertMaterializedRegionData } from "../../../scripts/region-data/materialization.mjs";
+
 /**
  * Assembles region 1 data.
  * Region Level 1 (Short Code)
@@ -10,6 +12,7 @@ import chalk from "chalk";
  * - (4 Code) ICAO Airport Code
  */
 export default async () => {
+  assertMaterializedRegionData({ groups: ["region-dist"] });
   const regionLevel1Path = path.join(
     process.cwd(),
     "region-dataset",

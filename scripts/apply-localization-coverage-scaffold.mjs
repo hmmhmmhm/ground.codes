@@ -1,5 +1,8 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
+
+assertMaterializedRegionData();
 const root = new URL("../", import.meta.url);
 
 const readText = (filePath) => readFileSync(new URL(filePath, root), "utf8");
