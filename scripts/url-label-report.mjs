@@ -1,5 +1,8 @@
 import { appendFileSync, readFileSync } from "node:fs";
 
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
+
+assertMaterializedRegionData({ groups: ["region-dist"] });
 const DATASETS = [
   [
     "earth region-1 english",

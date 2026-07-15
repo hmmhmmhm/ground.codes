@@ -4,3 +4,5 @@
 **/dist
 apps/web/.next
 apps/grok-spiral/.next
+packages/geoint/region-dist
+packages/geoint/region-db

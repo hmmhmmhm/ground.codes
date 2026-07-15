@@ -10,7 +10,9 @@ import path from "node:path";
 
 import { buildCodebook } from "./data/next-address-codebook-builder.mjs";
 import { languages } from "./data/next-address-languages.mjs";
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
 
+assertMaterializedRegionData();
 const root = new URL("../", import.meta.url);
 const geointRequire = createRequire(
   new URL("../packages/geoint/", import.meta.url),

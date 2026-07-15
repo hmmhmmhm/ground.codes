@@ -3,7 +3,10 @@ import path from "path";
 import task from "tasuku";
 import chalk from "chalk";
 
+import { assertMaterializedRegionData } from "../../../scripts/region-data/materialization.mjs";
+
 export default async () => {
+  assertMaterializedRegionData({ groups: ["region-dist"] });
   const filePaths = {
     region2: path.join(process.cwd(), "region-dist", "region-2.json"),
     region2PreTranslationFoler: path.join(

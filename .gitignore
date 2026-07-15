@@ -17,6 +17,8 @@ coverage
 apps/web/test-results/
 dogfood-output/
 .region-data-staging/
+/packages/geoint/region-dist/
+/packages/geoint/region-db/
 
 # Turbo
 .turbo

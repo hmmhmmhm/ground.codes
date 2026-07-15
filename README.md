@@ -108,6 +108,11 @@ pnpm scripts:test
 pnpm build
 ```
 
+The two materialized directories are ignored working-tree outputs and are not
+stored in the current Git tree. The tracked
+`packages/geoint/region-data-release.json` pointer selects the immutable R2
+release reconstructed by the synchronizer.
+
 The synchronizer verifies the committed release pointer, manifest, size, and
 SHA-256 of every downloaded file. Dataset generators never download inputs
 implicitly; run them only in a working tree where both managed data groups

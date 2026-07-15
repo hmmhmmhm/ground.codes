@@ -3,7 +3,9 @@ import { join } from "node:path";
 
 import { missionFallbacks } from "./data/planetary-mission-fallbacks.mjs";
 import { manualLabelOverrides } from "./data/planetary-label-overrides.mjs";
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
 
+assertMaterializedRegionData({ groups: ["region-dist"] });
 const root = new URL("..", import.meta.url).pathname;
 
 const readText = (relativePath) =>

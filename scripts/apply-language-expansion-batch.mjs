@@ -5,7 +5,9 @@ import {
   labelPrefixes,
   labelSuffixes,
 } from "./data/language-expansion-codebook-seeds.mjs";
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
 
+assertMaterializedRegionData();
 const root = new URL("../", import.meta.url);
 const targetLength = 5000;
 

@@ -26,6 +26,7 @@ import {
   smokeLanguageCoverage,
   smokeProfileCheckMetadata,
 } from "./production-smoke-profiles.mjs";
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
 
 describe("language support completeness", () => {
   const languages = parseSupportedLanguages();
@@ -40,6 +41,7 @@ describe("language support completeness", () => {
   });
 
   test("ships codebook and region assets for every supported language", () => {
+    assertMaterializedRegionData({ groups: ["region-dist"] });
     const counts = parseWordsetCounts();
     const englishRegionFallbackLanguages =
       parseEnglishRegionFallbackLanguages();

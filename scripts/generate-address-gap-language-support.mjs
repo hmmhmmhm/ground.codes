@@ -16,7 +16,9 @@ import {
   languageSpecs,
   webLocaleByLanguage,
 } from "./data/address-gap-language-specs.mjs";
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
 
+assertMaterializedRegionData();
 const root = new URL("../", import.meta.url);
 const geointRequire = createRequire(
   new URL("../packages/geoint/", import.meta.url),

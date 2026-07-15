@@ -4,7 +4,10 @@ import { input } from "@inquirer/prompts";
 import { RegionData } from "./types.js";
 import chalk from "chalk";
 
+import { assertMaterializedRegionData } from "../../../scripts/region-data/materialization.mjs";
+
 export default async () => {
+  assertMaterializedRegionData({ groups: ["region-dist"] });
   const language = (
     await input({
       message: "Please enter a language name. (e.g. korean)",

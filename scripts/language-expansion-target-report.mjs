@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
+
+assertMaterializedRegionData({ groups: ["region-dist"] });
 const root = new URL("../", import.meta.url);
 const readText = (relativePath) =>
   readFileSync(new URL(relativePath, root), "utf8");

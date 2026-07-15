@@ -3,6 +3,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "pg";
 
+import { assertMaterializedRegionData } from "../../../scripts/region-data/materialization.mjs";
+
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
 const defaultRegionDist = resolve(repoRoot, "packages/geoint/region-dist");
@@ -10,6 +12,7 @@ const schemaPath = resolve(here, "../supabase/001_ground_code_regions.sql");
 
 const connectionString =
   process.env.SUPABASE_DB_URL ?? process.env.DATABASE_URL;
+const regionDist = process.env.REGION_DIST_DIR ?? defaultRegionDist;
 if (!connectionString) {
   console.error(
     "Set SUPABASE_DB_URL or DATABASE_URL before importing regions.",
@@ -17,8 +20,11 @@ if (!connectionString) {
   process.exit(1);
 }
 
+assertMaterializedRegionData({
+  directories: { "region-dist": regionDist },
+  groups: ["region-dist"],
+});
 const batchSize = Number(process.env.REGION_IMPORT_BATCH_SIZE ?? 1000);
-const regionDist = process.env.REGION_DIST_DIR ?? defaultRegionDist;
 const importMode = process.env.REGION_IMPORT_MODE ?? "missing";
 
 const normalizeLookupKey = (value) =>

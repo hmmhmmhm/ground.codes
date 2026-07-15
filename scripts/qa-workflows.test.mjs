@@ -279,7 +279,10 @@ describe("API deployment workflow", () => {
     const deployApiWorkflow = readText("../.github/workflows/deploy-api.yml");
 
     assert.match(deployApiWorkflow, /Deploy API to Cloudflare Workers/);
-    assert.match(deployApiWorkflow, /packages\/geoint\/region-dist\/\*\*/);
+    assert.match(
+      deployApiWorkflow,
+      /packages\/geoint\/region-data-release\.json/,
+    );
     assert.match(deployApiWorkflow, /packages\/codebook\/codebook-dist\/\*\*/);
     assert.match(deployApiWorkflow, /data:apply-postgis-schema/);
     assert.match(deployApiWorkflow, /list-changed-region-datasets\.mjs/);
@@ -338,6 +341,7 @@ describe("verified R2 region-data workflow materialization", () => {
       "pnpm scripts:test",
       "pnpm data:audit-labels",
       "pnpm data:report-labels",
+      "pnpm --filter @ground-codes/geoint test",
       "pnpm --filter ground-codes test",
       "pnpm --filter api-ground-codes test",
       "pnpm coverage",
@@ -376,6 +380,20 @@ describe("verified R2 region-data workflow materialization", () => {
     const syncIndex = workflow.indexOf(syncStep);
 
     assert.match(workflow, /packages\/geoint\/region-data-release\.json/);
+    assert.doesNotMatch(workflow, /packages\/geoint\/region-(?:dist|db)/);
+    for (const path of [
+      "packages/geoint/build-script/**",
+      "packages/geoint/region-dataset/**",
+      "packages/geoint/src/**",
+      "scripts/region-data/**",
+      "scripts/sync-region-data.mjs",
+      ".github/workflows/publish-region-data.yml",
+    ]) {
+      assert.ok(
+        workflow.includes(`- \"${path}\"`),
+        `${path} trigger is required`,
+      );
+    }
     assert.match(
       detectorStep,
       /REGION_DATA_BASE_URL: \$\{\{ vars\.REGION_DATA_BASE_URL \}\}/,
@@ -393,6 +411,13 @@ describe("verified R2 region-data workflow materialization", () => {
         `verified sync must run before ${marker}`,
       );
     }
+  });
+
+  test("keeps the full R2-only checkout gate explicit and non-publishing", () => {
+    const script = readText("./region-data/fresh-checkout.mjs");
+    assert.match(script, /process\.argv\[2\] !== "--run"/);
+    assert.match(script, /"--dry-run"/);
+    assert.match(script, /delete environment\[name\]/);
   });
 });
 

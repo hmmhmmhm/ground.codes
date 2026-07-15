@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+import { assertMaterializedRegionData } from "../../../scripts/region-data/materialization.mjs";
+
 type RegionRow = {
   name: string;
   code: string;
@@ -17,6 +19,7 @@ type RegionRow = {
   referenceDistanceKm?: number;
 };
 
+assertMaterializedRegionData({ groups: ["region-dist"] });
 const root = process.cwd();
 const regionDist = path.join(root, "region-dist");
 

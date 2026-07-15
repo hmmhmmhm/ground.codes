@@ -10,6 +10,9 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, test } from "node:test";
 
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
+
+assertMaterializedRegionData({ groups: ["region-dist"] });
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const readRows = (relativePath) =>

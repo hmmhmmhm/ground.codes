@@ -1,5 +1,7 @@
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
+
 import {
   standaloneWords,
   additionalStandaloneWords,
@@ -27,6 +29,7 @@ import {
 import { createRequire } from "node:module";
 import path from "node:path";
 
+assertMaterializedRegionData();
 const root = new URL("../", import.meta.url);
 const geointRequire = createRequire(
   new URL("../packages/geoint/", import.meta.url),

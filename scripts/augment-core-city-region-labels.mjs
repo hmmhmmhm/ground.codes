@@ -7,6 +7,9 @@ import { promisify } from "node:util";
 import { pipeline } from "node:stream/promises";
 import { get } from "node:https";
 
+import { assertMaterializedRegionData } from "./region-data/materialization.mjs";
+
+assertMaterializedRegionData();
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "..");
 const regionDist = resolve(repoRoot, "packages/geoint/region-dist");

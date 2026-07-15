@@ -1,0 +1,187 @@
+name: Publish Region Data
+
+on:
+  workflow_dispatch:
+    inputs:
+      transformation:
+        description: Reviewed data transformation to run before publication
+        required: true
+        type: choice
+        default: none
+        options:
+          - none
+          - region-1
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: region-data-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: region-data-publisher
+
+    steps:
+      - name: Require a main-branch dispatch
+        run: |
+          if [ "$GITHUB_REF" != "refs/heads/main" ]; then
+            echo "Region data publication must be dispatched from main." >&2
+            exit 1
+          fi
+
+      - name: Checkout main
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: "22"
+          package-manager-cache: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+        with:
+          version: 11.4.0
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Materialize active release
+        env:
+          REGION_DATA_BASE_URL: ${{ vars.REGION_DATA_BASE_URL }}
+        run: node scripts/sync-region-data.mjs --groups region-dist,region-db --prune
+
+      - name: Run approved transformation
+        env:
+          TRANSFORMATION: ${{ inputs.transformation }}
+        run: |
+          case "$TRANSFORMATION" in
+            none)
+              ;;
+            region-1)
+              pnpm --dir packages/geoint exec tsx -e \
+                'import("./build-script/region-1-build.ts").then(({ default: run }) => run())'
+              pnpm --dir packages/geoint exec tsx -e \
+                'import("./build-script/region-to-embedded-db.ts").then(({ default: run }) => run())'
+              ;;
+            *)
+              echo "Unsupported region-data transformation." >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Audit generated data
+        run: |
+          pnpm data:audit-labels
+          pnpm language:audit
+
+      - name: Generate immutable release
+        run: |
+          rm -rf .region-data-staging
+          pnpm region-data:generate
+
+      - name: Detect release change
+        id: release
+        run: |
+          if git diff --quiet -- packages/geoint/region-data-release.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "The generated release matches the active release; nothing will be published."
+            exit 0
+          fi
+          VERSION="$(node -p 'JSON.parse(require("fs").readFileSync("packages/geoint/region-data-release.json", "utf8")).version')"
+          if [[ ! "$VERSION" =~ ^sha256-[a-f0-9]{64}$ ]]; then
+            echo "Generated release version is malformed." >&2
+            exit 1
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Publish immutable release
+        if: steps.release.outputs.changed == 'true'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          R2_REGION_DATA_ACCESS_KEY_ID: ${{ secrets.R2_REGION_DATA_ACCESS_KEY_ID }}
+          R2_REGION_DATA_SECRET_ACCESS_KEY: ${{ secrets.R2_REGION_DATA_SECRET_ACCESS_KEY }}
+        run: pnpm region-data:publish
+
+      - name: Verify clean public materialization
+        if: steps.release.outputs.changed == 'true'
+        env:
+          REGION_DATA_BASE_URL: ${{ vars.REGION_DATA_BASE_URL }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          rm -rf packages/geoint/region-dist packages/geoint/region-db
+          node scripts/sync-region-data.mjs --groups region-dist,region-db --prune
+          node scripts/verify-region-data.mjs \
+            --manifest ".region-data-staging/releases/${VERSION}/manifest.json" \
+            --materialized . \
+            --exact
+
+      - name: Record release history
+        if: steps.release.outputs.changed == 'true'
+        env:
+          TRANSFORMATION: ${{ inputs.transformation }}
+          VERSION: ${{ steps.release.outputs.version }}
+          WORKFLOW_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from "node:fs/promises";
+
+          const path = "docs/operations/region-data-delivery.md";
+          const marker = "<!-- region-data-release-history -->";
+          const document = await readFile(path, "utf8");
+          if (!document.includes(marker)) {
+            throw new Error("region-data release history marker is missing");
+          }
+          const entry = `- \`${process.env.VERSION}\` via [publication run](${process.env.WORKFLOW_RUN_URL}); transformation \`${process.env.TRANSFORMATION}\`.`;
+          await writeFile(path, document.replace(marker, `${marker}\n${entry}`));
+          NODE
+
+      - name: Validate and commit release pointer
+        if: steps.release.outputs.changed == 'true'
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          BRANCH="data-release/${VERSION}"
+          EXPECTED="$(printf '%s\n' \
+            docs/operations/region-data-delivery.md \
+            packages/geoint/region-data-release.json)"
+          git switch -c "$BRANCH"
+          CHANGED="$(git diff --name-only)"
+          UNTRACKED="$(git ls-files --others --exclude-standard)"
+          if [ "$CHANGED" != "$EXPECTED" ] || [ -n "$UNTRACKED" ]; then
+            echo "Release worktrees may contain only the pointer and release history changes." >&2
+            printf '%s\n' "$CHANGED" "$UNTRACKED" >&2
+            exit 1
+          fi
+          git add packages/geoint/region-data-release.json docs/operations/region-data-delivery.md
+          STAGED="$(git diff --cached --name-only)"
+          if [ "$STAGED" != "$EXPECTED" ]; then
+            echo "Release commits may contain only the pointer and release history." >&2
+            printf '%s\n' "$STAGED" >&2
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data(region): activate ${VERSION}"
+          git push --set-upstream origin "$BRANCH"
+
+      - name: Open release pull request
+        if: steps.release.outputs.changed == 'true'
+        env:
+          BRANCH: data-release/${{ steps.release.outputs.version }}
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "data(region): activate ${VERSION}" \
+            --body "Activates immutable region-data release \`${VERSION}\`. Generated and verified by ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}."

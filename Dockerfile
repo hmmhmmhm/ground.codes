@@ -12,9 +12,13 @@ RUN apt-get update \
 
 WORKDIR /repo
 
+ARG REGION_DATA_BASE_URL=https://region-data.ground.codes
+
 COPY . .
 
 RUN pnpm install --frozen-lockfile
+RUN REGION_DATA_BASE_URL="${REGION_DATA_BASE_URL}" \
+  node scripts/sync-region-data.mjs --groups region-dist,region-db --prune
 RUN pnpm --filter api-ground-codes build
 
 ENV NODE_ENV=production
