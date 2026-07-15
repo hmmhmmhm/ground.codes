@@ -32,7 +32,7 @@
     "@ai-sdk/openai": "^1.2.1",
     "@changesets/cli": "^2.28.1",
     "@inquirer/prompts": "^7.3.2",
-    "@inquirer/search": "^3.0.9",
+    "@inquirer/search": "^4.2.1",
     "@repo/typescript-config": "workspace:*",
     "@types/geokdbush": "^1.1.5",
     "@types/node": "^22.13.9",
