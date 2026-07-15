@@ -412,6 +412,13 @@ describe("verified R2 region-data workflow materialization", () => {
       );
     }
   });
+
+  test("keeps the full R2-only checkout gate explicit and non-publishing", () => {
+    const script = readText("./region-data/fresh-checkout.mjs");
+    assert.match(script, /process\.argv\[2\] !== "--run"/);
+    assert.match(script, /"--dry-run"/);
+    assert.match(script, /delete environment\[name\]/);
+  });
 });
 
 describe("production deployment serialization", () => {

@@ -196,6 +196,47 @@ paths for release
 `sha256-4b6d31b92ce300ca4ca6d98fb24d966fad61b098639e51f33134b5922ccd3190`.
 These checks completed before any Phase B deletion began.
 
+## Phase B fresh-checkout evidence
+
+Phase B commit `4b84d1fdb73e727d824d352fbc53f879cd0c06b4` removed both
+managed data trees from the Git tree. On 2026-07-15, the opt-in verifier
+created a shallow detached checkout of that exact commit in a temporary
+directory and confirmed that neither managed directory initially existed. It
+then ran with all Cloudflare and R2 write credential variables explicitly
+removed:
+
+```sh
+node scripts/region-data/fresh-checkout.mjs --run
+```
+
+The first public synchronization selected and downloaded all 2,031 entries,
+skipped zero, pruned zero, and materialized 8,971,117,492 bytes. Exact
+verification matched release
+`sha256-4b6d31b92ce300ca4ca6d98fb24d966fad61b098639e51f33134b5922ccd3190`
+and manifest SHA-256
+`bf3068b4d416287d617332b3d77f92f9d8c6dbcbdf4c32ab7b9b07056a36a9f1`,
+with 901 `region-dist` entries, 1,130 `region-db` entries, and zero missing,
+extra, changed, or unreadable paths.
+
+The clean checkout passed the frozen install, security audit, formatting and
+source-size gates, runtime-pin and operational script tests, data and language
+audits, lint, type checks, all package unit and coverage suites, all six build
+tasks, and both Playwright smoke tests. Cloudflare Worker packaging also
+passed in `--dry-run` mode, and the verifier confirmed that public R2 sync
+precedes PostGIS schema, change detection, and import steps in the API deploy
+workflow. No production service or R2 object was mutated.
+
+After those checks, the verifier deleted both local managed directories.
+LevelDB-backed tests can update local metadata while reading a materialized
+database, so this deletion prevents test-side metadata changes from being
+mistaken for source changes. A second public synchronization again downloaded
+all 2,031 entries and 8,971,117,492 bytes with zero skipped or pruned paths;
+exact verification reproduced the same version, manifest, 901/1,130 group
+counts, and zero mismatches. The temporary checkout and both materializations
+were then removed automatically. This proves that a Git-only Phase B checkout
+can be reconstructed twice from the public, immutable R2 release without
+write credentials.
+
 ## Credential rotation
 
 1. Create a replacement R2 S3 token with `Object Read & Write` permission
