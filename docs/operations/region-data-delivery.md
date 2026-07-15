@@ -162,6 +162,40 @@ and inventory with zero missing, extra, changed, or unreadable paths. A public
 object GET returned `200 application/gzip`, the release manifest returned
 `200 application/json`, and an unpublished object path returned `404`.
 
+## Phase A shadow rollout evidence
+
+Phase A merged through [pull request 68][phase-a-pr] on 2026-07-15 as commit
+`781350d71cfbb0f8add1cf872f8cf5aa4ad879df`. Its authoritative
+[pull-request CI][phase-a-pr-ci] and [merged-main CI][phase-a-main-ci] passed
+the public R2 sync, security and data audits, unit and coverage suites, build,
+and browser smoke gates. The [API deployment][phase-a-api-deploy] also passed,
+including the verified R2 materialization, PostGIS work, deployment, and
+production smoke steps.
+
+The Web and Grok Spiral deployments exposed a pnpm 11 command-name collision
+after the Phase A merge: `pnpm --filter <package> deploy` selected pnpm's
+built-in deploy command instead of the package script. [Pull request
+70][phase-a-hotfix-pr] changed both calls to `pnpm --filter <package> run
+deploy` and merged as
+`8d748dc10b9d88a9d76a02d89bb7d3fcc7db1c09`. Its [merged-main
+CI][phase-a-hotfix-ci], [Web deployment][phase-a-web-deploy], and [Grok Spiral
+deployment][phase-a-grok-deploy] all passed. The subsequent [full production
+smoke][phase-a-production-smoke] exercised every language profile and the API
+documentation, ASCII Earth, biased region search, undecodable-code,
+missing-region, and unsupported-route operational checks successfully.
+
+A post-merge verification then started from an empty directory with all R2
+write credential variables explicitly absent. Public synchronization from
+`https://region-data.ground.codes` downloaded all 2,031 selected entries,
+skipped zero, pruned zero, and materialized 8,971,117,492 bytes. The public
+manifest SHA-256 was
+`bf3068b4d416287d617332b3d77f92f9d8c6dbcbdf4c32ab7b9b07056a36a9f1`.
+Exact manifest-to-filesystem verification reported 901 `region-dist` entries,
+1,130 `region-db` entries, and zero missing, extra, changed, or unreadable
+paths for release
+`sha256-4b6d31b92ce300ca4ca6d98fb24d966fad61b098639e51f33134b5922ccd3190`.
+These checks completed before any Phase B deletion began.
+
 ## Credential rotation
 
 1. Create a replacement R2 S3 token with `Object Read & Write` permission
@@ -195,3 +229,12 @@ routine rollback step.
 
 [r2-authentication]: https://developers.cloudflare.com/r2/api/tokens/
 [r2-public-buckets]: https://developers.cloudflare.com/r2/buckets/public-buckets/
+[phase-a-api-deploy]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29383869833
+[phase-a-grok-deploy]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29384373708
+[phase-a-hotfix-ci]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29384373695
+[phase-a-hotfix-pr]: https://github.com/hmmhmmhm/ground.codes/pull/70
+[phase-a-main-ci]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29383869899
+[phase-a-pr]: https://github.com/hmmhmmhm/ground.codes/pull/68
+[phase-a-pr-ci]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29383546050
+[phase-a-production-smoke]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29384519200
+[phase-a-web-deploy]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29384373723
