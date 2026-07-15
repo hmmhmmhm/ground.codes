@@ -10,23 +10,25 @@
     "lint": "eslint app components e2e hooks i18n i18n.ts lib next.config.ts playwright.config.ts playwright.production.config.ts --max-warnings 0",
     "check-types": "tsc --noEmit",
     "test": "bun test ./lib ./app ./components ./hooks",
+    "test:coverage": "cd ../.. && bun test --coverage --coverage-reporter=lcov --coverage-reporter=text --coverage-dir=coverage/web ./apps/web/lib ./apps/web/app ./apps/web/components ./apps/web/hooks && pnpm exec c8 --all --exclude-after-remap --include apps/web/lib/code/ground-codes.ts --include apps/web/lib/code/share-url.ts --include apps/web/lib/i18n/ground-code-language.ts --include apps/web/lib/map/celestial-bodies.ts --include apps/web/lib/map/google-maps-availability.ts --include apps/web/hooks/use-disable-zoom.ts --exclude '**/<define:import.meta>' --reporter=lcov --reporter=text --reports-dir coverage/web-branches pnpm --filter ground-codes exec tsx --test ../../scripts/coverage-branch-probes/web.test.ts && node scripts/merge-branch-coverage.mjs web",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test e2e/ground-code-share.spec.ts --grep @smoke",
     "test:e2e:layout": "playwright test e2e/ground-code-share.spec.ts --grep @layout",
     "test:e2e:full": "playwright test",
     "test:e2e:prod": "playwright test --config=playwright.production.config.ts",
     "qa:visual": "playwright test e2e/visual-qa.spec.ts --config=playwright.production.config.ts",
-    "pages:build": "npx @cloudflare/next-on-pages && node scripts/patch-pages-routes.mjs",
-    "preview": "pnpm run pages:build && wrangler pages dev",
-    "deploy": "pnpm run pages:build && wrangler pages deploy"
+    "pages:build": "pnpm exec next-on-pages && node scripts/patch-pages-routes.mjs",
+    "preview": "pnpm run pages:build && pnpm exec wrangler pages dev",
+    "deploy": "pnpm run pages:build && pnpm exec wrangler pages deploy"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.8",
     "@repo/ui": "workspace:*",
+    "@swc/helpers": "0.5.17",
     "@types/google.maps": "^3.64.1",
-    "cesium": "^1.141.0",
+    "cesium": "1.143.0",
     "next": "15.5.18",
-    "next-intl": "^4.0.2",
+    "next-intl": "4.13.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.6.0"
@@ -44,6 +46,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.18",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vercel": "47.0.4"
   }
 }

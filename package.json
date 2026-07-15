@@ -8,8 +8,18 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "code:size-check": "node scripts/check-code-size.mjs",
+    "coverage": "node scripts/run-coverage.mjs",
+    "coverage:api": "pnpm --filter api-ground-codes test:coverage",
+    "coverage:ground-codes": "pnpm --filter ground-codes test:coverage",
+    "coverage:operations": "c8 --all --include scripts/production-audit-policy.mjs --include scripts/production-smoke-helpers.mjs --include scripts/production-smoke-profiles.mjs --include scripts/workflow-test-helpers.mjs --include scripts/github-governance.mjs --include scripts/coverage-policy.mjs --include scripts/region-data/manifest.mjs --include scripts/region-data/generate-release.mjs --include scripts/region-data/sync.mjs --include scripts/region-data/publish.mjs --include scripts/region-data/verify.mjs --reporter=lcov --reporter=text --reports-dir coverage/operations node --test scripts/production-audit-policy.test.mjs scripts/production-smoke.test.mjs scripts/qa-workflow-policy.test.mjs scripts/qa-workflows.test.mjs scripts/github-governance.test.mjs scripts/coverage-policy.test.mjs scripts/coverage-policy-hardening.test.mjs scripts/coverage-policy-summary.test.mjs scripts/region-data/*.test.mjs",
+    "coverage:web": "pnpm --filter web test:coverage",
+    "coverage:check": "node scripts/check-coverage.mjs",
+    "security:audit": "node scripts/check-production-audit.mjs",
+    "security:audit:raw": "pnpm audit --prod --audit-level high",
     "check-types": "turbo run check-types",
     "production:smoke": "node scripts/production-smoke.mjs",
+    "production:smoke:quick": "GROUND_CODES_SMOKE_PROFILE=quick node scripts/production-smoke.mjs",
+    "production:smoke:full": "GROUND_CODES_SMOKE_PROFILE=full node scripts/production-smoke.mjs",
     "data:audit-labels": "pnpm --filter ground-codes test:data-audit && node --test scripts/region-label-quality.test.mjs",
     "data:report-labels": "node scripts/url-label-report.mjs",
     "runtime:check-pins": "node scripts/check-api-runtime-pins.mjs",
@@ -19,7 +29,14 @@
     "language:quality-score": "node scripts/language-quality-score-report.mjs",
     "language:audit": "node scripts/language-quality-status-report.mjs --assert-current && node scripts/language-quality-score-report.mjs --assert-min 80 && node scripts/language-expansion-target-report.mjs --assert-complete && node --test scripts/language-support-completeness.test.mjs && node --test scripts/codebook-policy-audit.test.mjs && node --test scripts/address-gap-codebook-quality.test.mjs && node --test scripts/region-label-quality.test.mjs && pnpm --filter web check-types",
     "language:localization-coverage": "node scripts/apply-localization-coverage-scaffold.mjs",
-    "scripts:test": "node --test scripts/*.test.mjs",
+    "github:governance:apply": "node scripts/configure-github-governance.mjs --apply",
+    "github:governance:verify": "node scripts/configure-github-governance.mjs --verify",
+    "region-data:generate": "node scripts/generate-region-data-release.mjs --source packages/geoint --staging .region-data-staging --pointer-out packages/geoint/region-data-release.json",
+    "region-data:publish": "node scripts/publish-region-data.mjs --staging .region-data-staging --pointer packages/geoint/region-data-release.json",
+    "region-data:sync": "node scripts/sync-region-data.mjs --groups region-dist,region-db",
+    "region-data:sync:ci": "node scripts/sync-region-data.mjs --groups region-dist,region-db --prune",
+    "region-data:verify": "node scripts/verify-region-data.mjs",
+    "scripts:test": "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs apps/api-ground-codes/scripts/*.test.mjs",
     "prepare": "husky install"
   },
   "lint-staged": {
@@ -30,13 +47,16 @@
     ]
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "3.1085.0",
+    "c8": "11.0.0",
     "husky": "9.1.7",
     "lint-staged": "15.5.0",
     "prettier": "^3.8.3",
     "turbo": "^2.9.14",
-    "typescript": "5.8.2"
+    "typescript": "5.8.2",
+    "wrangler": "4.110.0"
   },
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@11.4.0",
   "engines": {
     "node": ">=18"
   }

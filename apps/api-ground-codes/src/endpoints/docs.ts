@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import Elysia, { type Context } from "elysia";
 
 const docsHtml = `<!doctype html>
 <html lang="en">
@@ -161,7 +161,7 @@ const docsHtml = `<!doctype html>
   </body>
 </html>`;
 
-const serveDocs = ({ set }: { set: { headers: Record<string, string> } }) => {
+const serveDocs = ({ set }: { set: Context["set"] }) => {
   set.headers["cache-control"] = "public, max-age=300";
   set.headers["content-type"] = "text/html; charset=utf-8";
   return docsHtml;

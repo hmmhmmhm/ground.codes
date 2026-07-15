@@ -10,6 +10,7 @@
     "dev": "tsup --config tsup.config.ts --watch",
     "build": "tsup --config tsup.config.ts",
     "test": "tsx --test test/*.test.ts",
+    "test:coverage": "NODE_OPTIONS=--enable-source-maps pnpm --workspace-root exec c8 --all --include 'packages/ground-codes/src/**/*.ts' --exclude 'packages/ground-codes/src/**/*.d.ts' --reporter=lcov --reporter=text --reports-dir coverage/ground-codes pnpm --filter ground-codes test",
     "test:data-audit": "tsx --test --test-concurrency=1 --test-name-pattern \"ASCII-normalized|localized|URL-safe|legacy accented|Latin|unique\" test/celestial-body.test.ts test/multilingual-codebook-review.test.ts test/region-3-dataset.test.ts test/region-fallback.test.ts",
     "test:standalone": "pnpm build && node scripts/check-standalone-package.mjs",
     "generate-spiral-fixture": "tsx scripts/generate-spiral-fixture.ts",

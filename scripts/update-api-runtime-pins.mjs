@@ -1,6 +1,9 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
-import { updateRuntimePins } from "./api-runtime-pins.mjs";
+import {
+  getRuntimePinFailures,
+  updateRuntimePins,
+} from "./api-runtime-pins.mjs";
 
 const tag = process.argv[2]?.trim();
 
@@ -15,11 +18,18 @@ const packageJsonUrl = new URL(
 );
 const packageJson = JSON.parse(readFileSync(packageJsonUrl, "utf8"));
 const changed = updateRuntimePins(packageJson, tag);
+const failures = getRuntimePinFailures(packageJson, tag);
+
+if (failures.length > 0) {
+  console.error("Refusing to write incomplete API runtime pins:");
+  for (const failure of failures) console.error(`- ${failure}`);
+  process.exit(1);
+}
 
 writeFileSync(packageJsonUrl, `${JSON.stringify(packageJson, null, 2)}\n`);
 
 console.log(
   changed
-    ? `API runtime package pins updated to ${tag}.`
-    : `API runtime package pins already use ${tag}.`,
+    ? `API runtime and exact Elysia package pins updated to ${tag}.`
+    : `API runtime and exact Elysia package pins already use ${tag}.`,
 );

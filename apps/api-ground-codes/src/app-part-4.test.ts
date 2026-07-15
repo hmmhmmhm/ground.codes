@@ -1,8 +1,10 @@
 import { describe, expect, test } from "bun:test";
 import { createApp } from "./app.js";
 
-const app = createApp();
+const silentMetrics = { writeLog: () => undefined };
+const app = createApp({ metrics: silentMetrics });
 const rateLimitedApp = createApp({
+  metrics: silentMetrics,
   rateLimit: {
     max: 1,
     windowMs: 60_000,

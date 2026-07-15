@@ -3,6 +3,14 @@ name: Production Smoke
 on:
   workflow_dispatch:
     inputs:
+      profile:
+        description: "Smoke profile to run"
+        required: true
+        type: choice
+        options:
+          - full
+          - quick
+        default: full
       force_failure:
         description: "Force a smoke failure to test failure notifications"
         required: false
@@ -10,6 +18,7 @@ on:
         default: false
   schedule:
     - cron: "*/30 * * * *"
+    - cron: "17 3 * * *"
   workflow_run:
     workflows:
       - Deploy Web to Cloudflare Pages
@@ -20,6 +29,13 @@ permissions:
   contents: read
   issues: write
 
+concurrency:
+  group: >-
+    ${{ github.event_name == 'schedule'
+      && 'production-smoke-scheduled'
+      || format('production-smoke-{0}-{1}', github.event_name, github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'schedule' }}
+
 jobs:
   smoke:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
@@ -27,40 +43,54 @@ jobs:
     env:
       MOSHI_WEBHOOK_TOKEN: ${{ secrets.MOSHI_WEBHOOK_TOKEN }}
       GROUND_CODES_SMOKE_FORCE_FAILURE: ${{ github.event.inputs.force_failure || 'false' }}
+      GROUND_CODES_SMOKE_PROFILE: >-
+        ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.profile
+          || github.event_name == 'schedule' && github.event.schedule == '*/30 * * * *' && 'quick'
+          || 'full' }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: scripts/production-smoke*.mjs
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: "22"
           package-manager-cache: false
 
       - name: Run production smoke
+        id: smoke
+        continue-on-error: true
         run: node scripts/production-smoke.mjs
 
       - name: Notify smoke failure
-        if: failure() && env.MOSHI_WEBHOOK_TOKEN != ''
-        run: |
-          curl -X POST https://api.getmoshi.app/api/webhook \
-            -H "Content-Type: application/json" \
-            -d "{\"token\":\"${MOSHI_WEBHOOK_TOKEN}\",\"title\":\"ground.codes smoke failed\",\"message\":\"Production smoke failed on ${GITHUB_REF_NAME}. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\"}"
+        id: moshi
+        if: steps.smoke.outcome == 'failure' && env.MOSHI_WEBHOOK_TOKEN != ''
+        continue-on-error: true
+        timeout-minutes: 1
+        run: node scripts/production-smoke-notify.mjs
 
       - name: Open smoke failure issue
-        if: failure() && env.MOSHI_WEBHOOK_TOKEN == ''
-        uses: actions/github-script@v8
+        if: always() && steps.smoke.outcome == 'failure' && (env.MOSHI_WEBHOOK_TOKEN == '' || steps.moshi.outcome == 'failure')
+        continue-on-error: true
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
           script: |
             const title = "Production smoke failed";
             const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
+            const fallbackReason = process.env.MOSHI_WEBHOOK_TOKEN
+              ? "Moshi notification delivery failed, so this issue is the fallback notification."
+              : "MOSHI_WEBHOOK_TOKEN is not configured, so this issue is the fallback notification.";
             const message = [
               `Production smoke failed on ${process.env.GITHUB_REF_NAME}.`,
               "",
               `Run: ${runUrl}`,
               "",
-              "MOSHI_WEBHOOK_TOKEN is not configured, so this issue is the fallback notification.",
+              fallbackReason,
             ].join("\n");
             const { owner, repo } = context.repo;
             const { data: issues } = await github.rest.issues.listForRepo({
@@ -85,3 +115,7 @@ jobs:
                 body: message,
               });
             }
+
+      - name: Fail failed smoke run
+        if: always() && steps.smoke.outcome == 'failure'
+        run: exit 1

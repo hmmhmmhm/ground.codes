@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "ground-codes": {
+      "lcov": "coverage/ground-codes/lcov.info",
+      "include": ["packages/ground-codes/src/**/*.ts"],
+      "exclude": ["**/*.d.ts"],
+      "minimum": { "line": 0.8, "function": 0.8, "branch": 0.696 }
+    },
+    "api": {
+      "lcov": "coverage/api/lcov.info",
+      "include": ["apps/api-ground-codes/src/**/*.ts"],
+      "exclude": ["**/*.test.ts", "**/*.d.ts"],
+      "minimum": { "line": 0.8, "function": 0.8, "branch": 0.725 }
+    },
+    "web": {
+      "lcov": "coverage/web/lcov.info",
+      "include": [
+        "apps/web/lib/code/ground-codes.ts",
+        "apps/web/lib/code/share-url.ts",
+        "apps/web/lib/i18n/ground-code-language.ts",
+        "apps/web/lib/map/celestial-bodies.ts",
+        "apps/web/lib/map/google-maps-availability.ts",
+        "apps/web/hooks/use-disable-zoom.ts"
+      ],
+      "exclude": [],
+      "minimum": { "line": 0.8, "function": 0.8, "branch": 0.595 }
+    },
+    "operations": {
+      "lcov": "coverage/operations/lcov.info",
+      "include": [
+        "scripts/production-audit-policy.mjs",
+        "scripts/production-smoke-helpers.mjs",
+        "scripts/production-smoke-profiles.mjs",
+        "scripts/workflow-test-helpers.mjs",
+        "scripts/github-governance.mjs",
+        "scripts/coverage-policy.mjs",
+        "scripts/region-data/manifest.mjs",
+        "scripts/region-data/generate-release.mjs",
+        "scripts/region-data/sync.mjs",
+        "scripts/region-data/publish.mjs",
+        "scripts/region-data/verify.mjs"
+      ],
+      "exclude": [],
+      "minimum": { "line": 0.8, "function": 0.8, "branch": 0.878 }
+    }
+  }
+}

@@ -88,6 +88,31 @@ API usage is limited to 600 requests per minute per IP. For higher volume needs,
 
 Ground Codes uses a custom GIS algorithm called "Grok Spiral" 🌀 that determines coordinates by moving in a clockwise spiral from a central point. This implementation leverages the "Gauss Circle Problem" formula to achieve O(sqrt N) efficiency in coordinate generation. The spiral pattern maintains a circular shape regardless of distance from the center point, resulting in excellent coordinate indexing efficiency.
 
+## 🛟 Operations
+
+- [Production service objectives](./docs/operations/service-objectives.md)
+- [Production incident runbook](./docs/operations/incident-runbook.md)
+
+## 🧰 Local Development
+
+Region data is published as a verified immutable release. Materialize the
+active release explicitly before running tests or builds that consume
+`packages/geoint/region-dist` or `packages/geoint/region-db`:
+
+```bash
+git clone https://github.com/hmmhmmhm/ground.codes.git
+cd ground.codes
+pnpm install --frozen-lockfile
+REGION_DATA_BASE_URL=https://region-data.ground.codes pnpm region-data:sync
+pnpm scripts:test
+pnpm build
+```
+
+The synchronizer verifies the committed release pointer, manifest, size, and
+SHA-256 of every downloaded file. Dataset generators never download inputs
+implicitly; run them only in a working tree where both managed data groups
+have already been materialized explicitly.
+
 ## 📄 License
 
 MIT License

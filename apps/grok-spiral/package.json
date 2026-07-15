@@ -9,9 +9,9 @@
     "start": "next start",
     "lint": "eslint app lib next.config.ts --max-warnings 0",
     "check-types": "tsc --noEmit",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "preview": "pnpm run pages:build && wrangler pages dev",
-    "deploy": "pnpm run pages:build && wrangler pages deploy"
+    "pages:build": "pnpm exec next-on-pages",
+    "preview": "pnpm run pages:build && pnpm exec wrangler pages dev",
+    "deploy": "pnpm run pages:build && pnpm exec wrangler pages deploy"
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
@@ -32,6 +32,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.18",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vercel": "47.0.4"
   }
 }

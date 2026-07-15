@@ -1,5 +1,15 @@
 import { describe, expect, test } from "bun:test";
-import { PLANETARY_LANDMARK_LABELS } from "./celestial-bodies";
+import {
+  EARTH_DEFAULT_VIEW,
+  PLANETARY_BODY_CONFIGS,
+  PLANETARY_LANDMARK_LABELS,
+  createPlanetaryMapType,
+  getDefaultPlanetaryLayerId,
+  getDefaultViewForBody,
+  getPlanetaryLayerConfig,
+  parseCelestialBody,
+  parsePlanetaryLayerId,
+} from "./celestial-bodies";
 import { PLANETARY_LANDMARK_LOCALIZED_LABELS } from "./planetary-landmark-labels";
 
 describe("planetary landmark labels", () => {
@@ -115,5 +125,105 @@ describe("planetary landmark labels", () => {
     expect(
       PLANETARY_LANDMARK_LOCALIZED_LABELS.russian.mars?.["jezero-crater"],
     ).toBe("кратер Езеро");
+  });
+});
+
+describe("celestial body map configuration", () => {
+  test("normalizes bodies and resolves their default views", () => {
+    expect(parseCelestialBody("earth")).toBe("earth");
+    expect(parseCelestialBody("moon")).toBe("moon");
+    expect(parseCelestialBody("mars")).toBe("mars");
+    expect(parseCelestialBody("pluto")).toBe("earth");
+    expect(parseCelestialBody(null)).toBe("earth");
+
+    expect(getDefaultViewForBody("earth")).toBe(EARTH_DEFAULT_VIEW);
+    expect(getDefaultViewForBody("moon")).toEqual({
+      center: PLANETARY_BODY_CONFIGS.moon.center,
+      zoom: PLANETARY_BODY_CONFIGS.moon.zoom,
+    });
+  });
+
+  test("falls back to each body's configured default map layer", () => {
+    expect(getDefaultPlanetaryLayerId("moon")).toBe("KaguyaTC_Ortho");
+    expect(getPlanetaryLayerConfig("moon", "LOLA_bw").id).toBe("LOLA_bw");
+    expect(getPlanetaryLayerConfig("moon", "missing").id).toBe(
+      "KaguyaTC_Ortho",
+    );
+    expect(parsePlanetaryLayerId("mars", null)).toBe("MDIM21_color");
+  });
+
+  test("creates wrapped and clamped WMS map tiles", () => {
+    const originalGoogleDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      "google",
+    );
+    const existingGoogle = { sentinel: "existing-google" };
+    Object.defineProperty(globalThis, "google", {
+      configurable: true,
+      enumerable: false,
+      value: existingGoogle,
+      writable: false,
+    });
+    const existingGoogleDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      "google",
+    );
+    if (!existingGoogleDescriptor) {
+      throw new Error("expected seeded Google descriptor");
+    }
+    class Size {
+      constructor(
+        readonly width: number,
+        readonly height: number,
+      ) {}
+    }
+    class ImageMapType {
+      constructor(readonly options: google.maps.ImageMapTypeOptions) {}
+    }
+
+    try {
+      Object.defineProperty(globalThis, "google", {
+        configurable: true,
+        value: { maps: { ImageMapType, Size } },
+      });
+
+      try {
+        const mapType = createPlanetaryMapType("mars", "THEMIS") as unknown as {
+          options: google.maps.ImageMapTypeOptions;
+        };
+        const tileUrl = mapType.options.getTileUrl?.({ x: -1, y: 99 }, 2);
+
+        expect(mapType.options.name).toBe("THEMIS IR Day");
+        expect(mapType.options.tileSize).toMatchObject({
+          width: 256,
+          height: 256,
+        });
+        expect(tileUrl).toContain("LAYERS=THEMIS");
+        expect(tileUrl).toContain("REQUEST=GetMap");
+        const bounds = new URL(tileUrl ?? "").searchParams
+          .get("BBOX")
+          ?.split(",")
+          .map(Number);
+        expect(bounds).toEqual([
+          90,
+          expect.closeTo(-85.05112878),
+          180,
+          expect.closeTo(-66.51326044),
+        ]);
+      } finally {
+        Object.defineProperty(globalThis, "google", existingGoogleDescriptor);
+      }
+
+      expect(Object.getOwnPropertyDescriptor(globalThis, "google")).toEqual(
+        existingGoogleDescriptor,
+      );
+      expect(globalThis.google).toBe(existingGoogle);
+    } finally {
+      if (originalGoogleDescriptor) {
+        Object.defineProperty(globalThis, "google", originalGoogleDescriptor);
+      } else {
+        Reflect.deleteProperty(globalThis, "google");
+      }
+    }
   });
 });

@@ -1,8 +1,11 @@
 import { describe, expect, test } from "bun:test";
+import { readFileSync } from "node:fs";
 import { createApp } from "./app.js";
 
-const app = createApp();
+const silentMetrics = { writeLog: () => undefined };
+const app = createApp({ metrics: silentMetrics });
 const rateLimitedApp = createApp({
+  metrics: silentMetrics,
   rateLimit: {
     max: 1,
     windowMs: 60_000,
@@ -21,7 +24,35 @@ const postJson = (path: string, body: unknown) =>
 const get = (path: string) =>
   app.handle(new Request(`http://localhost${path}`));
 
+const readRepositoryDocument = (path: string) =>
+  readFileSync(new URL(`../../../${path}`, import.meta.url), "utf8");
+
 describe("Ground Codes API contract", () => {
+  test("documents measurable production service objectives", () => {
+    const operationsDocuments = [
+      readRepositoryDocument("docs/operations/service-objectives.md"),
+      readRepositoryDocument("docs/operations/incident-runbook.md"),
+    ].join("\n");
+
+    [
+      /99\.9% monthly readiness availability[\s\S]*99\.9% monthly Web-root availability/i,
+      /UTC calendar month/i,
+      /00 and 30 minutes of every UTC hour/i,
+      /`api\.readiness`[\s\S]*`web\.root`[\s\S]*`earth\.english\.encode`[\s\S]*`earth\.english\.search`/,
+      /passed expected slots \/ all expected slots/i,
+      /1,440 expected\s+slots[\s\S]*at most 1 failed slot/i,
+      /missing, cancelled, not created, or non-passing/i,
+      /`durationMs` < 2,000 ms/i,
+      /missing, errored,\s+or slow check is a latency miss/i,
+      /full post-deploy production smoke.*before an incident is closed/i,
+      /console\.log\(record\)[\s\S]*application payload fields[\s\S]*Cloudflare platform metadata/i,
+      /logs must never include coordinates, search strings, ground codes, IP\s+addresses, headers, or credentials/i,
+      /Pages deployment ID and commit[\s\S]*Web response[\s\S]*full production smoke/i,
+      /Worker rollback does\s+not roll back PostGIS, R2, or other external state[\s\S]*older\s+code is compatible with the current schema and data[\s\S]*forward fix\s+or documented data recovery/i,
+      /startsWith\(status, "5"\)[\s\S]*startsWith\(status, "4"\)[\s\S]*startsWith\(status, "3"\)[\s\S]*startsWith\(status, "2"\)[\s\S]*status = "5xx"[^.]*invalid/i,
+    ].forEach((pattern) => expect(operationsDocuments).toMatch(pattern));
+  });
+
   test("serves a readiness endpoint for deployment checks", async () => {
     const response = await get("/readyz");
 
@@ -64,19 +95,33 @@ describe("Ground Codes API contract", () => {
   });
 
   test("serves lightweight operational metrics", async () => {
-    await get("/healthz");
+    const firstApp = createApp({ metrics: silentMetrics, rateLimit: null });
+    const secondApp = createApp({ metrics: silentMetrics, rateLimit: null });
 
-    const response = await get("/metrics");
+    await firstApp.handle(new Request("http://localhost/healthz"));
+    await new Promise<void>((resolve) => setImmediate(resolve));
 
-    expect(response.status).toBe(200);
-    const body = await response.json();
-    expect(body.service).toBe("api-ground-codes");
-    expect(body.scope).toBe("worker-isolate");
-    expect(body.requests.total).toBeGreaterThan(0);
+    const firstResponse = await firstApp.handle(
+      new Request("http://localhost/metrics"),
+    );
+    const secondResponse = await secondApp.handle(
+      new Request("http://localhost/metrics"),
+    );
+
+    expect(firstResponse.status).toBe(200);
+    const first = await firstResponse.json();
+    expect(first.service).toBe("api-ground-codes");
+    expect(first.scope).toBe("worker-isolate");
+    expect(first.runtimeCommit).toMatch(/^[0-9a-f]{40}$/);
+    expect(first.requests.total).toBe(1);
+
+    expect(secondResponse.status).toBe(200);
+    const second = await secondResponse.json();
+    expect(second.requests.total).toBe(0);
   });
 
   test("serves public API documentation without exposing legacy routes", async () => {
-    const docsResponse = await createApp().handle(
+    const docsResponse = await createApp({ metrics: silentMetrics }).handle(
       new Request("http://localhost/"),
     );
     expect(docsResponse.status).toBe(200);
@@ -151,9 +196,9 @@ describe("Ground Codes API contract", () => {
     expect(docsResponse.status).toBe(302);
     expect(docsResponse.headers.get("location")).toBe("/openapi/");
 
-    const referenceResponse = await createApp().handle(
-      new Request("http://localhost/reference"),
-    );
+    const referenceResponse = await createApp({
+      metrics: silentMetrics,
+    }).handle(new Request("http://localhost/reference"));
     expect(referenceResponse.status).toBe(302);
     expect(referenceResponse.headers.get("location")).toBe("/openapi/");
 
