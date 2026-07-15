@@ -163,6 +163,7 @@ describe("code size policy", () => {
       "scripts/region-data/generate-release-tree.mjs",
       "scripts/region-data/generate-release-tree-worker.mjs",
       "scripts/region-data/publish-security.test.mjs",
+      "scripts/region-data/publish-hardening.test.mjs",
       "scripts/region-data/publish-staging.mjs",
       "scripts/region-data/publish-test-helpers.mjs",
       "scripts/region-data/publish.mjs",
@@ -172,9 +173,13 @@ describe("code size policy", () => {
       "scripts/region-data/sync.mjs",
       "scripts/region-data/sync-security.test.mjs",
       "scripts/region-data/sync.test.mjs",
+      "scripts/region-data/verify.mjs",
+      "scripts/region-data/verify-hardening.test.mjs",
+      "scripts/region-data/verify.test.mjs",
       "scripts/generate-region-data-release.mjs",
       "scripts/publish-region-data.mjs",
       "scripts/sync-region-data.mjs",
+      "scripts/verify-region-data.mjs",
       "scripts/region-data/test-cleanup.mjs",
     ];
 

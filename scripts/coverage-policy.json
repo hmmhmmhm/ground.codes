@@ -34,10 +34,15 @@
         "scripts/production-smoke-profiles.mjs",
         "scripts/workflow-test-helpers.mjs",
         "scripts/github-governance.mjs",
-        "scripts/coverage-policy.mjs"
+        "scripts/coverage-policy.mjs",
+        "scripts/region-data/manifest.mjs",
+        "scripts/region-data/generate-release.mjs",
+        "scripts/region-data/sync.mjs",
+        "scripts/region-data/publish.mjs",
+        "scripts/region-data/verify.mjs"
       ],
       "exclude": [],
-      "minimum": { "line": 0.8, "function": 0.8, "branch": 0.872 }
+      "minimum": { "line": 0.8, "function": 0.8, "branch": 0.878 }
     }
   }
 }

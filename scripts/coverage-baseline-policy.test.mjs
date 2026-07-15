@@ -11,7 +11,7 @@ const authoritativeBranchBaselines = {
   "ground-codes": { covered: 695, total: 998, minimum: 0.696 },
   api: { covered: 256, total: 353, minimum: 0.725 },
   web: { covered: 289, total: 485, minimum: 0.595 },
-  operations: { covered: 431, total: 494, minimum: 0.872 },
+  operations: { covered: 757, total: 862, minimum: 0.878 },
 };
 
 test("coverage policy locks measured non-zero branch floors", () => {
@@ -34,7 +34,7 @@ test("coverage policy locks measured non-zero branch floors", () => {
       "ground-codes": { line: 0.8, function: 0.8, branch: 0.696 },
       api: { line: 0.8, function: 0.8, branch: 0.725 },
       web: { line: 0.8, function: 0.8, branch: 0.595 },
-      operations: { line: 0.8, function: 0.8, branch: 0.872 },
+      operations: { line: 0.8, function: 0.8, branch: 0.878 },
     },
   );
   for (const [name, baseline] of Object.entries(authoritativeBranchBaselines)) {
@@ -58,6 +58,11 @@ test("coverage policy locks measured non-zero branch floors", () => {
     "scripts/workflow-test-helpers.mjs",
     "scripts/github-governance.mjs",
     "scripts/coverage-policy.mjs",
+    "scripts/region-data/manifest.mjs",
+    "scripts/region-data/generate-release.mjs",
+    "scripts/region-data/sync.mjs",
+    "scripts/region-data/publish.mjs",
+    "scripts/region-data/verify.mjs",
   ]);
 });
 
@@ -69,21 +74,25 @@ test("coverage documentation records measurements, tools, boundaries, and ratche
 
   for (const expected of [
     "2026-07-14",
+    "2026-07-15",
     "GitHub Actions",
     "Ubuntu",
     "Node\\s+22",
     "Bun\\s+1.3.1",
     "c8 11.0.0",
+    "Node\\s+22.23.1",
     "29303671837",
     "pre-CI local baseline",
     "695/998",
     "256/353",
     "289/485",
-    "431/494",
+    "2500/2635",
+    "135/136",
+    "757/862",
     "0.696",
     "0.725",
     "0.595",
-    "0.872",
+    "0.878",
     "packages/ground-codes/src/**/*.ts",
     "apps/api-ground-codes/src/**/*.ts",
     "thresholds may only increase",

@@ -11,7 +11,7 @@
     "coverage": "node scripts/run-coverage.mjs",
     "coverage:api": "pnpm --filter api-ground-codes test:coverage",
     "coverage:ground-codes": "pnpm --filter ground-codes test:coverage",
-    "coverage:operations": "c8 --all --include scripts/production-audit-policy.mjs --include scripts/production-smoke-helpers.mjs --include scripts/production-smoke-profiles.mjs --include scripts/workflow-test-helpers.mjs --include scripts/github-governance.mjs --include scripts/coverage-policy.mjs --reporter=lcov --reporter=text --reports-dir coverage/operations node --test scripts/production-audit-policy.test.mjs scripts/production-smoke.test.mjs scripts/qa-workflow-policy.test.mjs scripts/qa-workflows.test.mjs scripts/github-governance.test.mjs scripts/coverage-policy.test.mjs scripts/coverage-policy-hardening.test.mjs scripts/coverage-policy-summary.test.mjs",
+    "coverage:operations": "c8 --all --include scripts/production-audit-policy.mjs --include scripts/production-smoke-helpers.mjs --include scripts/production-smoke-profiles.mjs --include scripts/workflow-test-helpers.mjs --include scripts/github-governance.mjs --include scripts/coverage-policy.mjs --include scripts/region-data/manifest.mjs --include scripts/region-data/generate-release.mjs --include scripts/region-data/sync.mjs --include scripts/region-data/publish.mjs --include scripts/region-data/verify.mjs --reporter=lcov --reporter=text --reports-dir coverage/operations node --test scripts/production-audit-policy.test.mjs scripts/production-smoke.test.mjs scripts/qa-workflow-policy.test.mjs scripts/qa-workflows.test.mjs scripts/github-governance.test.mjs scripts/coverage-policy.test.mjs scripts/coverage-policy-hardening.test.mjs scripts/coverage-policy-summary.test.mjs scripts/region-data/*.test.mjs",
     "coverage:web": "pnpm --filter web test:coverage",
     "coverage:check": "node scripts/check-coverage.mjs",
     "security:audit": "node scripts/check-production-audit.mjs",
@@ -35,6 +35,7 @@
     "region-data:publish": "node scripts/publish-region-data.mjs --staging .region-data-staging --pointer packages/geoint/region-data-release.json",
     "region-data:sync": "node scripts/sync-region-data.mjs --groups region-dist,region-db",
     "region-data:sync:ci": "node scripts/sync-region-data.mjs --groups region-dist,region-db --prune",
+    "region-data:verify": "node scripts/verify-region-data.mjs",
     "scripts:test": "node --test scripts/*.test.mjs scripts/region-data/*.test.mjs",
     "prepare": "husky install"
   },

@@ -17,6 +17,11 @@ test("operations coverage instruments only maintained policy modules", () => {
       "--include scripts/workflow-test-helpers.mjs",
       "--include scripts/github-governance.mjs",
       "--include scripts/coverage-policy.mjs",
+      "--include scripts/region-data/manifest.mjs",
+      "--include scripts/region-data/generate-release.mjs",
+      "--include scripts/region-data/sync.mjs",
+      "--include scripts/region-data/publish.mjs",
+      "--include scripts/region-data/verify.mjs",
       "--reporter=lcov --reporter=text --reports-dir coverage/operations",
       "node --test",
       "scripts/production-audit-policy.test.mjs",
@@ -27,6 +32,7 @@ test("operations coverage instruments only maintained policy modules", () => {
       "scripts/coverage-policy.test.mjs",
       "scripts/coverage-policy-hardening.test.mjs",
       "scripts/coverage-policy-summary.test.mjs",
+      "scripts/region-data/*.test.mjs",
     ].join(" "),
   );
 });

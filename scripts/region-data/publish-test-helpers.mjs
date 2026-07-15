@@ -95,7 +95,8 @@ export class FakeS3Client {
     this.active += 1;
     this.maxActive = Math.max(this.maxActive, this.active);
     try {
-      await this.onSend?.({ attempt, input, name });
+      const overridden = await this.onSend?.({ attempt, input, name });
+      if (overridden !== undefined) return overridden;
       if (this.delayMs > 0) {
         await new Promise((resolve) => setTimeout(resolve, this.delayMs));
       }
