@@ -35,12 +35,12 @@ a normal deployment, or grant the publisher bucket-administration access.
 The repository contains these settings. Record and inspect names or presence,
 not values.
 
-| Kind     | Name                               | Consumer                             |
-| -------- | ---------------------------------- | ------------------------------------ |
-| Secret   | `CLOUDFLARE_ACCOUNT_ID`            | Publisher S3 endpoint                |
-| Secret   | `R2_REGION_DATA_ACCESS_KEY_ID`     | Publisher authentication             |
-| Secret   | `R2_REGION_DATA_SECRET_ACCESS_KEY` | Publisher authentication             |
-| Variable | `REGION_DATA_BASE_URL`             | Read-only sync in CI and deploy jobs |
+| Kind     | Scope                   | Name                               | Consumer                             |
+| -------- | ----------------------- | ---------------------------------- | ------------------------------------ |
+| Secret   | Repository              | `CLOUDFLARE_ACCOUNT_ID`            | Deploys and publisher S3 endpoint    |
+| Secret   | `region-data-publisher` | `R2_REGION_DATA_ACCESS_KEY_ID`     | Publisher authentication             |
+| Secret   | `region-data-publisher` | `R2_REGION_DATA_SECRET_ACCESS_KEY` | Publisher authentication             |
+| Variable | Repository              | `REGION_DATA_BASE_URL`             | Read-only sync in CI and deploy jobs |
 
 `REGION_DATA_BASE_URL` is `https://region-data.ground.codes`. Set each secret
 in a separate stdin session so its value is absent from command arguments,
@@ -48,9 +48,14 @@ shell history, repository files, and logs:
 
 ```sh
 set +x
+gh api --silent --method PUT \
+  repos/{owner}/{repo}/environments/region-data-publisher \
+  -F wait_timer=0 \
+  -F 'deployment_branch_policy[protected_branches]=true' \
+  -F 'deployment_branch_policy[custom_branch_policies]=false'
 gh secret set CLOUDFLARE_ACCOUNT_ID
-gh secret set R2_REGION_DATA_ACCESS_KEY_ID
-gh secret set R2_REGION_DATA_SECRET_ACCESS_KEY
+gh secret set R2_REGION_DATA_ACCESS_KEY_ID --env region-data-publisher
+gh secret set R2_REGION_DATA_SECRET_ACCESS_KEY --env region-data-publisher
 gh variable set REGION_DATA_BASE_URL --body \
   https://region-data.ground.codes
 ```
@@ -62,9 +67,10 @@ argument.
 Verify only the setting names:
 
 ```sh
-gh secret list --app actions --json name \
-  --jq '.[].name' | rg \
-  '^(CLOUDFLARE_ACCOUNT_ID|R2_REGION_DATA_ACCESS_KEY_ID|R2_REGION_DATA_SECRET_ACCESS_KEY)$'
+gh secret list --app actions --json name --jq '.[].name' | \
+  rg '^CLOUDFLARE_ACCOUNT_ID$'
+gh secret list --env region-data-publisher --json name --jq '.[].name' | \
+  rg '^R2_REGION_DATA_(ACCESS_KEY_ID|SECRET_ACCESS_KEY)$'
 gh variable get REGION_DATA_BASE_URL
 ```
 
@@ -118,7 +124,8 @@ The boundary was provisioned and re-read on 2026-07-15:
   listed the target bucket, and the same credentials received `403` for a
   different account bucket. This proves the token is bucket-scoped rather than
   an R2 administrator credential.
-- GitHub reported all three secret names present and
+- GitHub reported the Cloudflare account ID at repository scope, the two R2
+  publisher secret names in the protected environment, and
   `REGION_DATA_BASE_URL=https://region-data.ground.codes`.
 
 For the initial operator-run publication, the owner explicitly approved a
@@ -237,13 +244,82 @@ were then removed automatically. This proves that a Git-only Phase B checkout
 can be reconstructed twice from the public, immutable R2 release without
 write credentials.
 
+## Protected publication workflow
+
+`.github/workflows/publish-region-data.yml` is a manual, main-branch-only
+workflow. Its job uses the `region-data-publisher` environment, serializes
+publication attempts, and has only `contents: write` and
+`pull-requests: write` repository permissions. R2 write credentials are
+referenced only by the immutable publication step; active-release sync,
+audits, ordinary CI, and pull requests use only the public base URL.
+
+The environment boundary was provisioned and re-read on 2026-07-15. GitHub
+reported protected-branch deployments enabled, custom branch policies
+disabled, and exactly the two R2 publisher secret names in the environment.
+The repository-level secret inventory retained `CLOUDFLARE_ACCOUNT_ID` but no
+`R2_REGION_DATA_*` write credential. Repository workflow permissions remained
+read-only by default, while the Actions pull-request setting was enabled so
+the publisher's explicit `pull-requests: write` grant can open its release PR.
+No secret values were read back.
+
+The `transformation` input is a closed choice rather than a shell command.
+`none` verifies that the current materialization remains reproducible.
+`region-1` rebuilds the tracked level-1 source inputs and then reconstructs
+the embedded databases. Any additional transformation must first be added to
+the workflow's explicit `case` statement in a reviewed pull request.
+
+Every dispatch synchronizes the active release, runs the selected reviewed
+transformation, executes the data and 180-language quality audits, and
+generates a deterministic staged release. If the generated pointer is
+byte-identical to the active pointer, the workflow exits successfully without
+calling the publisher, pushing a branch, or opening a pull request.
+
+The local no-content path was exercised on 2026-07-15 with all write
+credential variables absent. Public sync downloaded the active 2,031 entries
+and both data-audit suites passed, including 180/180 language completeness and
+an 85.7% average quality score with no score below 80%. Deterministic
+generation produced the same
+`sha256-4b6d31b92ce300ca4ca6d98fb24d966fad61b098639e51f33134b5922ccd3190`
+version, 2,031 entries, and 1,044 unique objects. The tracked pointer remained
+byte-identical, so the publisher and pull-request paths were not invoked.
+
+For changed content, the workflow publishes immutable objects and the
+manifest, deletes its local managed directories, reconstructs both groups
+through the public endpoint, and performs exact manifest verification. It
+then records the run below and accepts exactly these two staged paths:
+
+- `packages/geoint/region-data-release.json`
+- `docs/operations/region-data-delivery.md`
+
+Materialized data and staging output remain ignored and are never staged. Any
+other tracked change or unignored new file—including a credential file or an
+unrelated source path—makes commit validation fail. A successful run pushes
+`data-release/<version>` and opens a normal pull request against `main`; the
+release does not become active until that pull request passes CI and merges.
+
+Before the first content-changing production dispatch, repeat the publisher
+fixture test against a separate non-production bucket and credentials. Require
+one missing object upload, an immutable manifest written last, a second
+idempotent publication with zero uploads, and an exact public
+materialization. Record the bucket, run, and cleanup evidence here without
+recording credential values. A no-content `none` dispatch on `main` must also
+complete without an R2 publication or pull request before production use.
+
+### Publication history
+
+<!-- region-data-release-history -->
+
+- `sha256-4b6d31b92ce300ca4ca6d98fb24d966fad61b098639e51f33134b5922ccd3190`
+  was the initial operator-published release; see Initial release evidence.
+
 ## Credential rotation
 
 1. Create a replacement R2 S3 token with `Object Read & Write` permission
    scoped only to `ground-codes-region-data`.
 2. In separate stdin sessions, replace
    `R2_REGION_DATA_ACCESS_KEY_ID` and
-   `R2_REGION_DATA_SECRET_ACCESS_KEY` in GitHub Actions.
+   `R2_REGION_DATA_SECRET_ACCESS_KEY` in the `region-data-publisher`
+   environment.
 3. Run the publisher against the current release. It must complete
    idempotently without uploading or changing existing objects.
 4. Revoke the previous token in Cloudflare, then verify that only the
