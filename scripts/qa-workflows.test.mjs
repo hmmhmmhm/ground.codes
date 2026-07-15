@@ -370,9 +370,9 @@ describe("verified R2 region-data workflow materialization", () => {
     }
   });
 
-  test("syncs region-dist before API verification, import detection, and build", () => {
+  test("syncs both groups before API verification, import detection, and build", () => {
     const workflow = readText("../.github/workflows/deploy-api.yml");
-    const syncStep = assertPublicSyncStep(workflow, "region-dist");
+    const syncStep = assertPublicSyncStep(workflow, "region-dist,region-db");
     const detectorStep = workflowStep(
       workflow,
       "Detect changed region datasets",
