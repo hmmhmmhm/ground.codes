@@ -283,6 +283,12 @@ generation produced the same
 version, 2,031 entries, and 1,044 unique objects. The tracked pointer remained
 byte-identical, so the publisher and pull-request paths were not invoked.
 
+The first GitHub-hosted `none` dispatch then completed in [publication run
+29389992473][phase-b-publish-none]. It regenerated the same version from all
+2,031 entries and 1,044 unique objects, reported `changed=false`, and skipped
+the publisher, public re-materialization, documentation, branch, and pull
+request steps. GitHub had no `data-release/*` ref or pull request afterward.
+
 For changed content, the workflow publishes immutable objects and the
 manifest, deletes its local managed directories, reconstructs both groups
 through the public endpoint, and performs exact manifest verification. It
@@ -297,13 +303,65 @@ unrelated source path—makes commit validation fail. A successful run pushes
 `data-release/<version>` and opens a normal pull request against `main`; the
 release does not become active until that pull request passes CI and merges.
 
-Before the first content-changing production dispatch, repeat the publisher
+Before the first content-changing production dispatch, run the publisher
 fixture test against a separate non-production bucket and credentials. Require
 one missing object upload, an immutable manifest written last, a second
 idempotent publication with zero uploads, and an exact public
 materialization. Record the bucket, run, and cleanup evidence here without
-recording credential values. A no-content `none` dispatch on `main` must also
-complete without an R2 publication or pull request before production use.
+recording credential values. No content-changing production dispatch occurred
+during this cutover; this remains a hard prerequisite for the first one.
+
+## Phase B stage-gate evidence
+
+[Pull request 81][phase-b-pr] removed the managed data from Git, proved a
+fresh R2-only checkout, and added the protected publisher. Its first browser
+smoke attempt exposed Playwright's automatic CI diff capture trying to buffer
+the multi-gigabyte deletion. Commit `9c7b601a52a7e95bae997eaa064e4cb66d985b22`
+kept commit metadata but disabled diff capture, after which the authoritative
+[PR CI][phase-b-pr-ci] passed public materialization, security, formatting,
+source-size, runtime-pin, operational, geoint, data, language, lint, type,
+package, coverage, build, and browser gates.
+
+The PR merged as `105334d9b5cec32abc4d68290d6eac46b42d1f6e`.
+Its [main CI][phase-b-main-ci] and applicable [Web deployment][phase-b-web-deploy]
+passed. The first API deployment stopped before any production mutation:
+after syncing only `region-dist`, the tests correctly failed because the
+Git-removed embedded `region-db` was absent. [Pull request
+82][phase-b-api-hotfix-pr] changed the deploy verifier to materialize both
+groups; its [PR CI][phase-b-api-hotfix-ci] passed and it merged as
+`c232408950f494bd12bf425f5a3f8c13aa764c7e`. The final [main
+CI][phase-b-final-main-ci] and [API deployment][phase-b-api-deploy] both
+passed. The API run materialized both groups, passed the previously failing
+tests, applied the PostGIS schema, detected no changed dataset, skipped import,
+deployed the Worker, and passed commit-pinned production smoke. Grok Spiral
+did not run because neither merge changed its path-filtered app, UI, workflow,
+or root dependency files.
+
+An independent [full production smoke][phase-b-production-smoke] checked out
+the final main commit and passed readiness, Web metadata, every supported
+language profile, API documentation, region search, and error-route checks.
+A direct `/metrics` validation reported service `api-ground-codes`, scope
+`worker-isolate`, runtime commit
+`c232408950f494bd12bf425f5a3f8c13aa764c7e`, and an uptime consistent with the
+isolate's `startedAt` timestamp. The API deployment's own smoke also required
+that exact runtime commit before succeeding.
+
+GitHub API re-reads found only
+`packages/geoint/region-data-release.json` among the pointer and two managed
+tree prefixes. The active `main-protection` ruleset still required strict
+`verify` and prevented deletion and non-fast-forward updates. Dependabot
+alerts and security updates, secret scanning, and push protection remained
+enabled. All check runs on the final merge were green. The publisher
+environment still allowed protected branches only, contained exactly the two
+R2 write-secret names, and repository workflow permissions remained read-only
+by default.
+
+The final local stage gate began with both managed directories absent. Public
+sync downloaded all 2,031 entries and 8,971,117,492 bytes. Independent exact
+manifest verification reproduced version
+`sha256-4b6d31b92ce300ca4ca6d98fb24d966fad61b098639e51f33134b5922ccd3190`,
+901 `region-dist` entries, 1,130 `region-db` entries, and zero missing, extra,
+changed, or unreadable paths. The materialization was removed afterward.
 
 ### Publication history
 
@@ -336,6 +394,14 @@ A release rollback changes only the committed release pointer in a normal,
 reviewed pull request. Old immutable manifests and objects remain readable, so
 restoring the previous pointer does not require an R2 mutation.
 
+At this stage gate, Git history contains only the initial R2 release pointer,
+so there is no distinct predecessor to restore. The final clean sync and exact
+verification above prove that this retained immutable release remains
+readable. After the first content-changing release, rollback means copying the
+canonical pointer from the last known-good commit into a new branch, opening a
+normal pull request, and requiring CI to materialize and verify that older
+release before merge. Never overwrite an object or manifest to roll back.
+
 For an infrastructure rollback, first stop publisher workflows, then revoke
 the publisher token and remove the two R2 credential secrets. Disable or remove
 the custom domain only after confirming that no active deployment references
@@ -355,3 +421,13 @@ routine rollback step.
 [phase-a-pr-ci]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29383546050
 [phase-a-production-smoke]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29384519200
 [phase-a-web-deploy]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29384373723
+[phase-b-api-deploy]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29389806946
+[phase-b-api-hotfix-ci]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29389464495
+[phase-b-api-hotfix-pr]: https://github.com/hmmhmmhm/ground.codes/pull/82
+[phase-b-final-main-ci]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29389806941
+[phase-b-main-ci]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29389253996
+[phase-b-pr]: https://github.com/hmmhmmhm/ground.codes/pull/81
+[phase-b-pr-ci]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29388901071
+[phase-b-production-smoke]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29390670878
+[phase-b-publish-none]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29389992473
+[phase-b-web-deploy]: https://github.com/hmmhmmhm/ground.codes/actions/runs/29389254015
