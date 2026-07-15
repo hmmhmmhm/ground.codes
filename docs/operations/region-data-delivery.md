@@ -129,6 +129,39 @@ Do not copy it into this repository, attach it to an issue or artifact, or use
 it in read-only CI. Revalidate its permissions during rotation and remove or
 replace it when the associated Cloudflare token is revoked.
 
+## Initial release evidence
+
+The first release was generated and shadow-verified on 2026-07-15 with Node
+22.23.1. The `region-dist` and `region-db` trees at branch commit `8547f41`
+matched `origin/main` commit `827847ddf42f5432f104b40eaf3ec9791d5e0581`
+before generation.
+
+| Measurement               |                                                                    Result |
+| ------------------------- | ------------------------------------------------------------------------: |
+| Version                   | `sha256-4b6d31b92ce300ca4ca6d98fb24d966fad61b098639e51f33134b5922ccd3190` |
+| Manifest SHA-256          |        `bf3068b4d416287d617332b3d77f92f9d8c6dbcbdf4c32ab7b9b07056a36a9f1` |
+| Logical entries           |                                                                     2,031 |
+| `region-dist` entries     |                                                                       901 |
+| `region-db` entries       |                                                                     1,130 |
+| Deduplicated gzip objects |                                                                     1,044 |
+| Uncompressed bytes        |                                                             8,971,117,492 |
+| Compressed object bytes   |                                                               738,078,307 |
+| Pointer bytes             |                                                                       187 |
+| Manifest bytes            |                                                                   759,643 |
+
+The first publication uploaded all 1,044 objects and 738,078,307 bytes, then
+uploaded the manifest. An immediate second publication uploaded zero objects
+and zero bytes, skipped all 1,044 verified objects, and did not upload the
+existing byte-identical manifest.
+
+Two independent runs started from an empty shadow directory with no R2 write
+credentials in the environment. Each public sync selected and downloaded all
+2,031 entries, skipped zero local files, and materialized 8,971,117,492 bytes.
+Each subsequent source-vs-shadow exact verification reported the same version
+and inventory with zero missing, extra, changed, or unreadable paths. A public
+object GET returned `200 application/gzip`, the release manifest returned
+`200 application/json`, and an unpublished object path returned `404`.
+
 ## Credential rotation
 
 1. Create a replacement R2 S3 token with `Object Read & Write` permission
