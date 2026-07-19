@@ -47,14 +47,14 @@
     ]
   },
   "devDependencies": {
-    "@aws-sdk/client-s3": "3.1085.0",
+    "@aws-sdk/client-s3": "3.1090.0",
     "c8": "11.0.0",
     "husky": "9.1.7",
     "lint-staged": "15.5.0",
-    "prettier": "^3.8.3",
-    "turbo": "^2.9.14",
+    "prettier": "^3.9.5",
+    "turbo": "^2.10.5",
     "typescript": "5.8.2",
-    "wrangler": "4.110.0"
+    "wrangler": "4.112.0"
   },
   "packageManager": "pnpm@11.4.0",
   "engines": {

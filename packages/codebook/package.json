@@ -17,10 +17,10 @@
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.13.9",
     "ai": "^4.1.54",
-    "chalk": "^5.4.1",
+    "chalk": "^5.6.2",
     "dotenv": "^16.4.7",
     "glob": "^11.0.1",
-    "tasuku": "^2.0.1",
+    "tasuku": "^2.3.0",
     "typescript": "5.8.2"
   }
 }

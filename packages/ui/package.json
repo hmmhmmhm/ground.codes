@@ -18,13 +18,13 @@
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@turbo/gen": "^2.9.14",
+    "@turbo/gen": "^2.10.5",
     "@types/node": "^22.13.9",
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "class-variance-authority": "^0.7.1",
     "eslint": "^9.21.0",
-    "tailwindcss": "^4.0.12",
+    "tailwindcss": "^4.3.3",
     "tailwindcss-safe-area": "^0.6.0",
     "typescript": "5.8.2"
   },
