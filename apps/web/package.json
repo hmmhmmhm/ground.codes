@@ -35,8 +35,8 @@
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.16",
-    "@eslint/eslintrc": "^3.3.5",
-    "@playwright/test": "^1.56.1",
+    "@eslint/eslintrc": "^3.3.6",
+    "@playwright/test": "^1.62.0",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4",

@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@ai-sdk/openai": "^1.2.1",
-    "@changesets/cli": "^2.28.1",
+    "@changesets/cli": "^2.31.1",
     "@inquirer/prompts": "^7.3.2",
     "@inquirer/search": "^3.0.9",
     "@repo/typescript-config": "workspace:*",
@@ -40,9 +40,9 @@
     "chalk": "^5.4.1",
     "dotenv": "^16.4.7",
     "glob": "^11.0.1",
-    "tasuku": "^2.0.1",
+    "tasuku": "^2.3.0",
     "tsup": "^8.5.1",
-    "tsx": "^4.22.3",
+    "tsx": "^4.23.1",
     "typescript": "5.8.2"
   },
   "dependencies": {
