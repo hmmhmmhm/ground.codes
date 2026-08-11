@@ -33,7 +33,7 @@
     "@tailwindcss/cli": "^4.0.12",
     "@tailwindcss/postcss": "^4.0.12",
     "clsx": "^2.1.1",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.23",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.6.0",
