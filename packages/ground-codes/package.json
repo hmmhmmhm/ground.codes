@@ -46,6 +46,6 @@
     "@repo/codebook": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "tsup": "^8.5.1",
-    "tsx": "^4.22.3"
+    "tsx": "^4.23.12"
   }
 }

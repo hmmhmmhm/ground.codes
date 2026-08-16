@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.16",
-    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/eslintrc": "^3.3.6",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4",

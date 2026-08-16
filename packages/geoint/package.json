@@ -40,9 +40,9 @@
     "chalk": "^5.4.1",
     "dotenv": "^16.4.7",
     "glob": "^11.0.1",
-    "tasuku": "^2.0.1",
+    "tasuku": "^2.3.0",
     "tsup": "^8.5.1",
-    "tsx": "^4.22.3",
+    "tsx": "^4.23.12",
     "typescript": "5.8.2"
   },
   "dependencies": {
