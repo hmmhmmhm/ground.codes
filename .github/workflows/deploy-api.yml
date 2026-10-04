@@ -76,6 +76,7 @@ jobs:
         run: pnpm --filter ground-codes build
 
       - name: Apply PostGIS schema
+        if: vars.SUPABASE_DB_MAINTENANCE_ENABLED == 'true'
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           PGSSLMODE: require
@@ -96,8 +97,14 @@ jobs:
             echo "datasets=${DATASETS}" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Require local region maintenance when data changed
+        if: steps.regions.outputs.datasets != '' && vars.SUPABASE_DB_MAINTENANCE_ENABLED != 'true'
+        run: |
+          echo 'The production database is private. Import and verify region data on the Mac, then rerun workflow_dispatch with import_all_regions=false.'
+          exit 1
+
       - name: Import changed region datasets
-        if: steps.regions.outputs.datasets != ''
+        if: steps.regions.outputs.datasets != '' && vars.SUPABASE_DB_MAINTENANCE_ENABLED == 'true'
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           PGSSLMODE: require

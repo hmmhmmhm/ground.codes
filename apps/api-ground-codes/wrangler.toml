@@ -11,9 +11,8 @@ routes = [
 [observability]
 enabled = true
 
-# Create the Hyperdrive binding with:
-# pnpm --filter api-ground-codes exec wrangler hyperdrive create ground-codes-supabase --connection-string "$SUPABASE_DB_URL"
-# Then replace the placeholder id below.
+# Private Supabase through a TLS-verified Workers VPC service.
+# Connection and rollback procedure: SUPABASE.md.
 [[hyperdrive]]
 binding = "HYPERDRIVE"
-id = "bcd8dcf99beb470b9d4e3f1e0259878e"
+id = "ca33d9b7bc8240b88e02f40a8ab6492b"
