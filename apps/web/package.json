@@ -27,7 +27,7 @@
     "@swc/helpers": "0.5.17",
     "@types/google.maps": "^3.64.1",
     "cesium": "1.143.0",
-    "next": "15.5.18",
+    "next": "15.5.24",
     "next-intl": "4.13.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -44,7 +44,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.5.18",
+    "eslint-config-next": "15.5.24",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vercel": "47.0.4"
