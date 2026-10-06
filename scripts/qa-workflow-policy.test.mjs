@@ -287,11 +287,14 @@ describe("GitHub automation supply-chain policy", () => {
     assert.equal(
       indentedYamlBlock(readText("../pnpm-workspace.yaml"), "overrides"),
       `overrides:
+  "@parcel/watcher@2.5.1": "2.5.6"
   "@swc/helpers@0.5.15": "0.5.17"
-  "dompurify@3.4.2": "3.4.12"
+  "dompurify@>=3.4.2 <3.4.16": "3.4.16"
   "picomatch@2.3.1": "2.3.2"
-  "postcss@8.4.31": "8.4.49"
-  "postcss@8.5.3": "8.5.19"
+  "postcss@>=8.4.31 <8.5.23": "8.5.23"
+  "nanoid@>=3.3.8 <3.3.18": "3.3.18"
+  "sharp@<0.35.4": "0.35.4"
+  "source-map-js@>=1.0.0 <1.2.2": "1.2.2"
   "protobufjs@8.2.0": "8.7.1"`,
     );
     const releaseAgeExclusions = indentedYamlBlock(
@@ -312,11 +315,11 @@ describe("GitHub automation supply-chain policy", () => {
     assert.equal(
       indentedYamlBlock(readText("../pnpm-workspace.yaml"), "allowBuilds"),
       `allowBuilds:
-  "@parcel/watcher@2.5.1": true
+  "@parcel/watcher@2.5.6": true
   "@swc/core@1.15.43": true
   "classic-level@2.0.0": true
   "esbuild@0.14.47 || 0.15.18 || 0.25.12 || 0.27.7 || 0.28.0 || 0.28.1": true
-  "sharp@0.34.5": true
+  "sharp@0.35.4": true
   "workerd@1.20250718.0 || 1.20260708.1": true`,
     );
     assert.equal(

@@ -80,10 +80,13 @@ describe("production audit policy", () => {
       "utf8",
     );
     const transitiveSecurityOverrides = {
-      "dompurify@3.4.2": "3.4.12",
+      "@parcel/watcher@2.5.1": "2.5.6",
+      "dompurify@>=3.4.2 <3.4.16": "3.4.16",
       "picomatch@2.3.1": "2.3.2",
-      "postcss@8.4.31": "8.4.49",
-      "postcss@8.5.3": "8.5.19",
+      "postcss@>=8.4.31 <8.5.23": "8.5.23",
+      "nanoid@>=3.3.8 <3.3.18": "3.3.18",
+      "sharp@<0.35.4": "0.35.4",
+      "source-map-js@>=1.0.0 <1.2.2": "1.2.2",
       "protobufjs@8.2.0": "8.7.1",
     };
     const expectedOverrides = {
@@ -91,9 +94,22 @@ describe("production audit policy", () => {
       ...transitiveSecurityOverrides,
     };
 
-    for (const supersededResolution of Object.keys(
-      transitiveSecurityOverrides,
-    )) {
+    for (const supersededResolution of [
+      "@parcel/watcher@2.5.1",
+      "dompurify@3.4.2",
+      "dompurify@3.4.12",
+      "picomatch@2.3.1",
+      "postcss@8.4.31",
+      "postcss@8.4.49",
+      "postcss@8.5.3",
+      "postcss@8.5.15",
+      "postcss@8.5.19",
+      "nanoid@3.3.8",
+      "nanoid@3.3.12",
+      "sharp@0.34.5",
+      "source-map-js@1.2.1",
+      "protobufjs@8.2.0",
+    ]) {
       const packageName = supersededResolution.slice(
         0,
         supersededResolution.lastIndexOf("@"),
@@ -127,6 +143,14 @@ describe("production audit policy", () => {
         "next-intl": "4.13.2",
       },
     );
+    for (const appPath of [
+      "apps/web/package.json",
+      "apps/grok-spiral/package.json",
+    ]) {
+      const appPackage = readJson(appPath);
+      assert.equal(appPackage.dependencies.next, "15.5.24");
+      assert.equal(appPackage.devDependencies["eslint-config-next"], "15.5.24");
+    }
     assert.equal(rootPackage.pnpm, undefined);
     const configuredOverrides = Object.fromEntries(
       indentedYamlBlock(workspace, "overrides")
